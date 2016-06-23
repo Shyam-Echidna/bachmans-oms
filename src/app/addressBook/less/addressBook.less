@@ -1,0 +1,253 @@
+.container-fluid.addressBook-main{
+	position: absolute;
+    top: 75px;
+    bottom: 30px;
+    overflow-x: hidden;
+    overflow-y: auto;
+	padding:0 30px;
+	width:100%;
+	background-color:@color0;
+	a{
+		.font-spacing;
+	}
+	.addressBook-container{
+		padding: 15px 0px 35px 0px;
+		.addressBook{
+			h1{
+				font-size:18px;
+				line-height:38px;
+				.helvetica-bold;
+				border-bottom:1px solid @color21;
+				margin:0;
+			}
+			.add-new-main, .edit-address-main{
+				padding:20px 25px;
+				border-top:1px solid @color21;
+				border-bottom:1px solid @color21;
+				background-color:@color24;
+				margin-bottom: 15px;
+				.add-new-container, .edit-address-container{
+					width:40%;
+					.inline-div{
+						>div{
+							.in-block;
+						    width: 47%;
+							margin-right: 2%;
+						}
+					}
+					h2{
+						.helvetica-medium;
+						font-size:16px;
+						line-height:20px;
+						margin:0;
+					}
+					p{
+						.helvetica-regular;
+						font-size:14px;
+						line-height:25px;
+						color:@color26;
+						margin:0;
+					}
+					input{
+						background-color:@color23;
+						.helvetica-regular;
+						font-size:16px;
+						line-height:35px;
+						color:@color26;
+						border:1px solid @color21;
+						text-indent:10px;
+						&.zip-code{
+							width: 27%;
+						}
+					}
+					.contact-num{
+						input{
+							width:20%;
+						}
+					}
+					input[type="text"]{
+						width:100%;
+					}
+					button{
+						width:48.5%;
+					}
+				}
+				.addr-top{
+					margin-top:25px;
+				}
+				.button-list{
+					width:100%;
+				}
+				button{
+						.helvetica-bold;
+						font-size:16px;
+						line-height:40px;
+						.in-block;
+						width:19.3%;
+						color:@color0;
+						background-color:@gray-button;
+						.background-fade;
+						&.save{
+							margin-right:1%;
+							background-color:@primary-color;
+							&:hover{
+								background-color:@primary-dark-color;
+							}
+						}
+						&:hover{
+							background-color:@color1;
+						}
+				}
+				label {
+					.helvetica-regular;
+					font-size: 14px;
+					line-height:25px;
+					color:@color26;
+					input[type="checkbox"]{
+						vertical-align: sub;
+						margin-right: 2px;
+					}
+					margin-right: 15px;
+				}
+			}
+			table{
+				width:100%;
+				tr{
+					border:1px solid @color21;
+					background-color:@color25;
+					margin-bottom: 15px;
+					td{
+						padding: 15px 10px 15px 5px;
+						vertical-align: top;
+						width:18.4%;
+						.in-block;
+						h4, a{
+							.helvetica-regular;
+							font-size:14px;
+							line-height:35px;
+							color:@color22;
+							margin:0;
+						}
+						a{
+							text-decoration:underline;
+							color:@primary-dark-color;
+							.font-spacing;
+							&.bar{
+								text-decoration:none;
+							}
+						}
+						p{
+							.helvetica-medium;
+							font-size:15px;
+							line-height:20px;
+							margin-bottom:0;
+						}
+						.custom-ceckbox > label > input {
+							visibility: hidden;
+						}
+						.custom-ceckbox > label {
+							display: block;
+							margin: 0 0 0 -10px;
+							padding: 0 0 20px 0;  
+							height: 20px;
+							width: 150px;
+						}
+						.custom-ceckbox > label > svg {
+							display: inline-block;
+							padding: 0px;
+							height:15px;
+							width:15px;
+							border:1px solid @color1;
+							background-color:@color0;
+							g{
+								display:none;
+							}
+						}
+						.custom-ceckbox > label > input:checked + svg {  
+							fill:@primary-dark-color;
+							background-color:@color0;
+							g{
+								display:block;
+							}
+						}
+						&:last-child{
+							width:10%;
+						}
+						&:nth-child(3){
+							width:33%;
+						}
+					}
+					&:hover{
+						background-color:@color14;
+					}
+				}
+			}
+			.search-block{
+				margin:20px 0;
+				
+				div{
+					position: relative;
+					width:65%;
+					.in-block;
+					input{
+						.helvetica-regular;
+						font-size:14px;
+						line-height:35px;
+						text-indent:10px;
+						color:#464646;
+						border:1px solid @color21;
+						width:100%;
+					}
+					i{
+						right: 15px;
+						color: @primary-color;
+						font-size: 20px;
+						position: absolute;
+						top: 8px;
+						z-index: 2;
+					}
+				}
+				a{
+					width:32.5%;
+					.in-block;
+					font-size:14px;
+					.helvetica-medium;
+					color:@primary-dark-color;
+					margin-left: 20px;
+					.font-spacing;
+					svg{
+						width:10px;
+						fill:@primary-dark-color;
+					}
+					&:hover{
+						text-decoration:none;
+					}
+				}
+			}
+			.popover.top{
+				border:1px solid @base-bg-purple-light;
+				width:230px;
+				h2{
+					font-size: 15px;
+					.helvetica-medium;
+					margin: 10px 0;
+				}
+				button{
+					.helvetica-bold;
+					font-size: 10px;
+					color: #ffffff;
+					background-color: @base-bg-purple-light;
+					padding: 5px 10px 5px 10px;
+					margin-right: 8px;
+					background:fade;
+					&:hover{
+						background-color: @primary-dark-color;
+					}
+				}
+				.arrow{
+					border-top-color: @base-bg-purple-light;	
+				}
+			}
+		}
+	}
+}

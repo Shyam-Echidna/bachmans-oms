@@ -1,0 +1,550 @@
+		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary">
+            <h1>ACTIVE ORDER</h1>
+			<div ng-repeat="line in lineItemProducts track by line">
+				<div class="pdt_name">
+					<h2>{{activeOrders[line][0].Product.Name}}</h2>
+					<!--<button class="edit" ng-click="editProduct(activeOrders[line])">
+						<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 140.5 140" style="enable-background:new 0 0 140.5 140;" xml:space="preserve" fill="#fff">
+						<g>
+							<path d="M118.2,243.9c-0.5,0-0.9-0.4-0.9-0.9V238H116v5.1c0,0.5-0.4,0.9-0.9,0.9s-0.9-0.4-0.9-0.9V238h-1.3v5.1
+								c0,0.5-0.4,0.9-0.9,0.9c-0.5,0-0.9-0.4-0.9-0.9v-5.9c0-0.5,0.4-0.9,0.9-0.9h6.2c0.2,0,0.5,0.1,0.6,0.3s0.3,0.4,0.3,0.6v5.9
+								C119.1,243.6,118.7,243.9,118.2,243.9z M121.2,240c-0.4,0-0.8-0.3-0.9-0.7l-0.7-4.5l0,0l0-0.2l0,0l0,0l0,0l0,0l0-0.1l0,0l0-0.1l0,0
+								l0,0l0-0.1l0,0l0-0.1l0,0l0,0l0-0.1l0-0.1l0,0l0,0l0,0l0,0h0l0.1-0.1l0,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0
+								l0.1,0l0.1,0c0,0,0.1,0,0.1,0c0,0,0,0,0,0l0,0l0.1,0.1l0,0l0,0l0,0l0,0l0.1,0.1l3.1,3.1c0.3,0.3,0.3,0.9,0,1.3
+								c-0.2,0.2-0.4,0.3-0.6,0.3c-0.2,0-0.5-0.1-0.6-0.3l-1.1-1.1l0.3,1.8c0,0.2,0,0.5-0.2,0.7s-0.3,0.3-0.6,0.4
+								C121.3,240,121.3,240,121.2,240z M112.2,235.4c-0.5,0-0.9-0.4-0.9-0.9s0.4-0.9,0.9-0.9h5.9c0.5,0,0.9,0.4,0.9,0.9s-0.4,0.9-0.9,0.9
+								H112.2z M112,232.8c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c0,0-0.1,0-0.1,0c-0.1,0-0.1-0.1-0.1-0.1
+								c0,0-0.1-0.1-0.1-0.1c0-0.1-0.1-0.1-0.1-0.1c0,0,0-0.1-0.1-0.1l-4.9-10c-0.2-0.4,0-1,0.4-1.2c0.1-0.1,0.3-0.1,0.4-0.1
+								c0.3,0,0.6,0.2,0.8,0.5l4.6,9.5h1.7v-5c0-0.5,0.4-0.9,0.9-0.9s0.9,0.4,0.9,0.9v5h1.7l4.8-9.5c0.2-0.3,0.5-0.5,0.8-0.5
+								c0.1,0,0.3,0,0.4,0.1c0.2,0.1,0.4,0.3,0.4,0.5c0.1,0.2,0.1,0.5-0.1,0.7l-5.1,10l-0.1,0.1c0,0.1-0.1,0.1-0.1,0.1
+								c0,0-0.1,0.1-0.1,0.1l-0.1,0.1c-0.1,0-0.1,0-0.1,0.1c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0H112z M117.4,224.7
+								c-0.8,0-1.6-0.3-2.3-0.7l0,0c-0.7,0.5-1.5,0.8-2.3,0.8c-0.8,0-1.6-0.3-2.3-0.7c-1.3-1-1.9-2.7-1.4-4.3l0,0
+								c-1.7-1.2-2.1-3.6-0.8-5.4c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7
+								c0.7,0.5,1.2,1.2,1.4,1.9l0,0c0.8,0,1.6,0.3,2.3,0.7c1.7,1.2,2.1,3.6,0.8,5.4c-0.2,0.3-0.5,0.6-0.9,0.9c0.4,1.2,0.2,2.5-0.5,3.5
+								C119.8,224.1,118.6,224.7,117.4,224.7z M115.1,221.9c0.3,0,0.5,0.1,0.7,0.3c0.1,0.1,0.2,0.3,0.4,0.3c0.4,0.3,0.8,0.4,1.3,0.4
+								c0.7,0,1.3-0.3,1.7-0.9c0.5-0.7,0.5-1.6,0.1-2.4c-0.1-0.2-0.2-0.5-0.1-0.7c0.1-0.2,0.3-0.4,0.5-0.5c0.4-0.1,0.7-0.4,0.9-0.7
+								c0.7-1,0.5-2.3-0.5-3c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2
+								c-0.2-0.1-0.3-0.4-0.3-0.6c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1
+								c0,0.2-0.1,0.5-0.3,0.6c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9
+								c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1.1,0.9,1.4c0.1,0.1,0.3,0.2,0.4,0.3c0.2,0.1,0.4,0.3,0.5,0.5c0.1,0.2,0,0.5-0.1,0.7
+								c-0.6,0.9-0.3,2.2,0.6,2.8c0.4,0.3,0.8,0.4,1.2,0.4c0.6,0,1.2-0.3,1.6-0.8C114.6,222,114.9,221.9,115.1,221.9L115.1,221.9z
+								 M115.1,221.5c-0.8,0-1.6-0.3-2.2-0.7c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.8c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7
+								c1.7,1.2,2.1,3.6,0.8,5.3C117.5,220.9,116.3,221.5,115.1,221.5z M115.1,215.6c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.5-0.5,1-0.4,1.6
+								c0.1,0.6,0.4,1,0.8,1.4c0.4,0.3,0.8,0.4,1.2,0.4c0.7,0,1.3-0.3,1.7-0.9c0.7-0.9,0.5-2.3-0.5-2.9C116,215.7,115.6,215.6,115.1,215.6
+								z M128.4,220.2c-0.8,0-1.6-0.3-2.3-0.7l0,0c-0.7,0.5-1.5,0.8-2.3,0.8c-0.6,0-1.2-0.2-1.8-0.5l-0.2-0.1l0.2-0.2
+								c0.1-0.1,0.2-0.3,0.3-0.4c0.1-0.2,0.3-0.4,0.4-0.6l0.1-0.2l0.2,0.1c0.3,0.1,0.6,0.2,0.9,0.2c0.6,0,1.2-0.3,1.6-0.8
+								c0.2-0.2,0.4-0.3,0.6-0.3c0.3,0,0.5,0.1,0.7,0.3c0.1,0.1,0.2,0.2,0.4,0.4c0.4,0.3,0.8,0.4,1.3,0.4c0.7,0,1.3-0.3,1.7-0.9
+								c0.5-0.7,0.5-1.6,0.1-2.4c-0.1-0.2-0.2-0.5-0.1-0.7c0.1-0.2,0.3-0.4,0.5-0.5c0.4-0.1,0.7-0.4,0.9-0.7c0.7-1,0.5-2.3-0.5-3
+								c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2c-0.2-0.1-0.3-0.4-0.3-0.6
+								c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1c0,0.2-0.1,0.5-0.3,0.6
+								c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.4-0.4,0.9-0.4,1.4l0,0.3
+								l-0.3-0.1c-0.3-0.1-0.5-0.1-0.8-0.2l-0.1,0l0-0.1c-0.1-0.2-0.2-0.5-0.4-0.7l0,0l0-0.1c0.1-0.6,0.3-1.1,0.7-1.5
+								c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.2,1.4,1.9l0,0
+								c0.8,0,1.6,0.3,2.2,0.7c1.7,1.2,2.1,3.6,0.9,5.4c-0.2,0.3-0.5,0.6-0.9,0.9c0.4,1.2,0.2,2.5-0.5,3.5
+								C130.8,219.6,129.6,220.2,128.4,220.2z M106.4,220.2c-0.8,0-1.6-0.3-2.3-0.7l0,0c-0.7,0.5-1.5,0.7-2.3,0.7c-0.8,0-1.6-0.3-2.3-0.7
+								c-1.3-1-1.9-2.7-1.4-4.3l0,0c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.9c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1
+								c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.2,1.4,1.9l0,0c0.8,0,1.6,0.3,2.3,0.7c0.8,0.6,1.3,1.4,1.5,2.3l0,0
+								l0,0.1c-0.2,0.3-0.3,0.5-0.4,0.7l0,0.1l-0.1,0c-0.3,0-0.5,0.1-0.8,0.2l-0.3,0.1l0-0.3c0-0.7-0.3-1.4-0.9-1.8
+								c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2c-0.2-0.1-0.3-0.4-0.3-0.6
+								c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1c0,0.2-0.1,0.5-0.3,0.6
+								c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.5-0.5,1-0.4,1.6
+								c0.1,0.6,0.4,1.1,0.9,1.4c0.1,0.1,0.3,0.2,0.4,0.3c0.2,0.1,0.4,0.3,0.5,0.5c0.1,0.2,0,0.5-0.1,0.7c-0.6,0.9-0.3,2.2,0.6,2.8
+								c0.4,0.3,0.8,0.4,1.2,0.4c0.6,0,1.2-0.3,1.6-0.8c0.2-0.2,0.4-0.3,0.7-0.3c0.3,0,0.5,0.1,0.7,0.3c0.1,0.1,0.2,0.2,0.4,0.4
+								c0.4,0.3,0.8,0.4,1.3,0.4c0.3,0,0.6-0.1,0.9-0.2l0.2-0.1l0.1,0.2c0.2,0.4,0.4,0.7,0.7,1l0.2,0.2l-0.2,0.1
+								C107.7,220,107,220.2,106.4,220.2z M104.1,217c-0.8,0-1.6-0.3-2.2-0.7c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.8
+								c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7c0.8,0.6,1.4,1.5,1.5,2.5c0.2,1-0.1,2-0.7,2.8C106.5,216.4,105.4,217,104.1,217z
+								 M104.1,211.1c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1,0.8,1.4c0.4,0.3,0.8,0.4,1.2,0.4
+								c0.7,0,1.3-0.3,1.7-0.9c0.3-0.5,0.5-1,0.4-1.6c-0.1-0.6-0.4-1-0.8-1.4C105,211.2,104.6,211.1,104.1,211.1z M126.1,217
+								c-0.8,0-1.6-0.3-2.2-0.7c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.8c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7
+								c0.8,0.6,1.4,1.5,1.5,2.5c0.2,1-0.1,2-0.7,2.8C128.5,216.4,127.3,217,126.1,217z M126.1,211.1c-0.7,0-1.3,0.3-1.7,0.9
+								c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1,0.8,1.4c0.4,0.3,0.8,0.4,1.2,0.4c0.7,0,1.3-0.3,1.7-0.9c0.3-0.5,0.5-1,0.4-1.6
+								c-0.1-0.6-0.4-1-0.8-1.4C127,211.2,126.6,211.1,126.1,211.1z M114.1,209.6c0-0.5,0-1,0.2-1.5c-1.7-1.3-2.1-3.7-0.9-5.4
+								c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.2,1.4,1.9l0,0
+								c0.8,0,1.6,0.3,2.3,0.7c1,0.7,1.6,1.9,1.6,3.1l0,0.3l-0.3-0.1c-0.4-0.1-0.8-0.2-1.3-0.2l-0.2,0l0-0.2c-0.1-0.6-0.4-1.1-0.9-1.5
+								c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2c-0.2-0.1-0.3-0.4-0.3-0.6
+								c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1c0,0.2-0.1,0.5-0.3,0.6
+								c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9c-0.7,1-0.5,2.3,0.5,3
+								c0.1,0.1,0.3,0.2,0.4,0.3c0.2,0.1,0.4,0.3,0.5,0.5c0.1,0.2,0,0.5-0.1,0.7c-0.2,0.4-0.3,0.8-0.3,1.3l0,0.2l-0.2,0
+								c-0.2,0-0.3,0-0.5,0c-0.3,0-0.5,0-0.8,0.1l-0.2,0L114.1,209.6z M118.6,209.7c-0.2-0.1-0.4-0.2-0.6-0.3c-0.8-0.6-1.4-1.5-1.5-2.5
+								c-0.2-1,0.1-2,0.7-2.8c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7c0.8,0.5,1.3,1.4,1.5,2.3l0,0.1l-0.1,0.1
+								c-0.5,0.3-0.9,0.6-1.2,1.1l0,0.1l-0.3-0.1l0-0.1c0.1-0.8-0.2-1.6-0.8-2c-0.4-0.3-0.8-0.4-1.2-0.4c-0.7,0-1.3,0.3-1.7,0.9
+								c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1,0.8,1.4c0.2,0.1,0.4,0.3,0.7,0.3l0.4,0.1l-0.3,0.2c-0.3,0.2-0.6,0.5-0.8,0.8
+								c0,0-0.1,0.1-0.1,0.1l-0.1,0.1L118.6,209.7z M111.4,209.6c-0.2-0.4-0.6-0.7-0.9-1l-0.3-0.2l0.4-0.1c0.4-0.1,0.8-0.4,1.1-0.8
+								c0.2-0.3,0.4-0.7,0.4-1l0-0.1l0.4,0l0,0.1c0.2,0.5,0.5,1,0.8,1.5l0.1,0.1l-0.1,0.1c-0.1,0.1-0.2,0.3-0.2,0.4
+								c-0.4,0.5-0.8,0.9-1.4,1.2l-0.2,0.1L111.4,209.6z M107.5,206.6c-0.2-0.3-0.5-0.6-0.8-0.8c-0.1-0.1-0.2-0.2-0.3-0.2l-0.1-0.1l0-0.1
+								c0.1-0.5,0.3-1,0.6-1.4c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7c0.1,0.1,0.2,0.1,0.2,0.2l0.1,0.1l0,0.1
+								c-0.2,0.5-0.3,1.1-0.3,1.7l0,0.1l-0.3,0.1l0-0.1c-0.2-0.3-0.4-0.6-0.7-0.8c-0.4-0.3-0.8-0.4-1.2-0.4c-0.7,0-1.3,0.3-1.7,0.9
+								c-0.3,0.4-0.4,0.9-0.4,1.5l0.1,0.7L107.5,206.6z M102.4,205.1c0-0.8,0.2-1.6,0.7-2.3c0.7-1,1.9-1.6,3.1-1.6l0,0
+								c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.3,1.4,2.1l0,0c0,0,0,0.1,0,0.1
+								c0,0.1,0,0.2,0,0.2l0,0l0,0.1l0,0l0,0c-0.2,0.2-0.4,0.4-0.6,0.6c-0.1,0.1-0.2,0.2-0.2,0.3l-0.1,0.2l-0.2-0.1c0,0-0.1,0-0.1-0.1
+								c-0.2-0.1-0.3-0.4-0.3-0.6c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1
+								c0,0.3-0.1,0.5-0.3,0.6c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9
+								c-0.2,0.3-0.4,0.7-0.4,1l0,0.2l-0.2,0c-0.4,0-0.8,0.1-1.3,0.2l-0.3,0.1L102.4,205.1z"/>
+						</g>
+						<g>
+							<path d="M113.5,43c-4.7-4.7-12.4-12.4-12.4-12.4s-6-5.5-11.5,0c-5.5,5.5-43.1,43.1-43.1,43.1l23.1,23.6l43.9-43.9
+								C113.5,53.4,118.1,47.7,113.5,43z"/>
+							<polygon points="31.9,111.8 63,102.6 40.6,80.2 	"/>
+						</g>
+						</svg>
+					Edit</button>-->
+					<p ng-repeat="(key, val) in activeOrders[line][0].varientsOptions">{{key}}: {{val}}</p>
+					<p>Quantity: {{prodQty[line]}}</p>
+					<div class="note-edit">
+						<button class="notes" ng-hide="activeOrders[line][0].Product.xp.productNote" ng-click="showNoteField($index)">Notes</button>
+						<form ng-submit="updateProdNote($index,prodNotes,activeOrders[line][0].ProductID,line)">
+							<input type="text" ng-model="prodNotes" ng-init="prodNotes=activeOrders[line][0].Product.xp.productNote" ng-show="activeOrders[line][0].Product.xp.productNote || prodNoteShow{{$index}}" placeholder="Product Note" ng-readonly="!readOnly{{$index}}" />
+						</form>
+						<button ng-show="activeOrders[line][0].Product.xp.productNote" ng-click="showNoteField($index, 'readOnly{{$index}}')">
+							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+								 viewBox="0 0 140.5 140" style="enable-background:new 0 0 140.5 140;" xml:space="preserve" fill="#fff">
+							<g>
+								<path d="M118.2,243.9c-0.5,0-0.9-0.4-0.9-0.9V238H116v5.1c0,0.5-0.4,0.9-0.9,0.9s-0.9-0.4-0.9-0.9V238h-1.3v5.1
+									c0,0.5-0.4,0.9-0.9,0.9c-0.5,0-0.9-0.4-0.9-0.9v-5.9c0-0.5,0.4-0.9,0.9-0.9h6.2c0.2,0,0.5,0.1,0.6,0.3s0.3,0.4,0.3,0.6v5.9
+									C119.1,243.6,118.7,243.9,118.2,243.9z M121.2,240c-0.4,0-0.8-0.3-0.9-0.7l-0.7-4.5l0,0l0-0.2l0,0l0,0l0,0l0,0l0-0.1l0,0l0-0.1l0,0
+									l0,0l0-0.1l0,0l0-0.1l0,0l0,0l0-0.1l0-0.1l0,0l0,0l0,0l0,0h0l0.1-0.1l0,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0l0.1,0
+									l0.1,0l0.1,0c0,0,0.1,0,0.1,0c0,0,0,0,0,0l0,0l0.1,0.1l0,0l0,0l0,0l0,0l0.1,0.1l3.1,3.1c0.3,0.3,0.3,0.9,0,1.3
+									c-0.2,0.2-0.4,0.3-0.6,0.3c-0.2,0-0.5-0.1-0.6-0.3l-1.1-1.1l0.3,1.8c0,0.2,0,0.5-0.2,0.7s-0.3,0.3-0.6,0.4
+									C121.3,240,121.3,240,121.2,240z M112.2,235.4c-0.5,0-0.9-0.4-0.9-0.9s0.4-0.9,0.9-0.9h5.9c0.5,0,0.9,0.4,0.9,0.9s-0.4,0.9-0.9,0.9
+									H112.2z M112,232.8c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c0,0-0.1,0-0.1,0c-0.1,0-0.1-0.1-0.1-0.1
+									c0,0-0.1-0.1-0.1-0.1c0-0.1-0.1-0.1-0.1-0.1c0,0,0-0.1-0.1-0.1l-4.9-10c-0.2-0.4,0-1,0.4-1.2c0.1-0.1,0.3-0.1,0.4-0.1
+									c0.3,0,0.6,0.2,0.8,0.5l4.6,9.5h1.7v-5c0-0.5,0.4-0.9,0.9-0.9s0.9,0.4,0.9,0.9v5h1.7l4.8-9.5c0.2-0.3,0.5-0.5,0.8-0.5
+									c0.1,0,0.3,0,0.4,0.1c0.2,0.1,0.4,0.3,0.4,0.5c0.1,0.2,0.1,0.5-0.1,0.7l-5.1,10l-0.1,0.1c0,0.1-0.1,0.1-0.1,0.1
+									c0,0-0.1,0.1-0.1,0.1l-0.1,0.1c-0.1,0-0.1,0-0.1,0.1c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1,0H112z M117.4,224.7
+									c-0.8,0-1.6-0.3-2.3-0.7l0,0c-0.7,0.5-1.5,0.8-2.3,0.8c-0.8,0-1.6-0.3-2.3-0.7c-1.3-1-1.9-2.7-1.4-4.3l0,0
+									c-1.7-1.2-2.1-3.6-0.8-5.4c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7
+									c0.7,0.5,1.2,1.2,1.4,1.9l0,0c0.8,0,1.6,0.3,2.3,0.7c1.7,1.2,2.1,3.6,0.8,5.4c-0.2,0.3-0.5,0.6-0.9,0.9c0.4,1.2,0.2,2.5-0.5,3.5
+									C119.8,224.1,118.6,224.7,117.4,224.7z M115.1,221.9c0.3,0,0.5,0.1,0.7,0.3c0.1,0.1,0.2,0.3,0.4,0.3c0.4,0.3,0.8,0.4,1.3,0.4
+									c0.7,0,1.3-0.3,1.7-0.9c0.5-0.7,0.5-1.6,0.1-2.4c-0.1-0.2-0.2-0.5-0.1-0.7c0.1-0.2,0.3-0.4,0.5-0.5c0.4-0.1,0.7-0.4,0.9-0.7
+									c0.7-1,0.5-2.3-0.5-3c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2
+									c-0.2-0.1-0.3-0.4-0.3-0.6c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1
+									c0,0.2-0.1,0.5-0.3,0.6c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9
+									c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1.1,0.9,1.4c0.1,0.1,0.3,0.2,0.4,0.3c0.2,0.1,0.4,0.3,0.5,0.5c0.1,0.2,0,0.5-0.1,0.7
+									c-0.6,0.9-0.3,2.2,0.6,2.8c0.4,0.3,0.8,0.4,1.2,0.4c0.6,0,1.2-0.3,1.6-0.8C114.6,222,114.9,221.9,115.1,221.9L115.1,221.9z
+									 M115.1,221.5c-0.8,0-1.6-0.3-2.2-0.7c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.8c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7
+									c1.7,1.2,2.1,3.6,0.8,5.3C117.5,220.9,116.3,221.5,115.1,221.5z M115.1,215.6c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.5-0.5,1-0.4,1.6
+									c0.1,0.6,0.4,1,0.8,1.4c0.4,0.3,0.8,0.4,1.2,0.4c0.7,0,1.3-0.3,1.7-0.9c0.7-0.9,0.5-2.3-0.5-2.9C116,215.7,115.6,215.6,115.1,215.6
+									z M128.4,220.2c-0.8,0-1.6-0.3-2.3-0.7l0,0c-0.7,0.5-1.5,0.8-2.3,0.8c-0.6,0-1.2-0.2-1.8-0.5l-0.2-0.1l0.2-0.2
+									c0.1-0.1,0.2-0.3,0.3-0.4c0.1-0.2,0.3-0.4,0.4-0.6l0.1-0.2l0.2,0.1c0.3,0.1,0.6,0.2,0.9,0.2c0.6,0,1.2-0.3,1.6-0.8
+									c0.2-0.2,0.4-0.3,0.6-0.3c0.3,0,0.5,0.1,0.7,0.3c0.1,0.1,0.2,0.2,0.4,0.4c0.4,0.3,0.8,0.4,1.3,0.4c0.7,0,1.3-0.3,1.7-0.9
+									c0.5-0.7,0.5-1.6,0.1-2.4c-0.1-0.2-0.2-0.5-0.1-0.7c0.1-0.2,0.3-0.4,0.5-0.5c0.4-0.1,0.7-0.4,0.9-0.7c0.7-1,0.5-2.3-0.5-3
+									c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2c-0.2-0.1-0.3-0.4-0.3-0.6
+									c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1c0,0.2-0.1,0.5-0.3,0.6
+									c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.4-0.4,0.9-0.4,1.4l0,0.3
+									l-0.3-0.1c-0.3-0.1-0.5-0.1-0.8-0.2l-0.1,0l0-0.1c-0.1-0.2-0.2-0.5-0.4-0.7l0,0l0-0.1c0.1-0.6,0.3-1.1,0.7-1.5
+									c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.2,1.4,1.9l0,0
+									c0.8,0,1.6,0.3,2.2,0.7c1.7,1.2,2.1,3.6,0.9,5.4c-0.2,0.3-0.5,0.6-0.9,0.9c0.4,1.2,0.2,2.5-0.5,3.5
+									C130.8,219.6,129.6,220.2,128.4,220.2z M106.4,220.2c-0.8,0-1.6-0.3-2.3-0.7l0,0c-0.7,0.5-1.5,0.7-2.3,0.7c-0.8,0-1.6-0.3-2.3-0.7
+									c-1.3-1-1.9-2.7-1.4-4.3l0,0c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.9c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1
+									c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.2,1.4,1.9l0,0c0.8,0,1.6,0.3,2.3,0.7c0.8,0.6,1.3,1.4,1.5,2.3l0,0
+									l0,0.1c-0.2,0.3-0.3,0.5-0.4,0.7l0,0.1l-0.1,0c-0.3,0-0.5,0.1-0.8,0.2l-0.3,0.1l0-0.3c0-0.7-0.3-1.4-0.9-1.8
+									c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2c-0.2-0.1-0.3-0.4-0.3-0.6
+									c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1c0,0.2-0.1,0.5-0.3,0.6
+									c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.5-0.5,1-0.4,1.6
+									c0.1,0.6,0.4,1.1,0.9,1.4c0.1,0.1,0.3,0.2,0.4,0.3c0.2,0.1,0.4,0.3,0.5,0.5c0.1,0.2,0,0.5-0.1,0.7c-0.6,0.9-0.3,2.2,0.6,2.8
+									c0.4,0.3,0.8,0.4,1.2,0.4c0.6,0,1.2-0.3,1.6-0.8c0.2-0.2,0.4-0.3,0.7-0.3c0.3,0,0.5,0.1,0.7,0.3c0.1,0.1,0.2,0.2,0.4,0.4
+									c0.4,0.3,0.8,0.4,1.3,0.4c0.3,0,0.6-0.1,0.9-0.2l0.2-0.1l0.1,0.2c0.2,0.4,0.4,0.7,0.7,1l0.2,0.2l-0.2,0.1
+									C107.7,220,107,220.2,106.4,220.2z M104.1,217c-0.8,0-1.6-0.3-2.2-0.7c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.8
+									c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7c0.8,0.6,1.4,1.5,1.5,2.5c0.2,1-0.1,2-0.7,2.8C106.5,216.4,105.4,217,104.1,217z
+									 M104.1,211.1c-0.7,0-1.3,0.3-1.7,0.9c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1,0.8,1.4c0.4,0.3,0.8,0.4,1.2,0.4
+									c0.7,0,1.3-0.3,1.7-0.9c0.3-0.5,0.5-1,0.4-1.6c-0.1-0.6-0.4-1-0.8-1.4C105,211.2,104.6,211.1,104.1,211.1z M126.1,217
+									c-0.8,0-1.6-0.3-2.2-0.7c-0.8-0.6-1.4-1.5-1.5-2.5c-0.2-1,0.1-2,0.7-2.8c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7
+									c0.8,0.6,1.4,1.5,1.5,2.5c0.2,1-0.1,2-0.7,2.8C128.5,216.4,127.3,217,126.1,217z M126.1,211.1c-0.7,0-1.3,0.3-1.7,0.9
+									c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1,0.8,1.4c0.4,0.3,0.8,0.4,1.2,0.4c0.7,0,1.3-0.3,1.7-0.9c0.3-0.5,0.5-1,0.4-1.6
+									c-0.1-0.6-0.4-1-0.8-1.4C127,211.2,126.6,211.1,126.1,211.1z M114.1,209.6c0-0.5,0-1,0.2-1.5c-1.7-1.3-2.1-3.7-0.9-5.4
+									c0.7-1,1.9-1.6,3.1-1.6l0,0c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.2,1.4,1.9l0,0
+									c0.8,0,1.6,0.3,2.3,0.7c1,0.7,1.6,1.9,1.6,3.1l0,0.3l-0.3-0.1c-0.4-0.1-0.8-0.2-1.3-0.2l-0.2,0l0-0.2c-0.1-0.6-0.4-1.1-0.9-1.5
+									c-0.4-0.3-0.8-0.4-1.2-0.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2,0c-0.2,0-0.4-0.1-0.5-0.2c-0.2-0.1-0.3-0.4-0.3-0.6
+									c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1c0,0.2-0.1,0.5-0.3,0.6
+									c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9c-0.7,1-0.5,2.3,0.5,3
+									c0.1,0.1,0.3,0.2,0.4,0.3c0.2,0.1,0.4,0.3,0.5,0.5c0.1,0.2,0,0.5-0.1,0.7c-0.2,0.4-0.3,0.8-0.3,1.3l0,0.2l-0.2,0
+									c-0.2,0-0.3,0-0.5,0c-0.3,0-0.5,0-0.8,0.1l-0.2,0L114.1,209.6z M118.6,209.7c-0.2-0.1-0.4-0.2-0.6-0.3c-0.8-0.6-1.4-1.5-1.5-2.5
+									c-0.2-1,0.1-2,0.7-2.8c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7c0.8,0.5,1.3,1.4,1.5,2.3l0,0.1l-0.1,0.1
+									c-0.5,0.3-0.9,0.6-1.2,1.1l0,0.1l-0.3-0.1l0-0.1c0.1-0.8-0.2-1.6-0.8-2c-0.4-0.3-0.8-0.4-1.2-0.4c-0.7,0-1.3,0.3-1.7,0.9
+									c-0.3,0.5-0.5,1-0.4,1.6c0.1,0.6,0.4,1,0.8,1.4c0.2,0.1,0.4,0.3,0.7,0.3l0.4,0.1l-0.3,0.2c-0.3,0.2-0.6,0.5-0.8,0.8
+									c0,0-0.1,0.1-0.1,0.1l-0.1,0.1L118.6,209.7z M111.4,209.6c-0.2-0.4-0.6-0.7-0.9-1l-0.3-0.2l0.4-0.1c0.4-0.1,0.8-0.4,1.1-0.8
+									c0.2-0.3,0.4-0.7,0.4-1l0-0.1l0.4,0l0,0.1c0.2,0.5,0.5,1,0.8,1.5l0.1,0.1l-0.1,0.1c-0.1,0.1-0.2,0.3-0.2,0.4
+									c-0.4,0.5-0.8,0.9-1.4,1.2l-0.2,0.1L111.4,209.6z M107.5,206.6c-0.2-0.3-0.5-0.6-0.8-0.8c-0.1-0.1-0.2-0.2-0.3-0.2l-0.1-0.1l0-0.1
+									c0.1-0.5,0.3-1,0.6-1.4c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.2,0.7c0.1,0.1,0.2,0.1,0.2,0.2l0.1,0.1l0,0.1
+									c-0.2,0.5-0.3,1.1-0.3,1.7l0,0.1l-0.3,0.1l0-0.1c-0.2-0.3-0.4-0.6-0.7-0.8c-0.4-0.3-0.8-0.4-1.2-0.4c-0.7,0-1.3,0.3-1.7,0.9
+									c-0.3,0.4-0.4,0.9-0.4,1.5l0.1,0.7L107.5,206.6z M102.4,205.1c0-0.8,0.2-1.6,0.7-2.3c0.7-1,1.9-1.6,3.1-1.6l0,0
+									c0.1-0.4,0.3-0.8,0.6-1.1c0.7-1,1.9-1.6,3.1-1.6c0.8,0,1.6,0.3,2.3,0.7c0.7,0.5,1.2,1.3,1.4,2.1l0,0c0,0,0,0.1,0,0.1
+									c0,0.1,0,0.2,0,0.2l0,0l0,0.1l0,0l0,0c-0.2,0.2-0.4,0.4-0.6,0.6c-0.1,0.1-0.2,0.2-0.2,0.3l-0.1,0.2l-0.2-0.1c0,0-0.1,0-0.1-0.1
+									c-0.2-0.1-0.3-0.4-0.3-0.6c0-0.6-0.4-1.2-0.9-1.6c-0.4-0.3-0.8-0.4-1.3-0.4c-0.7,0-1.3,0.3-1.7,0.9c-0.2,0.3-0.4,0.7-0.4,1.1
+									c0,0.3-0.1,0.5-0.3,0.6c-0.1,0.1-0.3,0.2-0.5,0.2c-0.1,0-0.1,0-0.2,0c-0.2,0-0.3-0.1-0.5-0.1c-0.7,0-1.3,0.3-1.7,0.9
+									c-0.2,0.3-0.4,0.7-0.4,1l0,0.2l-0.2,0c-0.4,0-0.8,0.1-1.3,0.2l-0.3,0.1L102.4,205.1z"/>
+							</g>
+							<g>
+								<path d="M113.5,43c-4.7-4.7-12.4-12.4-12.4-12.4s-6-5.5-11.5,0c-5.5,5.5-43.1,43.1-43.1,43.1l23.1,23.6l43.9-43.9
+									C113.5,53.4,118.1,47.7,113.5,43z"/>
+								<polygon points="31.9,111.8 63,102.6 40.6,80.2 	"/>
+							</g>
+							</svg>
+						</button>
+					</div>
+					<button class="notes" ng-click="createListItem(activeOrders[line][0].Product.ID)">ADD Recipient</button>
+				</div>
+				<div class="receipient-details">
+					<uib-accordion close-others="oneAtATime">
+					<uib-accordion-group ng-repeat="lineitems in activeOrders[line] track by lineitems.ID" is-open="isOpen">
+						<form role="form" name="lineItemForm" ng-submit="lineDtlsSubmit(lineitems)" novalidate="novalidate" disable-dynamic-validation>
+							<uib-accordion-heading>
+								<svg class="close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z" />
+								</svg>
+								<svg class="open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 10 15 L 10 17 L 22 17 L 22 15 L 10 15 Z" />
+								</svg>
+								Item {{$index+1}} of {{activeOrders[line].length}} - Recipient <i>{{lineitems.LineTotal | currency}}</i>
+								<svg ng-click="deleteListItem($event, lineitems.ID)" version="1.1" class="delete" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+									<style type="text/css">
+										.st{fill:#F32929;}
+									</style>
+									<g transform="translate(0,-952.36218)">
+										<path class="st" d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+											v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+											c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+											c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+											c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+											c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+									</g>
+								</svg>
+							</uib-accordion-heading>
+							<div class="receipient-drpDown">
+								<a ng-click="viewAddrBook(lineitems)">View Address Book</a>
+								<div class="qty">
+									<p>Quantity</p>
+									<input type="number" ng-model="lineitems.Quantity" ng-blur="getDeliveryCharges(lineitems)" />
+								</div>
+								<div class="receipient-name">
+									<div class="firstNm">
+										<p>First Name*</p>
+										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" />
+									</div>
+									<div>
+										<p>Last Name*</p>
+										<input type="text" ng-model="lineitems.ShippingAddress.LastName" />
+									</div>
+								</div>
+								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence">Residence</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital">Hospital</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="FuneralorChurch">Church/Funeral</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping"">Standard Shipping</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School">School</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call">Will Call</label>
+								</div>
+								
+								<div ng-if="addressType=='Hospital' || addressType=='FuneralorChurch'">
+									<label><input type="checkbox" ng-checked="Wire" ng-model="Wire">Outgoing Wire</label>
+								</div>
+								
+								<div class="location-selected">
+									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitems)">
+										<div class="hospital-search" ng-if="addressType=='Hospital'">
+											<h1>Find Hospital*</h1>
+											<input type="search" uib-typeahead="hosp for hosp in hospitalsList | filter:$viewValue" typeahead-on-select="hospitalDtls($item)" ng-model="lineitems.hosSearch" />
+										</div>
+										
+										<div class="hospital-search" ng-if="addressType=='FuneralorChurch'">
+											<h1>Find Church/Funeral*</h1>
+											<input type="search" uib-typeahead="hosp for hosp in hospitalsList | filter:$viewValue" typeahead-on-select="hospitalDtls($item)" ng-model="lineitems.churchSearch" />
+										</div>
+										
+										<div class="hospital-search" ng-if="addressType=='School'">
+											<h1>Find School*</h1>
+											<input type="text" uib-typeahead="hosp for hosp in hospitalsList | filter:$viewValue" typeahead-on-select="hospitalDtls($item)" ng-model="lineitems.schSearch" />
+										</div>
+										<div class="willCall-address" ng-show="addressType=='Will Call'" ng-if="addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
+											<div class="willCall-search">
+												<h1>Find store*</h1>
+												<input type="search" ng-model="lineitems.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" />
+											</div>
+											<div>
+												<h1>Pick-up Date*</h1>
+												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.pickupDate" ng-attr-min="{{lineitems.xp.MinDate.InStorePickUp}}"/>
+											</div>
+										</div>
+										<div class="location-Code" ng-show="addressType!='Will Call'" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+											<div class="zipCode">
+												<p>Zip Code*</p>
+												<input type="number" ng-model="lineitems.ShippingAddress.Zip" autocomplete="off" ng-blur="getDeliveryCharges(lineitems)"></input>
+											</div>
+											<div class="delivery-date">
+												<p>Delivery Date*</p>
+												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.deliveryDate" ng-attr-min="{{lineitems.xp.deliveryFeesDtls.UPSCharges ? lineitems.xp.MinDate.UPS : lineitems.xp.MinDate.MinToday}}" ng-change="buildOrderRight.DateSelected(lineitems)"></input>
+											</div>
+										</div>
+										<div class="location-addressL1" ng-if="addressType!='Will Call'">
+											<h1>Address</h1>
+											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="getDeliveryCharges(lineitems)" />
+											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="getDeliveryCharges(lineitems)" />
+											<div class="location-addressL2">
+												<div class="location-state">
+													<p>State</p>
+													<!--<select ng-model="lineitems.ShippingAddress.State">
+														<option selected>K</option>
+														<option>RNR</option>
+													</select>-->
+													<input type="text" ng-model="lineitems.ShippingAddress.State" />
+												</div>
+												<div class="location-city">
+													<p>City</p>
+													<input type="text" ng-model="lineitems.ShippingAddress.City" />
+												</div>
+											</div>
+											<div class="location-contact">
+												<p>Recipients Phone Number</p>
+												<input type="number" ng-model="lineitems.ShippingAddress.Phone1"></input>
+												<input type="number" ng-model="lineitems.ShippingAddress.Phone2"></input>
+												<input type="number" ng-model="lineitems.ShippingAddress.Phone3"></input>
+											</div>
+										</div>
+										
+										<div class="location-recipientName" ng-if="addressType=='Hospital'">
+											<h3>Patient Name</h3>
+											<div class="firstNm">
+												<p>First Name*</p>
+												<input type="text" ng-model="lineitems.xp.PatientFName"></input>
+											</div>
+											<div>
+												<p>Last Name*</p>
+												<input type="text" ng-model="lineitems.xp.PatientLName"></input>
+											</div>
+										</div>
+									</div>
+									<!--<div class="hospital-address" ng-if="addressType=='Funeral'">
+										<div>
+											<label><input type="checkbox" ng-checked="Wire" ng-model="Wire">Outgoing Wire</label>
+										</div>
+										<div class="hospital-search">
+											<h1>Find Hospital/Church/Funeral Home*</h1>
+											<input type="search" auto-complete ui-items="hospitalsList" ng-model="recip.hos.Search" ng-init="recip.hos.Search=''">
+											<h1>Find School*</h1>
+											<input type="text" ng-model="recip.sch.Search" ng-init="recip.sch.Search=''">
+										</div>
+										<div class="outgoingWire" ng-if="Wire">
+										<div class="location-addressL1">
+											<h1>Address</h1>
+											<input type="text" ng-model="recip.hos.Addr1" ng-init="recip.hos.Addr1=''">
+											<input type="text" ng-model="recip.hos.Addr2" ng-init="recip.hos.Addr2=''">
+											<div class="location-addressL2">
+												<div class="location-city">
+													<p>City</p>
+													<input type="text" ng-model="recip.hos.City" ng-init="recip.hos.City=''">
+												</div>
+												<div class="location-state">
+													<p>State</p>
+													<select ng-model="recip.hos.State" ng-init="recip.hos.State=''">
+														<option selected>R</option>
+														<option selected>RNR</option>
+													</select>
+												</div>
+											</div>
+											<div class="location-Code">
+												<div class="zipCode">
+													<p>Zip Code*</p>
+													<input type="number" ng-model="recip.hos.Zip" ng-init="recip.hos.Zip=''"></input>
+												</div>
+												<div class="delivery-date">
+													<p>Delivery Date*</p>
+													<input type="date" placeholder="MM/DD/YYYY" ng-model="recip.hos.Date" ng-init="recip.hos.Date=''"></input>
+												</div>
+											</div>
+											<div class="location-contact">
+												<p>Phone Number</p>
+												<input type="number" ng-model="recip.hos.Phn1" ng-init="recip.hos.Phn1=''"></input>
+												<input type="number" ng-model="recip.hos.Phn2" ng-init="recip.hos.Phn2=''"></input>
+												<input type="number" ng-model="recip.hos.Phn3" ng-init="recip.hos.Phn3=''"></input>
+											</div>
+										</div>
+										<div class="location-recipientName">
+											<h3>Patient Name</h3>
+											<div class="firstNm">
+												<p>First Name*</p>
+												<input type="text" ng-model="recip.hos.PatFName" ng-init="recip.hos.PatFName=''"></input>
+											</div>
+											<div>
+												<p>Last Name*</p>
+												<input type="text" ng-model="recip.hos.PatLName" ng-init="recip.hos.PatLName=''"></input>
+											</div>
+										</div>
+										</div>
+									</div>
+									<div class="school-address" ng-if="addressType=='School'">
+										<div class="outgoingWire">
+											<h1>Find School*</h1>
+											<input type="text" ng-model="recip.sch.Search" ng-init="recip.sch.Search=''">
+										<div class="location-addressL1">
+											<h1>Address</h1>
+											<input type="text" ng-model="recip.sch.Addr1" ng-init="recip.sch.Addr1=''">
+											<input type="text" ng-model="recip.sch.Addr2" ng-init="recip.sch.Addr2=''">
+											<div class="location-addressL2">
+												<div class="location-city">
+													<p>City</p>
+													<input type="text" ng-model="recip.sch.City" ng-init="recip.sch.City=''">
+												</div>
+												<div class="location-state">
+													<p>State</p>
+													<select ng-model="recip.sch.State" ng-init="recip.sch.State=''">
+														<option selected>K</option>
+														<option>RNR</option>
+													</select>
+												</div>
+											</div>
+											<div class="location-Code">
+												<div class="zipCode">
+													<p>Zip Code*</p>
+													<input type="number" ng-model="recip.sch.Zip" ng-init="recip.sch.Zip=''"></input>
+												</div>
+												<div class="delivery-date">
+													<p>Delivery Date*</p>
+													<input type="date" placeholder="MM/DD/YYYY" ng-model="recip.sch.Date" ng-init="recip.sch.Date=''"></input>
+												</div>
+											</div>
+											<div class="location-contact">
+												<p>Recipients Phone Number</p>
+												<input type="number" ng-model="recip.sch.Phn1" ng-init="recip.sch.Phn1=''"></input>
+												<input type="number" ng-model="recip.sch.Phn2" ng-init="recip.sch.Phn2=''"></input>
+												<input type="number" ng-model="recip.sch.Phn3" ng-init="recip.sch.Phn3=''"></input>
+											</div>
+										</div>
+										</div>
+									</div>
+									<div class="shipping-address" ng-if="!addressType || addressType=='Shipping'">
+										<div class="location-addressL1">
+											<h1>Address</h1>
+											<input type="text" ng-model="recip.ship.Addr1" ng-init="recip.ship.Addr1=''">
+											<input type="text" ng-model="recip.ship.Addr1" ng-init="recip.ship.Addr2=''">
+											<div class="location-addressL2">
+												<div class="location-city">
+													<p>City</p>
+													<input type="text" ng-model="recip.ship.City" ng-init="recip.ship.City=''">
+												</div>
+												<div class="location-state">
+													<p>State</p>
+													<select ng-model="recip.ship.State" ng-init="recip.ship.State=''">
+														<option selected>K</option>
+														<option>RNR</option>
+													</select>
+												</div>
+											</div>
+											<div class="location-Code">
+												<div class="zipCode">
+													<p>Zip Code*</p>
+													<input type="number" ng-model="recip.ship.Zip" ng-init="recip.ship.Zip=''"></input>
+												</div>
+											</div>
+											<div class="location-contact">
+												<p>Recipients Phone Number</p>
+												<input type="number" ng-model="recip.ship.Phn1" ng-init="recip.ship.Phn1=''"></input>
+												<input type="number" ng-model="recip.ship.Phn2" ng-init="recip.ship.Phn2=''"></input>
+												<input type="number" ng-model="recip.ship.Phn3" ng-init="recip.ship.Phn3=''"></input>
+											</div>
+										</div>
+									</div>
+									<div class="willCall-address" ng-if="addressType=='Will Call'">
+										<div class="willCall-search">
+											<h1>Find store*</h1>
+											<input type="search" ng-model="recip.will.Search" auto-complete ui-items="storeNames" ng-init="recip.will.Search=''" />
+										</div>
+										<div>
+											<h1>Pick-up Date*</h1>
+											<input type="date" ng-model="recip.will.Date" ng-init="recip.will.Date=''"/>
+										</div>
+									</div>-->
+									<uib-accordion close-others="oneAtATimeSub">
+										<div class="location-note" ng-if="addressType && addressType!='Shipping'">
+											<uib-accordion-group>
+												<uib-accordion-heading>
+													<h1>Product Note
+														<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+															<g>
+																<rect x="10" width="4" height="24" />
+																<rect y="10" width="24" height="4" />
+															</g>
+														</svg>
+														<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+															 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+															<rect y="10" width="24" height="4"/>
+														</svg>
+													</h1>
+												</uib-accordion-heading>
+												<textarea rows="5" ng-model="lineitems.xp.productNote"></textarea>
+											</uib-accordion-group>
+										</div>
+										<div class="location-note" ng-if="addressType || !addressType">
+											<uib-accordion-group>
+												<uib-accordion-heading>
+													<h1>Add Delivery Note
+														<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+															<g>
+																<rect x="10" width="4" height="24" />
+																<rect y="10" width="24" height="4" />
+															</g>
+														</svg>
+														<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+															 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+															<rect y="10" width="24" height="4"/>
+														</svg>													
+													</h1>
+												</uib-accordion-heading>
+												<textarea rows="5" ng-model="lineitems.xp.deliveryNote"></textarea>
+											</uib-accordion-group>
+										</div>
+										<div class="location-note" ng-if="addressType">
+											<h1>Add Card Message</h1>
+										</div>
+									</uib-accordion>
+									<div ng-init="visible=false">
+										<div class="no-message" ng-show="addressType && addressType!='Shipping'">
+											<label><input type="checkbox" ng-model="visible" />No Card Message</label>
+										</div>
+										<div class="message-lines" ng-class="{'hideItem': !visible}" ng-show="addressType && addressType!='Shipping'">
+											<p>Line 1</p>
+											<input type="text" ng-model="lineitems.xp.CardMessage.line1" />
+											<p>Line 2</p>
+											<input type="text" ng-model="lineitems.xp.CardMessage.line2" />
+											<p>Line 3</p>
+											<input type="text" ng-model="lineitems.xp.CardMessage.line3" />
+											<p>Line 4</p>
+											<input type="text" ng-model="lineitems.xp.CardMessage.line4" />
+										</div>
+									</div>	
+								</div>
+								<div class="product-cost">
+									<h4>Item Price <span>{{lineitems.UnitPrice | currency}}</span></h4>
+									<h4>Estimated Tax <span>$0.00</span></h4>
+									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <span>{{val | currency}}</span></h4>
+									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
+								</div>
+								<input type="submit" value="SAVE" class="notes" />
+							</div>
+						</form>
+						</uib-accordion-group>
+					</uib-accordion>
+				</div>
+			</div>
+        </div>
+		<modal title="Address Book" visible="showModal" id="mymodal" class="view-addr-book modal-pop-up">
+			<table>
+				<tr ng-repeat="addr in addressesList" ng-click="getBookAddress(addr)">
+					<td>
+						<h4>Name</h4>
+						<p>{{addr.FirstName}} {{addr.LastName}}</p>
+					</td>
+					<td>	
+						<h4>Address</h4>
+						<p>{{addr.Street1}}</p>
+						<p>{{addr.Street2}}</p>
+						<p>{{addr.City}} {{addr.State}} {{addr.Country}} {{addr.Zip}}</p>
+					</td>
+					<td>
+						<h4>Phone</h4>
+						<p>{{addr.Phone}}</p>
+					</td>			
+				</tr>
+			</table>
+		</modal>

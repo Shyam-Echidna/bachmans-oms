@@ -1,0 +1,18 @@
+<div class="oms_main_container" ng-show='showplp'>
+	<h1 ng-if="buildOrder.searchVal">Search Results for <span>"{{buildOrder.searchVal}}"</span> <span class="count">({{buildOrder.prodlist.Items.length}} products)</span></h1>
+	<ul class="plp-container">
+	    <li class="col-md-3" ng-repeat="products in buildOrder.prodlist.Items track by $index">
+	        <div class="plp-block" ng-click="buildOrder.productdata(products.ID)">
+	            <div class="product_img"></div>
+				<div class="plp-product-data">
+					<h2>{{products.Name}}</h2>
+					<h3>Option Deluxe</h3>
+					<h4>Color Red</h4>
+				</div>
+	            <div class="price_lst" ng-repeat="pricelist in products.StandardPriceSchedule.PriceBreaks">
+	                <h5>{{pricelist.Price | currency}}</h5>
+	            </div>
+	        </div>
+	    </li>
+	</ul>
+</div>

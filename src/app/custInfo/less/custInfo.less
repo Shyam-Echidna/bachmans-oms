@@ -1,0 +1,268 @@
+.customer-info{
+	position: absolute;
+    top: 75px;
+    bottom: 30px;
+    overflow: auto;
+	padding:0 30px;
+	background-color:@color0;
+	.cust-info-container{
+		padding: 15px 0px 35px 15px;
+		h1{
+			.helvetica-bold;
+			font-size: 14px;
+			padding:10px;
+			background-color:@color20;
+			height:35px;
+			button{
+				float:right;
+				color:@color0;
+				background-color:transparent;
+				padding:0;
+			&:hover{
+				background-color:transparent;
+			}
+			}
+		}
+		p{
+			.helvetica-bold;
+			font-size: 13px;
+			margin-bottom:10px;
+		}
+		a{
+			.helvetica-bold;
+			font-size: 12.5px;
+			color:@primary-dark-color;
+			text-decoration: underline;
+			.font-spacing;
+		}
+		.col-sm-12.col-xs-12.col-md-12.col-lg-12, .col-sm-6.col-xs-6.col-md-6.col-lg-6{
+			padding: 0 8px 0 0;
+		}
+		input[type=text], input[type=email], input[type=number], input[type=date]{
+			.helvetica-regular;
+			font-size: 13px;
+			line-height:30px;
+			border: 1px solid @color21;
+			outline: none;
+			padding: 0 0 0px 5px;
+			margin:5px 5px 0 0;
+		    height: 30px;
+			border-radius: initial;
+		}
+		button{
+			padding:5px 10px;
+			.helvetica-bold;
+			font-size: 11px;
+			color:@color0;
+			background-color: #aaaeb9;
+			.background-fade;			
+			&:hover{
+				background-color:@color1;
+			}
+		}
+		button.save{
+			padding:5px 10px;
+			.helvetica-bold;
+			font-size: 11px;
+			color:@color0;
+			background-color:@primary-color;
+			margin-top:8px;
+			&:hover{
+				background-color:@primary-dark-color;
+			}
+		}
+		.info-blk{
+			margin-bottom:0;
+			p, input{
+				.in-block;
+				box-shadow:none;
+				background-color:@color0;
+			}
+			span{
+				.helvetica-regular;
+				font-size: 13px;
+			}
+			input.form-control{
+				width:auto;
+			}
+		}
+		.cust-top{
+			margin-top:10px;
+		}
+		.cust-street{
+			p{
+				.in-block;
+				vertical-align: top;
+				margin-bottom:5px;
+			}
+			div{
+				.in-block;
+				width:70%;
+				input{
+				width:@width0;
+				}
+				div{
+					width:@width0;
+					input{
+							width: initial;
+							float: left;
+					}
+				}
+			}
+		span{
+				.helvetica-regular;
+				font-size: 13px;
+			}
+		}
+		.cust-addrlistContainer{
+			padding:0;
+			position: relative;
+			height: 250px;
+			.cust-addr-list{
+				    position: absolute;
+					top: 59px;
+					overflow-y: auto;
+					bottom: 0;
+					width:@width0;
+					& > p{
+						.cust-top;
+					}
+					p{
+						margin-bottom:0;
+					}
+					.sub-addr{	
+						.helvetica-regular;
+						font-size: 13px;
+						margin-bottom:4px;
+					}
+					.group-addr{
+						p{
+							.helvetica-regular;
+							font-size: 13px;
+						}
+						span{
+							.helvetica-regular;
+							font-size: 13px;
+							.in-block;
+						}
+					}
+			}
+		}
+		.subscription{
+			table{
+					th, td{
+						width:20%;
+						.helvetica-regular;
+						font-size: 13px;
+					}
+					th{
+						.helvetica-bold;
+						font-size: 13px;
+					}
+					th:nth-child(3), td:nth-child(3){
+						width:75%;
+					}
+					td{
+						padding:5px 0;
+					}
+				}
+		}
+		.sub-addr{	
+			.helvetica-regular;
+			font-size: 13px;
+			margin-bottom:4px;
+		}
+		.credit-card-details{
+			.card-left{
+				width:30%;
+				vertical-align: top;
+			}
+			div{
+				width:69%;
+				.in-block;
+			}
+			p{
+				margin-bottom:3px;
+			}
+		}
+		.card{
+			.card-img{
+				width:30%;
+				.in-block;
+				img{
+					max-width: 100%;
+				}
+			}
+			.card-content{
+				width:69%;
+				.in-block;
+				vertical-align:top;
+				h2, h3,span{
+					.helvetica-bold;
+					font-size: 14px;
+					margin:0 0 8px;
+				}
+			}
+			h4,h5,span{
+				.helvetica-bold;
+				font-size: 15px;
+				margin:5px 0 5px;
+			}
+			p{
+				.helvetica-regular;
+				font-size: 13px;
+				span{
+					.helvetica-regular;
+					font-size: 13px;
+				}
+			}
+		}
+		.account-credits{
+			h2, span{
+				.helvetica-bold;
+				font-size: 15px;
+				margin: 18px 0 0;
+			}
+		}
+		.credit-card-edit{
+			h5{
+				.helvetica-bold;
+				font-size: 14px ;
+			}
+			p{
+				margin:5px 0;
+			}
+			input{
+				border:1px solid @color21;
+				width:45%;
+			}
+			.two-blocks{
+				width:49%;
+				margin-top:8px;
+				.in-block;
+				p, input{
+					.in-block;
+				}
+				p{
+					margin-right:8px;
+				}
+				input{
+					width:60%;
+				}
+			}
+		}
+	}
+}
+.change-pwd.modal-pop-up{
+	.modal-dialog{
+		height: 290px;
+		margin-top:-145px;
+		.form-group{
+			margin-bottom:10px;
+			padding:0;
+			input{
+				padding:0;
+			}
+		}
+	}
+}	

@@ -1,0 +1,546 @@
+<div id="CheckoutTopNav" ui-view="checkouttop" ng-controller="checkoutCtrl as vm"></div>
+<div class="checkoutContainer row" ng-controller="checkoutCtrl as vm">
+	<div class="checkoutContainer-left col-sm-8 col-xs-8 col-md-8 col-lg-8">
+		<div class="checkoutSection">
+			<uib-accordion close-others="oneAtATime">
+				<uib-accordion-group is-open="status.delInfoOpen" is-disabled="status.isFirstDisabled">
+					<uib-accordion-heading>
+						<h1>1.<span ng-if="status.isFirstDisabled ==true">
+							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+								 viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
+								<g>
+									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
+										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"/>
+								</g>
+							</svg>
+							</span> Delivery Information <button ng-click="deliveryInfoEdit($event,status)" ng-if="status.isFirstDisabled ==true">Edit</button></h1>
+					</uib-accordion-heading>
+					<uib-accordion close-others="oneAtATime">
+						<uib-accordion-group ng-repeat="line in deliveryInfo track by line.ID" is-open="delInfoRecipient[$index]">
+							<uib-accordion-heading>
+								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}} | {{line.ShippingAddress.Zip}}</h2>
+							</uib-accordion-heading>
+							<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="!isAddrShow{{$index}}">
+								<h3>Delivery Address</h3>
+								<p ng-click="viewAddrBook($index)" class="view-addr">View Address Book +</p>
+								<div class="check-top inline-blk">
+									<p>First Name</p>
+									<input type="text" ng-model="line.ShippingAddress.FirstName"></input>
+								</div>
+								<div class="check-top inline-blk">
+									<p>Last Name</p>
+									<input type="text" ng-model="line.ShippingAddress.LastName"></input>
+								</div>
+								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-init="addressTypeSelect(line)">
+									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Residence" />Residence</label>
+									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Hospital" />Hospital</label>
+									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="FuneralorChurch" />Church/Funeral</label>
+									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Shipping" />Standard Shipping</label>
+									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="School" />School</label>
+									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Will Call" />Will Call</label>
+								</div>
+								<p class="check-top">Zip Code</p>
+								<input type="text" ng-model="line.ShippingAddress.Zip"></input>
+								<p class="check-top">Address1</p>
+								<input type="text" ng-model="line.ShippingAddress.Street1"></input>
+								<p class="check-top">Address2(optional)</p>
+								<input type="text" ng-model="line.ShippingAddress.Street2"></input>
+								<div class="check-top city-block">
+									<p>City</p>
+									<input type="text" ng-model="line.ShippingAddress.City"></input>
+								</div>
+								<div class="check-top state-block">
+									<p class="check-top">State</p>
+									<!--<select ng-model="line.ShippingAddress.State">
+										<option selected>K</option>
+										<option>RNR</option>
+									</select>-->
+									<input type="text" ng-model="line.ShippingAddress.State" />
+								</div>
+								<p class="check-top">Phone Number</p>
+								<div class="phone-block">
+									<input type="number" ng-model="line.ShippingAddress.Phone1" />
+									<input type="number" ng-model="line.ShippingAddress.Phone2" />
+									<input type="number" ng-model="line.ShippingAddress.Phone3" />
+								</div>
+								<div class="delivery-details">
+									<label class="radio-inline"><input type="radio" name="group{{$index}}" ng-model="line.deliveryOrStore" value="1">Delivery</label>
+									<label class="radio-inline"><input type="radio" ng-click="getStores(line)" name="group{{$index}}" ng-model="line.deliveryOrStore" value="2">In-Store Pickup</label>
+									<div ng-if="line.deliveryOrStore==1">
+										<p class="check-top">Delivery Date</p>
+										<p class="modify" ng-init="deliveryAdj(line)">
+											<span>
+												<a tabindex="0" popover-trigger="none" popover-is-open="showDeliveryToolTip" ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="vm.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
+											</span>
+										</p>
+										    <script type="text/ng-template" id="modifyDeliveryTemplate.html">
+												<div class="modify-tooltip check-top" click-outside="closePopover()">
+													<div>
+														<p>Delivery Fees</p>
+														<input type="text" ng-model="line.xp.deliveryCharges" />
+													</div>
+													<div>
+														<p>Reason For Adjustment</p>
+														<select ng-options="reason for reason in buyerDtls.xp.deliveryChargeAdjReasons" ng-model="line.xp.deliveryChargeAdjReason">
+														</select>
+													</div>
+												</div>
+											</script>
+										<ul>
+										   <li ng-click="dateSelect('dt{{$index}}',line,$index)" ng-class="{active:vm.data{{$index}} == 'dt{{$index}}'}">
+												<p>Deliver Today</p>
+												<p>{{dt | date:'longDate'}}</p>
+												<span>Available</span>
+										   </li>
+										   <li ng-click="dateSelect('tom{{$index}}',line,$index)" ng-class="{active:vm.data{{$index}} == 'tom{{$index}}'}">
+												<p>Deliver Tomorrow</p>
+												<p>{{tom | date:'longDate'}}</p>
+												<span>Available</span>
+										   </li>
+										   <li ng-class="{active:vm.data{{$index}} == 'selDate{{$index}}'}">
+												<p>Select Date</p>
+												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />
+												   <input type="text" ng-model="line.dateVal.Date" placeholder="DD" />
+												   <input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
+												<button type="button" ng-click="vm.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="vm.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="initDate" init-date="initDate">
+													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+														 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
+
+													<g>
+														<path d="M0,10.2v20c0,2.7,2.2,4.9,4.9,4.9H28c2.7,0,4.9-2.2,4.9-4.9v-20c0-2.7-2.2-4.9-4.9-4.9h-1v-3
+															c0-0.8-0.7-1.5-1.5-1.5c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3h-2.6v-3c0-0.8-0.7-1.5-1.5-1.5
+															c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3h-2.6v-3c0-0.8-0.7-1.5-1.5-1.5
+															c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3C2.2,5.3,0,7.5,0,10.2z M29.4,29.6
+															c0,0.9-0.7,1.6-1.6,1.6H5.4c-0.9,0-1.6-0.7-1.6-1.6V16.7h25.6L29.4,29.6z"/>
+														<path d="M19.2,29h-7l2.8-3.7c0.3-0.4,0.6-0.8,0.8-1.1c0.2-0.3,0.4-0.6,0.5-0.9c0.2-0.5,0.4-1,0.4-1.5
+															c0-0.3-0.1-0.5-0.2-0.7c-0.1-0.2-0.3-0.2-0.5-0.2c-0.4,0-0.7,0.4-0.7,1.2c0,0,0,0.1,0,0.2c0,0.1,0,0.1,0,0.2h-2.7l0-0.4
+															c0-1,0.3-1.8,0.9-2.5c0.6-0.6,1.5-0.9,2.4-0.9c1,0,1.7,0.3,2.3,0.9c0.6,0.6,0.9,1.4,0.9,2.4c0,0.8-0.2,1.6-0.6,2.3
+															c-0.2,0.4-0.5,0.8-0.8,1.2c-0.3,0.4-0.7,0.8-1.2,1.3c0.4-0.1,0.8-0.2,1.2-0.2c0.4,0,0.8-0.1,1.3-0.1L19.2,29L19.2,29z"/>
+													</g>
+													</svg>
+												</button>
+											</li>
+										</ul>
+										<p class="delivery-date">Delivery Preference</p>
+										<ul>
+											<li ng-click="line.xp.deliveryRun='Run1'" ng-class="{active:line.xp.deliveryRun=='Run1'}">
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
+											</li>
+											<li ng-click="line.xp.deliveryRun='Run2'" ng-class="{active:line.xp.deliveryRun=='Run2'}">
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
+											</li>
+											<li ng-click="line.xp.deliveryRun='Run3'" ng-class="{active:line.xp.deliveryRun=='Run3'}">
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
+											</li>
+											<li ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}">
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
+												<p>{{buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
+												<p>${{buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
+											</li>
+										</ul>
+									</div>
+									<div ng-if="line.deliveryOrStore==2" class="select-store">
+										 <p>Select Store</p>
+											 <select>
+												<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
+											 </select>
+										 <p>
+										<fieldset id="group2">
+											<label class="radio-inline"><input type="radio" name="group2" ng-model="fromStoreOrOutside" value="1">Product is coming from my store</label>
+											<label class="radio-inline"><input type="radio" name="group2" ng-model="fromStoreOrOutside" value="2">Product is coming from somewhere else</label>
+										</fieldset>
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="saved-addr col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="isAddrShow{{$index}}">
+									<h3>Saved Delivery Address</h3>
+								<uib-accordion close-others="oneAtATime">
+									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: limit" is-open="addr.isAddrOpen" ng-click="selectedAddr(line,addr)">
+										<uib-accordion-heading>
+											<input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span>
+										</uib-accordion-heading>
+										<div ng-show="!isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
+											<a ng-click="deliveryAddr($index)">Edit</a>
+											<p>{{addr.Street1}}</p>
+											<p>{{addr.Street2}}</p>
+											<p>{{addr.Zip}}</p>
+											<p>{{addr.Phone}}</p>
+										</div>
+										<div ng-show="isDeliAddrShow{{$index}}">
+											
+											<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+													<p>First Name</p>
+													<input type="text" ng-model="addr.FirstName" />
+												</div>
+												<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+													<p>Last Name</p>
+													<input type="text" ng-model="addr.LastName" />
+												</div>
+												<!--<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-init="addressType='Residence'">
+													<label><input type="radio" name="optradio" ng-model="addressType" value="Residence" />Residence</label>
+													<label><input type="radio" name="optradio" ng-model="addressType" value="Hospital" />Hospital</label>
+													<label><input type="radio" name="optradio" ng-model="addressType" value="FuneralorChurch" />Church/Funeral</label>
+													<label><input type="radio" name="optradio" ng-model="addressType" value="Shipping" />Standard Shipping</label>
+													<label><input type="radio" name="optradio" ng-model="addressType" value="School" />School</label>
+													<label><input type="radio" name="optradio" ng-model="addressType" value="Will Call" />Will Call</label>
+												</div>-->
+												<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p class="check-top">Zip Code</p>
+													<input type="number" ng-model="addr.Zip" />
+												</div>
+												<p class="check-top">Address1</p>
+												<input type="text" ng-model="addr.Street1" />
+												<p class="check-top">address2</p>
+												<input type="text" ng-model="addr.Street2" />
+												<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<p>City</p>
+														<input type="text" ng-model="addr.City" />
+													</div>
+													<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<p>State</p>
+														<!--<select ng-model="addr.State">
+															<option selected>K</option>
+															<option>RNR</option>
+														</select>-->
+														<input type="text" ng-model="addr.State" />
+													</div>
+												</div>
+												<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<p>Phone Number</p>
+														<div>
+															<input type="number" ng-model="addr.Phone1" />
+															<input type="number" ng-model="addr.Phone2" />
+															<input type="number" ng-model="addr.Phone3" />
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<button ng-click="UpdateAddress(addr,$index)">Save</button>
+													</div>
+												</div>
+											</div>
+											
+										</div>
+									</uib-accordion-group>
+								</uib-accordion>
+								<div class="more-link">
+									<p ng-click="viewMore()">View More+ </p>
+									<p ng-click="newAddress($index)">Add a New Address+</p>
+								</div>
+								<!-- Add a new address -->
+								<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="showNewAddress{{$index}}">
+									<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+										<p>First Name</p>
+										<input type="text" ng-model="addr.FirstName"/>
+									</div>
+									<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+										<p>Last Name</p>
+										<input type="text" ng-model="addr.LastName"/>
+									</div>
+									<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-init="addressTypeN='Residence'">
+										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Residence" />Residence</label>
+										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Hospital" />Hospital</label>
+										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="FuneralorChurch" />Church/Funeral</label>
+										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Shipping" />Standard Shipping</label>
+										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="School" />School</label>
+										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Will Call" />Will Call</label>
+									</div>
+									<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<p>Zip Code</p>
+										<input type="number" ng-model="addr.Zip" />
+									</div>
+									<p class="check-top">Address1</p>
+									<input type="text" ng-model="addr.Street1" />
+									<p class="check-top">address2</p>
+									<input type="text" ng-model="addr.Street2" />
+									<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<p>City</p>
+											<input type="text" ng-model="addr.City" />
+										</div>
+										<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<p>State</p>
+											<!--<select ng-model="addr.State">
+												<option selected>K</option>
+												<option>RNR</option>
+											</select>-->
+											<input type="text" ng-model="addr.State" />
+										</div>
+									</div>
+									<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<p>Phone Number</p>
+											<div>
+												<input type="number" ng-model="addr.Phone1" />
+												<input type="number" ng-model="addr.Phone2" />
+												<input type="number" ng-model="addr.Phone3" />
+											</div>
+										</div>
+										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<button ng-click="CreateAddress(addr,$index)">Save</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="delivery-instructions col-lg-6 col-md-6">
+								<h3>Delivery Instructions</h3>
+								<p class="check-top">Delivery Instructions:</p>
+								<textarea rows="3" ng-model="line.xp.deliveryNote"></textarea>
+								<div ng-init="cardMsg=false">
+									<div class="no-msg">
+										<span>Card Message:</span>
+										<input type="checkbox" name="cardmessage" ng-model="cardMsg"></input>
+										<span>No Message</span>
+									</div>
+									<div class="line-msgs" ng-class="{'hideItem': !cardMsg}">
+										<p>Line1</p>
+										<input type="text" ng-model="line.xp.CardMessage.line1"></input>
+										<p>Line2</p>
+										<input type="text" ng-model="line.xp.CardMessage.line2"></input>
+										<p>Line3</p>
+										<input type="text" ng-model="line.xp.CardMessage.line3"></input>
+										<p>Line4</p>
+										<input type="text" ng-model="line.xp.CardMessage.line4"></input>
+									</div>
+								</div>
+								<div class="instruction">
+									<b>instruction :</b>
+								</div>
+							</div>
+							<input type="button" value="Continue to Payment" ng-click="payment(line,$index)" />
+						</uib-accordion-group>
+					</uib-accordion>
+					
+				</uib-accordion-group>
+				<uib-accordion-group is-open="status.paymentOpen">
+					<uib-accordion-heading>
+						<h1>2. Payment</h1>
+					</uib-accordion-heading>
+					<!-- <input type="button" value="Review Order" ng-click="review()" /> -->
+					<div class="payment-method">
+						<div class="payment-method-header">
+							<h1>Payment Method</h1>
+							<div class="payment-tab">Credit Card<span class="selected"></span></div>
+							<div>Bachman's Charges<span class="selected"></span></div>
+							<div>Cash/Cheque<span class="selected"></span></div>
+							<div>Purple Perks<span class="selected"></span></div>
+						</div>
+						<!-- credit card -->
+						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10">
+							<div>
+								<div class="payment-container-header">
+									<input type="radio"/>
+									<span class="card-type">VISA</span>
+									<span>XXXX XXX XXX 1419</span>
+									<span>08/23</span>
+									<span>Sam White</span>
+								</div>
+								<div class="payment-container row">
+									<div class="pay-m col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<p class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Enter CVV Code</p>
+										<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+											<input type="number"/><span></span>
+											<p>CVV code is in the back side of your code</p>
+										</div>
+									</div>
+									<div class="pay-mm col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<p class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Billing Address</p>
+										<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+											<p>3434 njsandjs</p>
+											<p>njdfnj</p>
+											<p>mfjfjf fgdgf</p>
+											<p>6555545</p>
+										</div>
+										<button class="col-xs-1 col-sm-1 col-md-1 col-lg-1">Edit</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Bachmans charges -->
+						<div class="payment-method-container charges col-xs-10 col-sm-10 col-md-10 col-lg-10">
+							<div>
+								<div class="payment-container-header">
+									<span>Bachman's Charge Limit Available</span>
+									<span class="total">$100</span>
+								</div>
+								<div class="payment-container row">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<p class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<input type="radio"/>use $100 Bachman's Charge</p>
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+											<input type="radio"/>Enter Custom Charge</p>
+											<input type="number" class="col-xs-8 col-sm-8 col-md-8 col-lg-8"/><span></span>
+										</div>
+										<button>Apply</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- cash/cheque -->
+						<div class="payment-method-container cheque col-xs-10 col-sm-10 col-md-10 col-lg-10">
+							<div>
+								<div class="payment-container row">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<div>
+											<p class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<input type="radio"/>Pay through Cash </p>
+											<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Amount paid through cash</p>
+											<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/><span></span>
+											</div>
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<p class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><input type="radio"/>Pay through Cheque</p>
+												<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Check Number</p>
+												<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/>
+												<div  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p class="col-xs-5 col-sm-5 col-md-5 col-lg-5">Amount Paid through Cheque</p>
+													<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/><span></span>
+												</div>
+											</div>
+										</div>
+										<button>Apply</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- purple perks -->
+						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10">
+							<div>
+								<div class="payment-container-header col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<span>Purple Perks balance available</span>
+									<span class="total">$100</span>
+								</div>
+								<div class="payment-container row">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p><input type="radio"/>use $100 Purple Perks balance</p>
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Enter Custom charge</p>
+													<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/>
+												</div>
+										</div>
+											<button>Apply</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</uib-accordion-group>
+				<uib-accordion-group is-open="status.reviewOpen">
+					<uib-accordion-heading>
+						<h1>3. Review & Confirm Order</h1>
+					</uib-accordion-heading>
+					<uib-accordion>
+						<uib-accordion-group>
+							<uib-accordion-heading>
+								<h2 ng-click="reviewAddress()">Customer Name <button class="review-edit">edit</button></h2>
+							</uib-accordion-heading>
+							<p>{{userAddr.address.FirstName}} {{userAddr.address.LastName}}</p>
+						</uib-accordion-group>
+						<uib-accordion-group>
+							<uib-accordion-heading>
+								<h2>1. Shipping Information <button class="review-edit">edit</button></h2>
+							</uib-accordion-heading>
+							<ul ng-repeat="line in deliveryInfo track by line.ID" class="shipping-info">
+								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
+								<li class="shipping-Addresses">
+									<p>{{line.ShippingAddress.Street1}}</p>
+									<p>{{line.ShippingAddress.Street2}}</p>
+									<p>{{line.ShippingAddress.City}}</p>
+									<p>{{line.ShippingAddress.State}} {{line.ShippingAddress.Country}}</p>
+									<p>{{line.ShippingAddress.Zip}}</p>
+									<span class="shipping-Phone">{{line.ShippingAddress.Phone}}</span> 
+								</li>
+								<li class="shipping-Date">
+									<p class="shipping-subTitle">Delivery Date</p>
+									<p>{{line.xp.deliveryDate}}</p>
+								</li>
+								<li class="shipping-DeliveryPref">
+									<p class="shipping-subTitle">Delivery Preference</p>
+									<p>{{buyerDtls.xp.DeliveryRuns[0]['line.xp.deliveryRun']}}</p>
+								</li>
+							</ul>
+						</uib-accordion-group>
+						<uib-accordion-group>
+							<uib-accordion-heading>
+								<h2 ng-click="reviewAddress()">2. Payment <button class="review-edit">edit</button></h2>
+							</uib-accordion-heading>
+							<ul>
+								<li>
+									<span>{{userAddr.address.FirstName}} {{userAddr.address.LastName}}</span>
+									<p>{{userAddr.address.Street1}} </p>
+									<p>{{userAddr.address.Street2}}</p>
+									<p>{{userAddr.address.City}}</p>
+									<p>{{userAddr.address.State}} {{userAddr.address.Country}}</p>
+									<p>{{userAddr.address.Zip}}</p>
+								</li>
+								<li>
+									<span>
+										Credit Card: xxxx xxxx xxxx {{userAddr.card.PartialAccountNumber}}
+									</span>
+									<span>Card Expires: {{userAddr.card.ExpirationDate | date:'mm/dd'}}</span>
+									<span>Purple Perks Points Applied:100</span>
+								</li>
+							</ul>
+						</uib-accordion-group>
+					</uib-accordion>
+				</uib-accordion-group>
+			</uib-accordion>
+
+			<!-- For Place order button section STARTS -->
+			<div class="row review-content">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <button class="place-order" ui-sref="orderConfirmation({userID:oredrUserID,ID:orderID})">Place Order</button>
+                </div>
+            </div>
+			<!-- For Place order button section ENDS -->
+		</div>
+	</div>
+	<div class="checkoutContainer-right col-sm-4 col-xs-4 col-md-4 col-lg-4">
+		<div class="checkoutOrderSummary">
+			<div class="order-total">
+				<h1>Order [ {{lineTotalQty}} items ] <a ui-sref="buildOrder({ID:user.ID,SearchType:'User',showOrdersummary: true})">Edit</a> </h1>
+			</div>
+			<uib-accordion close-others="oneAtATime">
+				<uib-accordion-group ng-repeat="line in recipients">
+					<uib-accordion-heading>
+						<div class="checkoutorderhead">
+							<p><span>Recipient:</span> {{line}}</p>
+							<p><span>Zip Code:</span> {{recipientsGroup[line][0].ShippingAddress.Zip}}</p>
+						</div>
+					</uib-accordion-heading>
+					<div class="ordersummaryproductdata" ng-repeat="recip in recipientsGroup[line]">
+						<div class="prod-img">
+							<img src="assets/images/flowers.jpg">
+						</div>
+						<div class="prod-details">
+							<p>{{recip.Product.Name}}</p>
+							<p>Item no: 141927</p>
+							<p>Type: Deluxe</p>
+							<span class="qty">Qty: {{recip.Quantity}}</span>
+							<span class="price">{{recip.LineTotal | currency}}</span>
+						</div>
+					</div>
+				</uib-accordion-group>
+				<div class="charges-total">
+					<p>Subtotal  <span>{{orderDtls.subTotal | currency}}</span></p>
+					<p>Delivery Charges   <span>{{orderDtls.deliveryCharges | currency}} </span></p>
+					<p>Estimated Tax   <span>$0.00 </span></p>
+					<p class="total">Total   <span>{{orderDtls.Total | currency}}  </span></p>
+				</div>
+				<div class="promo-code">
+					<p>Apply Promo Code</p>
+					<input type="text" /><input type="button" value="Apply" />
+				</div>
+			</uib-accordion>
+		</div>
+	</div>
+</div>
+<div id="CheckoutFooter" ui-view="checkoutbottom" ng-controller="checkoutCtrl as vm"></div>

@@ -1,0 +1,76 @@
+<!-- <div class="container-fluid">
+	<header class="jumbotron text-center">
+		<h2 ng-bind="application.name"></h2>
+	</header>
+</div> -->
+
+<div class="container-fluid home-template" ng-if="!$parent.base.currentUser.xp.CSRAdmin">
+
+	<div class="col-xs-12 col-sm-12 promotion_wrapper">
+<!-- 		<h1 class="heading">Promotions & Information</h1>
+		<div ng-repeat="PromoInfo in home.PromoInformation" ng-include="PromoInfo"></div>	 -->
+		<h1 class="heading">{{home.eventList.name}}</h1>
+		<div ng-repeat="eventInfo in home.eventList.events">
+			<div class="promotion_box ng-scope">
+				<h1>{{eventInfo.Name}}</h1>
+				<p>{{eventInfo.Description}}</p>
+				<div class="col-sm-12 promotion_date"><img src="../../assets/images/icons-svg/calendar.svg" alt="">
+				<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p>
+				</div>
+			</div>
+		</div>
+		<!--Order on hold starts here -->
+		<div class="col-sm-12 orders_on_hold">
+			<h1 class="heading">Orders on Hold</h1>
+			<div ui-grid="gridOptions" class="order-grid col-md-12 col-sm-12"></div>
+		</div>
+		<!--Order on hold starts here -->	
+		<!--Saved Order starts here -->
+		<div class="col-sm-9 saved_order">
+			<h1 class="heading">Saved Orders</h1>
+			<div class="col-sm-12 saved_order_table">
+				<div ui-grid="CSRAdminData" class="order-grid col-md-12 col-sm-12"></div>
+			</div>
+		</div>
+	<!--Saved Order ends here -->
+	<script type="text/ng-template" id="deleteAddress.html">
+		<div click-outside="closePopover()">
+			<h2>Delete this Address</h2>
+			<button type="button" ng-click="deleteOrder(row)">DELETE</button>
+			<button type="button" ng-click="cancelPopUp()">CANCEL</button>
+		</div>
+	</script>
+	</div>
+</div>
+
+<div class="container-fluid" ng-if="$parent.base.currentUser.xp.CSRAdmin">
+	<div class="col-sm-12 promotion_wrapper">
+<!-- 		<h1 class="heading">Promotions & Information</h1>
+		<div ng-repeat="PromoInfo in home.PromoInformation" ng-include="PromoInfo"></div> -->	
+		<h1 class="heading">{{home.eventList.name}}</h1>
+		<div ng-repeat="eventInfo in home.eventList.events">
+			<div class="promotion_box ng-scope">
+				<h1>{{eventInfo.Name}}</h1>
+				<p>{{eventInfo.Description}}</p>
+				<div class="col-sm-12 promotion_date"><img src="../../assets/images/icons-svg/calendar.svg" alt="">
+				<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p>
+				</div>
+			</div>
+		</div>		
+		<!--Saved Order starts here -->
+		<div class="col-sm-9 saved_order">
+			<h1 class="heading">Saved Orders</h1>
+			<div class="col-sm-12 saved_order_table">
+				<div ui-grid="CSRAdminData" class="order-grid col-md-12 col-sm-12"></div>
+			</div>
+		</div>
+	<!--Saved Order ends here -->
+	<script type="text/ng-template" id="deleteAddress.html">
+		<div click-outside="closePopover()">
+			<h2>Delete this Address</h2>
+			<button type="button" ng-click="deleteOrder(row)">DELETE</button>
+			<button type="button" ng-click="cancelPopUp()">CANCEL</button>
+		</div>
+	</script>
+	</div>
+</div>

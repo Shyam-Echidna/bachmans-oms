@@ -1,7 +1,7 @@
 *.sw*
 *~
-build/
-compile/
+/build/
+/compile/
 !gulp/
 node_modules/
 bower_components/

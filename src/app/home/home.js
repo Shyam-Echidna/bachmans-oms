@@ -139,7 +139,7 @@ function HomeService( $q, $http, alfrescoURL) {
 		$http({
 			method: 'GET',
 			dataType:"json",
-			url: alfrescoURL+"slingshot/doclib/doclist/documents/site/bachmans-storefront/documentLibrary/HomePage/Promotions?alf_ticket="+ticket,
+			url: alfrescoURL+"slingshot/doclib/doclist/documents/site/bachmansstorefront/documentLibrary/HomePage/Promotions?alf_ticket="+ticket,
 			headers: {
 				'Content-Type': 'application/json'
 			}

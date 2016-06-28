@@ -4,6 +4,6 @@
   "clientid": "89641BEA-944E-4208-BD79-82C41B4A1579",
   "buyerid": "Bachmans",
   "environment": "prod",
-  "alfrescoURL": "http://192.168.100.184:8080/alfresco/service/",
+  "alfrescoURL": "http://103.227.151.31:8080/alfresco/service/",
   "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime"
 }

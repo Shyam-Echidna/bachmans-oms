@@ -276,7 +276,7 @@ function AlfrescoFact($http, $q) {
         $http({
             method: 'POST',
             dataType: "json",
-            url: "http://192.168.100.184:8080/alfresco/service/api/login",
+            url: "http://103.227.151.31:8080/alfresco/service/api/login",
             data: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json'

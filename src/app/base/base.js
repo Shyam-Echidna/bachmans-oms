@@ -111,39 +111,6 @@ function BaseService($q, $localForage, Underscore, OrderCloud) {
         GetProductList: _getProductList
     };
  
-    /*function _getCategoryTree() {
-        var tree = [];
-        var deferred = $q.defer();
-        Categories.List(null, 'all', 1, 100).then(function (catlist) {
-            console.log(catlist);
- 
-            function _getnode(node) {
- 
-                var children = Underscore.where(catlist.Items, {
-                    ParentID: node.ID
-                });
-                if (children.length > 0) {
-                    node.children = children;
-                    angular.forEach(children, function (child) {
-                        return _getnode(child);
-                    });
-                } else {
-                    node.children = [];
-                }
-                return node;
-            }
- 
-            angular.forEach(Underscore.where(catlist.Items, {
-                ParentID: null
-            }), function (node) {
-                tree.push(_getnode(node));
-            });
- 
-            deferred.resolve(tree);
-        });
-        return deferred.promise;
-    }*/
- 
     function _getCategoryTree() {
         var tree = [];
         var categories = [];
@@ -259,9 +226,6 @@ function BuildOrderTopController() {
 function AlfrescoFact($http, $q) {
     var service = {
         Get: _get
-            /*GetLogo:_getLogo,
-            GetBrandSpot:_getBrandSpot,
-            GetServices:_getServices*/
     };
     return service;
  

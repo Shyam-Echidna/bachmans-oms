@@ -33,12 +33,12 @@
 						<p ng-show="!isEditing">
 							{{groups[line][0].ShippingAddress.Street1}}, {{groups[line][0].ShippingAddress.Street2}}, {{groups[line][0].ShippingAddress.City}}, {{groups[line][0].ShippingAddress.State}} {{groups[line][0].ShippingAddress.Country}} {{groups[line][0].ShippingAddress.Zip}}, {{groups[line][0].ShippingAddress.Phone}}
 						</p>
-						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Street1" placeholder="Street1"/>
-						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Street2" placeholder="Street2"/>
+						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Street1" placeholder="Street1" ng-blur="buildordersummary.getDeliveryCharges(groups[line][0])"/>
+						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Street2" placeholder="Street2" ng-blur="buildordersummary.getDeliveryCharges(groups[line][0])"/>
 						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.City" placeholder="City"/>
 						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.State" placeholder="State"/>
 						<input type="text" ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Country" placeholder="Country"/>
-						<input  ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Zip" placeholder="Zip" ng-blur="getDeliveryCharges(groups[line][0])" />
+						<input  ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Zip" placeholder="Zip" ng-blur="buildordersummary.getDeliveryCharges(groups[line][0])" />
 						<input  ng-show="isEditing" ng-model="groups[line][0].ShippingAddress.Phone" placeholder="Phone"/>
 					</div>
 					<div class="col-xs-2 edit">
@@ -129,9 +129,9 @@
 										<polygon points="31.9,111.8 63,102.6 40.6,80.2 	" />
 									</g>
 								</svg>
-								</span> Edit Recepient</button>
+								</span> Edit Recipient</button>
 								
-				<button ng-click="buildordersummary.updateShippingAddress(groups[line][0]); isEditing = !isEditing" ng-show="isEditing">Save Recepient</button>
+				<button ng-click="buildordersummary.lineDtlsSubmit(groups[line][0]); isEditing = !isEditing" ng-show="isEditing">Save Recipient</button>
 								
 					</div>
 				</div>
@@ -257,7 +257,7 @@
 </g>
 </svg>
 </span>Edit</button>
-<button ng-click="buildordersummary.updateProduct(orderSummary); isProEdit = !isProEdit" ng-show="isProEdit">Save</button>
+<button ng-click="buildordersummary.lineDtlsSubmit(groups[line][0]); isProEdit = !isProEdit" ng-show="isProEdit">Save</button>
 														<button class="remove" ng-click="buildordersummary.deleteProduct(orderSummary)"><span>	<?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg enable-background="new 0 0 128 128" height="128px" id="Layer_1" version="1.1" viewBox="0 0 128 128" width="128px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M81.646,64l22.248-22.249c3.48-3.48,3.474-9.131-0.019-12.623l-5.006-5.005  c-3.489-3.49-9.142-3.499-12.622-0.019L64,46.354L41.753,24.106c-3.484-3.483-9.133-3.472-12.624,0.018l-5.005,5.005  c-3.491,3.492-3.501,9.14-0.018,12.623L46.354,64L24.108,86.246c-3.483,3.484-3.472,9.133,0.018,12.623l5.005,5.006  c3.492,3.492,9.14,3.502,12.623,0.018L64,81.647l22.247,22.246c3.48,3.481,9.131,3.475,12.622-0.019l5.006-5.006  c3.489-3.489,3.498-9.142,0.019-12.622L81.646,64z" fill="#232323"/></svg></span>Remove</button>
 													</li>
 												</ul>
@@ -995,18 +995,25 @@
 							</tbody>
 							<tfoot>
 								<tr>
-									<td colspan="4" class="delivery">
+									<td colspan="3" class="delivery">
 										<div class="delivery-content">
 											<h5>Delivery</h5>
 											<span>Subtotal</span>
+											<input type="button" ng-if="groups[line][0].xp.deliveryFeesDtls && groups[line][0].xp.deliveryFeesDtls!={}" ng-value="groups[line][0].EditCharges == true ? 'Save' : 'Edit Charges'" ng-click="buildordersummary.EditSaveCharges(groups[line][0])" />
 										</div>
 									</td>
-									<td colspan="5" class="price">
+									<td colspan="4" class="price">
 										<div>
+											<div ng-if="groups[line][0].EditCharges">
+												<h5 ng-repeat="(key, val) in groups[line][0].xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && line.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b><input type="text" value="{{val}}" ng-model="groups[line][0].xp.deliveryFeesDtls[key]" /></h5>
+											</div>
+											<div ng-if="!groups[line][0].EditCharges">
+												<h5 ng-repeat="(key, val) in groups[line][0].xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && line.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b><span>{{val | currency}}</span></h5>
+											</div>
+											<h5 ng-if="groups[line][0].xp.Discount">Discount <span>{{groups[line][0].xp.Discount | currency}}</span></h5>
 											<h5>{{groups[line][0].xp.deliveryCharges | currency}}</h5>
 											<span>{{groups[line][0].xp.TotalCost | currency}}</span>
 										</div>
-
 									</td>
 								</tr>
 							</tfoot>

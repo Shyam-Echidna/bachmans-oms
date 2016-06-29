@@ -27,27 +27,28 @@
 									<p>First Name</p>
 									<input type="text" ng-model="line.ShippingAddress.FirstName"></input>
 								</div>
-								<div class="check-top inline-blk">
+								<div class="check-top inline-blk" ng-init="line.xp.addressType ? line.addressTypeD = line.xp.addressType : line.addressTypeD = 'Residence'">
 									<p>Last Name</p>
 									<input type="text" ng-model="line.ShippingAddress.LastName"></input>
 								</div>
 								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-init="addressTypeSelect(line)">
-									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Residence" />Residence</label>
-									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Hospital" />Hospital</label>
-									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="FuneralorChurch" />Church/Funeral</label>
-									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Shipping" />Standard Shipping</label>
-									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="School" />School</label>
-									<label><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" value="Will Call" />Will Call</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />Residence</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />Hospital</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />Funeral</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />Church</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />School</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.addressTypeD" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />In-Store Pick Up</label>
 								</div>
 								<p class="check-top">Zip Code</p>
-								<input type="text" ng-model="line.ShippingAddress.Zip"></input>
+								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="getDeliveryCharges(line)" ng-readonly="line.addressTypeD=='Will Call' ? true : false"></input>
 								<p class="check-top">Address1</p>
-								<input type="text" ng-model="line.ShippingAddress.Street1"></input>
+								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="getDeliveryCharges(line)" ng-readonly="line.addressTypeD=='Will Call' ? true : false"></input>
 								<p class="check-top">Address2(optional)</p>
-								<input type="text" ng-model="line.ShippingAddress.Street2"></input>
+								<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.addressTypeD=='Will Call' ? true : false"></input>
 								<div class="check-top city-block">
 									<p>City</p>
-									<input type="text" ng-model="line.ShippingAddress.City"></input>
+									<input type="text" ng-model="line.ShippingAddress.City" ng-readonly="line.addressTypeD=='Will Call' ? true : false"></input>
 								</div>
 								<div class="check-top state-block">
 									<p class="check-top">State</p>
@@ -55,7 +56,7 @@
 										<option selected>K</option>
 										<option>RNR</option>
 									</select>-->
-									<input type="text" ng-model="line.ShippingAddress.State" />
+									<input type="text" ng-model="line.ShippingAddress.State" ng-readonly="line.addressTypeD=='Will Call' ? true : false" />
 								</div>
 								<p class="check-top">Phone Number</p>
 								<div class="phone-block">
@@ -65,7 +66,7 @@
 								</div>
 								<div class="delivery-details">
 									<label class="radio-inline"><input type="radio" name="group{{$index}}" ng-model="line.deliveryOrStore" value="1">Delivery</label>
-									<label class="radio-inline"><input type="radio" ng-click="getStores(line)" name="group{{$index}}" ng-model="line.deliveryOrStore" value="2">In-Store Pickup</label>
+									<label class="radio-inline"><input type="radio" ng-click="getStores(line)" name="group{{$index}}" ng-model="line.deliveryOrStore" value="2">In-Store Pick Up</label>
 									<div ng-if="line.deliveryOrStore==1">
 										<p class="check-top">Delivery Date</p>
 										<p class="modify" ng-init="deliveryAdj(line)">
@@ -87,12 +88,12 @@
 												</div>
 											</script>
 										<ul>
-										   <li ng-click="dateSelect('dt{{$index}}',line,$index)" ng-class="{active:vm.data{{$index}} == 'dt{{$index}}'}">
+										   <li ng-click="dateSelect('dt',line,$index)" ng-class="{active:vm.data{{$index}} == 'dt{{$index}}'}">
 												<p>Deliver Today</p>
 												<p>{{dt | date:'longDate'}}</p>
 												<span>Available</span>
 										   </li>
-										   <li ng-click="dateSelect('tom{{$index}}',line,$index)" ng-class="{active:vm.data{{$index}} == 'tom{{$index}}'}">
+										   <li ng-click="dateSelect('tom',line,$index)" ng-class="{active:vm.data{{$index}} == 'tom{{$index}}'}">
 												<p>Deliver Tomorrow</p>
 												<p>{{tom | date:'longDate'}}</p>
 												<span>Available</span>
@@ -100,8 +101,8 @@
 										   <li ng-class="{active:vm.data{{$index}} == 'selDate{{$index}}'}">
 												<p>Select Date</p>
 												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />
-												   <input type="text" ng-model="line.dateVal.Date" placeholder="DD" />
-												   <input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
+												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="dateSelect()" />
+												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
 												<button type="button" ng-click="vm.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="vm.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="initDate" init-date="initDate">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 														 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
@@ -142,11 +143,13 @@
 											</li>
 										</ul>
 									</div>
+									{{line.xp.deliveryFeesDtls}}
 									<div ng-if="line.deliveryOrStore==2" class="select-store">
 										 <p>Select Store</p>
-											 <select>
+											 <!--<select>
 												<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
-											 </select>
+											 </select>-->
+											 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="addStoreAddress($item, line)" />
 										 <p>
 										<fieldset id="group2">
 											<label class="radio-inline"><input type="radio" name="group2" ng-model="fromStoreOrOutside" value="1">Product is coming from my store</label>
@@ -244,12 +247,13 @@
 										<input type="text" ng-model="addr.LastName"/>
 									</div>
 									<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-init="addressTypeN='Residence'">
-										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Residence" />Residence</label>
-										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Hospital" />Hospital</label>
-										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="FuneralorChurch" />Church/Funeral</label>
-										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Shipping" />Standard Shipping</label>
-										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="School" />School</label>
-										<label><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Will Call" />Will Call</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Residence" />Residence</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Hospital" />Hospital</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Funeral" />Funeral</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Church" />Church</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Shipping" />Standard Shipping</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="School" />School</label>
+										<label class="radio-inline"><input type="radio" name="optradioN{{$index}}" ng-model="addressTypeN" value="Will Call" />In-Store Pick Up</label>
 									</div>
 									<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<p>Zip Code</p>

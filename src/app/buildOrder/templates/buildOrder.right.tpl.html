@@ -214,11 +214,12 @@
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
 								<a ng-click="viewAddrBook(lineitems)">View Address Book</a>
+								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)">Above Address</a>
 								<div class="qty">
 									<p>Quantity</p>
-									<input type="number" ng-model="lineitems.Quantity" ng-blur="getDeliveryCharges(lineitems)" />
+									<input type="number" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
 								</div>
-								<div class="receipient-name">
+								<div class="receipient-name" ng-init="buildOrderRight.GetAllList(lineitems.xp.addressType)">
 									<div class="firstNm">
 										<p>First Name*</p>
 										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" />
@@ -229,15 +230,16 @@
 									</div>
 								</div>
 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence">Residence</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital">Hospital</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="FuneralorChurch">Church/Funeral</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping"">Standard Shipping</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School">School</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call">Will Call</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Residence</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Hospital</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Funeral" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Funeral</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Church" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Church</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Standard Shipping</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">School</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">In-Store Pick Up</label>
 								</div>
 								
-								<div ng-if="addressType=='Hospital' || addressType=='FuneralorChurch'">
+								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'">
 									<label><input type="checkbox" ng-checked="Wire" ng-model="Wire">Outgoing Wire</label>
 								</div>
 								
@@ -245,17 +247,22 @@
 									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitems)">
 										<div class="hospital-search" ng-if="addressType=='Hospital'">
 											<h1>Find Hospital*</h1>
-											<input type="search" uib-typeahead="hosp for hosp in hospitalsList | filter:$viewValue" typeahead-on-select="hospitalDtls($item)" ng-model="lineitems.hosSearch" />
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.hosSearch" />
 										</div>
 										
-										<div class="hospital-search" ng-if="addressType=='FuneralorChurch'">
-											<h1>Find Church/Funeral*</h1>
-											<input type="search" uib-typeahead="hosp for hosp in hospitalsList | filter:$viewValue" typeahead-on-select="hospitalDtls($item)" ng-model="lineitems.churchSearch" />
+										<div class="hospital-search" ng-if="addressType=='Funeral'">
+											<h1>Find Funeral*</h1>
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.funeralSearch" />
+										</div>
+										
+										<div class="hospital-search" ng-if="addressType=='Church'">
+											<h1>Find Church*</h1>
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.churchSearch" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='School'">
 											<h1>Find School*</h1>
-											<input type="text" uib-typeahead="hosp for hosp in hospitalsList | filter:$viewValue" typeahead-on-select="hospitalDtls($item)" ng-model="lineitems.schSearch" />
+											<input type="text" uib-typeahead="hosp for hosp in buildOrderRight.SchoolNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.schSearch" />
 										</div>
 										<div class="willCall-address" ng-show="addressType=='Will Call'" ng-if="addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">
@@ -270,7 +277,7 @@
 										<div class="location-Code" ng-show="addressType!='Will Call'" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 											<div class="zipCode">
 												<p>Zip Code*</p>
-												<input type="number" ng-model="lineitems.ShippingAddress.Zip" autocomplete="off" ng-blur="getDeliveryCharges(lineitems)"></input>
+												<input type="number" ng-model="lineitems.ShippingAddress.Zip" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)"></input>
 											</div>
 											<div class="delivery-date">
 												<p>Delivery Date*</p>
@@ -279,8 +286,8 @@
 										</div>
 										<div class="location-addressL1" ng-if="addressType!='Will Call'">
 											<h1>Address</h1>
-											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="getDeliveryCharges(lineitems)" />
-											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="getDeliveryCharges(lineitems)" />
+											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
+											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
 											<div class="location-addressL2">
 												<div class="location-state">
 													<p>State</p>
@@ -517,7 +524,8 @@
 								<div class="product-cost">
 									<h4>Item Price <span>{{lineitems.UnitPrice | currency}}</span></h4>
 									<h4>Estimated Tax <span>$0.00</span></h4>
-									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <span>{{val | currency}}</span></h4>
+									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && lineitems.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b> <span>{{val | currency}}</span></h4>
+									<h4 ng-if="lineitems.xp.Discount">Discount <span>{{lineitems.xp.Discount | currency}}</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
 								</div>
 								<input type="submit" value="SAVE" class="notes" />
@@ -544,6 +552,26 @@
 					<td>
 						<h4>Phone</h4>
 						<p>{{addr.Phone}}</p>
+					</td>			
+				</tr>
+			</table>
+		</modal>
+		<modal title="Address Book" visible="showAboveRecipientModal" id="mymodal" class="view-addr-book modal-pop-up">
+			<table ng-repeat="line in lineItemProducts track by line">
+				<tr ng-repeat="val in activeOrders[line] track by val.ID" ng-click="getBookAddress(val.ShippingAddress, 'TempAddr')" ng-if="val.ShippingAddress.Zip && val.ShippingAddress.Street1 && val.ShippingAddress.FirstName">
+					<td>
+						<h4>Name</h4>
+						<p>{{val.ShippingAddress.FirstName}} {{val.ShippingAddress.LastName}}</p>
+					</td>
+					<td>	
+						<h4>Address</h4>
+						<p>{{val.ShippingAddress.Street1}}</p>
+						<p>{{val.ShippingAddress.Street2}}</p>
+						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>
+					</td>
+					<td>
+						<h4>Phone</h4>
+						<p>{{val[0].ShippingAddress.Phone}}</p>
 					</td>			
 				</tr>
 			</table>

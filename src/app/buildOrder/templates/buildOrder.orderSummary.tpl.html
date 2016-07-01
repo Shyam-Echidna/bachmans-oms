@@ -895,7 +895,6 @@
 												<div class="row">
 													<div>
 														<h5>{{orderSummary.LineTotal | currency}}</h5>
-
 													</div>
 													<div>
 														<?xml version="1.0" encoding="utf-8"?>
@@ -1012,7 +1011,7 @@
 											</div>
 											<h5 ng-if="groups[line][0].xp.Discount">Discount <span>{{groups[line][0].xp.Discount | currency}}</span></h5>
 											<h5>{{groups[line][0].xp.deliveryCharges | currency}}</h5>
-											<span>{{groups[line][0].xp.TotalCost | currency}}</span>
+											<span>{{buildordersummary.TotalCost[line] | currency}}</span>
 										</div>
 									</td>
 								</tr>

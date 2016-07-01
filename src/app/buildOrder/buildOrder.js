@@ -724,7 +724,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			this.isOpen = parseInt(len)+1;
 		}
 		lineItemParams.ProductID = prodID;
-		var obj = {}, dt, DelMethod;
+		//var obj = {}, dt, DelMethod;
 		lineItemParams.xp = {};
 		/*if(DeliveryMethod=="DirectShip"){
 			DeliveryMethod = undefined;
@@ -780,7 +780,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 					if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
 						lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
 					}
-					angular.forEach(res.MinDate, function(val, key){
+					/*angular.forEach(res.MinDate, function(val, key){
 						dt = new Date(dat);
 						dt = dt.setDate(dt.getDate() + val);
 						dt = new Date(dt);
@@ -791,7 +791,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 						res.MinDate['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
 						if(res.MinDate.LocalDelivery)
 							res.MinDate['MinToday'] = res.MinDate.LocalDelivery;
-					}
+					}*/
 					lineItemParams.xp.MinDate = res.MinDate;
 					OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
@@ -813,7 +813,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 	};
 	$scope.getLineItems = function(){
 		var totalCost = 0;
-		if(vm.order.Status == "Unsubmitted" && vm.order!=undefined){
+		if(vm.order.Status == "Unsubmitted" && vm.order != undefined){
 			OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
 				vm.AvoidMultipleDelryChrgs = [];	
 				LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
@@ -840,10 +840,28 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 									vm.AvoidMultipleDelryChrgs.push(val.ShippingAddress);
 								//}	
 							}
+							var dt;
 							if(val.xp.deliveryDate){
-								var date = new Date(val.xp.deliveryDate);
-								//if(new Date() >= date)
-									
+								var dat = new Date();
+								dat.setHours(0, 0, 0, 0);
+								if(new Date(val.xp.deliveryDate) < dat)
+									delete val.xp.deliveryDate;
+							}else if(val.xp.MinDate){
+								angular.forEach(val.xp.MinDate, function(val1, key1){
+									dt = new Date();
+									dt.setHours(0, 0, 0, 0);
+									dt = dt.setDate(dt.getDate() + val1);
+									dt = new Date(dt);
+									val.xp.MinDate[key1] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+								}, true);
+								dt = new Date();
+								val.xp.MinDate['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+								if(val.xp.MinDate.LocalDelivery)
+									val.xp.MinDate['MinToday'] = val.xp.MinDate.LocalDelivery;
+							}else{
+								dt = new Date();
+								val.xp.MinDate = {};
+								val.xp.MinDate['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
 							}
 							val.varientsOptions = {};
 							if(val.Product.xp != null && val.Product.xp.Specs_Options){
@@ -1367,6 +1385,9 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
     /*OrderCloud.As().Orders.Get(vm.order.ID).then(function(data){
 		
     });*/
+	vm.getSubtotal = function(group){
+		console.log("grounping..",group);
+	}
 	$scope.orderSummaryShow = function(){
 		var totalCost = 0;
 		OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
@@ -1387,7 +1408,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 						if(value.xp.deliveryFeesDtls)
 							value.ShippingAddress.deliveryPresent = true;
 						vm.AvoidMultipleDelryChrgs.push(value.ShippingAddress);
-						return value.ShippingAddress.FirstName + ' ' + value.ShippingAddress.LastName + ' ' + value.ShippingAddress.Zip + ' ' + (value.ShippingAddress.Street1).split(/(\d+)/g)[1];
+						return value.ShippingAddress.FirstName + ' ' + value.ShippingAddress.LastName + ' ' + value.ShippingAddress.Zip + ' ' + (value.ShippingAddress.Street1).split(/(\d+)/g)[1] + ' ' + value.xp.DeliveryMethod + ' ' + value.xp.deliveryDate;
 					}
 				});
 				BuildOrderService.OrderOnHoldRemove(res.Items, vm.order.ID).then(function(dt){
@@ -1398,9 +1419,14 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 				$scope.groups = data;
 				$scope.lineVal = [];
 				$scope.lineTotal = {};
+				vm.TotalCost = {};
 				for(var n in data){
 					$scope.lineVal.push(n);
 					$scope.lineTotal[n] = _.reduce(_.pluck(data[n], 'LineTotal'), function(memo, num){ return memo + num; }, 0);
+					vm.TotalCost[n] = 0;
+					_.each(data[n], function(val,index){
+						vm.TotalCost[n] += parseFloat(val.xp.TotalCost);
+					});
 				}
 			});
 		});

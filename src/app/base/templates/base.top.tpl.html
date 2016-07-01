@@ -163,7 +163,7 @@
 					</div>
 					<!-- algolia search for recipient -->
 					<div ng-switch-when="recipient" uib-dropdown>
-						<ordercloud-search servicename="recepients" controlleras="base" placeholder="Search recipient" uib-dropdown-toggle></ordercloud-search>
+						<ordercloud-search servicename="orders_recepient" controlleras="base" placeholder="Search recipient" uib-dropdown-toggle></ordercloud-search>
 						<div class="search_dropdown" uib-dropdown-menu>
 							<div class="searchelement"  ng-repeat="recipient in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ui-sref="buildOrder({ID:recipient.FromUserID,SearchType:'User'})" class="search_result">
@@ -185,7 +185,7 @@
 					</div>
 					<!-- algolia search for phone -->
 					<div ng-switch-when="phone" uib-dropdown>
-						<ordercloud-search servicename="phone" controlleras="base" placeholder="Search phone number" uib-dropdown-toggle></ordercloud-search>
+						<ordercloud-search servicename="customer_phonenumber" controlleras="base" placeholder="Search phone number" uib-dropdown-toggle></ordercloud-search>
 						<div class="search_dropdown" uib-dropdown-menu>
 							<div class="searchelement"  ng-repeat="phone in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ui-sref="buildOrder({ID:phone.ID,SearchType:'User',showOrdersummary: false})" class="search_result">

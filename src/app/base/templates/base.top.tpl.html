@@ -52,7 +52,7 @@
 					<div class="base-overlay" ng-click="base.isopen=false"></div>
 				</div>
             </div>
-            <div class="search_box">
+            <!-- <div class="search_box">
 				<div class="customer" uib-dropdown>
 						<a href uib-dropdown-toggle>{{switchSearch}}
 						<i class="fa fa-chevron-down"></i> </a>
@@ -121,7 +121,82 @@
 						</div>
 					</div>
                 </div>
-            </div>
+            </div> -->
+			<div class="search_box">
+				<div class="customer" uib-dropdown>
+					<a href uib-dropdown-toggle>{{switchSearch}}
+					<i class="fa fa-chevron-down"></i> </a>
+					<div uib-dropdown-menu>
+						<ul>
+							<li ng-click="selectChange('customer')">Customer</li>
+							<li ng-click="selectChange('order')">Order Number</li>
+							<li ng-click="selectChange('recipient')">Recipient</li>
+							<li ng-click="selectChange('products')">Product</li>
+							<li ng-click="selectChange('phone')">Phone Number</li>
+						</ul>
+					</div>
+                </div>
+				<div class="search_feild" ng-switch on="switchSearch">
+					<i class="fa fa-search"></i>
+					<!-- algolia search for customer -->
+					<div ng-switch-when="customer" uib-dropdown>
+						<ordercloud-search servicename="customer" controlleras="base" placeholder="Search user" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="user in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:user.ID,SearchType:'User',showOrdersummary: false})" class="search_result">
+									<p>{{user.Username}}</p>
+									<div>{{user.Email}}</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for order -->
+					<div ng-switch-when="order" uib-dropdown>
+						<ordercloud-search servicename="orders" controlleras="base" placeholder="Search orders" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="orders in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:orders.FromUserID,SearchType:'User',orderID:orders.ID})" class="search_result">
+									<p>{{orders.ID}}</p>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for recipient -->
+					<div ng-switch-when="recipient" uib-dropdown>
+						<ordercloud-search servicename="recepients" controlleras="base" placeholder="Search recipient" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="recipient in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:recipient.FromUserID,SearchType:'User'})" class="search_result">
+									<p>{{recipient.FirstName}} {{recipient.LastName}}</p>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for products -->
+					<div ng-switch-when="products" uib-dropdown>
+						<ordercloud-search servicename="products" controlleras="base" placeholder="Search products" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="products in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:products.ID,SearchType:'Products'})" class="search_result">
+									<p>{{products.Name}}</p>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for phone -->
+					<div ng-switch-when="phone" uib-dropdown>
+						<ordercloud-search servicename="phone" controlleras="base" placeholder="Search phone number" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="phone in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:phone.ID,SearchType:'User',showOrdersummary: false})" class="search_result">
+									<p>{{phone.PhoneNumber}}</p>
+									<div>{{phone.Username}}</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
             <div class="build_order">
                 <a ui-sref="buildOrder"><img src="../assets/images/icons-svg/build-order.svg"><p>Build Order</p></a>
             </div>

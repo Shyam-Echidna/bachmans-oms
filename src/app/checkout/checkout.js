@@ -600,11 +600,11 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		});
 	};
 	$scope.saveForLater = function(note){
-		OrderCloud.As().Orders.ListOutgoing().then(function(res){
-			var filt = _.filter(res.Items, function(row){
+		OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(res){
+			/*var filt = _.filter(res.Items, function(row){
 				return _.indexOf([vm.order.FromUserID],row.FromUserID) > -1;
-			});
-			angular.forEach(filt,function(val, key){
+			});*/
+			angular.forEach(res.Items,function(val, key){
 				if(val.FromUserID == vm.order.FromUserID && val.ID == vm.order.ID){
 					OrderCloud.As().Orders.Patch(vm.order.ID,{"xp":{"SavedOrder":{"Name":note,"Flag":true}}}).then(function(res1){
 						console.log("saved order successfully/removed");

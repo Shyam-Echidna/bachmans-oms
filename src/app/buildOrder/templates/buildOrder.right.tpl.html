@@ -183,7 +183,16 @@
 							</svg>
 						</button>
 					</div>
-					<button class="notes" ng-click="createListItem(activeOrders[line][0].Product.ID)">ADD Recipient</button>
+					<button class="notes" ng-click="buildOrderRight.GetDeliveryMethods(activeOrders[line][0].Product.ID, $index)" popover-trigger="none" popover-placement="bottom-left" popover-is-open="buildOrderRight.showDeliveryToolTip{{$index}}" uib-popover-template="showDeliveryMethods.templateUrl">ADD Recipient</button>
+					<script type="text/ng-template" id="AddRecipientDelMethods.html">
+							<div click-outside="closePopover()">
+								<h4>Delivery Method</h4>
+								<label ng-if="buildOrderRight.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Courier">Courier</label>
+								<label ng-if="buildOrderRight.Faster" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Mixed" >Faster Delivery</label>
+								<button type="button" ng-click="cancelPopUp(activeOrders[line][0].Product.ID, buildOrderRight.DeliveryType, $index)">OK</button>
+								<button type="button" ng-click="closePopover($index)">Cancel</button>
+							</div>
+					</script>
 				</div>
 				<div class="receipient-details">
 					<uib-accordion close-others="oneAtATime">

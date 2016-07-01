@@ -21,9 +21,10 @@ angular.module( 'orderCloud', [
         'ordercloud-lineitems',
         'ordercloud-geography',
 		'ui.bootstrap.typeahead',
-         'ui.grid',
-            'ui.grid.infiniteScroll',
-            'ui.grid.edit'
+        'ui.grid',
+        'ui.grid.infiniteScroll',
+        'ui.grid.edit',
+		'algoliasearch'
     ])
 
     .run( SetBuyerID )

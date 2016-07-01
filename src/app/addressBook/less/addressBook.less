@@ -20,19 +20,22 @@
 				border-bottom:1px solid @color21;
 				margin:0;
 			}
+			.add-new-main{
+				width:76.6%;
+			}
 			.add-new-main, .edit-address-main{
 				padding:20px 25px;
-				border-top:1px solid @color21;
-				border-bottom:1px solid @color21;
 				background-color:@color24;
 				margin-bottom: 15px;
 				.add-new-container, .edit-address-container{
-					width:40%;
+					width:50%;
 					.inline-div{
 						>div{
 							.in-block;
-						    width: 47%;
-							margin-right: 2%;
+						    width: 47.5%;
+						}
+						div:nth-of-type(1) {
+							margin-right: 4.1%;
 						}
 					}
 					h2{
@@ -57,7 +60,7 @@
 						border:1px solid @color21;
 						text-indent:10px;
 						&.zip-code{
-							width: 27%;
+							width: 40%;
 						}
 					}
 					.contact-num{
@@ -104,14 +107,14 @@
 					line-height:25px;
 					color:@color26;
 					input[type="checkbox"]{
-						vertical-align: sub;
-						margin-right: 2px;
+						vertical-align: middle;
+						margin:3px 2px 4px 0;
 					}
 					margin-right: 15px;
 				}
 			}
 			table{
-				width:100%;
+				width:76.6%;
 				tr{
 					border:1px solid @color21;
 					background-color:@color25;
@@ -171,10 +174,14 @@
 							}
 						}
 						&:last-child{
-							width:10%;
+							width:100%;
+							padding-right:5px;
 						}
 						&:nth-child(3){
 							width:33%;
+						}
+						&:nth-last-child(2){
+							width:10%;
 						}
 					}
 					&:hover{
@@ -184,22 +191,25 @@
 			}
 			.search-block{
 				margin:20px 0;
-				
+				width:76.6%;
 				div{
 					position: relative;
-					width:65%;
+					width:80%;
 					.in-block;
 					input{
 						.helvetica-regular;
 						font-size:14px;
-						line-height:35px;
+						line-height:38px;
 						text-indent:10px;
 						color:#464646;
 						border:1px solid @color21;
 						width:100%;
+						text-indent: 25px;
+						box-shadow: none;
+						height:38px;
 					}
 					i{
-						right: 15px;
+						left: 15px;
 						color: @primary-color;
 						font-size: 20px;
 						position: absolute;
@@ -207,13 +217,15 @@
 						z-index: 2;
 					}
 				}
-				a{
-					width:32.5%;
+				a.addNewLink{
+					width:17.5%;
 					.in-block;
 					font-size:14px;
 					.helvetica-medium;
 					color:@primary-dark-color;
 					margin-left: 20px;
+				    vertical-align: top;
+					margin-top: 9px;
 					.font-spacing;
 					svg{
 						width:10px;
@@ -221,6 +233,18 @@
 					}
 					&:hover{
 						text-decoration:none;
+					}
+				}
+				.form-group{
+					width: 100%;
+					a {
+					    position: absolute;
+						top: 11px;
+						right: 15px;
+						svg{
+							width:14px;
+							height:14px;
+						}
 					}
 				}
 			}

@@ -172,7 +172,7 @@ function buildOrderConfig( $stateProvider ) {
 								console.log("params", $stateParams);
 								console.log("ssssssssssss", $stateParams.orderID);
 								if($stateParams.orderID == ""){
-									OrderCloud.As().Orders.ListOutgoing(null, null, null, null, 100, null, null, {"FromUserID":$stateParams.ID}).then(function(assignOrders){
+									OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(assignOrders){
 										var data = [];
 										data = _.where(assignOrders.Items, {"FromUserID":$stateParams.ID});
 										if(data.length == 0){
@@ -231,9 +231,13 @@ function buildOrderConfig( $stateProvider ) {
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData) {
+function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia) {
 	var vm = this;
 	vm.selected = undefined;
+	$scope.search = {
+        'query' : '',
+        'hits' : []
+    };
 	vm.productSearchData = [];
 	vm.showPDP = false;
 	$scope.hideSearchBox=false;
@@ -336,9 +340,11 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 				vm.fullProductsData = res2.Items;
 				var size = [],color = [];
 				angular.forEach(res2.Items, function(val, key){
-					if(val.xp.Specs_Options){
-						size.push(val.xp.Specs_Options.Cont_Size);
-						color.push(val.xp.Specs_Options.Color);
+					if(val.xp){
+						if(val.xp.Specs_Options){
+							size.push(val.xp.Specs_Options.Cont_Size);
+							color.push(val.xp.Specs_Options.Color);
+						}	
 					}	
 				},true);
 				vm.productDetails.options = {"Color":_.uniq(color), "Size":_.uniq(size)};
@@ -643,6 +649,47 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 function buildOrderRightController($scope, Order, LineItemHelpers, $q, $stateParams, $http, CurrentOrder, $filter, OrderCloud, BuildOrderService, $timeout) {
 	var vm = this;
 	vm.order = Order;
+	$scope.showDeliveryMethods = {
+		templateUrl: 'AddRecipientDelMethods.html'
+	};
+	$scope.closePopover = function (index) {
+		vm.DeliveryType = undefined;
+		_.find(vm, function(v, k) {
+			if (k.indexOf('showDeliveryToolTip') > -1) {
+				vm[k] = false;
+			}
+		});
+	};
+	$scope.cancelPopUp = function (prodID, DeliveryMethod, index) {
+		vm['showDeliveryToolTip'+index] = false;
+		vm.DeliveryType = undefined;
+		$scope.createListItem(prodID, DeliveryMethod);
+	};
+	vm.GetDeliveryMethods = function(prodID, index){
+		vm.Faster = false;
+		vm.Courier = false;
+		vm.GiftCard = false;
+		vm.DirectShip = false;
+		OrderCloud.Categories.ListProductAssignments(null, prodID).then(function(res1){
+			OrderCloud.Categories.Get(res1.Items[0].CategoryID).then(function(res2){
+				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Mixed){
+					vm.Faster = true;
+					vm['showDeliveryToolTip'+index] = true;
+				}
+				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Courier == true && !res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip){
+					vm.Courier = true;
+					vm['showDeliveryToolTip'+index] = true;
+				}
+				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip)
+					$scope.createListItem(prodID, "DirectShip");
+				if(res2.Name == "Gift Cards")
+					$scope.createListItem(prodID, "USPS");
+				if(res2.Name != "Gift Cards" && !res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip && !res2.xp.DeliveryChargesCatWise.DeliveryMethods.Courier && !res2.xp.DeliveryChargesCatWise.DeliveryMethods.Mixed){
+					$scope.createListItem(prodID);
+				}	
+			});
+		});	
+	}
 	var lineItemParams = {"ProductID": "","Quantity": 1};
 	$scope.buildOrderItems = function(prodID, DeliveryMethod){
 		var buildorderPdp = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.productDetails;
@@ -786,8 +833,17 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 							if(val.ShippingAddress && val.xp.deliveryFeesDtls){
 								//if(val.Product.xp.Specs_Options){
 									val.ShippingAddress.deliveryDate = val.xp.deliveryDate;
+									val.ShippingAddress.lineID = val.ID;
+									val.ShippingAddress.DeliveryMethod = val.xp.DeliveryMethod;
+									/*if(val.xp.deliveryFeesDtls)
+										val.ShippingAddress.deliveryPresent = true;*/
 									vm.AvoidMultipleDelryChrgs.push(val.ShippingAddress);
 								//}	
+							}
+							if(val.xp.deliveryDate){
+								var date = new Date(val.xp.deliveryDate);
+								//if(new Date() >= date)
+									
 							}
 							val.varientsOptions = {};
 							if(val.Product.xp != null && val.Product.xp.Specs_Options){
@@ -827,7 +883,8 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			});
 		}
 	};
-	$scope.getLineItems();
+	if($stateParams.SearchType!="Products")
+		$scope.getLineItems();
 	$scope.cancelOrder = function(){
 		OrderCloud.As().Orders.Cancel(vm.order.ID).then(function(data){
 			vm.order = data;
@@ -835,11 +892,11 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 		});
 	};
 	$scope.saveForLater = function(note){
-		OrderCloud.As().Orders.ListOutgoing().then(function(res){
-			var filt = _.filter(res.Items, function(row){
-			return _.indexOf([$stateParams.ID],row.FromUserID) > -1;
-			});
-			angular.forEach(filt,function(val, key){
+		OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(res){
+			/*var filt = _.filter(res.Items, function(row){
+				return _.indexOf([$stateParams.ID],row.FromUserID) > -1;
+			});*/
+			angular.forEach(res.Items,function(val, key){
 				if(val.FromUserID == $stateParams.ID && val.ID == vm.order.ID){
 					OrderCloud.As().Orders.Patch(vm.order.ID,{"xp":{"SavedOrder":{"Name":note,"Flag":true}}}).then(function(res1){
 						console.log("saved order successfully/removed");
@@ -974,6 +1031,8 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 				obj[key] = val;
 			}, true);
 			line.xp.deliveryFeesDtls = obj;
+			if(!line.xp.DeliveryMethod)
+				line.xp.DeliveryMethod = DeliveryMethod;
 			line.xp.TotalCost = 0;
 			angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 				line.xp.TotalCost += parseFloat(val);
@@ -1180,7 +1239,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			dt1 = (("0" + (val.deliveryDate.getMonth()+1)).slice(-2))+"-"+(("0" + val.deliveryDate.getDate()).slice(-2))+"-"+val.deliveryDate.getFullYear();
 			if(line.xp.deliveryDate)
 				dt2 = (("0" + (line.xp.deliveryDate.getMonth()+1)).slice(-2))+"-"+(("0" + line.xp.deliveryDate.getDate()).slice(-2))+"-"+line.xp.deliveryDate.getFullYear();
-			if(dt1 == dt2 && val.Zip == line.ShippingAddress.Zip && (val.Street1).split(/(\d+)/g)[1] == (line.ShippingAddress.Street1).split(/(\d+)/g)[1]){
+			if(dt1 == dt2 && val.Zip == line.ShippingAddress.Zip && (val.Street1).split(/(\d+)/g)[1] == (line.ShippingAddress.Street1).split(/(\d+)/g)[1] && val.lineID != line.ID && val.DeliveryMethod == line.xp.DeliveryMethod){
 				vm.NoDeliveryFees = true;
 			}
 		}, true);
@@ -1300,9 +1359,9 @@ function buildOrderPDPController() {
 	var vm = this;
 }
   
-function buildOrderSummaryController($scope, $exceptionHandler, Order, CurrentOrder, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q) {
+function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Order, CurrentOrder, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q) {
     var vm = this;
-    if(Order!= 'undefined'){
+    if($stateParams.SearchType != 'Products'){
 		vm.order=Order;		
 	}
     /*OrderCloud.As().Orders.Get(vm.order.ID).then(function(data){
@@ -1324,6 +1383,7 @@ function buildOrderSummaryController($scope, $exceptionHandler, Order, CurrentOr
 						});
 						value.ShippingAddress.deliveryDate = value.xp.deliveryDate;
 						value.ShippingAddress.lineID = value.ID;
+						value.ShippingAddress.DeliveryMethod = value.xp.DeliveryMethod;
 						if(value.xp.deliveryFeesDtls)
 							value.ShippingAddress.deliveryPresent = true;
 						vm.AvoidMultipleDelryChrgs.push(value.ShippingAddress);
@@ -1469,6 +1529,8 @@ function buildOrderSummaryController($scope, $exceptionHandler, Order, CurrentOr
 				obj[key] = val;
 			}, true);
 			line.xp.deliveryFeesDtls = obj;
+			if(!line.xp.DeliveryMethod)
+				line.xp.DeliveryMethod = DeliveryMethod;
 			line.xp.TotalCost = 0;
 			line.xp.deliveryCharges = 0;
 			angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
@@ -1505,7 +1567,7 @@ function buildOrderSummaryController($scope, $exceptionHandler, Order, CurrentOr
 			line.xp.deliveryDate = new Date(line.xp.deliveryDate);
 			var dt1 = (("0" + (val.deliveryDate.getMonth()+1)).slice(-2))+"-"+(("0" + val.deliveryDate.getDate()).slice(-2))+"-"+val.deliveryDate.getFullYear();
 			var dt2 = (("0" + (line.xp.deliveryDate.getMonth()+1)).slice(-2))+"-"+(("0" + line.xp.deliveryDate.getDate()).slice(-2))+"-"+line.xp.deliveryDate.getFullYear();
-			if(dt1 == dt2 && val.Zip == line.ShippingAddress.Zip && (val.Street1).split(/(\d+)/g)[1] == (line.ShippingAddress.Street1).split(/(\d+)/g)[1] && val.deliveryPresent && val.lineID != line.ID){
+			if(dt1 == dt2 && val.Zip == line.ShippingAddress.Zip && (val.Street1).split(/(\d+)/g)[1] == (line.ShippingAddress.Street1).split(/(\d+)/g)[1] && val.deliveryPresent && val.lineID != line.ID && val.DeliveryMethod == line.xp.DeliveryMethod){
 				vm.NoDeliveryFees = true;
 			}
 		}, true);

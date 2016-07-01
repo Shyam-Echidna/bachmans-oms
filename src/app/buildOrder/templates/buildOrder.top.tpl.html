@@ -7,10 +7,17 @@
             <div class="logo">
                 <a href="#" ui-sref="home"><img src="../assets/images/logo.png"></a>
             </div>
-            <div class="search_box" ng-hide="hideSearchBox">
+            <!-- <div class="search_box" ng-hide="hideSearchBox">
                 <div class="search_feild" ng-click="toggleMenu($event)">
                     <a ui-sref="buildOrder"><i class="fa fa-search"></i></a>
                     <ordercloud-search servicename="Products" controlleras="buildOrder"></ordercloud-search>
+                </div>
+            </div> -->
+			 <!-- algolia search -->
+            <div class="search_box" ng-hide="hideSearchBox">
+                <div class="search_feild" ng-click="toggleMenu($event)">
+                    <a ui-sref="buildOrder"><i class="fa fa-search"></i></a>
+                    <ordercloud-search servicename="products" controlleras="buildOrder"></ordercloud-search>
                 </div>
             </div>
 			<div class="buildordersummaryheader" ng-show="showOrdersummary">

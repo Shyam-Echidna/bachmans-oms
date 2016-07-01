@@ -1,4 +1,4 @@
-<div class="oms_main_container" ng-show='showplp'>
+<!-- <div class="oms_main_container" ng-show='showplp'>
 	<h1 ng-if="buildOrder.searchVal">Search Results for <span>"{{buildOrder.searchVal}}"</span> <span class="count">({{buildOrder.prodlist.Items.length}} products)</span></h1>
 	<ul class="plp-container">
 	    <li class="col-md-3" ng-repeat="products in buildOrder.prodlist.Items track by $index">
@@ -15,4 +15,25 @@
 	        </div>
 	    </li>
 	</ul>
+</div> -->
+
+<!-- algolia search starts -->
+<div class="oms_main_container" ng-show='showplp'>
+    <h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.list.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.list.length}} products)</span></h1>
+    <h1 ng-if="buildOrder.list.length == 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>
+    <ul class="plp-container">
+        <li class="col-md-3" ng-repeat="products in buildOrder.list track by $index" ng-if="buildOrder.searchval.length > 0" >
+            <div class="plp-block" ng-click="buildOrder.productdata(products.ID)">
+                <div class="product_img"></div>
+                <div class="plp-product-data">
+                    <h2>{{products.Name}}</h2>
+                    <h3>Option Deluxe</h3>
+                    <h4>Color Red</h4>
+                </div>
+                <div class="price_lst">
+                    <h5>{{products.Price | currency}}</h5>
+                </div>
+            </div>
+        </li>
+    </ul>
 </div>

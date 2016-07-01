@@ -38,23 +38,49 @@ function AddressBookConfig( $stateProvider ) {
 }
 
 
-function AddressBookController($scope, $http, $state, $stateParams, $location, $anchorScroll, AddressBook, OrderCloud) {
+function AddressBookController($scope, $http, $state, $stateParams, $location, $anchorScroll, AddressBook, OrderCloud, BuildOrderService) {
 	var vm=this;
 	vm.list=AddressBook;
-	console.log("vm.listvm.list", vm.list);
-	console.log("vm.listvm.list.addresses", vm.list.addresses);
+	vm.searchedAddr;
+	vm.dd=$stateParams.ID;
+	vm.getLocation=function(zip){
+		BuildOrderService.getCityState(zip).then(function(res){
+			$scope.addr.City = res.City;
+			$scope.addr.State = res.State;
+		});
+	}
+	vm.getLoactionEdit=function(zip){
+		BuildOrderService.getCityState(zip).then(function(res){
+			vm.editAddr.City = res.City;
+			vm.editAddr.State = res.State;
+		});
+	}
 	$scope.CreateAddress = function(line){
 		var $this = this;
-		var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+")"+line.Phone2+"-"+line.Phone3,"Country":"IN", "xp":{}};
-		OrderCloud.Addresses.Create(params).then(function(data){
-		data.Zip = parseInt(data.Zip);
-		
-		params = {"AddressID": data.ID,"UserID": $stateParams.ID,"IsBilling": false,"IsShipping": true};
-		OrderCloud.Addresses.SaveAssignment(params).then(function(res){
-			$state.go('addressBook', {}, {reload:true});
-			console.log("Address saved for the user....!" +res);
-		});
-		})
+		var addrValidate = {
+				"addressLine1": line.Street1, 
+				"addressLine2": line.Street2,
+				"zipcode": line.Zip, 
+				"country": "US"
+		};
+		var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+")"+line.Phone2+"-"+line.Phone3,"Country":"IN", "xp":{NickName:line.NickName}};
+		if(addrValidate){
+			BuildOrderService.addressValidation(addrValidate).then(function(res){
+				if(res.data.ResultCode == "Success"){
+					OrderCloud.Addresses.Create(params).then(function(data){
+					data.Zip = parseInt(data.Zip);
+						params = {"AddressID": data.ID,"UserID": $stateParams.ID,"IsBilling": false,"IsShipping": true};
+							OrderCloud.Addresses.SaveAssignment(params).then(function(res){
+							$state.go('addressBook', {}, {reload:true});
+							console.log("Address saved for the user....!" +res);
+						});
+					})
+				}
+				else{
+					alert("enter valid address to save..");
+				}
+			})
+		}
 	}
 	vm.makeDefault=function(address){
 		_.filter(vm.list.addresses, function(row){
@@ -82,30 +108,47 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 				$state.go('addressBook', {}, {reload:true});
 			})
 		}
-	vm.editAddress = function(editAddr, editAddress){
+	vm.editAddress = function(editAddr, index){
+		vm['showedit' + index] = true;
 		vm.editAddr=editAddr;
 		$scope.showedit=false;
 		vm.stateData=vm.editAddr.State;
 		vm.contact={};
 		var phn = vm.editAddr.Phone;
-		var init = phn.indexOf('(');
-		var fin = phn.indexOf(')');
-		vm.contact.Phone1 = parseInt(phn.substr(init+1,fin-init-1));
-		init = phn.indexOf(')');
-		fin = phn.indexOf('-');
-		vm.contact.Phone2 = parseInt(phn.substr(init+1,fin-init-1));
-		init = phn.indexOf('-');
-		vm.contact.Phone3 = parseInt(phn.substr(init+1,phn.length));
+		
+		BuildOrderService.GetPhoneNumber(vm.editAddr.Phone).then(function(res){
+			vm.contact.Phone1 = res[0];
+			vm.contact.Phone2 = res[1];
+			vm.contact.Phone3 = res[2];
+		});
 		console.log("vm.contact.Phone1"+ " " + vm.contact.Phone1 + " " +"vm.contact.Phone2"+ " " +vm.contact.Phone2 + " " + "vm.contact.Phone3" + " " + vm.contact.Phone3);
-		$location.hash('top');
-        $anchorScroll();
+		// $location.hash('top');
+        // $anchorScroll();
+	}
+	vm.closeShowedit=function(index){
+		vm['showedit'+index]=false;
 	}
 	vm.saveAddress = function(saveAddr, contact){
 			saveAddr.Phone = "("+contact.Phone1+")"+contact.Phone2+"-"+contact.Phone3;
 			console.log("saveAddr.Phone", saveAddr.Phone);
-			OrderCloud.Addresses.Update(saveAddr.ID, saveAddr).then(function(){
-				$state.go('addressBook', {}, {reload:true});
-			})
+			var addrValidate = {
+				"addressLine1": saveAddr.Street1, 
+				"addressLine2": saveAddr.Street2,
+				"zipcode": saveAddr.Zip, 
+				"country": "US"
+			};
+			if(addrValidate){
+				BuildOrderService.addressValidation(addrValidate).then(function(res){
+					if(res.data.ResultCode == "Success"){
+						OrderCloud.Addresses.Update(saveAddr.ID, saveAddr).then(function(){
+							$state.go('addressBook', {}, {reload:true});
+						})
+					}
+					else{
+						alert("address not found");
+					}
+				})
+			}
 	}
 	vm.deleteAddr =function(addrID){
 		OrderCloud.Addresses.Delete(addrID, true).then(function(){

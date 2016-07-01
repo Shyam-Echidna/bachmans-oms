@@ -10,7 +10,8 @@ gulp.task('clean:inject', function() {
 
 gulp.task('inject', ['clean:inject', 'scripts', 'app-config', 'bower-fonts', 'styles'], function() {
     var target = gulp.src(config.index),
-        bowerFiles = gulp.src(mainBowerFiles({filter: ['**/*.js', '**/*.css']}), {read: false}),
+        //bowerFiles = gulp.src(mainBowerFiles({filter: ['**/*.js', '**/*.css']}), {read: false}),
+		bowerFiles = gulp.src([].concat(mainBowerFiles({filter: ['**/*.js', '**/*.css']}), ["./bower_components/algoliasearch/dist/algoliasearch.angular.js"]), {read: false}),
         appFiles = gulp.src([].concat(config.appFiles, config.components.styles.css), {read: false});
 
     return target

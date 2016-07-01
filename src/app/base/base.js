@@ -159,6 +159,10 @@ function BaseService($q, $localForage, Underscore, OrderCloud) {
 function BaseController(CurrentUser, defaultErrorMessageResolver, ProductList, AlfrescoFact, $scope) {
     var vm = this;
     vm.currentUser = CurrentUser;
+	$scope.search = {
+        'query' : '',
+        'hits' : []
+    };
     defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
         errorMessages['customPassword'] = 'Password must be at least eight characters long and include at least one letter and one number';
         //regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
@@ -188,6 +192,12 @@ function BaseController(CurrentUser, defaultErrorMessageResolver, ProductList, A
         open3: true,
         open3: false
     };
+	$scope.switchSearch = 'customer';
+    $scope.selectChange = function (confirmed) {
+        $scope.switchSearch = confirmed;
+        // $scope.search.query = "";
+        console.log("qqueryyyyy", $scope.search.query);
+    };
 }
 
 function BaseLeftController(ComponentList) {
@@ -203,10 +213,6 @@ function BaseTopController($scope, Tree, UserList) {
     vm.userlist = UserList;
 	vm.numRecords = 10;
     vm.page = 1;
-    $scope.switchSearch = 'customer';
-    $scope.selectChange = function (confirmed) {
-        $scope.switchSearch = confirmed;
-    };
 	vm.next = function(){
         vm.page = vm.page + 1;
     };

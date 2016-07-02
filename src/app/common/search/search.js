@@ -287,6 +287,7 @@ function ordercloudSearchCtrl($timeout, $scope, TrackSearch, OrderCloud, algolia
 		}
 		var searching;
 		$scope.$watch('search.query', function(n,o) {
+		$scope.controlleras.qeueryLength=$scope.search.query.length;
 			if (n == o) {
 				if (searching) $timeout.cancel(searching);
 			} else {
@@ -302,6 +303,7 @@ function ordercloudSearchCtrl($timeout, $scope, TrackSearch, OrderCloud, algolia
 								OrderCloud.As().Me.ListAddresses(n)
 									.then(function (data){
 										$scope.controlleras.searchedAddr = data;
+										console.log("kkkkkkk", $scope.controlleras.searchedAddr);
 									});
 							}
 							else {

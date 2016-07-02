@@ -8,13 +8,6 @@
 			<input type="text" placeholder="Search Address" ng-model="searchAddr.$"/> -->
 			<ordercloud-search servicename="Addresses" controlleras="addressBook" placeholder="Search address" uib-dropdown-toggle></ordercloud-search>
 			<i class="fa fa-search"></i>
-			<div>
-				<div ng-repeat="searchedAddr in addressBook.searchedAddr track by $index">
-					<a ui-sref="buildOrder({ID:phone.ID,SearchType:'User',showOrdersummary: false})">
-						<p>{{searchedAddr}}</p>
-					</a>
-				</div>
-			</div>
 		</div>
 		<a ng-click="addAddr = !addAddr" class="addNewLink">
 			<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
@@ -142,8 +135,116 @@
 				<button type="button" ng-click="showedit= !showedit">CANCEL</button>
 			</div>
 		</form> -->
+				<!-- searched LIST STARTS -->
+			<table ng-if="addressBook.qeueryLength > 0">
+				<tr ng-repeat="searchedAddr in addressBook.searchedAddr.Items track by $index" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<td>
+						<h4>Default Address</h4>
+						<div class="custom-ceckbox">
+							<label>
+								<input type="radio" name="address" checked/>
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 128.7 87.3" style="enable-background:new 0 0 128.7 87.3;" xml:space="preserve">
+										<g>
+											<path d="M111.9,20.6L65.8,66.7l-8.7,8.7c-1.1,1.1-2.7,1.8-4.3,1.8s-3.2-0.6-4.3-1.8l-8.7-8.7l-23-23c-1.1-1.1-1.8-2.7-1.8-4.3
+												s0.6-3.2,1.8-4.3l-0.1,0.1c1.1-1.1,2.7-1.8,4.3-1.8s3.2,0.6,4.3,1.8l27.5,27.3L103.2,12c1.1-1.1,2.7-1.8,4.3-1.8s3.2,0.6,4.3,1.8
+												l0,0c1.1,1.1,1.8,2.7,1.8,4.3S113,19.5,111.9,20.6z"/>
+										</g>
+									</svg>
+							</label>
+						</div>
+					</td>
+					<td>
+						<h4>Name</h4>
+						<p>{{searchedAddr.FirstName}} {{searchedAddr.LastName}}</p>
+					</td>
+					<td>
+						<h4>Address</h4>
+						<p>{{searchedAddr.Street1}}</p>
+						<p>{{searchedAddr.Street2}}</p>
+						<p>{{searchedAddr.City}} {{searchedAddr.State}} {{searchedAddr.Country}} {{searchedAddr.Zip}}</p>
+					</td>
+					<td>
+						<h4>Phone Number</h4>
+						<p>{{searchedAddr.Phone}}</p>
+					</td>
+					<td>
+						<a ng-click="addressBook.editAddress(addressList);defaultEdit=!defaultEdit">Edit</a>
+						<a class="bar">|</a>
+						<a popover-trigger="none" popover-is-open="showDeliveryToolTip"  ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="deleteAddress.templateUrl">Delete</a>
+					</td>
+					<td>
+						<!-- EDIT ADDRESS STARTS -->
+						<form ng-show="defaultEdit" class="edit-address-main">
+							<div class="edit-address-container" id="top">
+								<h2>Edit Address</h2>
+								<div class="inline-div addr-top">
+									<div>
+										<p>Nickname</p>
+										<input type="text"/>
+									</div>
+									<div>
+										<p>FirstName</p>
+										<input type="text" ng-model="addressBook.editAddr.FirstName"/>
+									</div>
+								</div>
+								<div class="inline-div addr-top">
+									<div>
+										<p>ZIP Code</p>
+										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr.Zip)"/>
+									</div>
+									<div>
+										<p>Last Name</p>
+										<input type="text" ng-model="addressBook.editAddr.LastName"/>
+									</div>
+								</div>
+								<div class="addr-top">
+									<p>Address</p>
+									<input type="text"  ng-model="addressBook.editAddr.Street1"/>
+								</div>
+								<div class="addr-top">
+									<p>Address 2</p>
+									<input type="text" ng-model="addressBook.editAddr.Street2"/>
+								</div>
+								<div class="inline-div addr-top">
+									<div>
+										<p>City</p>
+										<input type="text"  ng-model="addressBook.editAddr.City"/>
+									</div>
+									<div>
+										<p>State</p>
+<!-- 										<div uib-dropdown>
+											<a href ng-model="addressBook.editAddr.State" uib-dropdown-toggle>
+												{{addressBook.stateData}}<i class="fa fa-chevron-down"></i>
+											</a>
+											<div uib-dropdown-menu>
+												<ul>
+													<li ng-click="addressBook.stateSelected(addressBook.editAddr.State)">kk</li>
+													<li ng-click="addressBook.stateSelected(addressBook.editAddr.State)">RNR</li>
+													<li ng-click="addressBook.stateSelected(addressBook.editAddr.State)">PVR</li>
+												</ul>
+											</div>
+										</div> -->
+										<input type="text" ng-model="addressBook.editAddr.City"/>
+									</div>
+								</div>
+								<div class="contact-num addr-top">
+									<p>Phone Number</p>
+									<input type="number" ng-model="addressBook.contact.Phone1"/>
+									<input type="number" ng-model="addressBook.contact.Phone2"/>
+									<input type="number" ng-model="addressBook.contact.Phone3"/>
+								</div>
+							</div>
+							<div class="button-list addr-top">
+								<button type="button" class="save" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact)">SAVE</button>
+								<button type="button" ng-click="defaultEdit=!defaultEdit">CANCEL</button>
+							</div>
+						</form> 
+					</td>
+				</tr>
+			</table>
 		<!-- ADDRESS LIST STARTS -->
-			<table>
+			<table ng-if="addressBook.qeueryLength ==0">
 				<tr ng-repeat="addressList in addressBook.list.addresses" ng-if="addressList.xp.IsDefault == true" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<td>
 						<h4>Default Address</h4>
@@ -250,7 +351,7 @@
 					</td>
 				</tr>
 			</table>
-			<table>
+			<table ng-if="addressBook.qeueryLength ==0">
 				<tr ng-repeat="addressList in addressBook.list.addresses | filter:searchAddr:strict" ng-if="!addressList.xp.IsDefault" ng-init="addressBook.showedit[$index]=false" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<td>
 						<h4>Make Default Address</h4>

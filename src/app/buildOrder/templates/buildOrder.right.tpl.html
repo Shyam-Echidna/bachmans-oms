@@ -280,7 +280,7 @@
 											</div>
 											<div>
 												<h1>Pick-up Date*</h1>
-												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.pickupDate" ng-attr-min="{{lineitems.xp.MinDate.InStorePickUp}}"/>
+												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.pickupDate" ng-attr-min="{{lineitems.xp.MinDays.InStorePickUp}}"/>
 											</div>
 										</div>
 										<div class="location-Code" ng-show="addressType!='Will Call'" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
@@ -290,7 +290,7 @@
 											</div>
 											<div class="delivery-date">
 												<p>Delivery Date*</p>
-												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.deliveryDate" ng-attr-min="{{lineitems.xp.deliveryFeesDtls.UPSCharges ? lineitems.xp.MinDate.UPS : lineitems.xp.MinDate.MinToday}}" ng-change="buildOrderRight.DateSelected(lineitems)"></input>
+												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.deliveryDate" ng-attr-min="{{lineitems.xp.deliveryFeesDtls.UPSCharges ? lineitems.xp.MinDays.UPS : lineitems.xp.MinDays.MinToday}}" ng-change="buildOrderRight.DateSelected(lineitems)"></input>
 											</div>
 										</div>
 										<div class="location-addressL1" ng-if="addressType!='Will Call'">

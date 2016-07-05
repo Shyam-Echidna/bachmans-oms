@@ -148,7 +148,9 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			}
 			index++;
 			orderDtls.subTotal += parseFloat(obj.LineTotal);
-			orderDtls.deliveryCharges += parseFloat(obj.xp.deliveryCharges);
+			angular.forEach(obj.xp.deliveryFeesDtls, function(val, key){
+				orderDtls.deliveryCharges += parseFloat(val);
+			},true);
 			//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
 			return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
 		});
@@ -210,7 +212,7 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			if(line.xp.deliveryChargeAdjReason != "---select---")
 				params.deliveryChargeAdjReason = line.xp.deliveryChargeAdjReason;
 			OrderCloud.As().LineItems.Patch(vm.order.ID, line.ID, {"ShippingAddressID":line.selectedAddrID,"xp":line.xp}).then(function(res){
-				//$scope.onLoadCheckout();
+				$scope.onLoadCheckout();
 			});
 		}else{
 			/*OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, params).then(function(data){
@@ -224,8 +226,16 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			
 			OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
 				OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
-					//$scope.onLoadCheckout();
-					alert("Data submitted successfully");
+					if(line.xp.Status){
+						OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}}).then(function(res){
+							console.log("Order Status OnHold Updated.......");
+							//$scope.onLoadCheckout();
+							alert("Data submitted successfully");
+						});
+					}else{
+						//$scope.onLoadCheckout();
+						alert("Data submitted successfully");
+					}
 				});
 			});
 		}
@@ -268,51 +278,80 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		});
 	};
 	$scope.UpdateAddress = function(addr, index){
+		var $this = this;
 		addr.Phone = "("+addr.Phone1+")"+addr.Phone2+"-"+addr.Phone3;
-		OrderCloud.Addresses.Update(addr.ID,addr).then(function(res){
-			var params = {"AddressID": res.ID,"UserID": vm.order.FromUserID,"IsBilling": false,"IsShipping": true};
-			OrderCloud.Addresses.SaveAssignment(params).then(function(data){
-				$scope.addressesList = _.map($scope.addressesList, function(obj){
-					if(obj.ID == addr.ID) {
-						obj.FirstName = res.FirstName;
-						obj.LastName = res.LastName;
-						obj.Street1 = res.Street1;
-						obj.Street2 = res.Street2;
-						obj.City = res.City;
-						obj.State = res.State;
-						obj.Zip = parseInt(res.Zip);
-						BuildOrderService.GetPhoneNumber(res.Phone).then(function(res){
-							obj.Phone1 = res[0];
-							obj.Phone2 = res[1];
-							obj.Phone3 = res[2];
+		var addrValidate = {
+			"addressLine1": addr.Street1, 
+			"addressLine2": addr.Street2,
+			"zipcode": addr.Zip, 
+			"country": "US"
+		};
+		if(addrValidate){
+			BuildOrderService.addressValidation(addrValidate).then(function(res){
+				if(res.data.ResultCode == "Success"){
+					OrderCloud.Addresses.Update(addr.ID,addr).then(function(res){
+						var params = {"AddressID": res.ID,"UserID": vm.order.FromUserID,"IsBilling": false,"IsShipping": true};
+						OrderCloud.Addresses.SaveAssignment(params).then(function(data){
+							$scope.addressesList = _.map($scope.addressesList, function(obj){
+								if(obj.ID == addr.ID) {
+									obj.FirstName = res.FirstName;
+									obj.LastName = res.LastName;
+									obj.Street1 = res.Street1;
+									obj.Street2 = res.Street2;
+									obj.City = res.City;
+									obj.State = res.State;
+									obj.Zip = parseInt(res.Zip);
+									BuildOrderService.GetPhoneNumber(res.Phone).then(function(res){
+										obj.Phone1 = res[0];
+										obj.Phone2 = res[1];
+										obj.Phone3 = res[2];
+									});
+								}
+								return obj;
+							});
+							$this['isDeliAddrShow'+index] = false;
 						});
-					}
-					return obj;
-				});
+					});
+				}else{
+					alert("Address Not Found........");
+				}
 			});
-		});
-		this['isDeliAddrShow'+index] = false;
+		}
 	};
 	$scope.CreateAddress = function(line, index){
-		var $this = this, params;
+		var $this = this, params, addrValidate;
 		//var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+")"+line.Phone2+"-"+line.Phone3,"Country":"US"};
 		line.Phone = "("+line.Phone1+")"+line.Phone2+"-"+line.Phone3;
 		line.Country = "US";
-		OrderCloud.Addresses.Create(line).then(function(data){
-			data.Zip = parseInt(data.Zip);
-			BuildOrderService.GetPhoneNumber(data.Phone).then(function(res){
-				data.Phone1 = res[0];
-				data.Phone2 = res[1];
-				data.Phone3 = res[2];
+		addrValidate = {
+			"addressLine1": line.Street1, 
+			"addressLine2": line.Street2,
+			"zipcode": line.Zip, 
+			"country": "US"
+		};
+		if(addrValidate){
+			BuildOrderService.addressValidation(addrValidate).then(function(res){
+				if(res.data.ResultCode == "Success"){
+					OrderCloud.Addresses.Create(line).then(function(data){
+						data.Zip = parseInt(data.Zip);
+						BuildOrderService.GetPhoneNumber(data.Phone).then(function(res){
+							data.Phone1 = res[0];
+							data.Phone2 = res[1];
+							data.Phone3 = res[2];
+						});
+						$scope.addressesList.push(data);
+						$this.limit = $scope.addressesList.length;
+						params = {"AddressID": data.ID, "UserID": vm.order.FromUserID, "IsBilling": false, "IsShipping": true};
+						OrderCloud.Addresses.SaveAssignment(params).then(function(res){
+							console.log("Address saved for the user....!" +res);
+						});
+						$this['showNewAddress'+index] = false;
+					});
+				}else{
+					alert("Address Not Found........");
+				}
 			});
-			$scope.addressesList.push(data);
-			$this.limit = $scope.addressesList.length;
-			params = {"AddressID": data.ID,"UserID": vm.order.FromUserID,"IsBilling": false,"IsShipping": true};
-			OrderCloud.Addresses.SaveAssignment(params).then(function(res){
-				console.log("Address saved for the user....!" +res);
-			});
-		});
-		this['showNewAddress'+index] = false;
+		}
 	};
 	$scope.viewMore = function(){
 		this.limit = $scope.addressesList.length;
@@ -536,11 +575,11 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 	$scope.selectedAddr = function(line,addr){
 		if(addr.isAddrOpen){
 			line.selectedAddrID = addr.ID;
-			var del = _.findWhere($scope.buyerDtls.xp.ZipCodes, {zip: addr.Zip.toString()});
-			line.xp.deliveryCharges = del.DeliveryCharge;
-			line.xp.TotalCost = parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice));
+			//var del = _.findWhere($scope.buyerDtls.xp.ZipCodes, {zip: addr.Zip.toString()});
+			//line.xp.deliveryCharges = del.DeliveryCharge;
+			//line.xp.TotalCost = parseFloat(line.xp.deliveryCharges) + (parseFloat(line.Quantity) * parseFloat(line.UnitPrice));
 			line.xp.deliveryChargeAdjReason = $scope.buyerDtls.xp.deliveryChargeAdjReasons[0];
-		}	
+		}
 		else
 			delete line.selectedAddrID;
 	};
@@ -657,4 +696,10 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		else
 			line.selected = $scope.storeNames[0];
 	};
+	$scope.GetCityState = function(addr){
+		BuildOrderService.getCityState(addr.Zip).then(function(res){
+			addr.City = res.City;
+			addr.State = res.State;
+		});
+	}
 }

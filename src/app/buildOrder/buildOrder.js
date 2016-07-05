@@ -841,6 +841,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 								//}	
 							}
 							var dt;
+							val.xp.MinDays = {};
 							if(val.xp.deliveryDate){
 								var dat = new Date();
 								dat.setHours(0, 0, 0, 0);
@@ -852,16 +853,16 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 									dt.setHours(0, 0, 0, 0);
 									dt = dt.setDate(dt.getDate() + val1);
 									dt = new Date(dt);
-									val.xp.MinDate[key1] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+									val.xp.MinDays[key1] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
 								}, true);
 								dt = new Date();
-								val.xp.MinDate['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+								val.xp.MinDays['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
 								if(val.xp.MinDate.LocalDelivery)
-									val.xp.MinDate['MinToday'] = val.xp.MinDate.LocalDelivery;
+									val.xp.MinDays['MinToday'] = val.xp.MinDate.LocalDelivery;
 							}else{
 								dt = new Date();
 								val.xp.MinDate = {};
-								val.xp.MinDate['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+								val.xp.MinDays['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
 							}
 							val.varientsOptions = {};
 							if(val.Product.xp != null && val.Product.xp.Specs_Options){
@@ -944,6 +945,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			deliverySum += parseFloat(val);
 		});
 		delete line.xp.Discount;
+		delete line.xp.MinDays;
 		if(deliverySum > 250){
 			line.xp.Discount = deliverySum - 250;
 			deliverySum = 250;
@@ -1493,7 +1495,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 			delete line.xp.CardMessage;
 		//line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+")"+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";
-		line.xp.addressType = this.addressType;
+		//line.xp.addressType = this.addressType;
 		var deliverySum = 0;
 		angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 			deliverySum += parseFloat(val);
@@ -1504,19 +1506,19 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 			deliverySum = 250;
 		}
 		line.xp.TotalCost = deliverySum+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice));
-		if(this.addressType=="Residence" || !this.addressType || this.addressType=="Shipping"){
+		if(line.xp.addressType=="Residence" || !line.xp.addressType || line.xp.addressType=="Shipping"){
 			delete line.xp.PatientFName;
 			delete line.xp.PatientLName;
 			delete line.xp.pickupDate;
-		}else if(this.addressType=="Hospital" || this.addressType=="School" || this.addressType=="Church" || this.addressType=="Funeral"){
+		}else if(line.xp.addressType=="Hospital" || line.xp.addressType=="School" || line.xp.addressType=="Church" || line.xp.addressType=="Funeral"){
 			delete line.xp.pickupDate;
 			line.xp.SearchedName = line.hosSearch;
-			if(this.addressType=="Funeral" || this.addressType=="Church")
+			if(line.xp.addressType=="Funeral" || line.xp.addressType=="Church")
 				line.xp.SearchedName = line.churchSearch;
-			if(this.addressType=="School")
+			if(line.xp.addressType=="School")
 				line.xp.SearchedName = line.schSearch;
 		}
-		if(this.addressType=="Will Call"){
+		if(line.xp.addressType=="Will Call"){
 			delete line.xp.PatientFName;
 			delete line.xp.PatientLName;
 			delete line.xp.deliveryDate;

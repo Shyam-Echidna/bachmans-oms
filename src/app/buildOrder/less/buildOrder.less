@@ -15,7 +15,7 @@ button {
     bottom: 50px;
     background-color: @color20;
 	.oms_main_container{
-	    width: 96%;
+	    width: 98%;
 		left: 2%;
 		top:0;
 		bottom:0;
@@ -258,36 +258,14 @@ button {
 					.in-block;
 				}
 			}
-			.popover.top{
-				border:1px solid @base-bg-purple-light;
-				left: 0% !important;
-				width:96%;
-				h2{
-					font-size: 15px ;
-					.helvetica-medium;
-					margin: 10px 0;
-				}
-				button{
-					.helvetica-bold;
-					font-size: 10px;
-					color: #ffffff;
-					background-color: @base-bg-purple-light;
-					padding: 5px 10px 5px 10px;
-					margin-right: 8px;
-					background:fade;
-					&:hover{
-						background-color: @primary-dark-color;
-					}
-				}
-				.arrow{
-					border-top-color: @base-bg-purple-light;	
-				}
-			}
 		}
 		a {
 			.helvetica-bold;
 			font-size: 12.5px;
 			padding: 20px 20px 10px;
+		}
+		.popover{
+			left:0 !important;
 		}
 	}
 	.oms_main_container {
@@ -339,6 +317,9 @@ button {
 				}
 			}
 		}
+		.plp-container, .buildOrder-pdp-content{
+			margin-right:2%;
+		}
 	}
 	.oms_main_container.buildOrder-pdp-container {
 		padding-bottom: 65px;
@@ -352,7 +333,7 @@ button {
 			bottom: 70px;
 			overflow-x: hidden;
 			overflow-y: auto;
-			width: 96%;
+			width: 98%;
 			left: 2%;
 			h1 {
 				.helvetica-regular;
@@ -1690,6 +1671,42 @@ button {
 						}
 					}
 				}
+			}
+		}
+	}
+	.popover{
+		border:1px solid @base-bg-purple-light;
+		width:96%;
+		.popover-inner .popover-content{
+			h2{
+				font-size: 15px ;
+				.helvetica-medium;
+				margin: 10px 0;
+				color:initial;
+			}
+			label{
+				font-size: 13px ;
+				width:100%;
+				.helvetica-regular;
+				input[type="radio"]{
+				    vertical-align: middle;
+					margin: 0 3px 0 0;
+				}
+			}
+			button{
+				.helvetica-bold;
+				font-size: 10px;
+				color: #ffffff;
+				background-color: @base-bg-purple-light;
+				padding: 5px 10px 5px 10px;
+				margin-right: 8px;
+				background:fade;
+				&:hover{
+					background-color: @primary-dark-color;
+				}
+			}
+			.arrow{
+				border-top-color: @base-bg-purple-light;	
 			}
 		}
 	}

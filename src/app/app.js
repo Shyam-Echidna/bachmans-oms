@@ -33,6 +33,9 @@ angular.module( 'orderCloud', [
     .config( Interceptor )
     .controller( 'AppCtrl', AppCtrl )
     .config(DatePickerConfig)
+    .constant('urls', {
+        constantContactBaseUrl:"https://Four51TRIAL104401.jitterbit.net/Bachmans_Dev/"
+    })
 ;
 
 function DatePickerConfig(uibDatepickerConfig, uibDatepickerPopupConfig){

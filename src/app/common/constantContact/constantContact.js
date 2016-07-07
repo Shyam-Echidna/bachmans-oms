@@ -6,7 +6,8 @@ function ConstantContact($q, $http, urls) {
     var service = {
         GetListOfSubscriptions: _listSubscriptions,
         CreateContact:_createContact,
-        UpdateContact:_updateContact
+        UpdateContact:_updateContact,
+        GetSpecifiedContact:_getContact
     };
 
     function makeAPICall(method, uri, params){
@@ -24,7 +25,11 @@ function ConstantContact($q, $http, urls) {
     }
 
     function _listSubscriptions(uri) {
-       return makeAPICall('GET', uri, null);
+        return makeAPICall('GET', uri, null);
+    };
+
+    function _getContact(uri, params) {
+        return makeAPICall('POST', uri, params);
     };
 
     function _createContact(uri, params) {
@@ -34,5 +39,6 @@ function ConstantContact($q, $http, urls) {
     function _updateContact(uri, params) {
         return makeAPICall('POST', uri, params);
     };
+
     return service;
 }

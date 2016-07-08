@@ -83,8 +83,9 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderCloud, $stateParams, BuildOrderService, $q) {
+function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
 	var vm = this;
+	vm.logo=AlfrescoFact.logo;
 	$scope.oneAtATime = true;
 	$scope.status = {
 		delInfoOpen : true,

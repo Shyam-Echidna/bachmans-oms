@@ -99,7 +99,17 @@ function BaseConfig( $stateProvider ) {
                         localStorage.setItem("alf_ticket", ticket);
                         return ticket;
                     });
-                }
+                },
+				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoURL) {
+					var df = $q.defer();
+					var homePath="OMS/Home?alf_ticket=";
+					AlfrescoFact.GetHome(homePath).then(function (data) {
+						AlfrescoFact.logo=$sce.trustAsResourceUrl(alfrescoURL+data.items[0].contentUrl+"?alf_ticket="+ localStorage.getItem("alf_ticket"));
+						df.resolve(AlfrescoFact.logo);
+						console.log("logoooooooooooooo", AlfrescoFact.logo);
+					});
+					return df.promise;
+				}
             }
         });
 }
@@ -156,8 +166,9 @@ function BaseService($q, $localForage, Underscore, OrderCloud) {
     return service;
 }
 
-function BaseController(CurrentUser, defaultErrorMessageResolver, ProductList, AlfrescoFact, $scope) {
+function BaseController($sce, CurrentUser, defaultErrorMessageResolver, ProductList, AlfrescoFact, $scope, AlfrescoCommon) {
     var vm = this;
+	vm.logo=AlfrescoCommon;
     vm.currentUser = CurrentUser;
 	$scope.search = {
         'query' : '',
@@ -207,7 +218,7 @@ function BaseLeftController(ComponentList) {
 	vm.isCollapsed = true;
 }
 
-function BaseTopController($scope, Tree, UserList) {
+function BaseTopController($scope, $state, Tree, UserList, OrderCloud) {
     var vm = this;
 	vm.tree = Tree;
     vm.userlist = UserList;
@@ -219,6 +230,17 @@ function BaseTopController($scope, Tree, UserList) {
     vm.back = function(){
         vm.page = vm.page - 1;
     };
+	vm.searchGoTo= function(userId, orderId){
+		OrderCloud.Orders.Get(orderId).then(function(res){
+			console.log("resssssssss",res);
+			if(res.Status=='Unsubmitted'){
+				$state.go('buildOrder',{ID:userId,SearchType:'User',orderID:orderId});
+			}
+			else{
+				$state.go('orderHistory',{userID:userId, orderId:orderId});
+			}
+		});
+	}
 }
 
 function BaseDownController() {
@@ -229,9 +251,11 @@ function BuildOrderTopController() {
     var vm = this;
 }
  
-function AlfrescoFact($http, $q) {
+function AlfrescoFact($http, $q, alfrescoOmsUrl) {
     var service = {
-        Get: _get
+        Get: _get,
+		GetHome:_getHome
+		
     };
     return service;
  
@@ -259,6 +283,27 @@ function AlfrescoFact($http, $q) {
             defferred.reject(data);
         });
         return defferred.promise;
+    }
+	function _getHome(path) {
+        
+        var defferred = $q.defer();
+        
+        $http({
+
+                method: 'GET',
+                dataType:"json",
+                url: alfrescoOmsUrl+path+localStorage.getItem("alf_ticket"),
+               
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+
+            }).success(function (data, status, headers, config) {               
+                defferred.resolve(data);
+            }).error(function (data, status, headers, config) {
+                defferred.reject(data);
+            });
+            return defferred.promise;
     }
 }
  

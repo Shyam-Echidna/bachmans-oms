@@ -13,8 +13,21 @@ function HomeConfig( $stateProvider ) {
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
 			resolve: {
-                OrderList: function(OrderCloud) {
-                    return OrderCloud.Orders.ListIncoming();
+                OrderList: function(OrderCloud, $q) {
+					var arr={};
+					var dd=$q.defer();
+					OrderCloud.Orders.ListOutgoing(null,null,'ME32SnOluUqPP71HnpuzAg', null, null, 'FromUserID').then(function(data){
+						console.log("searched order", data);
+						arr.saved=_.filter(data.Items, function(obj) {
+								return _.indexOf([obj.xp.SavedOrder.Flag], true) > -1
+						});
+						arr.onHold=_.filter(data.Items, function(obj) {
+								return _.indexOf([obj.xp.Status], "OnHold") > -1
+						});
+						dd.resolve(arr);
+					});
+					console.log("aaaaaa", arr);
+                    return dd.promise;
                 },
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();
@@ -32,7 +45,6 @@ function HomeConfig( $stateProvider ) {
 							OrderCloud.Products.Get(res.ProductID).then(function(data){
 								events.push(data);
 								console.log("9999999", arr["events"]);
-								
 							})
 						})
 						arr["events"]=events;
@@ -55,7 +67,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	vm.eventList=EventList;
 	console.log("dataaaaaaaaaa", vm.eventList);
 	var log = [];
-	var holdorders=[];
+	$scope.dateFormat="dd/MM/yyyy";
 	//holdorders = ShipmentList.Items;
 	/*
 	console.log('LineItemList', LineItemList);*/
@@ -77,31 +89,30 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
     angular.forEach(ShipmentList.Items, function(lineitem, index) {
         console.log(lineitem);
     });*/
-    vm.list = OrderList;
-    console.log('@@@',vm.list);
+	console.log("OrderList", OrderList);
+    vm.onHold = OrderList.onHold;
 	$scope.gridOptions = {
-		data: 'home.list.Items',
+		data: 'home.onHold',
 		enableSorting: true,
 		columnDefs: [
 			{ name: 'ID', displayName:'Shipment'},
-			{ name: 'DateShipped', displayName:'Order Placed On'},
-			{ name: 'Shipper', displayName:'Sender Name'},
-			{ name: 'DateCompleted', displayName:'Delivery Date'},
-			{ name: 'Status', displayName:'Recipient Name'},
+			{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
+			{ name: 'FromUserFirstName', displayName:'Sender Name'},
+			{ name: 'DateCreated', displayName:'Delivery Date'},
 			{ name: 'BillingAddress', displayName:'Occassions'},
 			{ name: 'Total', displayName:'Wire Status Code'},
-			{ name: 'Status', displayName:'CSR ID'},
+			{ name: 'xp.CSRID', displayName:'CSR ID'},
 			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:row.entity.FromUserID,SearchType:grid.appScope.user,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
 		]
 	};
-	vm.orders = OrderList;
+	vm.saved = OrderList.saved;
 	$scope.user='User';
 	$scope.CSRAdminData = {
-		data: 'home.orders.Items',
+		data: 'home.saved',
 		enableFiltering: true,
 	  enableSorting: false,
 	  columnDefs: [ 
-		{ name: 'ID', displayName:'Order Name', filter: {placeholder: 'Search order'}},
+		{ name: 'xp.SavedOrder.Name', displayName:'Order Name', filter: {placeholder: 'Search order'}},
 		{ name: 'FromUserFirstName', displayName:'Customer', enableFiltering:false},
 		{ name: 'Delete', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell"><a popover-trigger="none" popover-is-open="showDeliveryToolTip"  ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="grid.appScope.deleteAddress.templateUrl" popover-placement="bottom"><img src="../assets/images/icons-svg/cancel.svg">Delete</a></div>', width: "20%"},
 		{ name: 'openOrder', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:row.entity.FromUserID,SearchType:grid.appScope.user,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width: "20%"}

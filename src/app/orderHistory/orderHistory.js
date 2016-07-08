@@ -11,7 +11,7 @@ function OrderHistoryConfig( $stateProvider ) {
 	$stateProvider
 		.state( 'orderHistory', {
 			parent: 'base',
-			url: '/orderHistory/:userID/:name',
+			url: '/orderHistory/:userID/:orderId',
 			templateUrl: 'orderHistory/templates/orderHistory.tpl.html',
 			controller: 'OrderHistoryCtrl',
 			controllerAs: 'orderHistory',
@@ -21,11 +21,24 @@ function OrderHistoryConfig( $stateProvider ) {
 					var d=$q.defer();
 					OrderCloud.Users.GetAccessToken($stateParams.userID, impersonation)
 					.then(function(data) {
+							var completedOdr=[];
 							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-							OrderCloud.As().Me.ListOutgoingOrders().then(function(assignOrders){
-								console.log("assignOrders", assignOrders);
-								d.resolve(assignOrders);
-							})
+							if($stateParams.orderId!=""){
+								console.log("trueeeeeeeeee");
+								OrderCloud.As().Me.GetOrder($stateParams.orderId).then(function(res){
+									completedOdr.push(res);
+									d.resolve(completedOdr);
+								})
+							}
+							else{
+								OrderCloud.As().Me.ListOutgoingOrders().then(function(assignOrders){
+								completedOdr=_.filter(assignOrders.Items, function(obj) {
+									return _.indexOf([obj.Status],'Completed') > -1
+								});
+									console.log("completedOrders", completedOdr);
+									d.resolve(completedOdr);
+								})
+							}
 					})	
 					return d.promise;
 				}
@@ -34,14 +47,15 @@ function OrderHistoryConfig( $stateProvider ) {
 }
 function OrderHistoryController($scope, $stateParams, Order) {
 	var vm = this;
-	vm.uname=$stateParams.name;
+	vm.uname=Order[0].FromUserFirstName + " " + Order[0].FromUserLastName;
+	console.log("vm.uname", vm.uname);
 	$scope.userID=$stateParams.userID;
 	$scope.searchType='User';
 	vm.order=Order;
 	console.log("oredr", vm.order);
 	$scope.dateFormat="dd/MM/yyyy";
 	$scope.gridHistory = {
-		data: 'orderHistory.order.Items',
+		data: 'orderHistory.order',
 		enableSorting: true,
 		columnDefs: [
 			{ name: 'ID', displayName:'Shipment Number', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:grid.appScope.userID,SearchType:grid.appScope.searchType,orderID:row.entity.ID,orderDetails:true})">{{row.entity.ID}}</div>'},

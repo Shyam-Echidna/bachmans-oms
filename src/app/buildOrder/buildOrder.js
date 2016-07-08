@@ -575,8 +575,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}
 }
 
-function buildOrderTopController($scope, $stateParams,$rootScope) {
+function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
 	var vm = this;
+	vm.logo=AlfrescoFact.logo;
 	$scope.showmenu = false;
 	$scope.toggleMenu = function(event) {
 		$scope.showmenu = !($scope.showmenu);

@@ -332,10 +332,10 @@
 						<div class="payment-method-header">
 							<h1>Payment Method</h1>
 							<div class="payment-tab" ng-init="PaymentOption = 'CreditCard'" ng-click="PaymentOption = 'CreditCard'">Credit Card<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'BachmansCharge'">Bachman's Charges<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'GiftCard'">Gift Card<span class="selected"></span></div>
+							<div ng-click="PaymentOption = 'BachmansCharge'" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges<span class="selected"></span></div>
+							<div ng-click="PaymentOption = 'GiftCard'" ng-show="checkout.UserSpendingAcc['Gift Card']">Gift Card<span class="selected"></span></div>
+							<div ng-click="PaymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perk']">Purple Perks<span class="selected"></span></div>
 							<div ng-click="PaymentOption = 'CashCheque'">Cash/Cheque<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'PurplePerk'">Purple Perks<span class="selected"></span></div>
 						</div>
 						<!-- credit card -->
 						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="PaymentOption == 'CreditCard'">
@@ -369,44 +369,46 @@
 							</div>
 						</div>
 						<!-- Bachmans charges -->
-						<div class="payment-method-container charges col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="PaymentOption == 'BachmansCharge'">
+						<div class="payment-method-container charges col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="PaymentOption == 'BachmansCharge'">
 							<div>
 								<div class="payment-container-header">
 									<span>Bachman's Charge Limit Available</span>
-									<span class="total">$100</span>
+									<span class="total">{{checkout.UserSpendingAcc['Bachman Charges'].Balance | currency}}</span>
 								</div>
 								<div class="payment-container row">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<p class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<input type="radio" name="BachmansCharge" />use $100 Bachman's Charge</p>
+										<label><input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Full" />use {{checkout.UserSpendingAcc['Bachman Charges'].Balance | currency}} Bachman's Charge</label></p>
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-											<input type="radio" name="BachmansCharge" />Enter Custom Charge</p>
-											<input type="number" class="col-xs-8 col-sm-8 col-md-8 col-lg-8"/><span></span>
+											<label><input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Custom" />Enter Custom Charge</label></p>
+											<input type="number" ng-model="txtBachmanCharges" class="col-xs-8 col-sm-8 col-md-8 col-lg-8" ng-disabled="BachmansCharges == 'Full'" /><span></span>
 										</div>
-										<button>Apply</button>
+										<span style="color:red;" ng-if="txtBachmanCharges > checkout.UserSpendingAcc['Bachman Charges'].Balance">You cannot exceed your balance limit...!</span>
+										<button ng-disabled="txtBachmanCharges > checkout.UserSpendingAcc['Bachman Charges'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Bachman Charges'], BachmansCharges, txtBachmanCharges, orderDtls, 'Bachman Charges')">Apply</button>
 									</div>
 								</div>
 							</div>
 						</div>
 						<!-- Gift Card -->
-						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="PaymentOption == 'GiftCard'">
+						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="PaymentOption == 'GiftCard'">
 							<div>
 								<div class="payment-container-header col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<span>Gift Card balance available</span>
-									<span class="total">$500</span>
+									<span class="total">{{checkout.UserSpendingAcc['Gift Card'].Balance | currency}}</span>
 								</div>
 								<div class="payment-container row">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<p><input type="radio" name="GiftCharge" />use $100 Gift Card balance</p>
+											<p><label><input type="radio" ng-model="GiftCharges" name="GiftCharge" value="Full" />use {{checkout.UserSpendingAcc['Gift Card'].Balance | currency}} Gift Card balance</label></p>
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-												<input type="radio" name="GiftCharge" />Enter Custom Charge</p>
-												<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/>
+												<label><input type="radio" ng-model="GiftCharges" name="GiftCharge" value="Custom" />Enter Custom Charge</label></p>
+												<input ng-model="txtGiftCharges" type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" ng-disabled="GiftCharges == 'Full'" />
 											</div>
 										</div>
-											<button>Apply</button>
+										<span style="color:red;" ng-if="txtGiftCharges > checkout.UserSpendingAcc['Gift Card'].Balance">You cannot exceed your balance limit...!</span>
+										<button ng-disabled="txtGiftCharges > checkout.UserSpendingAcc['Gift Card'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Gift Card'], GiftCharges, txtGiftCharges, orderDtls, 'Gift Card')">Apply</button>
 									</div>
 								</div>
 							</div>
@@ -439,22 +441,26 @@
 							</div>
 						</div>
 						<!-- purple perks -->
-						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="PaymentOption == 'PurplePerk'">
+						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="PaymentOption == 'PurplePerk'">
 							<div>
 								<div class="payment-container-header col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<span>Purple Perks balance available</span>
-									<span class="total">$100</span>
+									<span class="total">{{checkout.UserSpendingAcc['Purple Perk'].Balance | currency}}</span>
 								</div>
 								<div class="payment-container row">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<p><input type="radio" name="PurpleCharge" />use $100 Purple Perks balance</p>
+											<p><label><input type="radio" name="PurpleCharge" ng-model="PurpleCharges" value="Full" />use {{checkout.UserSpendingAcc['Purple Perk'].Balance | currency}} Purple Perks balance</label></p>
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Enter Custom charge</p>
-													<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/>
+													<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+														<label><input type="radio" ng-model="PurpleCharges" name="PurpleCharge" value="Custom" />
+														Enter Custom charge</label>
+													</p>
+													<input ng-model="txtPurpleCharges" type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" ng-disabled="PurpleCharges == 'Full'" />
 												</div>
 										</div>
-											<button>Apply</button>
+										<span style="color:red;" ng-if="txtPurpleCharges > checkout.UserSpendingAcc['Purple Perk'].Balance">You cannot exceed your balance limit...!</span>
+										<button ng-disabled="txtPurpleCharges > checkout.UserSpendingAcc['Purple Perk'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Purple Perk'], PurpleCharges, txtPurpleCharges, orderDtls, 'Purple Perk')">Apply</button>
 									</div>
 								</div>
 							</div>
@@ -562,11 +568,17 @@
 					<p>Subtotal  <span>{{orderDtls.subTotal | currency}}</span></p>
 					<p>Delivery Charges   <span>{{orderDtls.deliveryCharges | currency}} </span></p>
 					<p>Estimated Tax   <span>$0.00 </span></p>
+					<p ng-if="orderDtls.SpendingAccounts.CouponCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'CouponCharges')">x</button> Coupon Applied <span>-{{orderDtls.SpendingAccounts.CouponCharges | currency}} </span></p>
+					<p ng-if="orderDtls.SpendingAccounts.BachmansCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'BachmansCharges')">x</button>Bachman’s Charge applied   <span>-{{orderDtls.SpendingAccounts.BachmansCharges | currency}} </span></p>
+					<p ng-if="orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'GiftCardCharges')">x</button>Gift Card applied   <span>-{{orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
+					<p ng-if="orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'PaidCash')">x</button>Paid Through Cash   <span>-{{orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
+					<p ng-if="orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'ChequeCharges')">x</button>Paid through Cheque   <span>-{{orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
+					<p ng-if="orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'PurplePerk')">x</button>Purple Perks Balance applied   <span>-{{orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
 					<p class="total">Total   <span>{{orderDtls.Total | currency}}  </span></p>
 				</div>
 				<div class="promo-code">
 					<p>Apply Promo Code</p>
-					<input type="text" /><input type="button" value="Apply" />
+					<input type="text" ng-model="coupon" /><input type="button" value="Apply" ng-click="checkout.ApplyCoupon(coupon, orderDtls)" />
 				</div>
 			</uib-accordion>
 		</div>

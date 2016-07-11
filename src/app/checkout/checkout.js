@@ -69,17 +69,21 @@ function checkoutConfig( $stateProvider ) {
 		templateUrl:'checkout/templates/checkout.tpl.html',            
 		views: {
 			'': {
-				templateUrl: 'checkout/templates/checkout.tpl.html'
+				templateUrl: 'checkout/templates/checkout.tpl.html',
+				controller: 'checkoutCtrl',
+				controllerAs: 'checkout'
 			},
 			'checkouttop@checkout': {
-				templateUrl: 'checkout/templates/checkout.top.tpl.html'
+				templateUrl: 'checkout/templates/checkout.top.tpl.html',
+				controller: 'checkoutCtrl',
+				controllerAs: 'checkout'
 			},
 			'checkoutbottom@checkout': {
-				templateUrl: 'checkout/templates/checkout.bottom.tpl.html'
+				templateUrl: 'checkout/templates/checkout.bottom.tpl.html',
+				controller: 'checkoutCtrl',
+				controllerAs: 'checkout'
 			}     
-		},
-		controller: 'checkoutCtrl',
-		controllerAs: 'checkout'
+		}
 	});
 }
 
@@ -158,7 +162,10 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		vm.AvoidMultipleDelryChrgs = _.uniq(vm.AvoidMultipleDelryChrgs, 'lineID');
 		$scope.orderDtls.subTotal = orderDtls.subTotal;
 		$scope.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
-		$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
+		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
+		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "xp": {"TotalCost": orderDtls.subTotal + orderDtls.deliveryCharges}}).then(function(res){
+            $scope.orderDtls.Total = res.xp.TotalCost;
+        });
 		$scope.recipientsGroup = groups;
 		$scope.recipients = [];
 		for(var n in groups){
@@ -703,4 +710,33 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			addr.State = res.State;
 		});
 	}
+	vm.ApplyCoupon = function(coupon, orderDtls){
+		OrderCloud.Coupons.ListAssignments(null, $stateParams.ID).then(function(res){
+			angular.forEach(res.Items, function(val, key){
+				OrderCloud.Coupons.Get(val.CouponID).then(function(res1){
+					if(res1.Code == coupon){
+						BuildOrderService.CompareDate().then(function(dt){
+							if(new Date(res1.StartDate) <= new Date(dt) && new Date(res1.ExpirationDate) >= new Date(dt)){
+								orderDtls.Total = orderDtls.Total - res1.UsagesRemaining;
+								orderDtls.CouponCharges = res1.UsagesRemaining;
+								/*res1.UsagesRemaining = 0;
+								OrderCloud.Coupons.Update(val.CouponID, res1).then(function(res2){
+									console.log("coupon applied...");
+								});*/
+							}else{
+								alert("Coupon Expired.....");
+							}
+						});	
+					}else{
+						alert("Coupon not found.....");
+					}	
+				});
+			}, true);
+		});
+	}
+	/*vm.ApplyCoupon = function(){
+		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(res){
+			vm.SpendingAccounts = res.Items;
+		});
+	}*/
 }

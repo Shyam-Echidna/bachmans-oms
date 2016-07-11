@@ -848,7 +848,8 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 								dat.setHours(0, 0, 0, 0);
 								if(new Date(val.xp.deliveryDate) < dat)
 									delete val.xp.deliveryDate;
-							}else if(val.xp.MinDate){
+							}
+							if(val.xp.MinDate){
 								angular.forEach(val.xp.MinDate, function(val1, key1){
 									dt = new Date();
 									dt.setHours(0, 0, 0, 0);

@@ -213,7 +213,7 @@ function buildOrderConfig( $stateProvider ) {
 						OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
 							arr.push(spendingacc);
                             filterPurple = _.filter(arr, function(row){
-                                return _.indexOf(["Purple Perks"],row.Name) > -1;
+                                return _.indexOf(["Purple Perk"],row.Name) > -1;
                             });
 							if((filterPurple.length) > 0){
 								dfd.resolve(filterPurple);
@@ -815,7 +815,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 		});
 	};
 	$scope.getLineItems = function(){
-		var totalCost = 0;
+		//var totalCost = 0;
 		if(vm.order.Status == "Unsubmitted" && vm.order != undefined){
 			OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
 				vm.AvoidMultipleDelryChrgs = [];	
@@ -889,7 +889,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 								val.xp.pickupDate = new Date(val.xp.pickupDate);
 								val.willSearch = val.xp.storeName;
 							}
-							totalCost += val.xp.TotalCost; 
+							//totalCost += val.xp.TotalCost; 
 						});
 					});
 					/*$timeout(function(){

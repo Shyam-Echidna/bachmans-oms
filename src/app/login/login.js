@@ -12,7 +12,25 @@ function LoginConfig( $stateProvider, $locationProvider ) {
             url: '/login/:token',
             templateUrl:'login/templates/login.tpl.html',
             controller:'LoginCtrl',
-            controllerAs: 'login'
+            controllerAs: 'login',
+			resolve: {
+				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoURL) {
+					var df = $q.defer();
+					AlfrescoFact.Get().then(function (data) {
+                        console.log(data);
+                        var ticket = data.data.ticket;
+                        localStorage.setItem("alf_ticket", ticket);
+                        console.log("alf_ticketalf_ticket", ticket);
+						var homePath="OMS/Home?alf_ticket=";
+						AlfrescoFact.GetHome(homePath).then(function (data) {
+							AlfrescoFact.logo=$sce.trustAsResourceUrl(alfrescoURL+data.items[0].contentUrl+"?alf_ticket="+ ticket);
+							df.resolve(AlfrescoFact.logo);
+						 console.log("logoooooooooooooo", AlfrescoFact.logo);
+						 });
+                    });
+					 return df.promise;
+				}
+			}
         });
 		$locationProvider.html5Mode(true);
 }
@@ -93,8 +111,9 @@ function LoginService( $q, $window, toastr, $state,OrderCloud, clientid, buyerid
     }
 }
 
-function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, LoginService, buyerid, TokenRefresh ) {
+function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, LoginService, buyerid, TokenRefresh, AlfrescoCommon ) {
     var vm = this;
+	vm.logo=AlfrescoCommon;
     vm.credentials = {
         Username: null,
         Password: null

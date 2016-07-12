@@ -5,10 +5,19 @@ angular.module('orderCloud')
 function ConstantContact($q, $http, urls) {
     var service = {
         GetListOfSubscriptions: _listSubscriptions,
+        GetSpecifiedContact:_getContact,
         CreateContact:_createContact,
         UpdateContact:_updateContact,
-        GetSpecifiedContact:_getContact
+        SetSubscription:_settingSubscriptions
     };
+
+    var uri = {
+        "GSL":"getContactList",
+        "GSS":"getSpecificContact",
+        "CS":"createConstantContact",
+        "US":"updateContact",
+        "SS":"updateConstantContactList"
+    }
 
     function makeAPICall(method, uri, params){
         var deffer = $q.defer();
@@ -24,21 +33,25 @@ function ConstantContact($q, $http, urls) {
         return deffer.promise;
     }
 
-    function _listSubscriptions(uri) {
-        return makeAPICall('GET', uri, null);
+    function _listSubscriptions() {
+       return makeAPICall('GET', uri.GSL, null);
     };
 
-    function _getContact(uri, params) {
-        return makeAPICall('POST', uri, params);
+    function _getContact(params) {
+        return makeAPICall('POST', uri.GSS, params);
     };
 
-    function _createContact(uri, params) {
-        return makeAPICall('POST', uri, params);
+    function _createContact(params) {
+        return makeAPICall('POST', uri.CS, params);
     };
 
-    function _updateContact(uri, params) {
-        return makeAPICall('POST', uri, params);
+    function _updateContact(params) {
+        return makeAPICall('PUT', uri.US, params);
     };
 
+    function _settingSubscriptions(params) {
+        return makeAPICall('PUT', uri.SS, params);
+    };
+    
     return service;
 }

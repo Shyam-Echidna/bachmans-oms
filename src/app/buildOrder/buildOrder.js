@@ -245,9 +245,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	$scope.hideActiveSummary = true;
 	$scope.showplp = true;
 	$scope.gotoCheckout=function(){
-	if($scope.showOrdersummary == true){
-		$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
-	}
+		if($scope.showOrdersummary == true){
+			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+		}
 	};
 	$scope.selectVarients = function(txt,index){
 		//vm.productDetails.varientsOption = vm.productDetails.sizeval+"_"+vm.productDetails.colorval;
@@ -664,6 +664,8 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 	$scope.cancelPopUp = function (prodID, DeliveryMethod, index) {
 		vm['showDeliveryToolTip'+index] = false;
 		vm.DeliveryType = undefined;
+		if(DeliveryMethod=='Default')
+			DeliveryMethod = undefined;
 		$scope.createListItem(prodID, DeliveryMethod);
 	};
 	vm.GetDeliveryMethods = function(prodID, index){
@@ -772,8 +774,8 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 					//$scope.getLineItems();
 				});
 			});
-		}else{
-			lineItemParams.xp.TotalCost = 0;*/
+		}else{*/
+			lineItemParams.xp.TotalCost = 0;
 			if(DeliveryMethod)
 				lineItemParams.xp.DeliveryMethod = DeliveryMethod;
 			BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
@@ -887,12 +889,15 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 								val.xp.pickupDate = new Date(val.xp.pickupDate);
 								val.willSearch = val.xp.storeName;
 							}
-							totalCost += val.xp.TotalCost;
+							totalCost += val.xp.TotalCost; 
 						});
 					});
-					$timeout(function(){
+					/*$timeout(function(){
 						angular.element(document.getElementById("order-checkout")).scope().orderTotal = totalCost;
-					},300);
+					},300);*/
+				});
+			    BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
+					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
 				});
 			});
 		}else{
@@ -1418,7 +1423,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 				BuildOrderService.OrderOnHoldRemove(res.Items, vm.order.ID).then(function(dt){
 					console.log("Order OnHold Removed....");
 				});
-				angular.element(document.getElementById("order-checkout")).scope().orderTotal = totalCost;
+				//angular.element(document.getElementById("order-checkout")).scope().orderTotal = totalCost;
 				delete data.undefined;
 				$scope.groups = data;
 				$scope.lineVal = [];
@@ -1432,6 +1437,9 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 						vm.TotalCost[n] += parseFloat(val.xp.TotalCost);
 					});
 				}
+			});
+			BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
+				angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
 			});
 		});
 	};
@@ -1725,7 +1733,8 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 		GetPreceedingZeroDate: _GetPreceedingZeroDate,
 		GetHosChurchFuneral: _GetHosChurchFuneral,
 		GetStores: _GetStores,
-		OrderOnHoldRemove: _OrderOnHoldRemove
+		OrderOnHoldRemove: _OrderOnHoldRemove,
+		PatchOrder: _PatchOrder
     }
 	function _getProductDetails(data) {
 		var deferred = $q.defer();
@@ -2007,6 +2016,18 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 				d.resolve(res);
 			});
 		}
+		return d.promise;
+	}
+	function _PatchOrder(orderID, data){
+		var d = $q.defer(), delChrgs = 0;
+		angular.forEach(data.Items, function(val, key){
+			angular.forEach(val.xp.deliveryFeesDtls, function(val1, key1){
+				delChrgs += parseFloat(val1);
+			},true);
+		},true);	
+		OrderCloud.As().Orders.Patch(orderID, {"ID": orderID, "ShippingCost": delChrgs}).then(function(res){
+			d.resolve(res);
+		});
 		return d.promise;
 	}
     return service;

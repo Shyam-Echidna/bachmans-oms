@@ -164,9 +164,8 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		$scope.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
 		$scope.orderDtls.SpendingAccounts = {};
 		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
-		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "xp": {"TotalCost": orderDtls.subTotal + orderDtls.deliveryCharges}}).then(function(res){
-            $scope.orderDtls.Total = res.xp.TotalCost;
-			
+		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
+            $scope.orderDtls.Total = res.Total;
         });
 		$scope.recipientsGroup = groups;
 		$scope.recipients = [];
@@ -784,6 +783,14 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 	vm.deleteSpendingAcc = function(orderDtls, ChargesType){
 		delete orderDtls.SpendingAccounts[ChargesType];
 		vm.SumSpendingAccChrgs(orderDtls);
+	}
+	vm.PayByChequeOrCash = function(){
+		if(vm.PayCashCheque=='PayCash'){
+			vm.txtPayCash;
+		}else if(vm.PayCashCheque=='PayCheque'){
+			vm.txtChequeAmt;
+			vm.txtChequeNumber;
+		}
 	}
 	vm.UserSpendingAccounts = function(){
 		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(res){

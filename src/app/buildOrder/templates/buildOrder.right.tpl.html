@@ -189,6 +189,7 @@
 								<h4>Delivery Method</h4>
 								<label ng-if="buildOrderRight.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Courier">Courier</label>
 								<label ng-if="buildOrderRight.Faster" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Mixed" >Faster Delivery</label>
+								<label class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Default" ng-init="buildOrderRight.DeliveryType='Default'">Default Delivery</label>
 								<button type="button" ng-click="cancelPopUp(activeOrders[line][0].Product.ID, buildOrderRight.DeliveryType, $index)">OK</button>
 								<button type="button" ng-click="closePopover($index)">Cancel</button>
 							</div>
@@ -222,8 +223,8 @@
 								</svg>
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
-								<a ng-click="viewAddrBook(lineitems)">View Address Book</a>
-								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)">Above Address</a>
+								<a ng-click="viewAddrBook(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">View Address Book</a>
+								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">Above Address</a>
 								<div class="qty">
 									<p>Quantity</p>
 									<input type="number" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
@@ -239,13 +240,13 @@
 									</div>
 								</div>
 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Residence</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Hospital</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Funeral" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Funeral</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Church" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Church</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Standard Shipping</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">School</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">In-Store Pick Up</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Residence <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Hospital <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Funeral" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Funeral <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Church" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Church <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
+									<!-- <label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Standard Shipping</label> -->
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">School <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">In-Store Pick Up <span ng-if="lineitems.xp.NoInStorePickUp">(Not Available)</span></label>
 								</div>
 								
 								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'">
@@ -283,17 +284,17 @@
 												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.pickupDate" ng-attr-min="{{lineitems.xp.MinDays.InStorePickUp}}"/>
 											</div>
 										</div>
-										<div class="location-Code" ng-show="addressType!='Will Call'" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+										<div class="location-Code" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 											<div class="zipCode">
 												<p>Zip Code*</p>
 												<input type="number" ng-model="lineitems.ShippingAddress.Zip" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)"></input>
 											</div>
-											<div class="delivery-date">
+											<div class="delivery-date" ng-if="addressType!='Will Call'">
 												<p>Delivery Date*</p>
 												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.deliveryDate" ng-attr-min="{{lineitems.xp.deliveryFeesDtls.UPSCharges ? lineitems.xp.MinDays.UPS : lineitems.xp.MinDays.MinToday}}" ng-change="buildOrderRight.DateSelected(lineitems)"></input>
 											</div>
 										</div>
-										<div class="location-addressL1" ng-if="addressType!='Will Call'">
+										<div class="location-addressL1">
 											<h1>Address</h1>
 											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
 											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
@@ -532,9 +533,10 @@
 								</div>
 								<div class="product-cost">
 									<h4>Item Price <span>{{lineitems.UnitPrice | currency}}</span></h4>
-									<h4>Estimated Tax <span>$0.00</span></h4>
+									<h4 ng-if="!lineitems.xp.deliveryFeesDtls && lineitems.ShippingAddress.Zip && lineitems.ShippingAddress.Street1">Delivery Charges<span>$0.00</span></h4>
 									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && lineitems.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b> <span>{{val | currency}}</span></h4>
 									<h4 ng-if="lineitems.xp.Discount">Discount <span>{{lineitems.xp.Discount | currency}}</span></h4>
+									<h4>Estimated Tax <span>$0.00</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
 								</div>
 								<input type="submit" value="SAVE" class="notes" />

@@ -281,7 +281,12 @@
 											</div>
 											<div>
 												<h1>Pick-up Date*</h1>
-												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.pickupDate" ng-attr-min="{{lineitems.xp.MinDays.InStorePickUp}}"/>
+												<p class="input-group">
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-required="true" />
+												  <span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
+												  </span>
+												</p>
 											</div>
 										</div>
 										<div class="location-Code" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
@@ -291,7 +296,12 @@
 											</div>
 											<div class="delivery-date" ng-if="addressType!='Will Call'">
 												<p>Delivery Date*</p>
-												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.deliveryDate" ng-attr-min="{{lineitems.xp.deliveryFeesDtls.UPSCharges ? lineitems.xp.MinDays.UPS : lineitems.xp.MinDays.MinToday}}" ng-change="buildOrderRight.DateSelected(lineitems)"></input>
+												<p class="input-group">
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" ng-required="true" />
+												  <span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
+												  </span>
+												</p>
 											</div>
 										</div>
 										<div class="location-addressL1">
@@ -582,7 +592,7 @@
 					</td>
 					<td>
 						<h4>Phone</h4>
-						<p>{{val[0].ShippingAddress.Phone}}</p>
+						<p>{{val.ShippingAddress.Phone}}</p>
 					</td>			
 				</tr>
 			</table>

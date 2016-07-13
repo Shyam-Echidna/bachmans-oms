@@ -856,17 +856,19 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 									dt = new Date();
 									dt.setHours(0, 0, 0, 0);
 									dt = dt.setDate(dt.getDate() + val1);
-									dt = new Date(dt);
-									val.xp.MinDays[key1] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+									val.xp.MinDays[key1] = new Date(dt);
 								}, true);
-								dt = new Date();
-								val.xp.MinDays['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
-								if(val.xp.MinDate.LocalDelivery)
-									val.xp.MinDays['MinToday'] = val.xp.MinDate.LocalDelivery;
+								val.xp.MinDays['MinToday'] = new Date();
+								if(val.xp.MinDate.LocalDelivery){
+									dt = new Date();
+									dt.setHours(0, 0, 0, 0);
+									dt = dt.setDate(dt.getDate() + val.xp.MinDate.LocalDelivery);
+									val.xp.MinDays['MinToday'] = new Date(dt);
+								}	
 							}else{
-								dt = new Date();
+								//dt = new Date();
 								val.xp.MinDate = {};
-								val.xp.MinDays['MinToday'] = dt.getFullYear()+"-"+(("0" + (dt.getMonth()+1)).slice(-2))+"-"+(("0" + dt.getDate()).slice(-2));
+								val.xp.MinDays['MinToday'] = new Date();
 							}
 							val.varientsOptions = {};
 							if(val.Product.xp != null && val.Product.xp.Specs_Options){

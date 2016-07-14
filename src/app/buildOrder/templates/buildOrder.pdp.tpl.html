@@ -88,6 +88,9 @@
 								<option value="">THREE</option>
 							</select>
 						</p>
+						<p ng-if="buildOrder.Courier || buildOrder.Faster">
+							<b>Delivery Methods Available:</b>
+						</p>
 						<p>
 <!-- 							<label ng-if="buildOrder.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">Courier</label>
 							<label ng-if="buildOrder.Faster" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Faster Delivery" >Faster Delivery</label>

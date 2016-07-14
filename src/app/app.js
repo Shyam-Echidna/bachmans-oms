@@ -16,6 +16,7 @@ angular.module( 'orderCloud', [
         'ordercloud-assignment-helpers',
         'ordercloud-paging-helpers',
         'ordercloud-auto-id',
+        'ordercloud-credit-card',
         'ordercloud-current-order',
         'ordercloud-address',
         'ordercloud-lineitems',

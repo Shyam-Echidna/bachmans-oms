@@ -164,9 +164,8 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		$scope.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
 		$scope.orderDtls.SpendingAccounts = {};
 		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
-		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "xp": {"TotalCost": orderDtls.subTotal + orderDtls.deliveryCharges}}).then(function(res){
-            $scope.orderDtls.Total = res.xp.TotalCost;
-			
+		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
+            $scope.orderDtls.Total = res.Total;
         });
 		$scope.recipientsGroup = groups;
 		$scope.recipients = [];
@@ -216,9 +215,9 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		}	
 		if(line.xp.deliveryRun)
 			common.deliveryRun = line.xp.deliveryRun;
-		line.xp.addressType = line.addressTypeD;
+		//line.xp.addressType = line.addressTypeD;
 		if(line.selectedAddrID){
-			params = _.extend(common,{"deliveryNote":line.xp.deliveryNote,"deliveryDate":line.xp.deliveryDate,"deliveryCharges":line.xp.deliveryCharges,"addressType":line.addressTypeD,"deliveryCharges": line.xp.deliveryCharges,"TotalCost": parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))});
+			params = _.extend(common,{"deliveryNote":line.xp.deliveryNote,"deliveryDate":line.xp.deliveryDate,"deliveryCharges":line.xp.deliveryCharges,"addressType":line.xp.addressType,"deliveryCharges": line.xp.deliveryCharges,"TotalCost": parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))});
 			if(line.xp.deliveryChargeAdjReason != "---select---")
 				params.deliveryChargeAdjReason = line.xp.deliveryChargeAdjReason;
 			OrderCloud.As().LineItems.Patch(vm.order.ID, line.ID, {"ShippingAddressID":line.selectedAddrID,"xp":line.xp}).then(function(res){
@@ -372,7 +371,7 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 	$scope.deliveryAddr = function(Index){
 		this['isDeliAddrShow'+Index] = true;
 	};
-	$scope.deliveryOrStore = 1;
+	//$scope.deliveryOrStore = 1;
 	$scope.fromStoreOrOutside = 1;
 	var storesData;
 	$scope.getStores = function(line){
@@ -383,11 +382,11 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			});
 		}
 		if(line){
-			if(line.deliveryOrStore==2){
-				line.addressTypeD = "Will Call";
+			/*if(line.deliveryOrStore==2){
 				line.xp.addressType = "Will Call";
-			}
-			if(line.addressTypeD == "Will Call" && line.willSearch){
+				line.xp.addressType = "Will Call";
+			}*/
+			if(line.xp.addressType == "Will Call" && line.willSearch){
 				$scope.getDeliveryCharges(line);
 			}
 		}
@@ -414,12 +413,12 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		$scope.getDeliveryCharges(line);
 	};
 	$scope.changeAddrType = function(line){
-		line.xp.addressType = line.addressTypeD;
-		if(line.addressTypeD != "Will Call"){
+		//line.xp.addressType = line.addressTypeD;
+		/*if(line.xp.addressType != "Will Call"){
 			line.deliveryOrStore = 1;
 		}else{
 			line.deliveryOrStore = 2;
-		}
+		}*/
 		$scope.getDeliveryCharges(line);
 		/*if(addressType == "Hospital" && !vm.HospitalNames){
 			vm.GetAllList("Hospitals");
@@ -690,13 +689,12 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			line.xp.deliveryChargeAdjReason = $scope.buyerDtls.xp.deliveryChargeAdjReasons[0];
 	};
 	$scope.addressTypeSelect = function(line){
-		line.addressTypeD = line.xp.addressType;
 		if(line.xp.addressType=="Will Call"){
-			line.deliveryOrStore = 2;
+			//line.deliveryOrStore = 2;
 			$scope.getStores(line);
-		}	
-		else
-			line.deliveryOrStore = 1;
+		}
+		/*else
+			line.deliveryOrStore = 1;*/
 		
 		var filt = _.filter($scope.storeNames, function(row,index){
 			return _.indexOf([line.xp.storeName],row.storeName) > -1;
@@ -705,6 +703,7 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			line.selected = $scope.storeNames[parseInt(filt[0].id)];
 		else
 			line.selected = $scope.storeNames[0];
+		//line.addressTypeD = line.xp.addressType;
 	};
 	$scope.GetCityState = function(addr){
 		BuildOrderService.getCityState(addr.Zip).then(function(res){
@@ -764,8 +763,6 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		}
 		if(type=="Bachman Charges")
 			orderDtls.SpendingAccounts.BachmansCharges = dat;
-		if(type=="Gift Card")
-			orderDtls.SpendingAccounts.GiftCardCharges = dat;
 		if(type=="Purple Perk")
 			orderDtls.SpendingAccounts.PurplePerk = dat;
 		vm.SumSpendingAccChrgs(orderDtls);		
@@ -773,7 +770,8 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 	vm.SumSpendingAccChrgs = function(orderDtls){
 		var sum=0;
 		angular.forEach(orderDtls.SpendingAccounts, function(val, key){
-			sum = sum + val;
+			if(key!="ChequeNo")
+				sum = sum + val;
 		}, true);
 		if(_.isEmpty(orderDtls.SpendingAccounts)){
 			orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
@@ -784,6 +782,33 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 	vm.deleteSpendingAcc = function(orderDtls, ChargesType){
 		delete orderDtls.SpendingAccounts[ChargesType];
 		vm.SumSpendingAccChrgs(orderDtls);
+	}
+	vm.PayByChequeOrCash = function(orderDtls){
+		if(vm.PayCashCheque=='PayCash'){
+			orderDtls.SpendingAccounts.PaidCash = vm.txtPayCash;
+			delete orderDtls.SpendingAccounts.ChequeCharges;
+			delete orderDtls.SpendingAccounts.ChequeNo;
+		}else if(vm.PayCashCheque=='PayCheque'){
+			orderDtls.SpendingAccounts.ChequeCharges = vm.txtChequeAmt;
+			orderDtls.SpendingAccounts.ChequeNo = vm.txtChequeNumber;
+			delete orderDtls.SpendingAccounts.PaidCash;
+		}
+		vm.SumSpendingAccChrgs(orderDtls);		
+	}
+	vm.RedeemGiftCard = function(CardNo, orderDtls){
+		OrderCloud.UserGroups.ListUserAssignments(null, $stateParams.ID).then(function(res){
+			OrderCloud.SpendingAccounts.ListAssignments(CardNo, null, res.Items[0].UserGroupID).then(function(res1){
+				if(res1.Items.length > 0){
+					OrderCloud.SpendingAccounts.Get(res1.Items[0].SpendingAccountID).then(function(data){
+						vm.UserSpendingAcc[data.Name] = data;
+						orderDtls.SpendingAccounts.GiftCardCharges = data.Balance;
+						vm.SumSpendingAccChrgs(orderDtls);
+					});
+				}else{
+					alert("Gift Card Not Found...!");
+				}	
+			});
+		});
 	}
 	vm.UserSpendingAccounts = function(){
 		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(res){

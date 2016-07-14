@@ -89,6 +89,7 @@ function getConstants() {
         case 'test':
             result.authurl = 'https://testauth.ordercloud.io/oauth/token';
             result.apiurl = 'https://testapi.ordercloud.io';
+            result.authorizeneturl = 'https://testapi.ordercloud.io/v1/nativeintegrationproxy/authorizenet';
             break;
         case 'qa':
             result.authurl = 'https://qaauth.ordercloud.io/oauth/token';
@@ -97,6 +98,7 @@ function getConstants() {
         default:
             result.authurl = 'https://auth.ordercloud.io/oauth/token';
             result.apiurl = 'https://api.ordercloud.io';
+            result.authorizeneturl = 'https://api.ordercloud.io/v1/nativeintegrationproxy/authorizenet';
             break;
     }
     if (process.env.apiurl && process.env.authurl) {

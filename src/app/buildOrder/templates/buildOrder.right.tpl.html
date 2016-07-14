@@ -200,7 +200,8 @@
 									<label for="fast">Faster Delivery</label>
 									<div class="radio"></div>
 								</label>
-								 <button type="button" ng-click="cancelPopUp(activeOrders[line][0].Product.ID, buildOrderRight.DeliveryType, $index)">OK</button>
+								<label class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Default" ng-init="buildOrderRight.DeliveryType='Default'">Default Delivery</label>
+								<button type="button" ng-click="cancelPopUp(activeOrders[line][0].Product.ID, buildOrderRight.DeliveryType, $index)">OK</button>
 								<button type="button" ng-click="closePopover($index)">Cancel</button>
 							</div>
 					</script>
@@ -233,8 +234,8 @@
 								</svg>
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
-								<a ng-click="viewAddrBook(lineitems)">View Address Book</a>
-								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)" class="above-addr">Above Address</a>
+								<a ng-click="viewAddrBook(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">View Address Book</a>
+								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">Above Address</a>
 								<div class="qty">
 									<p>Quantity</p>
 									<input type="number" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
@@ -261,44 +262,41 @@
 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
 									<label class="radio-inline radio-common">
 										<input type="radio" id="residence" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
-										<label for="residence">Residence</label>
+										<label for="residence">Residence <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="hospital" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
-										<label for="hospital">Hospital</label>
+										<label for="hospital">Hospital<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="funeral" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Funeral" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
-										<label for="funeral">Funeral</label>
+										<label for="funeral">Funeral<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="church" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Church" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
-										<label for="church">Church</label>
+										<label for="church">Church<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="shipping" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
-										<label for="shipping">Standard Shipping</label>
+										<label for="shipping">Standard Shipping<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
-										<label for="school">School</label>
+										<label for="school">School<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="store" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">
-										<label for="store">In-Store Pick Up</label>
+										<label for="store">In-Store Pick Up<span ng-if="lineitems.xp.NoInStorePickUp">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
 							</div>
-								
-								
-
-								
+				
 								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'" class="outgoing-wire">
 									<div class="check-common">
 										<input type="checkbox" ng-checked="Wire" ng-model="Wire" id="squaredCheck">
@@ -334,20 +332,30 @@
 											</div>
 											<div>
 												<h1>Pick-up Date*</h1>
-												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.pickupDate" ng-attr-min="{{lineitems.xp.MinDays.InStorePickUp}}"/>
+												<p class="input-group">
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-required="true" />
+												  <span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
+												  </span>
+												</p>
 											</div>
 										</div>
-										<div class="location-Code" ng-show="addressType!='Will Call'" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+										<div class="location-Code" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 											<div class="zipCode">
 												<p>Zip Code*</p>
 												<input type="number" ng-model="lineitems.ShippingAddress.Zip" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)"></input>
 											</div>
-											<div class="delivery-date">
+											<div class="delivery-date" ng-if="addressType!='Will Call'">
 												<p>Delivery Date*</p>
-												<input type="date" placeholder="MM/DD/YYYY" ng-model="lineitems.xp.deliveryDate" ng-attr-min="{{lineitems.xp.deliveryFeesDtls.UPSCharges ? lineitems.xp.MinDays.UPS : lineitems.xp.MinDays.MinToday}}" ng-change="buildOrderRight.DateSelected(lineitems)"></input>
+												<p class="input-group">
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" ng-required="true" />
+												  <span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
+												  </span>
+												</p>
 											</div>
 										</div>
-										<div class="location-addressL1" ng-if="addressType!='Will Call'">
+										<div class="location-addressL1">
 											<h1>Address</h1>
 											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
 											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
@@ -590,9 +598,10 @@
 								</div>
 								<div class="product-cost">
 									<h4>Item Price <span>{{lineitems.UnitPrice | currency}}</span></h4>
-									<h4>Estimated Tax <span>$0.00</span></h4>
+									<h4 ng-if="!lineitems.xp.deliveryFeesDtls && lineitems.ShippingAddress.Zip && lineitems.ShippingAddress.Street1">Delivery Charges<span>$0.00</span></h4>
 									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && lineitems.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b> <span>{{val | currency}}</span></h4>
 									<h4 ng-if="lineitems.xp.Discount">Discount <span>{{lineitems.xp.Discount | currency}}</span></h4>
+									<h4>Estimated Tax <span>$0.00</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
 								</div>
 								<input type="submit" value="SAVE" class="notes" />
@@ -638,7 +647,7 @@
 					</td>
 					<td>
 						<h4>Phone</h4>
-						<p>{{val[0].ShippingAddress.Phone}}</p>
+						<p>{{val.ShippingAddress.Phone}}</p>
 					</td>			
 				</tr>
 			</table>

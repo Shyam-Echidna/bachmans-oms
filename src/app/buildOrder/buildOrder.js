@@ -47,6 +47,16 @@ angular.module( 'orderCloud' )
 				});
 			}
 		};
+	}).directive("maxLength", function() {
+		return {
+			restrict: "A",
+			link: function(scope, elem, attrs) {
+				var limit = parseInt(attrs.maxLength);
+				angular.element(elem).on("keypress", function(e) {
+					if (this.value.length == limit) e.preventDefault();
+				});
+			}
+		}
 	});
 	/*.directive('autoComplete', function($timeout) {
 		return function(scope, iElement, iAttrs) {
@@ -190,8 +200,7 @@ function buildOrderConfig( $stateProvider ) {
 											},true);
 										}
 									});
-								}
-								else{
+								}else{
 									OrderCloud.As().Orders.Get($stateParams.orderID).then(function(res){
 										CurrentOrder.Set(res.ID);
 										d.resolve(res);
@@ -213,7 +222,7 @@ function buildOrderConfig( $stateProvider ) {
 						OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
 							arr.push(spendingacc);
                             filterPurple = _.filter(arr, function(row){
-                                return _.indexOf(["Purple Perk"],row.Name) > -1;
+                                return _.indexOf(["Purple Perks"],row.Name) > -1;
                             });
 							if((filterPurple.length) > 0){
 								dfd.resolve(filterPurple);
@@ -1014,6 +1023,8 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 					dt = undefined;
 				}
 				vm.GetDeliveryChrgs(line, DeliveryMethod, dt).then(function(){*/
+					if(line.OutgoingWire==true)
+						line.xp.Status = "OnHold";
 					OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
 						OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
 							if(line.xp.Status){

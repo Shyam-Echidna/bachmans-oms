@@ -7,6 +7,21 @@
 <div class="container-fluid home-template" ng-if="!$parent.base.currentUser.xp.CSRAdmin">
 
 	<div class="col-xs-12 col-sm-12 promotion_wrapper">
+	<!-- <input
+            type="text"
+            class="form-control input-block-level"
+            placeholder="Search"
+            ng-model="home.searchTerm"
+            typeahead-wait-ms="100"
+            typeahead-append-to-body="true"
+            uib-typeahead="entry for entry in home.popupSearch($viewValue)"
+            typeahead-popup-template-url="algolia/templates/algoliaSearchTypeahead.popup.tpl.html"
+            typeahead-loading="home.loading"
+            typeahead-focus-first="false"
+			
+    > -->
+	<algolia-search></algolia-search>
+	<!-- <button ng-click="home.goToAlgoliaResultsPage(home.searchTerm)">frtger</button> -->
 <!-- 		<h1 class="heading">Promotions & Information</h1>
 		<div ng-repeat="PromoInfo in home.PromoInformation" ng-include="PromoInfo"></div>	 -->
 		<h1 class="heading">{{home.eventList.name}}</h1>

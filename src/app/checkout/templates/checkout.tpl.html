@@ -137,14 +137,14 @@
 												<p>{{buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
 												<p>{{buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
 											</li>
-											<li ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}">
+											<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}">
 												<p>{{buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
 												<p>{{buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
 												<p>${{buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
 											</li>
 										</ul>
 									</div>
-									{{line.xp.deliveryFeesDtls}}
+									
 									<div ng-if="line.xp.addressType=='Will Call'" class="select-store">
 										 <p>Select Store</p>
 											 <!--<select>

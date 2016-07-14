@@ -131,6 +131,7 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		var dt,locale = "en-us",dat,index=0;
 		var groups = _.groupBy(data, function(obj){
 			dt = new Date(obj.xp.deliveryDate);
+			var deliverySum=0;
 			//obj.xp.deliveryDate = dt.toLocaleString(locale, { month: "long" })+" "+dt.getDate()+", "+dt.getFullYear();
 			dat = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
 			BuildOrderService.GetPhoneNumber(obj.ShippingAddress.Phone).then(function(res){
@@ -154,8 +155,13 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 			index++;
 			orderDtls.subTotal += parseFloat(obj.LineTotal);
 			angular.forEach(obj.xp.deliveryFeesDtls, function(val, key){
-				orderDtls.deliveryCharges += parseFloat(val);
+				deliverySum += parseFloat(val);
 			},true);
+			if(deliverySum > 250){
+				line.xp.Discount = deliverySum - 250;
+				deliverySum = 250;
+			}
+			orderDtls.deliveryCharges += deliverySum;
 			//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
 			return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
 		});
@@ -206,20 +212,31 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		var params = {
 			"FirstName":line.ShippingAddress.FirstName,"LastName":line.ShippingAddress.LastName,"Street1":line.ShippingAddress.Street1,"Street2":line.ShippingAddress.Street2,"City":line.ShippingAddress.City,"State":line.ShippingAddress.State,"Zip":line.ShippingAddress.Zip,"Phone":line.ShippingAddress.Phone,"Country":"US"
 		};
-		var common = {};
+		var common = {}, deliverySum=0;
 		if(this.cardMsg != true && line.xp.CardMessage){
 			common = {"CardMessage":{
 				"line1":line.xp.CardMessage.line1,"line2":line.xp.CardMessage.line2,"line3":line.xp.CardMessage.line3,"line4":line.xp.CardMessage.line4
 				}
 			};
-		}	
-		if(line.xp.deliveryRun)
-			common.deliveryRun = line.xp.deliveryRun;
+		}
+		if(line.xp.deliveryRun=='Run4'){
+			if(!line.xp.deliveryFeesDtls)
+				line.xp.deliveryFeesDtls = {};
+			line.xp.deliveryFeesDtls.PriorityDelivery = $scope.buyerDtls.xp.DeliveryRuns[0].Run4.charge;
+		}
+		angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
+			deliverySum += parseFloat(val);
+		});
+		if(deliverySum > 250){
+			line.xp.Discount = deliverySum - 250;
+			deliverySum = 250;
+		}
+		line.xp.TotalCost = deliverySum+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice));
 		//line.xp.addressType = line.addressTypeD;
 		if(line.selectedAddrID){
-			params = _.extend(common,{"deliveryNote":line.xp.deliveryNote,"deliveryDate":line.xp.deliveryDate,"deliveryCharges":line.xp.deliveryCharges,"addressType":line.xp.addressType,"deliveryCharges": line.xp.deliveryCharges,"TotalCost": parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))});
-			if(line.xp.deliveryChargeAdjReason != "---select---")
-				params.deliveryChargeAdjReason = line.xp.deliveryChargeAdjReason;
+			//params = _.extend(common,{"deliveryNote":line.xp.deliveryNote,"deliveryDate":line.xp.deliveryDate,"deliveryCharges":line.xp.deliveryCharges,"addressType":line.xp.addressType,"deliveryCharges": line.xp.deliveryCharges,"TotalCost": parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))});
+			if(line.xp.deliveryChargeAdjReason == "---select---")
+				delete line.xp.deliveryChargeAdjReason;
 			OrderCloud.As().LineItems.Patch(vm.order.ID, line.ID, {"ShippingAddressID":line.selectedAddrID,"xp":line.xp}).then(function(res){
 				$scope.onLoadCheckout();
 			});
@@ -238,11 +255,11 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 					if(line.xp.Status){
 						OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}}).then(function(res){
 							console.log("Order Status OnHold Updated.......");
-							//$scope.onLoadCheckout();
+							$scope.onLoadCheckout();
 							alert("Data submitted successfully");
 						});
 					}else{
-						//$scope.onLoadCheckout();
+						$scope.onLoadCheckout();
 						alert("Data submitted successfully");
 					}
 				});
@@ -607,9 +624,9 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 	var dt = new Date();
 	$scope.dt = new Date();//today
 	var today = $scope.dt.getMonth()+1+"/"+$scope.dt.getDate()+"/"+$scope.dt.getFullYear();
-	$scope.tom = dt.setDate(dt.getDate() + 1);//tomorrow
+	$scope.tom = new Date(dt.setDate(dt.getDate() + 1));//tomorrow
 	$scope.initDate = new Date();//day after tomorrow
-	var tomorrow = new Date($scope.tom);
+	var tomorrow = $scope.tom;
 	tomorrow = tomorrow.getMonth()+1+"/"+tomorrow.getDate()+"/"+tomorrow.getFullYear();
 	vm.toggle = function(line,index){
 		vm.opened = true;
@@ -628,7 +645,7 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		}
 		else if(tomorrow==date1){
 			vm['data'+$scope.datePickerLine.index] = "tom"+$scope.datePickerLine.index;
-			$scope.datePickerLine.xp.deliveryDate = new Date($scope.tom);
+			$scope.datePickerLine.xp.deliveryDate = $scope.tom;
 			$scope.datePickerLine.dateVal = {};
 		}	
 		else{

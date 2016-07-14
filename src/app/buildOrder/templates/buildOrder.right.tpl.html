@@ -209,7 +209,7 @@
 				<div class="receipient-details">
 					<uib-accordion close-others="oneAtATime">
 					<uib-accordion-group ng-repeat="lineitems in activeOrders[line] track by lineitems.ID" is-open="isOpen">
-						<form role="form" name="lineItemForm{{$index}}" disable-dynamic-validation>
+						<form role="form" name="lineItemForm" ng-submit="lineDtlsSubmit(lineitems)" disable-dynamic-validation>
 							<uib-accordion-heading>
 								<svg class="close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
 									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z" />
@@ -243,13 +243,11 @@
 								<div class="receipient-name" ng-init="buildOrderRight.GetAllList(lineitems.xp.addressType)">
 									<div class="firstNm">
 										<p>First Name <span>*</span></p>
-										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" name="FirstName" required />
-										<p><span ng-show="lineItemForm{{$index}}.FirstName.$error.required && lineItemForm{{$index}}.FirstName.$dirty">required</span></p>
+										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" name="FirstName" />
 									</div>
 									<div>
 										<p>Last Name <span>*</span></p>
-										<input type="text" ng-model="lineitems.ShippingAddress.LastName" name="LastName" required />
-										<p><span ng-show="lineItemForm{{$index}}.LastName.$error.required && lineItemForm{{$index}}.LastName.$dirty">required</span></p>
+										<input type="text" ng-model="lineitems.ShippingAddress.LastName" name="LastName" />
 									</div>
 								</div>
 <!-- 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
@@ -262,7 +260,6 @@
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">In-Store Pick Up</label>
 								</div> -->
 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
-<<<<<<< HEAD
 									<label class="radio-inline radio-common">
 										<input type="radio" id="residence" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
 										<label for="residence">Residence <span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
@@ -601,8 +598,8 @@
 									<h4 ng-if="lineitems.xp.Discount">Discount <span>{{lineitems.xp.Discount | currency}}</span></h4>
 									<h4>Estimated Tax <span>$0.00</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
-								</div>{{lineItemForm0.$valid}}
-								<input type="submit" value="SAVE" class="notes" ng-disabled="!lineItemForm{{$index}}.$valid" />
+								</div>
+								<input type="submit" value="SAVE" class="notes" />
 							</div>
 						</form>
 						</uib-accordion-group>

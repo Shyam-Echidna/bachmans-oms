@@ -187,9 +187,20 @@
 					<script type="text/ng-template" id="AddRecipientDelMethods.html">
 							<div click-outside="closePopover()">
 								<h4>Delivery Method</h4>
-								<label ng-if="buildOrderRight.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Courier">Courier</label>
+						<!-- 		<label ng-if="buildOrderRight.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Courier">Courier</label>
 								<label ng-if="buildOrderRight.Faster" class=""><input type="radio" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Mixed" >Faster Delivery</label>
-								<button type="button" ng-click="cancelPopUp(activeOrders[line][0].Product.ID, buildOrderRight.DeliveryType, $index)">OK</button>
+								 -->
+								<label class="radio-inline radio-common" ng-if="buildOrderRight.Courier">
+									<input type="radio" id="courier" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Courier">
+									<label for="courier">Courier</label>
+									<div class="radio"></div>
+								</label>
+								<label class="radio-inline radio-common" ng-if="buildOrderRight.Faster">
+									<input type="radio" id="fast" name="optradio1" ng-model="buildOrderRight.DeliveryType" value="Mixed">
+									<label for="fast">Faster Delivery</label>
+									<div class="radio"></div>
+								</label>
+								 <button type="button" ng-click="cancelPopUp(activeOrders[line][0].Product.ID, buildOrderRight.DeliveryType, $index)">OK</button>
 								<button type="button" ng-click="closePopover($index)">Cancel</button>
 							</div>
 					</script>
@@ -223,7 +234,7 @@
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
 								<a ng-click="viewAddrBook(lineitems)">View Address Book</a>
-								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)">Above Address</a>
+								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)" class="above-addr">Above Address</a>
 								<div class="qty">
 									<p>Quantity</p>
 									<input type="number" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
@@ -238,7 +249,7 @@
 										<input type="text" ng-model="lineitems.ShippingAddress.LastName" />
 									</div>
 								</div>
-								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
+<!-- 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Residence</label>
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Hospital</label>
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Funeral" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Funeral</label>
@@ -246,12 +257,55 @@
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">Standard Shipping</label>
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">School</label>
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">In-Store Pick Up</label>
-								</div>
+								</div> -->
+								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
+									<label class="radio-inline radio-common">
+										<input type="radio" id="residence" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Residence" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
+										<label for="residence">Residence</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="hospital" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Hospital" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
+										<label for="hospital">Hospital</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="funeral" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Funeral" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
+										<label for="funeral">Funeral</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="church" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Church" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
+										<label for="church">Church</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="shipping" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
+										<label for="shipping">Standard Shipping</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="school" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
+										<label for="school">School</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="store" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Will Call" ng-disabled="{{lineitems.xp.NoInStorePickUp}}">
+										<label for="store">In-Store Pick Up</label>
+										<div class="radio"></div>
+									</label>
+							</div>
 								
-								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'">
-									<label><input type="checkbox" ng-checked="Wire" ng-model="Wire">Outgoing Wire</label>
-								</div>
 								
+
+								
+								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'" class="outgoing-wire">
+									<div class="check-common">
+										<input type="checkbox" ng-checked="Wire" ng-model="Wire" id="squaredCheck">
+										<label for="squaredCheck" class="check"></label>
+									</div>
+									<span>Outgoing Wire</span>
+								</div>
 								<div class="location-selected">
 									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitems)">
 										<div class="hospital-search" ng-if="addressType=='Hospital'">
@@ -516,7 +570,11 @@
 									</uib-accordion>
 									<div ng-init="visible=false">
 										<div class="no-message" ng-show="addressType && addressType!='Shipping'">
-											<label><input type="checkbox" ng-model="visible" />No Card Message</label>
+												<div class="check-common">
+													<input type="checkbox" ng-model="visible" id="noMessage">
+													<label for="noMessage" class="check"></label>
+												</div>
+												<span>No Card Message</span>
 										</div>
 										<div class="message-lines" ng-class="{'hideItem': !visible}" ng-show="addressType && addressType!='Shipping'">
 											<p>Line 1</p>

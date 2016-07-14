@@ -237,6 +237,7 @@ button {
 					color: @color3;
 				}
 				h5 {
+					.userSelect-common(auto);
 					.helvetica-regular;
 					font-size: 12px;
 					color: @color1;
@@ -1373,6 +1374,9 @@ button {
 					font-size: 12.5px;
 					.font-spacing;
 				}
+				.above-addr{
+					float:right;
+				}
 				.receipient-name,
 				.location-recipientName {
 					margin: 0 0 15px;
@@ -1402,12 +1406,21 @@ button {
 				}
 				.receipient-location {
 					margin: 20px 0 20px;
-					label {
+					label.radio-common {
 						font-size: 11px;
-						line-height:20px;
+						line-height:11px;
 						.helvetica-medium;
 						color: @color3;
-						margin: 0 8px 0 0;
+					    margin: 0;
+						width: 49%;
+					}
+				}
+				.outgoing-wire{
+					span{
+						font-size: 12px;
+						.helvetica-medium;
+						color:@color2;
+						.in-block;
 					}
 				}
 				.product-cost {
@@ -1531,7 +1544,7 @@ button {
 					.location-contact {
 						input {
 							.in-block;
-							width: 30%;
+							width: 29%;
 							border: 1px solid @color21;
 							margin-right: 3%;
 						}
@@ -1593,14 +1606,11 @@ button {
 						}
 					}
 					.no-message {
-						label {
+						span {
 							font-size: 12px;
 							.helvetica-medium;
 							color: @color2;
-							input {
-								margin-right: 5px;
-								vertical-align: sub;
-							}
+							.in-block;
 						}
 					}
 					.message-lines {
@@ -1666,9 +1676,42 @@ button {
 								margin: 10px 0 5px;
 								color: @color3;
 							}
+							.dropdown-menu{
+								width: 86.5%;
+								border:1px solid @base-bg-purple-light;
+								li{
+									border-bottom:1px solid @color21;
+									a{
+										font-size:13px;
+										padding: 5px 10px;
+										.helvetica-regular;
+										color:@color1;
+										text-decoration:none;
+										overflow: hidden;
+										white-space: nowrap;
+										text-overflow: ellipsis;
+									}
+								}
+							}
+							.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus{
+								background-color:@base-bg-purple-light;
+								color:@color0 !important;
+							}
 						}
 					}
 				}
+			}
+		}
+		.popover{
+			width:92%;
+			left:4% !important;
+			.arrow{
+				left: initial !important;
+				right: 25px;
+			}
+			label{
+				line-height:12px;
+				margin-left:0;
 			}
 		}
 	}
@@ -2134,3 +2177,66 @@ button {
 		}
 	}
 }
+
+
+.radio-common{
+	position: relative;
+	input[type=radio]{
+		position: absolute;
+		visibility: hidden;
+	}
+	label{
+		display: block;
+		position: relative;
+		padding: 0;
+		z-index: 9;
+		cursor: pointer;
+		-webkit-transition: all 0.25s linear;
+	}
+	.radio{
+		display: block;
+		position: absolute;
+		border-radius: 100%;
+		height: 12px;
+		width: 12px;
+		top: 0;
+		left: 0;
+		z-index: 5;
+		min-height: 12px;
+		padding-left: 12px;
+		margin:0;
+		transition: border .25s linear;
+		-webkit-transition: border .25s linear;
+		border: 1px solid @primary-dark-color;
+		&::before {
+			display: block;
+			position: absolute;
+			content: '';
+			border-radius: 100%;
+			height: 6px;
+			width: 6px;
+			top: 2px;
+			left: 3px;
+			margin: auto;
+			transition: background 0.25s linear;
+			-webkit-transition: background 0.25s linear;
+		}
+	}
+	&:hover label{
+		color: #000;
+	}
+	input[type=radio]:checked ~ .radio {
+		border: 1px solid @primary-dark-color;
+	}
+
+	input[type=radio]:checked ~ .radio::before{
+		background: @primary-dark-color;
+	}
+
+	input[type=radio]:checked ~ label{
+		color: @primary-dark-color;
+	}
+}
+
+
+

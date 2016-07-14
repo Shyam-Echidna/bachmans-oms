@@ -2,7 +2,7 @@
 	<div class="cust-info-container row">
 		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
-				<h1>CORPORATE ACCOUNT INFORMATION <button ng-click="isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				<h1>PERSONAL INFORMATION <button ng-click="isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
 				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
 					<div class="info-blk form-group">
@@ -83,45 +83,30 @@
 			<div class="subscription col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<h1>SUBSCRIPTIONS</h1>
 				<table>
-				<tr>
-					<th>On</th>
-					<th>Off</th>
-					<th>Subscription Type</th>
-				</tr>
-				<tr>
-					<td>
-						<input type="radio">
-					</td>
-					<td>
-						<input type="radio">
-					</td>
-					<td>
-						Product Promotions Email
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input type="radio">
-					</td>
-					<td>
-						<input type="radio">
-					</td>
-					<td>
-						New Product Emails
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input type="radio">
-					</td>
-					<td>
-						<input type="radio">
-					</td>
-					<td>
-						Bachman's Marketing Emails
-					</td>
-				</tr>
+					<tr>
+						<th>On</th>
+						<th>Off</th>
+						<th>Subscription Type</th>
+					</tr>
+					<tr ng-repeat="subscriptionList in custInfo.subscribedList track by $index">
+						<td>
+							<label class="radio-common">
+								<input type="radio" name="group{{$index}}" ng-checked="subscriptionList.Checked" ng-click="subscriptionList.Checked=true">
+								<div class="radio"></div>
+							</label>
+						</td>
+						<td>
+							<label class="radio-common">
+								<input type="radio" name="group{{$index}}" ng-checked="!subscriptionList.Checked" ng-click="subscriptionList.Checked=false">
+								<div class="radio"></div>
+							</label>
+						</td>
+						<td>
+							{{subscriptionList.name}}
+						</td>
+					</tr>
 				</table>
+				<button ng-click="custInfo.updateSubscription()" class="save">Save</button>
 			</div>
 		</div>
 	</div>
@@ -199,27 +184,32 @@
 			<h1>ACCOUNT CREDITS</h1>
 			<h2>CREDIT BALANCE: <span>{{custInfo.spendingAcc.charges.Balance | currency}}</span></h2>
 		</div>
-		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+<!-- 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
 			<h1>PROMOTIONS</h1>
 			<p>Free Shipping</p>
 			<p class="sub-addr">Lorem lpsum dolor sit amet</p>
-		</div>
+		</div> -->
 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
 			<h1>ORDER HISTORY</h1>
 			<a ui-sref="orderHistory({userID:custInfo.list.user.ID, name:custInfo.list.user.FirstName})">View Order History</a>
 		</div>
 	</div>
-	<modal title="Login form" visible="showModal" class="change-pwd modal-pop-up">
+	<modal title="Choose a Security Question" visible="showModal" class="change-pwd modal-pop-up">
 		<form name="myForm" ng-submit="ok()" >
-			<div class="col-sm-12 form-group">
-				<span for="userPasswordInput">Password</span>
-				<input id="userPasswordInput" type="password" class="form-control" ng-model="custInfo.list.user.Password"/>
-			</div>
-			<div class="col-sm-12 form-group">
-				<span for="userPasswordConfirmInput">Confirm Password</span>
-				<input id="userPasswordConfirmInput" type="password" class="form-control" ng-model="custInfo.list.user.PasswordConfirm"/>
-			</div>
-			<button type="submit" class="save">Submit</button>
+				<div class="form-group security-qtn-block">
+                  <label for="security-select">Choose a Security Question</label>
+                  <select class="form-control" id="security-select">
+                     <option value="Select a Security Question">Select a Security Question</option>
+                     <option value="What was your childhood nickname?">What was your childhood nickname?</option>
+                     <option value="What was the name of the hospital where you were born?">What was the name of the hospital where you were born?</option>
+                     <option value="What is your favorite movie?">What is your favorite movie?</option>
+                  </select>
+
+                  <input type="text" class="form-control" placeholder="Enter Your Answer">
+               </div>
+			<div class="form-group">
+                  <button type="submit" class="save">SEND</button>
+            </div>
 		</form>
 	</modal>
 </div>

@@ -91,20 +91,44 @@ function CustInfoConfig( $stateProvider ) {
 						}
 					});
 					return dfd.promise;
+				},
+				userSubscription:function($q, ConstantContact, Underscore, OrderCloud, $stateParams ){
+					var dfr=$q.defer();
+
+						var ConstantContactId;
+						 OrderCloud.Users.Get($stateParams.ID).then(function(data){
+							ConstantContactId=data.xp.ConstantContact.ID;
+						 })
+						ConstantContact.GetListOfSubscriptions().then(function(subscriptionList){
+							var params = {
+								"ConstantContactId": ConstantContactId
+							}
+							ConstantContact.GetSpecifiedContact(params).then(function(res){
+							 if(res.data.lists) {
+								var userSubIds = Underscore.pluck(res.data.lists, "id");
+								angular.forEach(subscriptionList.data, function (subscription) {
+									if (userSubIds.indexOf(subscription.id) > -1) {
+										subscription.Checked = true;	
+									}
+									dfr.resolve(subscriptionList.data);
+									console.log("subscriptionList.data", subscriptionList.data);
+								})
+							}
+							});
+						});
+						return dfr.promise;
 				}
 			}
 		})
 }
 
 
-function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud) {
+function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact) {
 	var vm = this;
 	vm.list = UserList;
+	vm.subscribedList=userSubscription;
+	console.log("vm.subscribedLis", vm.subscribedList);
 	vm.spendingAcc=spendingAccounts;
-	console.log(vm.list);
-	console.log(UserList);
-	console.log(vm.list.defaultAddr);
-	console.log(vm.list.addresses);
 	vm.creditCard=creditCard;
 	console.log("spendingAccounts", spendingAccounts);
 	console.log("vm.purple", vm.purple);
@@ -140,5 +164,17 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 	$scope.viewChangePassword = function(){
 		$scope.showModal = !$scope.showModal;
 	}
-
+	vm.updateSubscription= function(){
+		var SubList = Underscore.filter(vm.subscribedList, function (subscription) {
+			  return  subscription.Checked  == true;
+		})
+		var params = {
+			"id": vm.list.user.xp.ConstantContact.ID,
+			"lists": SubList,
+			"email_addresses": [{ "email_address": vm.list.user.Email}]
+		}
+		ConstantContact.UpdateContact(params).then(function(res){
+			console.log("subscribedListparams", res);
+		});
+	}
 }

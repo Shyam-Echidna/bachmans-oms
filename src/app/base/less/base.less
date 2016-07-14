@@ -221,6 +221,55 @@ ul li{
 		overflow-x: hidden;
 		overflow-y: auto;
 }
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+.check-common {
+  position: relative;
+	width: 17px;
+	height: 15px;
+	display: inline-block;
+	vertical-align: middle;
+  label.check {
+    width: 17px;
+    height: 15px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+	background-color:@base-bg-purple-light;
+    background: linear-gradient(top, #222 0%, #45484d 100%);
+    border-radius: 4px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+    &:after {
+      content: '';
+      width: 9px;
+      height: 5px;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      border: 3px solid #fcfff4;
+      border-top: none;
+      border-right: none;
+      background: transparent;
+      opacity: 0;
+      transform: rotate(-45deg);
+    }
+    &:hover::after {
+      opacity: 0.3;
+    }
+  }
+  input[type=checkbox] {
+    visibility: hidden;
+    &:checked + label.check:after {
+      opacity: 1;
+    }    
+  }
+}
 .browser {
 	.background-fade;
 	border-left:1px solid @color9;
@@ -492,7 +541,7 @@ ul li{
 	padding:15px 0 10px 15px;
 	.orders_on_hold {
 		height:auto;
-		padding:10px 0;
+		padding:15px 0 10px;
 		width:99%;
 		.order-grid{
 			padding:0;
@@ -503,7 +552,7 @@ ul li{
 	}
 	.saved_order {
 	height:auto;
-	padding:10px 0 40px;
+	padding:15px 0 40px;
 	width:78.2%;
 	.saved_order_table {
 		background:@color0;
@@ -560,7 +609,7 @@ ul li{
 .heading {
 	.helvetica-bold;
 	font-size:21px;
-	margin:10px auto;
+	margin:15px auto 10px;
 }
 .promotion_box {
 	background:@color0;
@@ -684,7 +733,7 @@ ul li{
 		}
 		.background-fade;
 		&:hover{
-			background:@color17;
+			background:@color20;
 			text-decoration:none;
 		}
 	}

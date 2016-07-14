@@ -89,9 +89,20 @@
 							</select>
 						</p>
 						<p>
-							<label ng-if="buildOrder.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">Courier</label>
+<!-- 							<label ng-if="buildOrder.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">Courier</label>
 							<label ng-if="buildOrder.Faster" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Faster Delivery" >Faster Delivery</label>
-						</p>
+						 -->
+							<label class="radio-common" ng-if="buildOrder.Courier">
+								<input type="radio" id="courier" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">
+								<label for="courier">Courier</label>
+								<div class="radio"></div>
+							</label>
+							<label class="radio-common" ng-if="buildOrder.Faster">
+								<input type="radio" id="faster" name="optradio1" ng-model="buildOrder.DeliveryType" value="Faster Delivery">
+								<label for="faster">Faster Delivery</label>
+								<div class="radio"></div>
+							</label>
+						 </p>
 					</div>
 					<!--<div class="pdp-quantity">
 						<h3>Quantity</h3>

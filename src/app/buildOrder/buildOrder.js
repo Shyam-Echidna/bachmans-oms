@@ -182,12 +182,21 @@ function buildOrderConfig( $stateProvider ) {
 												d.resolve(res);
 											});
 										}else{
-											angular.forEach(data, function(row, index){
+											var createOrder = true;
+											   angular.forEach(data, function(row, index){
 												if(row.Status == "Unsubmitted"){
-													CurrentOrder.Set(row.ID);
-													d.resolve(row);
-												}	
-											},true);
+												 createOrder = false;
+												 CurrentOrder.Set(row.ID);
+												 d.resolve(row);
+												} 
+											   },true);
+											   if(createOrder == true){
+												var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
+												OrderCloud.As().Orders.Create(orderParams).then(function(res){
+												 CurrentOrder.Set(res.ID);
+												 d.resolve(res);
+												});
+											   }
 										}
 									});
 								}

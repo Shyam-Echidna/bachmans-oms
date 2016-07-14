@@ -32,8 +32,8 @@ function OrderHistoryConfig( $stateProvider ) {
 							}
 							else{
 								OrderCloud.As().Me.ListOutgoingOrders().then(function(assignOrders){
-								completedOdr=_.filter(assignOrders.Items, function(obj) {
-									return _.indexOf([obj.Status],'Completed') > -1
+								completedOdr=_.reject(assignOrders.Items,function(obj){
+									return _.indexOf([obj.Status],'Unsubmitted') > -1
 								});
 									console.log("completedOrders", completedOdr);
 									d.resolve(completedOdr);
@@ -47,23 +47,25 @@ function OrderHistoryConfig( $stateProvider ) {
 }
 function OrderHistoryController($scope, $stateParams, Order) {
 	var vm = this;
-	vm.uname=Order[0].FromUserFirstName + " " + Order[0].FromUserLastName;
-	console.log("vm.uname", vm.uname);
-	$scope.userID=$stateParams.userID;
-	$scope.searchType='User';
 	vm.order=Order;
-	console.log("oredr", vm.order);
-	$scope.dateFormat="dd/MM/yyyy";
-	$scope.gridHistory = {
-		data: 'orderHistory.order',
-		enableSorting: true,
-		columnDefs: [
-			{ name: 'ID', displayName:'Shipment Number', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:grid.appScope.userID,SearchType:grid.appScope.searchType,orderID:row.entity.ID,orderDetails:true})">{{row.entity.ID}}</div>'},
-			{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
-			{ name: 'Occasion', displayName:'Occasion'},
-			{ name: 'Total', displayName:'Total', cellTemplate: '<div class="data_cell">{{row.entity.Total | currency:$}}</div>'},
-			{ name: 'Status', displayName:'Order Status'},
-			{ name: 'orderClaim', displayName:'', cellTemplate: '<div class="data_cell"><button>Create Order Claim</button></div>'}
-	]
-}
+	if(vm.order.length>0){
+		console.log("oredr", vm.order);
+		vm.uname=Order[0].FromUserFirstName + " " + Order[0].FromUserLastName;
+		console.log("vm.uname", vm.uname);
+		$scope.userID=$stateParams.userID;
+		$scope.searchType='User';
+		$scope.dateFormat="dd/MM/yyyy";
+		$scope.gridHistory = {
+			data: 'orderHistory.order',
+			enableSorting: true,
+			columnDefs: [
+				{ name: 'ID', displayName:'Shipment Number', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:grid.appScope.userID,SearchType:grid.appScope.searchType,orderID:row.entity.ID,orderDetails:true})">{{row.entity.ID}}</div>'},
+				{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
+				{ name: 'Occasion', displayName:'Occasion'},
+				{ name: 'Total', displayName:'Total', cellTemplate: '<div class="data_cell">{{row.entity.Total | currency:$}}</div>'},
+				{ name: 'xp.Status', displayName:'Order Status'},
+				{ name: 'orderClaim', displayName:'', cellTemplate: '<div class="data_cell"><button>Create Order Claim</button></div>'}
+		]
+	}
+	}
 }

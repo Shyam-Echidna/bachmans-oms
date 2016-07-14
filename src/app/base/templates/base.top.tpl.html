@@ -96,7 +96,7 @@
 						<ordercloud-search servicename="orders_recepient" controlleras="base" placeholder="Search recipient" uib-dropdown-toggle></ordercloud-search>
 						<div class="search_dropdown" uib-dropdown-menu>
 							<div class="searchelement"  ng-repeat="recipient in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
-								<a ui-sref="buildOrder({ID:recipient.FromUserID,SearchType:'User'})" class="search_result">
+								<a ng-click="baseTop.searchGoTo(recipient.FromUserID, recipient.ID)" class="search_result">
 									<p>{{recipient.FirstName}} {{recipient.LastName}}</p>
 								</a>
 							</div>

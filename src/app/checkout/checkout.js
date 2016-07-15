@@ -776,7 +776,7 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		}
 		if(type=="Bachman Charges")
 			orderDtls.SpendingAccounts.BachmansCharges = dat;
-		if(type=="Purple Perk")
+		if(type=="Purple Perks")
 			orderDtls.SpendingAccounts.PurplePerk = dat;
 		vm.SumSpendingAccChrgs(orderDtls);		
 	}

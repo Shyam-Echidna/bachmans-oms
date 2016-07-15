@@ -921,11 +921,35 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 				});
 			});
 		}else{
-			var orderParams = {"Type": "Standard","FromUserID": $stateParams.ID,"xp":{"OrderSource":"OMS"}};
-			OrderCloud.As().Orders.Create(orderParams).then(function(data){
-				CurrentOrder.Set(data.ID);
-				vm.order = data;
-				$scope.getLineItems();
+			OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(assignOrders){
+				var data = [];
+				data = _.where(assignOrders.Items, {"FromUserID":$stateParams.ID});
+				if(data.length == 0){
+					var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
+					OrderCloud.As().Orders.Create(orderParams).then(function(res){
+						CurrentOrder.Set(res.ID);
+						vm.order = res;
+						$scope.getLineItems();
+					});
+				}else{
+					var createOrder = true;
+					angular.forEach(data, function(row, index){
+						if(row.Status == "Unsubmitted"){
+							createOrder = false;
+							CurrentOrder.Set(row.ID);
+							vm.order = row;
+							$scope.getLineItems();
+						} 
+					},true);
+					if(createOrder == true){
+						var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
+						OrderCloud.As().Orders.Create(orderParams).then(function(res){
+							CurrentOrder.Set(res.ID);
+							vm.order = res;
+							$scope.getLineItems();
+						});
+					}
+				}
 			});
 		}
 	};

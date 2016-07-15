@@ -81,8 +81,8 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
     $scope.deleteOrder = function(row){
 		OrderCloud.Orders.Delete(row.entity.ID).then(function(data){
 			$state.reload();
-		})
-	}
+		});
+	};
 	/*angular.forEach(Underscore.where(ShipmentList.Items, 'Mallik_ship'), function() {
         console.log(this);
     });
@@ -114,7 +114,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	  columnDefs: [ 
 		{ name: 'xp.SavedOrder.Name', displayName:'Order Name', filter: {placeholder: 'Search order'}},
 		{ name: 'FromUserFirstName', displayName:'Customer', enableFiltering:false},
-		{ name: 'Delete', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell"><a popover-trigger="none" popover-is-open="showDeliveryToolTip"  ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="grid.appScope.deleteAddress.templateUrl" popover-placement="bottom"><img src="../assets/images/icons-svg/cancel.svg">Delete</a></div>', width: "20%"},
+		{ name: 'Delete', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell"><a popover-trigger="none" popover-is-open="grid.appScope.showDeliveryToolTip" ng-click="grid.appScope.showDeliveryToolTip = !grid.appScope.showDeliveryToolTip" uib-popover-template="grid.appScope.deleteAddress.templateUrl" popover-placement="bottom"><img src="../assets/images/icons-svg/cancel.svg">Delete</a></div><script type="text/ng-template" id="deleteAddress.html"><div click-outside="grid.appScope.closePopover()"><h2>Delete this Address</h2><button type="button" ng-click="grid.appScope.deleteOrder(row)">DELETE</button><button type="button" ng-click="grid.appScope.cancelPopUp()">CANCEL</button></div></script>', width: "20%"},
 		{ name: 'openOrder', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:row.entity.FromUserID,SearchType:grid.appScope.user,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width: "20%"}
 	  ]
 	};
@@ -131,11 +131,11 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
         templateUrl: 'deleteAddress.html',
     }
 	$scope.closePopover = function () {
-        $scope.showDeliveryToolTip = false;
+        this.showDeliveryToolTip = false;
     };
     $scope.cancelPopUp = function () {
 		console.log("dataaaaaaaaaaaaaa");
-        this.$parent.showDeliveryToolTip = false;
+        this.showDeliveryToolTip = false;
     };
 }
 

@@ -478,7 +478,7 @@
 							<uib-accordion-heading>
 								<h2 ng-click="reviewAddress()">Customer Name <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
-							<p>{{userAddr.address.FirstName}} {{userAddr.address.LastName}}</p>
+							<p>{{checkout.order.FromUserFirstName}} {{checkout.order.FromUserLastName}}</p>
 						</uib-accordion-group>
 						<uib-accordion-group>
 							<uib-accordion-heading>
@@ -489,18 +489,18 @@
 								<li class="shipping-Addresses">
 									<p>{{line.ShippingAddress.Street1}}</p>
 									<p>{{line.ShippingAddress.Street2}}</p>
-									<p>{{line.ShippingAddress.City}}</p>
-									<p>{{line.ShippingAddress.State}} {{line.ShippingAddress.Country}}</p>
+									<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}}</p>
+									<p>{{line.ShippingAddress.Country}}</p>
 									<p>{{line.ShippingAddress.Zip}}</p>
 									<span class="shipping-Phone">{{line.ShippingAddress.Phone}}</span> 
 								</li>
 								<li class="shipping-Date">
 									<p class="shipping-subTitle">Delivery Date</p>
-									<p>{{line.xp.deliveryDate}}</p>
+									<p>{{line.xp.deliveryDate | date}}</p>
 								</li>
 								<li class="shipping-DeliveryPref">
 									<p class="shipping-subTitle">Delivery Preference</p>
-									<p>{{buyerDtls.xp.DeliveryRuns[0]['line.xp.deliveryRun']}}</p>
+									<p>{{line.xp.deliveryRun}}</p>
 								</li>
 							</ul>
 						</uib-accordion-group>
@@ -521,8 +521,8 @@
 									<span>
 										Credit Card: xxxx xxxx xxxx {{userAddr.card.PartialAccountNumber}}
 									</span>
-									<span>Card Expires: {{userAddr.card.ExpirationDate | date:'mm/dd'}}</span>
-									<span>Purple Perks Points Applied:100</span>
+									<span>Card Expires: {{usercard.ExpirationDate | date:'mm/dd'}}</span>
+									<span>Purple Perks Points Applied:{{orderDtls.SpendingAccounts.PurplePerk | currency}}</span>
 								</li>
 							</ul>
 						</uib-accordion-group>

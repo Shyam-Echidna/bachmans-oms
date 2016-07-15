@@ -87,6 +87,7 @@
 							<div class="searchelement"  ng-repeat="orders in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ng-click="baseTop.searchGoTo(orders.FromUserID, orders.ID)" class="search_result">
 									<p>{{orders.ID}}</p>
+									<div>{{orders.FromUserFirstName}} {{orders.FromUserLastName}}</div>
 								</a>
 							</div>
 						</div>
@@ -94,10 +95,26 @@
 					<!-- algolia search for recipient -->
 					<div ng-switch-when="recipient" uib-dropdown>
 						<ordercloud-search servicename="orders_recepient" controlleras="base" placeholder="Search recipient" uib-dropdown-toggle></ordercloud-search>
-						<div class="search_dropdown" uib-dropdown-menu>
+						<div class="search_dropdown recipient-dropdown" uib-dropdown-menu>
 							<div class="searchelement"  ng-repeat="recipient in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ng-click="baseTop.searchGoTo(recipient.FromUserID, recipient.ID)" class="search_result">
-									<p>{{recipient.FirstName}} {{recipient.LastName}}</p>
+									<p>
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<circle cx="12" cy="12" r="12"/>
+										<g>
+											<path d="M12.9,12l3.6,3.6l-0.9,0.9L12,12.9l-3.6,3.6l-0.9-0.9l3.6-3.6L7.5,8.4l0.9-0.9l3.6,3.6l3.6-3.6l0.9,0.9
+												L12.9,12z"/>
+										</g>
+									</svg>
+									
+									{{recipient.FirstName}} {{recipient.LastName}} {{}}</p>
+									<div>{{recipient.FromUserFirstName}} {{recipient.FromUserLastName}}</div>
+									<div class="recepient-order">
+										<p>{{recipient.ID}}</p>
+										<div ng-if="recipient.DateSubmitted == 'null'">{{recipient.DateCreated | date }}</div>
+										<div ng-if="recipient.DateSubmitted != 'null'">{{recipient.DateSubmitted | date }}</div>
+									</div>
 								</a>
 							</div>
 						</div>

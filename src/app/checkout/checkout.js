@@ -291,17 +291,13 @@ function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderC
 		});
 	};
 	$scope.reviewAddress = function(){
-		$scope.userAddr = {};
-		OrderCloud.Users.Get(vm.order.FromUserID).then(function(assign){
-			OrderCloud.Addresses.Get(assign.xp.DefaultAddress).then(function(data){
-				$scope.userAddr.address = data;
+		$scope.usercard = {};
+		console.log("$scope.seluser", $scope.seluser);
+		OrderCloud.CreditCards.ListAssignments(null, $scope.seluser).then(function(assign){
+			OrderCloud.CreditCards.Get(assign.Items[0].CreditCardID).then(function(data){
+				$scope.usercard = data;
 			});
-			OrderCloud.CreditCards.ListAssignments(null, vm.order.FromUserID).then(function(assign){
-				OrderCloud.CreditCards.Get('CWf5x-ZlLUeIFz6b0O16HQ').then(function(data){
-					$scope.userAddr.card = data;
-				});
-			})
-		});
+		})
 	};
 	$scope.UpdateAddress = function(addr, index){
 		var $this = this;

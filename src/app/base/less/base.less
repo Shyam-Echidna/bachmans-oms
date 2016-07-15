@@ -736,6 +736,11 @@ input[type=number]::-webkit-outer-spin-button {
 			background:@color20;
 			text-decoration:none;
 		}
+		svg{
+			width:10px;
+			height:10px;
+			fill:blue;
+		}
 	}
 	.searchelement{
 		    border-bottom: 1px solid @color4;
@@ -745,7 +750,23 @@ input[type=number]::-webkit-outer-spin-button {
 			width:100%;
 		}
 	}
+	&.recipient-dropdown{
+		.search_result{
+			height:initial;
+			line-height: initial;
+			padding: 5px 15px 5px 20px;
+			.recepient-order{
+				width:@width0;
+				margin-top: 5px;
+			}
+			p, div{
+				font-size:12px;
+				.helvetica-regular;
+			}
+		}
+	}
 }
+
 .search_result {
 	border-bottom: 1px solid @color12;
 	overflow:auto;

@@ -230,6 +230,9 @@ function ordercloudSearchCtrl($timeout, $scope, TrackSearch, OrderCloud, algolia
 			// } else {
 		$scope.$watch('search.query', function(n,o) {
 			$scope.controlleras.qeueryLength=$scope.search.query.length;
+			if($scope.search.query.length==0){
+				$scope.controlleras.list=="";
+			}
 			$scope.controlleras.searchval=$scope.search.query;
 			console.log("qqqqqqqq", $scope.controlleras.searchval);
 			if (n == o) {

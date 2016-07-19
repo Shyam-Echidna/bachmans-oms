@@ -15,7 +15,7 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
     //Use this function to create a new credit card for an existing customer profile or create a new credit card and a new payment profile at the same time.
     function Create(card) {
         var dfd = $q.defer();
-        var token = OrderCloud.Auth.ReadToken();
+        var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
             "buyerID": OrderCloud.BuyerID.Get(),
             "orderID": null,
@@ -52,7 +52,7 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
     //Use this function to update a credit card for an existing customer profile.
     function Update(card) {
         var dfd = $q.defer();
-        var token = OrderCloud.Auth.ReadToken();
+        var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
             "buyerID": OrderCloud.BuyerID.Get(),
             "orderID": null,
@@ -90,7 +90,7 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
     //Use this function to delete a credit card from an existing customer profile.
     function Delete(card) {
         var dfd = $q.defer();
-        var token = OrderCloud.Auth.ReadToken();
+        var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
             "buyerID": OrderCloud.BuyerID.Get(),
             "orderID": null,
@@ -132,7 +132,7 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
     //To authorize payment and capture funds on a new card (not one time use), first call the Create method, then call this method.
     function ExistingCardAuthCapture(card, order) {
         var dfd = $q.defer();
-        var token = OrderCloud.Auth.ReadToken();
+        var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
             "buyerID": OrderCloud.BuyerID.Get(),
             "orderID": order.ID,
@@ -155,6 +155,7 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
                 } else  if(response.Error) {
                     toastr.info('Sorry, something went wrong. Please try again');
                 }
+                dfd.resolve();
             })
             .catch(function(){
                 toastr.info('Sorry, something went wrong. Please try again')
@@ -165,7 +166,7 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
     //Use this function to authorize a credit card payment and capture funds for a transaction (on order submit). One time use card, does not save.
     function SingleUseAuthCapture(card, order) {
         var dfd = $q.defer();
-        var token = OrderCloud.Auth.ReadToken();
+        var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
             "buyerID": OrderCloud.BuyerID.Get(),
             "orderID": order.ID,

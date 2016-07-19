@@ -1,11 +1,11 @@
-<div id="CheckoutTopNav" ui-view="checkouttop" ng-controller="checkoutCtrl as vm"></div>
-<div class="checkoutContainer row" ng-controller="checkoutCtrl as vm">
+<div id="CheckoutTopNav" ui-view="checkouttop"></div>
+<div class="checkoutContainer row">
 	<div class="checkoutContainer-left col-sm-8 col-xs-8 col-md-8 col-lg-8">
 		<div class="checkoutSection">
-			<uib-accordion close-others="oneAtATime">
-				<uib-accordion-group is-open="status.delInfoOpen" is-disabled="status.isFirstDisabled">
+			<uib-accordion close-others="checkout.oneAtATime">
+				<uib-accordion-group is-open="checkout.statusstatus.delInfoOpen" is-disabled="checkout.status.isFirstDisabled">
 					<uib-accordion-heading>
-						<h1>1.<span ng-if="status.isFirstDisabled ==true">
+						<h1>1.<span ng-if="checkout.status.isFirstDisabled ==true">
 							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 								 viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
 								<g>
@@ -13,9 +13,9 @@
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"/>
 								</g>
 							</svg>
-							</span> Delivery Information <button ng-click="deliveryInfoEdit($event,status)" ng-if="status.isFirstDisabled ==true">Edit</button></h1>
+							</span> Delivery Information <button ng-click="deliveryInfoEdit($event,checkout.status)" ng-if="checkout.status.isFirstDisabled ==true">Edit</button></h1>
 					</uib-accordion-heading>
-					<uib-accordion close-others="oneAtATime">
+					<uib-accordion close-others="checkout.oneAtATime">
 						<uib-accordion-group ng-repeat="line in deliveryInfo track by line.ID" is-open="delInfoRecipient[$index]">
 							<uib-accordion-heading>
 								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}} | {{line.ShippingAddress.Zip}}</h2>
@@ -162,7 +162,7 @@
 							</div>
 							<div class="saved-addr col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="isAddrShow{{$index}}">
 									<h3>Saved Delivery Address</h3>
-								<uib-accordion close-others="oneAtATime">
+								<uib-accordion close-others="checkout.oneAtATime">
 									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: limit" is-open="addr.isAddrOpen" ng-click="selectedAddr(line,addr)">
 										<uib-accordion-heading>
 											<input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span>
@@ -323,7 +323,7 @@
 					</uib-accordion>
 					
 				</uib-accordion-group>
-				<uib-accordion-group is-open="status.paymentOpen">
+				<uib-accordion-group is-open="checkout.status.paymentOpen">
 					<uib-accordion-heading>
 						<h1>2. Payment</h1>
 					</uib-accordion-heading>
@@ -331,45 +331,36 @@
 					<div class="payment-method">
 						<div class="payment-method-header">
 							<h1>Payment Method</h1>
-							<div class="payment-tab" ng-init="PaymentOption = 'CreditCard'" ng-click="PaymentOption = 'CreditCard'">Credit Card<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'BachmansCharge'" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'GiftCard'">Gift Card<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']">Purple Perks<span class="selected"></span></div>
-							<div ng-click="PaymentOption = 'CashCheque'">Cash/Cheque<span class="selected"></span></div>
+							<div class="payment-tab" ng-click="checkout.paymentOption = 'CreditCard'">Credit Card<span class="selected"></span></div>
+							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges<span class="selected"></span></div>
+							<div ng-click="checkout.paymentOption = 'GiftCard'">Gift Card<span class="selected"></span></div>
+							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']">Purple Perks<span class="selected"></span></div>
+							<div ng-click="checkout.paymentOption = 'CashCheque'">Cash/Cheque<span class="selected"></span></div>
 						</div>
 						<!-- credit card -->
-						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="PaymentOption == 'CreditCard'">
-							<div>
-								<div class="payment-container-header">
-									<input type="radio"/>
-									<span class="card-type">VISA</span>
-									<span>XXXX XXX XXX 1419</span>
-									<span>08/23</span>
-									<span>Sam White</span>
-								</div>
-								<div class="payment-container row">
-									<div class="pay-m col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<p class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Enter CVV Code</p>
-										<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-											<input type="number"/><span></span>
-											<p>CVV code is in the back side of your code</p>
-										</div>
-									</div>
-									<div class="pay-mm col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<p class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Billing Address</p>
-										<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-											<p>3434 njsandjs</p>
-											<p>njdfnj</p>
-											<p>mfjfjf fgdgf</p>
-											<p>6555545</p>
-										</div>
-										<button class="col-xs-1 col-sm-1 col-md-1 col-lg-1">Edit</button>
-									</div>
-								</div>
-							</div>
+						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CreditCard'">
+                            <div ng-repeat="card in checkout.creditCardsList">
+                                <div class="payment-container-header">
+                                    <label>
+                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card"/>
+                                        <span><i class="fa fa-2x" ng-class="{' fa-cc-amex': card.CardType === 'AmericanExpress', ' fa-cc-mastercard': card.CardType === 'MasterCard', ' fa-cc-visa': card.CardType === 'Visa', ' fa-cc-discover': card.CardType === 'Discover'}"></i></span>
+                                        <span>XXXX XXX XXX {{card.PartialAccountNumber}}</span>
+                                        <span>{{card.ExpirationDate | date : 'MM/yy' : 'UTC'}}</span>
+                                        <span>{{card.CardholderName}}</span>
+                                    </label>
+                                </div>
+                                <div class="payment-container row" ng-if="card === checkout.selectedCard">
+                                    <div class="pay-m col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label for="cvv">CVV
+                                            <i class="fa fa-question-circle text-muted" uib-tooltip="Three or four digit code located on the back side of your card."></i>
+                                        </label>
+                                        <input id="cvv" class="form-control" type="number" ng-model="card.CVV"/>
+                                    </div>
+                                </div>
+                            </div>
 						</div>
 						<!-- Bachmans charges -->
-						<div class="payment-method-container charges col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="PaymentOption == 'BachmansCharge'">
+						<div class="payment-method-container charges col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="checkout.paymentOption == 'BachmansCharge'">
 							<div>
 								<div class="payment-container-header">
 									<span>Bachman's Charge Limit Available</span>
@@ -391,7 +382,7 @@
 							</div>
 						</div>
 						<!-- Gift Card -->
-						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="PaymentOption == 'GiftCard'">
+						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="checkout.paymentOption == 'GiftCard'">
 							<div>
 								<div class="payment-container-header col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<span>Gift Card Information</span>
@@ -415,7 +406,7 @@
 							</div>
 						</div>
 						<!-- cash/cheque -->
-						<div class="payment-method-container cheque col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="PaymentOption == 'CashCheque'">
+						<div class="payment-method-container cheque col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CashCheque'">
 							<div>
 								<div class="payment-container row">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -442,7 +433,7 @@
 							</div>
 						</div>
 						<!-- purple perks -->
-						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="PaymentOption == 'PurplePerk'">
+						<div class="payment-method-container perk col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="checkout.paymentOption == 'PurplePerk'">
 							<div>
 								<div class="payment-container-header col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<span>Purple Perks balance available</span>
@@ -469,7 +460,7 @@
 						<!-- <input type="button" value="Review Order" ng-click="review()" />-->
 					</div>
 				</uib-accordion-group>
-				<uib-accordion-group is-open="status.reviewOpen">
+				<uib-accordion-group is-open="checkout.status.reviewOpen">
 					<uib-accordion-heading>
 						<h1>3. Review & Confirm Order</h1>
 					</uib-accordion-heading>
@@ -533,7 +524,7 @@
 			<!-- For Place order button section STARTS -->
 			<div class="row review-content">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <button class="place-order" ui-sref="orderConfirmation({userID:oredrUserID,ID:orderID})">Place Order</button>
+                    <button class="place-order" ng-click="checkout.submitOrder()">Place Order</button>
                 </div>
             </div>
 			<!-- For Place order button section ENDS -->
@@ -544,7 +535,7 @@
 			<div class="order-total">
 				<h1>Order [ {{lineTotalQty}} items ] <a ui-sref="buildOrder({ID:user.ID,SearchType:'User',showOrdersummary: true})">Edit</a> </h1>
 			</div>
-			<uib-accordion close-others="oneAtATime">
+			<uib-accordion close-others="checkout.oneAtATime">
 				<uib-accordion-group ng-repeat="line in recipients">
 					<uib-accordion-heading>
 						<div class="checkoutorderhead">
@@ -566,16 +557,16 @@
 					</div>
 				</uib-accordion-group>
 				<div class="charges-total">
-					<p>Subtotal  <span>{{orderDtls.subTotal | currency}}</span></p>
-					<p>Delivery Charges   <span>{{orderDtls.deliveryCharges | currency}} </span></p>
-					<p>Estimated Tax   <span>$0.00 </span></p>
+					<p>Subtotal  <span>{{checkout.order.Subtotal | currency}}</span></p>
+					<p>Delivery Charges   <span>{{checkout.order.ShippingCost | currency}} </span></p>
+					<p>Estimated Tax   <span>{{checkout.order.TaxCost | currency}} </span></p>
 					<p ng-if="orderDtls.SpendingAccounts.CouponCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'CouponCharges')">x</button> Coupon Applied <span>-{{orderDtls.SpendingAccounts.CouponCharges | currency}} </span></p>
 					<p ng-if="orderDtls.SpendingAccounts.BachmansCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'BachmansCharges')">x</button>Bachman’s Charge applied   <span>-{{orderDtls.SpendingAccounts.BachmansCharges | currency}} </span></p>
 					<p ng-if="orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'GiftCardCharges')">x</button>Gift Card applied   <span>-{{orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
 					<p ng-if="orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'PaidCash')">x</button>Paid Through Cash   <span>-{{orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
 					<p ng-if="orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'ChequeCharges')">x</button>Paid through Cheque   <span>-{{orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
 					<p ng-if="orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'PurplePerk')">x</button>Purple Perks Balance applied   <span>-{{orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
-					<p class="total">Total   <span>{{orderDtls.Total | currency}}  </span></p>
+					<p class="total">Total   <span>{{checkout.order.Total | currency}}  </span></p>
 				</div>
 				<div class="promo-code">
 					<p>Apply Promo Code</p>
@@ -585,4 +576,4 @@
 		</div>
 	</div>
 </div>
-<div id="CheckoutFooter" ui-view="checkoutbottom" ng-controller="checkoutCtrl as vm"></div>
+<div id="CheckoutFooter" ui-view="checkoutbottom"></div>

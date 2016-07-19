@@ -66,119 +66,146 @@ function checkoutConfig( $stateProvider ) {
 	.state( 'checkout', {
 		parent: 'base',
 		url: '/checkout/:ID',
-		templateUrl:'checkout/templates/checkout.tpl.html',            
+		templateUrl:'checkout/templates/checkout.tpl.html',
 		views: {
 			'': {
 				templateUrl: 'checkout/templates/checkout.tpl.html',
 				controller: 'checkoutCtrl',
-				controllerAs: 'checkout'
+				controllerAs: 'checkout',
+                resolve: {
+                    SavedCreditCards: function(OrderCloud) {
+                        return OrderCloud.As().Me.ListCreditCards(null, 1, 100);
+                    },
+                    Order: function(CurrentOrder) {
+                        return CurrentOrder.Get();
+                    },
+                    OrderLineItems: function(OrderCloud, Order) {
+                        return OrderCloud.As().LineItems.List(Order.ID)
+                    }
+                }
 			},
 			'checkouttop@checkout': {
-				templateUrl: 'checkout/templates/checkout.top.tpl.html',
-				controller: 'checkoutCtrl',
-				controllerAs: 'checkout'
+				templateUrl: 'checkout/templates/checkout.top.tpl.html'
 			},
 			'checkoutbottom@checkout': {
-				templateUrl: 'checkout/templates/checkout.bottom.tpl.html',
-				controller: 'checkoutCtrl',
-				controllerAs: 'checkout'
+				templateUrl: 'checkout/templates/checkout.bottom.tpl.html'
 			}     
 		}
 	});
 }
 
-function checkoutController($scope, LineItemHelpers, $http, CurrentOrder, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
+function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, Order, OrderLineItems, CreditCardService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
-	$scope.oneAtATime = true;
-	$scope.status = {
-		delInfoOpen : true,
-		paymentOpen : false,
+    vm.order = Order;
+    vm.orderID = Order.ID;
+    vm.lineItems = OrderLineItems.Items;
+    vm.paymentOption = 'CreditCard';
+    vm.lineTotalQty = Underscore.reduce(Underscore.pluck(vm.lineItems, 'Quantity'), function(memo, num){ return memo + num; }, 0);
+    vm.lineTotalSubTotal = Underscore.reduce(Underscore.pluck(vm.lineItems, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
+    vm.creditCardsList = SavedCreditCards.Items;
+
+	vm.oneAtATime = true;
+	vm.status = {
+		delInfoOpen : false,
+		paymentOpen : true,
 		reviewOpen : false,
 		isFirstDisabled: false
 	};
-	$scope.seluser = $stateParams.ID;
-	console.log('1234567890', $stateParams);
-	$scope.onLoadCheckout = function(){
-		CurrentOrder.Get()
-		.then(function(order) {
-			vm.order = order;
-			console.log("ssss",vm.order);
-			$scope.orderID = order.ID;
-			$scope.oredrUserID = order.FromUserID;
-			OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
-				$scope.lineTotalQty = _.reduce(_.pluck(res.Items, 'Quantity'), function(memo, num){ return memo + num; }, 0);
-				$scope.lineTotalSubTotal = _.reduce(_.pluck(res.Items, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
-				vm.AvoidMultipleDelryChrgs = [];
-				LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
-						$scope.Grouping(data);
-				});
-				BuildOrderService.OrderOnHoldRemove(res.Items, vm.order.ID).then(function(dt){
-					console.log("Order OnHold Removed....");
-				});
-			});
-			BuildOrderService.GetBuyerDtls().then(function(res){
-				res.xp.deliveryChargeAdjReasons.unshift("---select---");
-				$scope.buyerDtls = res;
-			});
-		});
-	};
-	$scope.onLoadCheckout();
-	$scope.Grouping = function(data){
-		var orderDtls = {"subTotal":0,"deliveryCharges":0};
-		$scope.orderDtls = {};
-		$scope.deliveryInfo = data;
-		var dt,locale = "en-us",dat,index=0;
-		var groups = _.groupBy(data, function(obj){
-			dt = new Date(obj.xp.deliveryDate);
-			var deliverySum=0;
-			//obj.xp.deliveryDate = dt.toLocaleString(locale, { month: "long" })+" "+dt.getDate()+", "+dt.getFullYear();
-			dat = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
-			BuildOrderService.GetPhoneNumber(obj.ShippingAddress.Phone).then(function(res){
-				obj.ShippingAddress.Phone1 = res[0];
-				obj.ShippingAddress.Phone2 = res[1];
-				obj.ShippingAddress.Phone3 = res[2];
-			});
-			obj.ShippingAddress.deliveryDate = obj.xp.deliveryDate;
-			obj.ShippingAddress.lineID = obj.ID;
-			if(obj.xp.deliveryFeesDtls)
-				obj.ShippingAddress.deliveryPresent = true;
-			vm.AvoidMultipleDelryChrgs.push(obj.ShippingAddress);
-			if(dat==today)
-				vm['data'+index] = "dt"+index;
-			else if(dat==tomorrow)
-				vm['data'+index] = "tom"+index;
-			else{
-				obj.dateVal = {"Month":dt.getMonth()+1,"Date":dt.getDate(),"Year":dt.getFullYear()};
-				vm['data'+index] = "selDate"+index;
-			}
-			index++;
-			orderDtls.subTotal += parseFloat(obj.LineTotal);
-			angular.forEach(obj.xp.deliveryFeesDtls, function(val, key){
-				deliverySum += parseFloat(val);
-			},true);
-			if(deliverySum > 250){
-				line.xp.Discount = deliverySum - 250;
-				deliverySum = 250;
-			}
-			orderDtls.deliveryCharges += deliverySum;
-			//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
-			return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
-		});
-		vm.AvoidMultipleDelryChrgs = _.uniq(vm.AvoidMultipleDelryChrgs, 'lineID');
-		$scope.orderDtls.subTotal = orderDtls.subTotal;
-		$scope.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
-		$scope.orderDtls.SpendingAccounts = {};
-		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
-		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
-            $scope.orderDtls.Total = res.Total;
-        });
-		$scope.recipientsGroup = groups;
-		$scope.recipients = [];
-		for(var n in groups){
-			$scope.recipients.push(n);
-		}
-	}
+
+    vm.submitOrder = function() {
+        if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {
+            CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
+                .then(function(){
+                    OrderCloud.Orders.Submit(vm.orderID)
+                        .then(function(){
+                            $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+                        });
+                });
+        }
+    };
+	vm.seluser = $stateParams.ID;
+	//console.log('1234567890', $stateParams);
+	//$scope.onLoadCheckout = function(){
+	//	CurrentOrder.Get()
+	//	.then(function(order) {
+	//		vm.order = order;
+	//		console.log("ssss",vm.order);
+	//		$scope.orderID = order.ID;
+	//		$scope.oredrUserID = order.FromUserID;
+	//		OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
+	//			$scope.lineTotalQty = _.reduce(_.pluck(res.Items, 'Quantity'), function(memo, num){ return memo + num; }, 0);
+	//			$scope.lineTotalSubTotal = _.reduce(_.pluck(res.Items, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
+	//			vm.AvoidMultipleDelryChrgs = [];
+	//			LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
+	//					$scope.Grouping(data);
+	//			});
+	//			BuildOrderService.OrderOnHoldRemove(res.Items, vm.order.ID).then(function(dt){
+	//				console.log("Order OnHold Removed....");
+	//			});
+	//		});
+	//		BuildOrderService.GetBuyerDtls().then(function(res){
+	//			res.xp.deliveryChargeAdjReasons.unshift("---select---");
+	//			$scope.buyerDtls = res;
+	//		});
+	//	});
+	//};
+	//$scope.onLoadCheckout();
+	//$scope.Grouping = function(data){
+	//	var orderDtls = {"subTotal":0,"deliveryCharges":0};
+	//	$scope.orderDtls = {};
+	//	$scope.deliveryInfo = data;
+	//	var dt,locale = "en-us",dat,index=0;
+	//	var groups = _.groupBy(data, function(obj){
+	//		dt = new Date(obj.xp.deliveryDate);
+	//		var deliverySum=0;
+	//		//obj.xp.deliveryDate = dt.toLocaleString(locale, { month: "long" })+" "+dt.getDate()+", "+dt.getFullYear();
+	//		dat = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
+	//		BuildOrderService.GetPhoneNumber(obj.ShippingAddress.Phone).then(function(res){
+	//			obj.ShippingAddress.Phone1 = res[0];
+	//			obj.ShippingAddress.Phone2 = res[1];
+	//			obj.ShippingAddress.Phone3 = res[2];
+	//		});
+	//		obj.ShippingAddress.deliveryDate = obj.xp.deliveryDate;
+	//		obj.ShippingAddress.lineID = obj.ID;
+	//		if(obj.xp.deliveryFeesDtls)
+	//			obj.ShippingAddress.deliveryPresent = true;
+	//		vm.AvoidMultipleDelryChrgs.push(obj.ShippingAddress);
+	//		if(dat==today)
+	//			vm['data'+index] = "dt"+index;
+	//		else if(dat==tomorrow)
+	//			vm['data'+index] = "tom"+index;
+	//		else{
+	//			obj.dateVal = {"Month":dt.getMonth()+1,"Date":dt.getDate(),"Year":dt.getFullYear()};
+	//			vm['data'+index] = "selDate"+index;
+	//		}
+	//		index++;
+	//		orderDtls.subTotal += parseFloat(obj.LineTotal);
+	//		angular.forEach(obj.xp.deliveryFeesDtls, function(val, key){
+	//			deliverySum += parseFloat(val);
+	//		},true);
+	//		if(deliverySum > 250){
+	//			line.xp.Discount = deliverySum - 250;
+	//			deliverySum = 250;
+	//		}
+	//		orderDtls.deliveryCharges += deliverySum;
+	//		//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
+	//		return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
+	//	});
+	//	vm.AvoidMultipleDelryChrgs = _.uniq(vm.AvoidMultipleDelryChrgs, 'lineID');
+	//	$scope.orderDtls.subTotal = orderDtls.subTotal;
+	//	$scope.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
+	//	$scope.orderDtls.SpendingAccounts = {};
+	//	//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
+	//	OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
+     //       $scope.orderDtls.Total = res.Total;
+     //   });
+	//	$scope.recipientsGroup = groups;
+	//	$scope.recipients = [];
+	//	for(var n in groups){
+	//		$scope.recipients.push(n);
+	//	}
+	//}
 	$scope.payment = function(line,index){
 		var $this = this;
 		var addrValidate = {

@@ -3,9 +3,9 @@
 	<div class="checkoutContainer-left col-sm-8 col-xs-8 col-md-8 col-lg-8">
 		<div class="checkoutSection">
 			<uib-accordion close-others="checkout.oneAtATime">
-				<uib-accordion-group is-open="checkout.statusstatus.delInfoOpen" is-disabled="checkout.status.isFirstDisabled">
+				<uib-accordion-group is-open="checkout.status.delInfoOpen" is-disabled="checkout.status.isFirstDisabled">
 					<uib-accordion-heading>
-						<h1>1.<span ng-if="checkout.status.isFirstDisabled ==true">
+						<h1>1.<span ng-if="checkout.status.isFirstDisabled">
 							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 								 viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
 								<g>
@@ -13,10 +13,10 @@
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"/>
 								</g>
 							</svg>
-							</span> Delivery Information <button ng-click="deliveryInfoEdit($event,checkout.status)" ng-if="checkout.status.isFirstDisabled ==true">Edit</button></h1>
+							</span> Delivery Information <button ng-click="deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime">
-						<uib-accordion-group ng-repeat="line in deliveryInfo track by line.ID" is-open="delInfoRecipient[$index]">
+						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="delInfoRecipient[$index]">
 							<uib-accordion-heading>
 								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}} | {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
@@ -31,7 +31,7 @@
 									<p>Last Name</p>
 									<input type="text" ng-model="line.ShippingAddress.LastName"></input>
 								</div>
-								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-init="addressTypeSelect(line)">
+								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />Residence</label>
 									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />Hospital</label>
 									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />Funeral</label>
@@ -41,9 +41,9 @@
 									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />In-Store Pick Up</label>
 								</div>
 								<p class="check-top">Zip Code</p>
-								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
+								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								<p class="check-top">Address1</p>
-								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
+								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								<p class="check-top">Address2(optional)</p>
 								<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								<div class="check-top city-block">
@@ -66,10 +66,10 @@
 								</div>
 								<div class="delivery-details">
 									<label class="radio-inline"><input type="radio" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='Will Call' ? line.xp.addressType : 'Residence'">Delivery</label>
-									<label class="radio-inline"><input type="radio" ng-click="getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">In-Store Pick Up</label>
+									<label class="radio-inline"><input type="radio" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">In-Store Pick Up</label>
 									<div ng-if="line.xp.addressType!='Will Call'">
 										<p class="check-top">Delivery Date</p>
-										<p class="modify" ng-init="deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
+										<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
 											<span>
 												<a tabindex="0" popover-trigger="none" popover-is-open="showDeliveryToolTip" ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="vm.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
 											</span>
@@ -376,7 +376,7 @@
 											<input type="number" ng-model="txtBachmanCharges" class="col-xs-8 col-sm-8 col-md-8 col-lg-8" ng-disabled="BachmansCharges == 'Full'" /><span></span>
 										</div>
 										<span style="color:red;" ng-if="txtBachmanCharges > checkout.UserSpendingAcc['Bachman Charges'].Balance">You cannot exceed your balance limit...!</span>
-										<button ng-disabled="txtBachmanCharges > checkout.UserSpendingAcc['Bachman Charges'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Bachman Charges'], BachmansCharges, txtBachmanCharges, orderDtls, 'Bachman Charges')">Apply</button>
+										<button ng-disabled="txtBachmanCharges > checkout.UserSpendingAcc['Bachman Charges'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Bachman Charges'], BachmansCharges, txtBachmanCharges, checkout.orderDtls, 'Bachman Charges')">Apply</button>
 									</div>
 								</div>
 							</div>
@@ -400,7 +400,7 @@
 											</div>
 										<!-- </div> -->
 										<!-- <span style="color:red;" ng-if="txtGiftCharges > checkout.UserSpendingAcc['Gift Card'].Balance">You cannot exceed your balance limit...!</span> -->
-										<button ng-click="checkout.RedeemGiftCard(GiftCardNo, orderDtls)">Apply</button>
+										<button ng-click="checkout.RedeemGiftCard(GiftCardNo, checkout.orderDtls)">Apply</button>
 									</div>
 								</div>
 							</div>
@@ -427,7 +427,7 @@
 												</div>
 											</div>
 										</div>
-										<button ng-click="checkout.PayByChequeOrCash(orderDtls)">Apply</button>
+										<button ng-click="checkout.PayByChequeOrCash(checkout.orderDtls)">Apply</button>
 									</div>
 								</div>
 							</div>
@@ -452,7 +452,7 @@
 												</div>
 										</div>
 										<span style="color:red;" ng-if="txtPurpleCharges > checkout.UserSpendingAcc['Purple Perks'].Balance">You cannot exceed your balance limit...!</span>
-										<button ng-disabled="txtPurpleCharges > checkout.UserSpendingAcc['Purple Perks'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Purple Perks'], PurpleCharges, txtPurpleCharges, orderDtls, 'Purple Perks')">Apply</button>
+										<button ng-disabled="txtPurpleCharges > checkout.UserSpendingAcc['Purple Perks'].Balance" ng-click="checkout.ApplySpendingAccCharges(checkout.UserSpendingAcc['Purple Perks'], PurpleCharges, txtPurpleCharges, checkout.orderDtls, 'Purple Perks')">Apply</button>
 									</div>
 								</div>
 							</div>
@@ -513,7 +513,7 @@
 										Credit Card: xxxx xxxx xxxx {{userAddr.card.PartialAccountNumber}}
 									</span>
 									<span>Card Expires: {{usercard.ExpirationDate | date:'mm/dd'}}</span>
-									<span>Purple Perks Points Applied:{{orderDtls.SpendingAccounts.PurplePerk | currency}}</span>
+									<span>Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerk | currency}}</span>
 								</li>
 							</ul>
 						</uib-accordion-group>
@@ -536,14 +536,14 @@
 				<h1>Order [ {{lineTotalQty}} items ] <a ui-sref="buildOrder({ID:user.ID,SearchType:'User',showOrdersummary: true})">Edit</a> </h1>
 			</div>
 			<uib-accordion close-others="checkout.oneAtATime">
-				<uib-accordion-group ng-repeat="line in recipients">
+				<uib-accordion-group ng-repeat="line in checkout.recipients">
 					<uib-accordion-heading>
 						<div class="checkoutorderhead">
 							<p><span>Recipient:</span> {{line}}</p>
-							<p><span>Zip Code:</span> {{recipientsGroup[line][0].ShippingAddress.Zip}}</p>
+							<p><span>Zip Code:</span> {{checkout.recipientsGroup[line][0].ShippingAddress.Zip}}</p>
 						</div>
 					</uib-accordion-heading>
-					<div class="ordersummaryproductdata" ng-repeat="recip in recipientsGroup[line]">
+					<div class="ordersummaryproductdata" ng-repeat="recip in checkout.recipientsGroup[line]">
 						<div class="prod-img">
 							<img src="assets/images/flowers.jpg">
 						</div>
@@ -560,17 +560,17 @@
 					<p>Subtotal  <span>{{checkout.order.Subtotal | currency}}</span></p>
 					<p>Delivery Charges   <span>{{checkout.order.ShippingCost | currency}} </span></p>
 					<p>Estimated Tax   <span>{{checkout.order.TaxCost | currency}} </span></p>
-					<p ng-if="orderDtls.SpendingAccounts.CouponCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'CouponCharges')">x</button> Coupon Applied <span>-{{orderDtls.SpendingAccounts.CouponCharges | currency}} </span></p>
-					<p ng-if="orderDtls.SpendingAccounts.BachmansCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'BachmansCharges')">x</button>Bachman’s Charge applied   <span>-{{orderDtls.SpendingAccounts.BachmansCharges | currency}} </span></p>
-					<p ng-if="orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'GiftCardCharges')">x</button>Gift Card applied   <span>-{{orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
-					<p ng-if="orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'PaidCash')">x</button>Paid Through Cash   <span>-{{orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
-					<p ng-if="orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'ChequeCharges')">x</button>Paid through Cheque   <span>-{{orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
-					<p ng-if="orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(orderDtls, 'PurplePerk')">x</button>Purple Perks Balance applied   <span>-{{orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.CouponCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'CouponCharges')">x</button> Coupon Applied <span>-{{checkout.orderDtls.SpendingAccounts.CouponCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'BachmansCharges')">x</button>Bachman’s Charge applied   <span>-{{checkout.orderDtls.SpendingAccounts.BachmansCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'GiftCardCharges')">x</button>Gift Card applied   <span>-{{checkout.orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PaidCash')">x</button>Paid Through Cash   <span>-{{checkout.orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'ChequeCharges')">x</button>Paid through Cheque   <span>-{{checkout.orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PurplePerk')">x</button>Purple Perks Balance applied   <span>-{{checkout.orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
 					<p class="total">Total   <span>{{checkout.order.Total | currency}}  </span></p>
 				</div>
 				<div class="promo-code">
 					<p>Apply Promo Code</p>
-					<input type="text" ng-model="coupon" /><input type="button" value="Apply" ng-click="checkout.ApplyCoupon(coupon, orderDtls)" />
+					<input type="text" ng-model="coupon" /><input type="button" value="Apply" ng-click="checkout.ApplyCoupon(coupon, checkout.orderDtls)" />
 				</div>
 			</uib-accordion>
 		</div>

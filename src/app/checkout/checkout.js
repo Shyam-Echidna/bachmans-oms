@@ -81,6 +81,18 @@ function checkoutConfig( $stateProvider ) {
                     },
                     OrderLineItems: function(OrderCloud, Order) {
                         return OrderCloud.As().LineItems.List(Order.ID)
+                    },
+                    ProductInfo: function(OrderCloud, LineItemHelpers, OrderLineItems) {
+                        return LineItemHelpers.GetProductInfo(OrderLineItems.Items)
+                    },
+                    TakeOrderOffHold: function(BuildOrderService, Order, OrderLineItems) {
+                        return BuildOrderService.OrderOnHoldRemove(OrderLineItems.Items, Order.ID)
+                    },
+                    GetBuyerDetails: function(BuildOrderService) {
+                        return BuildOrderService.GetBuyerDtls()
+                    },
+                    GetTax: function(TaxService, Order) {
+                        TaxService.GetTax(Order.ID)
                     }
                 }
 			},
@@ -94,21 +106,24 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, Order, OrderLineItems, CreditCardService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, CreditCardService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
     vm.orderID = Order.ID;
     vm.lineItems = OrderLineItems.Items;
+    vm.buyerDtls = GetBuyerDetails;
+    vm.buyerDtls.xp.deliveryChargeAdjReasons.unshift("---select---");
     vm.paymentOption = 'CreditCard';
     vm.lineTotalQty = Underscore.reduce(Underscore.pluck(vm.lineItems, 'Quantity'), function(memo, num){ return memo + num; }, 0);
     vm.lineTotalSubTotal = Underscore.reduce(Underscore.pluck(vm.lineItems, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
     vm.creditCardsList = SavedCreditCards.Items;
-
+    vm.seluser = $stateParams.ID;
+    vm.AvoidMultipleDelryChrgs = [];
 	vm.oneAtATime = true;
 	vm.status = {
-		delInfoOpen : false,
-		paymentOpen : true,
+		delInfoOpen : true,
+		paymentOpen : false,
 		reviewOpen : false,
 		isFirstDisabled: false
 	};
@@ -124,88 +139,64 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
                 });
         }
     };
-	vm.seluser = $stateParams.ID;
-	//console.log('1234567890', $stateParams);
-	//$scope.onLoadCheckout = function(){
-	//	CurrentOrder.Get()
-	//	.then(function(order) {
-	//		vm.order = order;
-	//		console.log("ssss",vm.order);
-	//		$scope.orderID = order.ID;
-	//		$scope.oredrUserID = order.FromUserID;
-	//		OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
-	//			$scope.lineTotalQty = _.reduce(_.pluck(res.Items, 'Quantity'), function(memo, num){ return memo + num; }, 0);
-	//			$scope.lineTotalSubTotal = _.reduce(_.pluck(res.Items, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
-	//			vm.AvoidMultipleDelryChrgs = [];
-	//			LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
-	//					$scope.Grouping(data);
-	//			});
-	//			BuildOrderService.OrderOnHoldRemove(res.Items, vm.order.ID).then(function(dt){
-	//				console.log("Order OnHold Removed....");
-	//			});
-	//		});
-	//		BuildOrderService.GetBuyerDtls().then(function(res){
-	//			res.xp.deliveryChargeAdjReasons.unshift("---select---");
-	//			$scope.buyerDtls = res;
-	//		});
-	//	});
-	//};
-	//$scope.onLoadCheckout();
-	//$scope.Grouping = function(data){
-	//	var orderDtls = {"subTotal":0,"deliveryCharges":0};
-	//	$scope.orderDtls = {};
-	//	$scope.deliveryInfo = data;
-	//	var dt,locale = "en-us",dat,index=0;
-	//	var groups = _.groupBy(data, function(obj){
-	//		dt = new Date(obj.xp.deliveryDate);
-	//		var deliverySum=0;
-	//		//obj.xp.deliveryDate = dt.toLocaleString(locale, { month: "long" })+" "+dt.getDate()+", "+dt.getFullYear();
-	//		dat = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
-	//		BuildOrderService.GetPhoneNumber(obj.ShippingAddress.Phone).then(function(res){
-	//			obj.ShippingAddress.Phone1 = res[0];
-	//			obj.ShippingAddress.Phone2 = res[1];
-	//			obj.ShippingAddress.Phone3 = res[2];
-	//		});
-	//		obj.ShippingAddress.deliveryDate = obj.xp.deliveryDate;
-	//		obj.ShippingAddress.lineID = obj.ID;
-	//		if(obj.xp.deliveryFeesDtls)
-	//			obj.ShippingAddress.deliveryPresent = true;
-	//		vm.AvoidMultipleDelryChrgs.push(obj.ShippingAddress);
-	//		if(dat==today)
-	//			vm['data'+index] = "dt"+index;
-	//		else if(dat==tomorrow)
-	//			vm['data'+index] = "tom"+index;
-	//		else{
-	//			obj.dateVal = {"Month":dt.getMonth()+1,"Date":dt.getDate(),"Year":dt.getFullYear()};
-	//			vm['data'+index] = "selDate"+index;
-	//		}
-	//		index++;
-	//		orderDtls.subTotal += parseFloat(obj.LineTotal);
-	//		angular.forEach(obj.xp.deliveryFeesDtls, function(val, key){
-	//			deliverySum += parseFloat(val);
-	//		},true);
-	//		if(deliverySum > 250){
-	//			line.xp.Discount = deliverySum - 250;
-	//			deliverySum = 250;
-	//		}
-	//		orderDtls.deliveryCharges += deliverySum;
-	//		//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
-	//		return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
-	//	});
-	//	vm.AvoidMultipleDelryChrgs = _.uniq(vm.AvoidMultipleDelryChrgs, 'lineID');
-	//	$scope.orderDtls.subTotal = orderDtls.subTotal;
-	//	$scope.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
-	//	$scope.orderDtls.SpendingAccounts = {};
-	//	//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
-	//	OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
-     //       $scope.orderDtls.Total = res.Total;
-     //   });
-	//	$scope.recipientsGroup = groups;
-	//	$scope.recipients = [];
-	//	for(var n in groups){
-	//		$scope.recipients.push(n);
-	//	}
-	//}
+
+	vm.Grouping = function(data){
+		var orderDtls = {"subTotal":0,"deliveryCharges":0};
+		vm.orderDtls = {};
+		vm.deliveryInfo = data;
+		var dt,locale = "en-us",dat,index=0;
+		var groups = _.groupBy(data, function(obj){
+			dt = new Date(obj.xp.deliveryDate);
+			var deliverySum=0;
+			//obj.xp.deliveryDate = dt.toLocaleString(locale, { month: "long" })+" "+dt.getDate()+", "+dt.getFullYear();
+			dat = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
+			BuildOrderService.GetPhoneNumber(obj.ShippingAddress.Phone).then(function(res){
+				obj.ShippingAddress.Phone1 = res[0];
+				obj.ShippingAddress.Phone2 = res[1];
+				obj.ShippingAddress.Phone3 = res[2];
+			});
+			obj.ShippingAddress.deliveryDate = obj.xp.deliveryDate;
+			obj.ShippingAddress.lineID = obj.ID;
+			if(obj.xp.deliveryFeesDtls)
+				obj.ShippingAddress.deliveryPresent = true;
+			vm.AvoidMultipleDelryChrgs.push(obj.ShippingAddress);
+			if(dat==today)
+				vm['data'+index] = "dt"+index;
+			else if(dat==tomorrow)
+				vm['data'+index] = "tom"+index;
+			else{
+				obj.dateVal = {"Month":dt.getMonth()+1,"Date":dt.getDate(),"Year":dt.getFullYear()};
+				vm['data'+index] = "selDate"+index;
+			}
+			index++;
+			orderDtls.subTotal += parseFloat(obj.LineTotal);
+			angular.forEach(obj.xp.deliveryFeesDtls, function(val, key){
+				deliverySum += parseFloat(val);
+			},true);
+			if(deliverySum > 250){
+				line.xp.Discount = deliverySum - 250;
+				deliverySum = 250;
+			}
+			orderDtls.deliveryCharges += deliverySum;
+			//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
+			return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
+		});
+		vm.AvoidMultipleDelryChrgs = _.uniq(vm.AvoidMultipleDelryChrgs, 'lineID');
+		vm.orderDtls.subTotal = orderDtls.subTotal;
+		vm.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
+		vm.orderDtls.SpendingAccounts = {};
+		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
+		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
+            vm.orderDtls.Total = res.Total;
+        });
+		vm.recipientsGroup = groups;
+		vm.recipients = [];
+		for(var n in groups){
+			vm.recipients.push(n);
+		}
+	};
+
+    vm.Grouping(ProductInfo);
 	$scope.payment = function(line,index){
 		var $this = this;
 		var addrValidate = {
@@ -219,23 +210,23 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 				if($this.$parent.$parent.$$nextSibling!=null){
 					$this.$parent.$parent.$$nextSibling.delInfoRecipient[index+1] = true;
 				}else{
-					$scope.status.delInfoOpen = false;
-					$scope.status.paymentOpen = true;
-					$scope.status.isFirstDisabled=true;
+					vm.status.delInfoOpen = false;
+					vm.status.paymentOpen = true;
+					vm.status.isFirstDisabled=true;
 				}
-				$scope.lineDtlsSubmit(line);
-				$scope.Grouping($scope.deliveryInfo);
+				vm.lineDtlsSubmit(line);
+				vm.Grouping(vm.deliveryInfo);
 			}else{
 				alert("Address not found...");
 			}
 		});
 	};
 	$scope.review = function(){
-		$scope.status.delInfoOpen = false;
-		$scope.status.paymentOpen = false;
-		$scope.status.reviewOpen = true;
+		vm.status.delInfoOpen = false;
+		vm.status.paymentOpen = false;
+		vm.status.reviewOpen = true;
 	};
-	$scope.lineDtlsSubmit = function(line){
+	vm.lineDtlsSubmit = function(line){
 		var params = {
 			"FirstName":line.ShippingAddress.FirstName,"LastName":line.ShippingAddress.LastName,"Street1":line.ShippingAddress.Street1,"Street2":line.ShippingAddress.Street2,"City":line.ShippingAddress.City,"State":line.ShippingAddress.State,"Zip":line.ShippingAddress.Zip,"Phone":line.ShippingAddress.Phone,"Country":"US"
 		};
@@ -249,7 +240,7 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 		if(line.xp.deliveryRun=='Run4'){
 			if(!line.xp.deliveryFeesDtls)
 				line.xp.deliveryFeesDtls = {};
-			line.xp.deliveryFeesDtls.PriorityDelivery = $scope.buyerDtls.xp.DeliveryRuns[0].Run4.charge;
+			line.xp.deliveryFeesDtls.PriorityDelivery = vm.buyerDtls.xp.DeliveryRuns[0].Run4.charge;
 		}
 		angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 			deliverySum += parseFloat(val);
@@ -414,11 +405,11 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 	//$scope.deliveryOrStore = 1;
 	$scope.fromStoreOrOutside = 1;
 	var storesData;
-	$scope.getStores = function(line){
-		if(!$scope.storeNames){
+	vm.getStores = function(line){
+		if(!vm.storeNames){
 			BuildOrderService.GetStores().then(function(res){
 				storesData = res.data.stores;
-				$scope.storeNames = _.pluck(res.data.stores, 'storeName');
+				vm.storeNames = Underscore.pluck(res.data.stores, 'storeName');
 			});
 		}
 		if(line){
@@ -427,11 +418,11 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 				line.xp.addressType = "Will Call";
 			}*/
 			if(line.xp.addressType == "Will Call" && line.willSearch){
-				$scope.getDeliveryCharges(line);
+				vm.getDeliveryCharges(line);
 			}
 		}
 	};
-	$scope.getStores();
+	vm.getStores();
 	$scope.addStoreAddress = function(item, line){
 		var filt = _.filter(storesData, function(row){
 			return _.indexOf([item],row.storeName) > -1;
@@ -450,7 +441,7 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 			line.ShippingAddress.Phone2 = res[1];
 			line.ShippingAddress.Phone3 = res[2];
 		});
-		$scope.getDeliveryCharges(line);
+		vm.getDeliveryCharges(line);
 	};
 	$scope.changeAddrType = function(line){
 		//line.xp.addressType = line.addressTypeD;
@@ -459,7 +450,7 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 		}else{
 			line.deliveryOrStore = 2;
 		}*/
-		$scope.getDeliveryCharges(line);
+		vm.getDeliveryCharges(line);
 		/*if(addressType == "Hospital" && !vm.HospitalNames){
 			vm.GetAllList("Hospitals");
 		}
@@ -473,7 +464,7 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 			vm.GetAllList("School");
 		}*/
 	}
-	$scope.getDeliveryCharges = function(line){
+	vm.getDeliveryCharges = function(line){
 		vm.NoDeliveryFees = false;
 		angular.forEach(vm.AvoidMultipleDelryChrgs, function(val, key){
 			val.deliveryDate = new Date(val.deliveryDate);
@@ -624,10 +615,10 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 	$scope.selectedAddr = function(line,addr){
 		if(addr.isAddrOpen){
 			line.selectedAddrID = addr.ID;
-			//var del = _.findWhere($scope.buyerDtls.xp.ZipCodes, {zip: addr.Zip.toString()});
+			//var del = _.findWhere(vm.buyerDtls.xp.ZipCodes, {zip: addr.Zip.toString()});
 			//line.xp.deliveryCharges = del.DeliveryCharge;
 			//line.xp.TotalCost = parseFloat(line.xp.deliveryCharges) + (parseFloat(line.Quantity) * parseFloat(line.UnitPrice));
-			line.xp.deliveryChargeAdjReason = $scope.buyerDtls.xp.deliveryChargeAdjReasons[0];
+			line.xp.deliveryChargeAdjReason = vm.buyerDtls.xp.deliveryChargeAdjReasons[0];
 		}
 		else
 			delete line.selectedAddrID;
@@ -641,7 +632,7 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 			line.xp.deliveryDate = $scope.dt;
 		else if(text.indexOf("tom") > -1)
 			line.xp.deliveryDate = new Date($scope.tom);
-		$scope.getDeliveryCharges(line);	
+		vm.getDeliveryCharges(line);
 	};
 	vm.opened = false;
 	var dt = new Date();
@@ -679,7 +670,7 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 			}				
 		}
 		if($scope.datePickerLine)
-			$scope.getDeliveryCharges($scope.datePickerLine);
+			vm.getDeliveryCharges($scope.datePickerLine);
 	}, true);
 	//----------Date picker ends------------------
 	$scope.cancelOrder = function(){
@@ -718,20 +709,19 @@ function checkoutController($scope, $state, LineItemHelpers, $http, Underscore, 
 	$scope.gotobuildorder = function(){
 		$state.go('buildOrder', {showOrdersummary: true}, {reload:true});
     };
-	$scope.deliveryInfoEdit = function(e,status){
+	vm.deliveryInfoEdit = function(e){
 		e.preventDefault();
 		e.stopPropagation();
-		status.isFirstDisabled='false';
-		status.delInfoOpen='true';
+		vm.status.isFirstDisabled='false';
+		vm.status.delInfoOpen='true';
 	};
-	$scope.deliveryAdj = function(line){
+	vm.deliveryAdj = function(line){
 		if(!line.xp.deliveryChargeAdjReason)
-			line.xp.deliveryChargeAdjReason = $scope.buyerDtls.xp.deliveryChargeAdjReasons[0];
+			line.xp.deliveryChargeAdjReason = vm.buyerDtls.xp.deliveryChargeAdjReasons[0];
 	};
-	$scope.addressTypeSelect = function(line){
-		if(line.xp.addressType=="Will Call"){
-			//line.deliveryOrStore = 2;
-			$scope.getStores(line);
+	vm.addressTypeSelect = function(line){
+		if(line.xp && line.xp.addressType=="Will Call"){
+			vm.getStores(line);
 		}
 		/*else
 			line.deliveryOrStore = 1;*/

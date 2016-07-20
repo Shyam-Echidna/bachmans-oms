@@ -916,17 +916,20 @@ button {
 						button {
 							.helvetica-bold;
 							font-size: 9px;
-							line-height:17px;
-							width: 85px;
-							border-radius: 4px;
-							color: #fff;
-							background: #b0b3bd;
+							line-height: 24px;
+						    width: 100px;
+						    border-radius: 4px;
+						    color: #fff;
+						    background: #b0b3bd;
+						    padding: 0px 4px;
 							span {
-								padding-right: 3px;
+								 float:left;
+								 height: 24px;
 								svg {
 									fill: #fff;
-									width: 10px;
-									height: 10px;
+									width: 20px;
+    								height: 20px;
+   									margin: 1px 0px 0px 4px;
 								}
 							}
 							&:hover{
@@ -1014,7 +1017,7 @@ button {
 												&:last-child {
 													margin-top: 10px;
 													button {
-														padding: 2px 5px;
+														padding: 2px 6px;
 														border-radius: 3px;
 														font-size: 10px;
 														.helvetica-medium;
@@ -1022,15 +1025,16 @@ button {
 														background: #b0b3bd;
 														.background-fade;
 														span {
-															display: inline-block;
+															float:left;
 															margin-right: 3px;
 															font: inherit;
+															height:13px;
 														}
 														&.edit {
 															svg {
 																fill: #fff;
-																width: 10px;
-																height: 10px;
+																width: 14px;
+																height: 14px;
 															}
 														}
 														&.remove {
@@ -1129,12 +1133,7 @@ button {
 						div {
 							text-align: right;
 							padding: 0 30px 3px 0;
-							&.delivery-content {
-								width: 15%;
-								float: right;
-								border-left: 1px solid @color21;
-								padding: 0 25px 3px 0;
-							}
+
 							h5 {
 								margin: 0;
 								.helvetica-regular;
@@ -1151,6 +1150,66 @@ button {
 					}
 					.price {
 						border-left: 1px solid @color21;
+					}
+					 .edit {
+						float: right;
+						padding: 0;
+						line-height: 1.8;
+						text-align: right;
+						button {
+							.helvetica-bold;
+							font-size: 9px;
+							line-height: 24px;
+						    width: 100px;
+						    border-radius: 4px;
+						    color: #fff;
+						    background: #b0b3bd;
+						    padding: 0px 4px;
+							span {
+								 float:left;
+								 height: 24px;
+								svg {
+									fill: #fff;
+									width: 20px;
+    								height: 20px;
+   									margin: 1px 0px 0px 4px;
+								}
+							}
+							&:hover{
+								background-color:@color1;
+							}
+						}
+					}
+					.delivery-content {
+					    padding:0;
+					    .delivery{
+					    	width: 35%;
+    				        float: right;
+    					    border-left: 1px solid @color21 !important;
+    					    div{
+    					    	padding: 0 25px 0px 0;
+    					    	h5{
+    					    		display: inline;
+								    text-align: right;
+								    padding-right: 0px;
+								    margin-right: 50px;
+								    .helvetica-regular;
+								    font-size: 13px;
+								    color:@color1;
+    					    	}
+    					    	span{
+    					            font-size: 15px;
+								    color: #8c58b5;
+								    float: right;
+								    width: 28%;
+								    border-left:1px solid @color21;
+								    line-height: 35px;
+								    .helvetica-bold;
+								    color: @primary-dark-color;
+
+    					    	}
+    					    }
+					    }
 					}
 				}
 			}

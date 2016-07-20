@@ -71,7 +71,7 @@
 										<p class="check-top">Delivery Date</p>
 										<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
 											<span>
-												<a tabindex="0" popover-trigger="none" popover-is-open="checkout.showDeliveryToolTip" ng-click="checkout.showDeliveryToolTip = !checkout.showDeliveryToolTip" uib-popover-template="vm.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
+												<a tabindex="0" popover-trigger="none" popover-is-open="checkout.showDeliveryToolTip" ng-click="checkout.showDeliveryToolTip = !checkout.showDeliveryToolTip" uib-popover-template="checkout.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
 											</span>
 										</p>
 										    <script type="text/ng-template" id="modifyDeliveryTemplate.html">
@@ -83,28 +83,28 @@
 													</div>
 													<div>
 														<p>Reason For Adjustment</p>
-														<select ng-options="reason for reason in buyerDtls.xp.deliveryChargeAdjReasons" ng-model="line.xp.deliveryChargeAdjReason">
+														<select ng-options="reason for reason in checkout.buyerDtls.xp.deliveryChargeAdjReasons" ng-model="line.xp.deliveryChargeAdjReason">
 														</select>
 													</div>
 												</div>
 											</script>
 										<ul>
-										   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:vm.data{{$index}} == 'dt{{$index}}'}">
+										   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:checkout.data{{$index}} == 'dt{{$index}}'}">
 												<p>Deliver Today</p>
 												<p>{{dt | date:'longDate'}}</p>
 												<span>Available</span>
 										   </li>
-										   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:vm.data{{$index}} == 'tom{{$index}}'}">
+										   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:checkout.data{{$index}} == 'tom{{$index}}'}">
 												<p>Deliver Tomorrow</p>
 												<p>{{tom | date:'longDate'}}</p>
 												<span>Available</span>
 										   </li>
-										   <li ng-class="{active:vm.data{{$index}} == 'selDate{{$index}}'}">
+										   <li ng-class="{active:checkout.data{{$index}} == 'selDate{{$index}}'}">
 												<p>Select Date</p>
 												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />
 												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="checkout.dateSelect()" />
 												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
-												<button type="button" ng-click="vm.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="vm.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="initDate" init-date="initDate">
+												<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="checkout.initDate" init-date="checkout.initDate">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 														 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
 
@@ -126,21 +126,21 @@
 										<p class="delivery-date">Delivery Preference</p>
 										<ul>
 											<li ng-click="line.xp.deliveryRun='Run1'" ng-class="{active:line.xp.deliveryRun=='Run1'}">
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
 											</li>
 											<li ng-click="line.xp.deliveryRun='Run2'" ng-class="{active:line.xp.deliveryRun=='Run2'}">
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
 											</li>
 											<li ng-click="line.xp.deliveryRun='Run3'" ng-class="{active:line.xp.deliveryRun=='Run3'}">
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
 											</li>
 											<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}">
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
-												<p>{{buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
-												<p>${{buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
+												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
+												<p>${{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
 											</li>
 										</ul>
 									</div>

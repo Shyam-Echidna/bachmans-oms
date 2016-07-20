@@ -46,7 +46,7 @@ angular.module( 'orderCloud' )
 			if(!$(event.target).closest(element).length) {
 			  scope.$apply(function () {
 				if(scope.$parent.showDeliveryToolTip == true)
-					scope.$parent.showDeliveryToolTip = false;
+					scope.$parent.showDeliveryToolTip = false;	
 				$parse(attrs.clickOutside)(scope);
 			  });
 			}
@@ -121,6 +121,15 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     vm.seluser = $stateParams.ID;
     vm.AvoidMultipleDelryChrgs = [];
 	vm.oneAtATime = true;
+	vm.opened = false;
+	var dt = new Date();
+	$scope.dt = new Date();//today
+	var today = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
+	dt = new Date();
+	$scope.tom = new Date(dt.setDate(dt.getDate() + 1));//tomorrow
+	vm.initDate = new Date();//day after tomorrow
+	var tomorrow = $scope.tom;
+	tomorrow = tomorrow.getMonth()+1+"/"+tomorrow.getDate()+"/"+tomorrow.getFullYear();
 	vm.status = {
 		delInfoOpen : true,
 		paymentOpen : false,
@@ -634,14 +643,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			line.xp.deliveryDate = new Date($scope.tom);
 		vm.getDeliveryCharges(line);
 	};
-	vm.opened = false;
-	var dt = new Date();
-	$scope.dt = new Date();//today
-	var today = $scope.dt.getMonth()+1+"/"+$scope.dt.getDate()+"/"+$scope.dt.getFullYear();
-	$scope.tom = new Date(dt.setDate(dt.getDate() + 1));//tomorrow
-	$scope.initDate = new Date();//day after tomorrow
-	var tomorrow = $scope.tom;
-	tomorrow = tomorrow.getMonth()+1+"/"+tomorrow.getDate()+"/"+tomorrow.getFullYear();
 	vm.toggle = function(line,index){
 		vm.opened = true;
 		$scope.datePickerLine = line;

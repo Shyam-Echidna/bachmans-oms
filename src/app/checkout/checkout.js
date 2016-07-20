@@ -358,7 +358,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 								}
 								return obj;
 							});
-							$this['isDeliAddrShow'+index] = false;
+							vm['isDeliAddrShow'+index] = false;
 						});
 					});
 				}else{
@@ -409,7 +409,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		$scope['showNewAddress'+Index] = true;
 	};
 	vm.deliveryAddr = function(Index){
-		this['isDeliAddrShow'+Index] = true;
+		vm['isDeliAddrShow'+Index] = true;
 	};
 	//$scope.deliveryOrStore = 1;
 	vm.fromStoreOrOutside = 1;

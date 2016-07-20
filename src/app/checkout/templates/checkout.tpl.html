@@ -167,14 +167,14 @@
 										<uib-accordion-heading>
 											<input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span>
 										</uib-accordion-heading>
-										<div ng-show="!isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
+										<div ng-show="!checkout.isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
 											<a ng-click="checkout.deliveryAddr($index)">Edit</a>
 											<p>{{addr.Street1}}</p>
 											<p>{{addr.Street2}}</p>
 											<p>{{addr.Zip}}</p>
 											<p>{{addr.Phone}}</p>
 										</div>
-										<div ng-show="isDeliAddrShow{{$index}}">
+										<div ng-show="checkout.isDeliAddrShow{{$index}}">
 											
 											<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">

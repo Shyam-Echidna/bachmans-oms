@@ -1096,7 +1096,7 @@
 								<tr>
 								<td colspan="5">
 								<div class="edit">
-									<button ng-click='isEditing = !isEditing' ng-show="!isEditing">
+									<button ng-if="groups[line][0].xp.deliveryFeesDtls && groups[line][0].xp.deliveryFeesDtls!={}" ng-click="buildordersummary.EditSaveCharges(groups[line][0])">
 							<span>
 							<?xml version="1.0" encoding="utf-8"?>
 								<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -1183,7 +1183,7 @@
 										<polygon points="31.9,111.8 63,102.6 40.6,80.2 	" />
 									</g>
 								</svg>
-								</span> Edit Charges</button>
+								</span>{{groups[line][0].EditCharges == true ? 'Save' : 'Edit Charges'}}</button>
 								</div>
 								</td>	
 								</tr>
@@ -1212,17 +1212,17 @@
 									
 								 <td class="delivery-content" colspan="5">
 									<div class="delivery">
+									 <div ng-if="!groups[line][0].EditCharges" ng-repeat="(key, val) in groups[line][0].xp.deliveryFeesDtls">
+										<h5>{{key}}  </h5><span>{{val | currency}}</span>
+									 </div>
+									 <div ng-if="groups[line][0].EditCharges" ng-repeat="(key, val) in groups[line][0].xp.deliveryFeesDtls">
+										<h5>{{key}}  </h5><p><input type="text" value="{{val}}" ng-model="groups[line][0].xp.deliveryFeesDtls[key]" /></p>
+									 </div>
 									 <div>
-										<h5>Handling  </h5><span>$12.99</span>
+										<h5>Delivery </h5><span>{{groups[line][0].xp.deliveryCharges | currency}}</span>
 									 </div>
 									  <div>
-										<h5>StandardDelivery </h5><span>$12.99</span>
-									 </div>
-									 <div>
-										<h5>Delivery </h5><span>$25.98</span>
-									 </div>
-									  <div>
-										<h5>Subtotal</h5><span>$278.50</span>
+										<h5>Subtotal</h5><span>{{buildordersummary.TotalCost[line] | currency}}</span>
 									 </div>
 									 </div>
 									

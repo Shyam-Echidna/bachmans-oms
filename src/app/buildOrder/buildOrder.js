@@ -598,7 +598,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}
 	vm.createUser=function(newUser, createaddr){		
 		$scope.showModal = !$scope.showModal;		
-		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+")"+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
+		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
 		OrderCloud.Users.Create(newUser).then(function(user){		
 			var params = {"CompanyName":createaddr.CompanyName,"FirstName":newUser.FirstName,"LastName":newUser.LastName,"Street1":createaddr.Street1,"Street2":createaddr.Street2,"City":createaddr.City,"State":createaddr.State,"Zip":createaddr.Zip,"Country":createaddr.Country,"Phone":newUser.Phone, "xp":{"IsDefault" :createaddr.IsDefault}};		
 		OrderCloud.Addresses.Create(params).then(function(data){		
@@ -1016,7 +1016,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 		}, true);
 		if(this.visible == true)
 			delete line.xp.CardMessage;
-		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+")"+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
+		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+") "+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";
 		line.xp.addressType = this.addressType;
 		var deliverySum = 0;
@@ -1577,7 +1577,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		});
 		if(this.visible == true)
 			delete line.xp.CardMessage;
-		//line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+")"+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
+		//line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+") "+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";
 		//line.xp.addressType = this.addressType;
 		var deliverySum = 0;

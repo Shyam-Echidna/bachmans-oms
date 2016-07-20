@@ -196,7 +196,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		vm.orderDtls.SpendingAccounts = {};
 		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
 		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
-            vm.orderDtls.Total = res.Total;
+            vm.order = res;
         });
 		vm.recipientsGroup = groups;
 		vm.recipients = [];
@@ -294,7 +294,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}
 	};
 	vm.viewAddrBook = function(Index){
-		$scope['isAddrShow'+Index] = true;
+		vm['isAddrShow'+Index] = true;
 		this.limit = 3;
 		$scope.addressesList = [];
 		OrderCloud.Addresses.ListAssignments(null,vm.order.FromUserID).then(function(data){
@@ -328,7 +328,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 	vm.UpdateAddress = function(addr, index){
 		var $this = this;
-		addr.Phone = "("+addr.Phone1+")"+addr.Phone2+"-"+addr.Phone3;
+		addr.Phone = "("+addr.Phone1+") "+addr.Phone2+"-"+addr.Phone3;
 		var addrValidate = {
 			"addressLine1": addr.Street1, 
 			"addressLine2": addr.Street2,
@@ -369,8 +369,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 	vm.CreateAddress = function(line, index){
 		var $this = this, params, addrValidate;
-		//var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+")"+line.Phone2+"-"+line.Phone3,"Country":"US"};
-		line.Phone = "("+line.Phone1+")"+line.Phone2+"-"+line.Phone3;
+		//var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+") "+line.Phone2+"-"+line.Phone3,"Country":"US"};
+		line.Phone = "("+line.Phone1+") "+line.Phone2+"-"+line.Phone3;
 		line.Country = "US";
 		addrValidate = {
 			"addressLine1": line.Street1, 
@@ -805,9 +805,9 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				sum = sum + val;
 		}, true);
 		if(_.isEmpty(orderDtls.SpendingAccounts)){
-			orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost;
 		}else{
-			orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges - sum;
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum;
 		}
 	}
 	vm.deleteSpendingAcc = function(orderDtls, ChargesType){

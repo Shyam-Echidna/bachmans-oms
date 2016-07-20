@@ -53,7 +53,13 @@ angular.module( 'orderCloud' )
 			link: function(scope, elem, attrs) {
 				var limit = parseInt(attrs.maxLength);
 				angular.element(elem).on("keypress", function(e) {
-					if (this.value.length == limit) e.preventDefault();
+					if (this.value.length == limit){
+						e.preventDefault();
+						$(this).next().focus();
+					}	
+					if (this.value.length == (limit-1)){
+						$(this).next().focus();
+					}
 				});
 			}
 		}
@@ -300,11 +306,26 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}*/
 	};
 	$scope.OrderSummary=function(){
-		$scope.ordersumry();
-		$scope.hideSearchBox=true;
-		$scope.showOrdersummary = true;
-		vm.showPDP = false;
-		$scope.showplp = false;
+		var LineItems = angular.element(document.getElementById("BuildOrderRightNav")).scope().buildOrderRight;
+		var arr = [], arr2 = [], id, obj = {};
+		LineItems.HighLightErrors = {};
+		angular.forEach(LineItems.lineItemForm, function(val, key){
+			arr.push(val.$valid);
+			arr2.push(val.$pristine);
+			if(!val.$pristine){
+				id = $('#lineItemForm_' + key).parent().parent().attr('id');
+				$('#'+id.replace('panel','tab')).css({'border':'1px solid red'});
+				obj[key] = id.replace('panel','tab');
+				LineItems.HighLightErrors[key] = id.replace('panel','tab');
+			}
+		},true);
+		if(!_.contains(arr, false) && !_.contains(arr2, false)){
+			$scope.ordersumry();
+			$scope.hideSearchBox=true;
+			$scope.showOrdersummary = true;
+			vm.showPDP = false;
+			$scope.showplp = false;
+		}
 	};
 	if($stateParams.orderDetails){
 		$scope.hideSearchBox=true;
@@ -577,7 +598,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}
 	vm.createUser=function(newUser, createaddr){		
 		$scope.showModal = !$scope.showModal;		
-		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+")"+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
+		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
 		OrderCloud.Users.Create(newUser).then(function(user){		
 			var params = {"CompanyName":createaddr.CompanyName,"FirstName":newUser.FirstName,"LastName":newUser.LastName,"Street1":createaddr.Street1,"Street2":createaddr.Street2,"City":createaddr.City,"State":createaddr.State,"Zip":createaddr.Zip,"Country":createaddr.Country,"Phone":newUser.Phone, "xp":{"IsDefault" :createaddr.IsDefault}};		
 		OrderCloud.Addresses.Create(params).then(function(data){		
@@ -986,9 +1007,16 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			"zipcode": line.ShippingAddress.Zip, 
 			"country": "US"
 		}, deliverySum = 0, DeliveryMethod, dt;*/
+		vm.lineItemForm[line.ID].$setPristine();
+		angular.forEach(vm.HighLightErrors, function(val, key){
+			if(key==line.ID){
+				$('#'+val).css({'border': 'none'});
+				delete vm.HighLightErrors[key];
+			}
+		}, true);
 		if(this.visible == true)
 			delete line.xp.CardMessage;
-		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+")"+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
+		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+") "+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";
 		line.xp.addressType = this.addressType;
 		var deliverySum = 0;
@@ -1549,7 +1577,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		});
 		if(this.visible == true)
 			delete line.xp.CardMessage;
-		//line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+")"+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
+		//line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+") "+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";
 		//line.xp.addressType = this.addressType;
 		var deliverySum = 0;
@@ -2061,6 +2089,8 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 			OrderCloud.As().Orders.Patch(ID, {"xp": {"Status": ""}}).then(function(res){
 				d.resolve(res);
 			});
+		}else{
+			d.resolve();
 		}
 		return d.promise;
 	}

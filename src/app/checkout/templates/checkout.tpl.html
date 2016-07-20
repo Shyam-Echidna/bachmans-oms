@@ -543,16 +543,16 @@
 							<p><span>Zip Code:</span> {{checkout.recipientsGroup[line][0].ShippingAddress.Zip}}</p>
 						</div>
 					</uib-accordion-heading>
-					<div class="ordersummaryproductdata" ng-repeat="recip in checkout.recipientsGroup[line]">
+					<div class="ordersummaryproductdata" ng-repeat="item in checkout.recipientsGroup[line]">
 						<div class="prod-img">
 							<img src="assets/images/flowers.jpg">
 						</div>
 						<div class="prod-details">
-							<p>{{recip.Product.Name}}</p>
+							<p>{{item.Product.Name}}</p>
 							<p>Item no: 141927</p>
 							<p>Type: Deluxe</p>
-							<span class="qty">Qty: {{recip.Quantity}}</span>
-							<span class="price">{{recip.LineTotal | currency}}</span>
+							<span class="qty">Qty: {{item.Quantity}}</span>
+							<span class="price">{{item.LineTotal | currency}}</span>
 						</div>
 					</div>
 				</uib-accordion-group>

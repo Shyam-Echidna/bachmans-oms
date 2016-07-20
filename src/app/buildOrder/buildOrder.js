@@ -53,7 +53,13 @@ angular.module( 'orderCloud' )
 			link: function(scope, elem, attrs) {
 				var limit = parseInt(attrs.maxLength);
 				angular.element(elem).on("keypress", function(e) {
-					if (this.value.length == limit) e.preventDefault();
+					if (this.value.length == limit){
+						e.preventDefault();
+						$(this).next().focus();
+					}	
+					if (this.value.length == (limit-1)){
+						$(this).next().focus();
+					}
 				});
 			}
 		}
@@ -300,11 +306,26 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}*/
 	};
 	$scope.OrderSummary=function(){
-		$scope.ordersumry();
-		$scope.hideSearchBox=true;
-		$scope.showOrdersummary = true;
-		vm.showPDP = false;
-		$scope.showplp = false;
+		var LineItems = angular.element(document.getElementById("BuildOrderRightNav")).scope().buildOrderRight;
+		var arr = [], arr2 = [], id, obj = {};
+		LineItems.HighLightErrors = {};
+		angular.forEach(LineItems.lineItemForm, function(val, key){
+			arr.push(val.$valid);
+			arr2.push(val.$pristine);
+			if(!val.$pristine){
+				id = $('#lineItemForm_' + key).parent().parent().attr('id');
+				$('#'+id.replace('panel','tab')).css({'border':'1px solid red'});
+				obj[key] = id.replace('panel','tab');
+				LineItems.HighLightErrors[key] = id.replace('panel','tab');
+			}
+		},true);
+		if(!_.contains(arr, false) && !_.contains(arr2, false)){
+			$scope.ordersumry();
+			$scope.hideSearchBox=true;
+			$scope.showOrdersummary = true;
+			vm.showPDP = false;
+			$scope.showplp = false;
+		}
 	};
 	if($stateParams.orderDetails){
 		$scope.hideSearchBox=true;
@@ -986,6 +1007,13 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			"zipcode": line.ShippingAddress.Zip, 
 			"country": "US"
 		}, deliverySum = 0, DeliveryMethod, dt;*/
+		vm.lineItemForm[line.ID].$setPristine();
+		angular.forEach(vm.HighLightErrors, function(val, key){
+			if(key==line.ID){
+				$('#'+val).css({'border': 'none'});
+				delete vm.HighLightErrors[key];
+			}
+		}, true);
 		if(this.visible == true)
 			delete line.xp.CardMessage;
 		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+")"+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
@@ -2061,6 +2089,8 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 			OrderCloud.As().Orders.Patch(ID, {"xp": {"Status": ""}}).then(function(res){
 				d.resolve(res);
 			});
+		}else{
+			d.resolve();
 		}
 		return d.promise;
 	}

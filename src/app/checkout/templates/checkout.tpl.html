@@ -13,7 +13,7 @@
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"/>
 								</g>
 							</svg>
-							</span> Delivery Information <button ng-click="deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
+							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime">
 						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="delInfoRecipient[$index]">
@@ -22,7 +22,7 @@
 							</uib-accordion-heading>
 							<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="!isAddrShow{{$index}}">
 								<h3>Delivery Address</h3>
-								<p ng-click="viewAddrBook($index)" class="view-addr">View Address Book +</p>
+								<p ng-click="checkout.viewAddrBook($index)" class="view-addr">View Address Book +</p>
 								<div class="check-top inline-blk">
 									<p>First Name</p>
 									<input type="text" ng-model="line.ShippingAddress.FirstName"></input>
@@ -32,13 +32,13 @@
 									<input type="text" ng-model="line.ShippingAddress.LastName"></input>
 								</div>
 								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />Residence</label>
-									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />Hospital</label>
-									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />Funeral</label>
-									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />Church</label>
-									<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
-									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />School</label>
-									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />In-Store Pick Up</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />Residence</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />Hospital</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />Funeral</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />Church</label>
+									<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />School</label>
+									<label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />In-Store Pick Up</label>
 								</div>
 								<p class="check-top">Zip Code</p>
 								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
@@ -71,11 +71,11 @@
 										<p class="check-top">Delivery Date</p>
 										<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
 											<span>
-												<a tabindex="0" popover-trigger="none" popover-is-open="showDeliveryToolTip" ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="vm.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
+												<a tabindex="0" popover-trigger="none" popover-is-open="checkout.showDeliveryToolTip" ng-click="checkout.showDeliveryToolTip = !checkout.showDeliveryToolTip" uib-popover-template="vm.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
 											</span>
 										</p>
 										    <script type="text/ng-template" id="modifyDeliveryTemplate.html">
-												<div class="modify-tooltip check-top" click-outside="closePopover()">
+												<div class="modify-tooltip check-top" click-outside="checkout.closePopover()">
 													<div>
 														<p>Delivery Fees</p>
 														<!-- <input type="text" ng-model="line.xp.deliveryCharges" /> -->
@@ -89,12 +89,12 @@
 												</div>
 											</script>
 										<ul>
-										   <li ng-click="dateSelect('dt',line,$index)" ng-class="{active:vm.data{{$index}} == 'dt{{$index}}'}">
+										   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:vm.data{{$index}} == 'dt{{$index}}'}">
 												<p>Deliver Today</p>
 												<p>{{dt | date:'longDate'}}</p>
 												<span>Available</span>
 										   </li>
-										   <li ng-click="dateSelect('tom',line,$index)" ng-class="{active:vm.data{{$index}} == 'tom{{$index}}'}">
+										   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:vm.data{{$index}} == 'tom{{$index}}'}">
 												<p>Deliver Tomorrow</p>
 												<p>{{tom | date:'longDate'}}</p>
 												<span>Available</span>
@@ -102,7 +102,7 @@
 										   <li ng-class="{active:vm.data{{$index}} == 'selDate{{$index}}'}">
 												<p>Select Date</p>
 												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />
-												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="dateSelect()" />
+												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="checkout.dateSelect()" />
 												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
 												<button type="button" ng-click="vm.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="vm.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="initDate" init-date="initDate">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -150,11 +150,11 @@
 											 <!--<select>
 												<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
 											 </select>-->
-											 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="addStoreAddress($item, line)" />
+											 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
 										 <p>
 										<fieldset id="group2">
-											<label class="radio-inline"><input type="radio" name="group2" ng-model="fromStoreOrOutside" value="1">Product is coming from my store</label>
-											<label class="radio-inline"><input type="radio" name="group2" ng-model="fromStoreOrOutside" value="2">Product is coming from somewhere else</label>
+											<label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label>
+											<label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">Product is coming from somewhere else</label>
 										</fieldset>
 										</p>
 									</div>
@@ -163,12 +163,12 @@
 							<div class="saved-addr col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="isAddrShow{{$index}}">
 									<h3>Saved Delivery Address</h3>
 								<uib-accordion close-others="checkout.oneAtATime">
-									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: limit" is-open="addr.isAddrOpen" ng-click="selectedAddr(line,addr)">
+									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: limit" is-open="addr.isAddrOpen" ng-click="checkout.selectedAddr(line,addr)">
 										<uib-accordion-heading>
 											<input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span>
 										</uib-accordion-heading>
 										<div ng-show="!isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
-											<a ng-click="deliveryAddr($index)">Edit</a>
+											<a ng-click="checkout.deliveryAddr($index)">Edit</a>
 											<p>{{addr.Street1}}</p>
 											<p>{{addr.Street2}}</p>
 											<p>{{addr.Zip}}</p>
@@ -225,7 +225,7 @@
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<button ng-click="UpdateAddress(addr,$index)">Save</button>
+														<button ng-click="checkout.UpdateAddress(addr,$index)">Save</button>
 													</div>
 												</div>
 											</div>
@@ -234,8 +234,8 @@
 									</uib-accordion-group>
 								</uib-accordion>
 								<div class="more-link">
-									<p ng-click="viewMore()">View More+ </p>
-									<p ng-click="newAddress($index)">Add a New Address+</p>
+									<p ng-click="checkout.viewMore()">View More+ </p>
+									<p ng-click="checkout.newAddress($index)">Add a New Address+</p>
 								</div>
 								<!-- Add a new address -->
 								<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="showNewAddress{{$index}}">
@@ -288,7 +288,7 @@
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-											<button ng-click="CreateAddress(addr,$index)">Save</button>
+											<button ng-click="checkout.CreateAddress(addr,$index)">Save</button>
 										</div>
 									</div>
 								</div>
@@ -318,7 +318,7 @@
 									<b>instruction :</b>
 								</div>
 							</div>
-							<input type="button" ng-value="deliveryInfo.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="payment(line,$index)" />
+							<input type="button" ng-value="checkout.deliveryInfo.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(line,$index)" />
 						</uib-accordion-group>
 					</uib-accordion>
 					
@@ -457,7 +457,7 @@
 								</div>
 							</div>
 						</div>
-						<!-- <input type="button" value="Review Order" ng-click="review()" />-->
+						<!-- <input type="button" value="Review Order" ng-click="checkout.review()" />-->
 					</div>
 				</uib-accordion-group>
 				<uib-accordion-group is-open="checkout.status.reviewOpen">
@@ -467,7 +467,7 @@
 					<uib-accordion>
 						<uib-accordion-group>
 							<uib-accordion-heading>
-								<h2 ng-click="reviewAddress()">Customer Name <button class="review-edit">edit</button></h2>
+								<h2 ng-click="checkout.reviewAddress()">Customer Name <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
 							<p>{{checkout.order.FromUserFirstName}} {{checkout.order.FromUserLastName}}</p>
 						</uib-accordion-group>
@@ -475,7 +475,7 @@
 							<uib-accordion-heading>
 								<h2>1. Shipping Information <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
-							<ul ng-repeat="line in deliveryInfo track by line.ID" class="shipping-info">
+							<ul ng-repeat="line in checkout.deliveryInfo track by line.ID" class="shipping-info">
 								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
 								<li class="shipping-Addresses">
 									<p>{{line.ShippingAddress.Street1}}</p>
@@ -497,7 +497,7 @@
 						</uib-accordion-group>
 						<uib-accordion-group>
 							<uib-accordion-heading>
-								<h2 ng-click="reviewAddress()">2. Payment <button class="review-edit">edit</button></h2>
+								<h2 ng-click="checkout.reviewAddress()">2. Payment <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
 							<ul>
 								<li>

@@ -209,7 +209,7 @@
 				<div class="receipient-details">
 					<uib-accordion close-others="oneAtATime">
 					<uib-accordion-group ng-repeat="lineitems in activeOrders[line] track by lineitems.ID" is-open="isOpen">
-						<form role="form" name="lineItemForm" ng-submit="lineDtlsSubmit(lineitems)" disable-dynamic-validation>
+						<form role="form" class="lineItemForm" id="lineItemForm_{{lineitems.ID}}" name="buildOrderRight.lineItemForm[lineitems.ID]" ng-submit="lineDtlsSubmit(lineitems)" disable-dynamic-validation>
 							<uib-accordion-heading>
 								<svg class="close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
 									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z" />
@@ -237,17 +237,19 @@
 								<a ng-click="viewAddrBook(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">View Address Book</a>
 								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">Above Address</a>
 								<div class="qty">
-									<p>Quantity</p>
-									<input type="number" max-length="3" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" />
+									<p>Quantity <span>*</span></p>
+									<input type="number" name="qty" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" ng-min="1" ng-max="999" ng-required="true" />
+									<p ng-if="buildOrderRight.lineItemForm[lineitems.ID].qty.$error.min"><span>Minimum 1 Quantity</span></p>
+									<p ng-if="buildOrderRight.lineItemForm[lineitems.ID].qty.$error.max"><span>Maximum 999 Quantity</span></p>
 								</div>
 								<div class="receipient-name" ng-init="buildOrderRight.GetAllList(lineitems.xp.addressType)">
 									<div class="firstNm">
 										<p>First Name <span>*</span></p>
-										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" name="FirstName" />
+										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" name="FirstName" ng-required="true" max-length="100" />
 									</div>
 									<div>
 										<p>Last Name <span>*</span></p>
-										<input type="text" ng-model="lineitems.ShippingAddress.LastName" name="LastName" />
+										<input type="text" ng-model="lineitems.ShippingAddress.LastName" name="LastName" ng-required="true" max-length="100" />
 									</div>
 								</div>
 <!-- 								<div class="receipient-location" ng-init="addressType = lineitems.xp.addressType">
@@ -280,11 +282,11 @@
 										<label for="church">Church<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
-									<label class="radio-inline radio-common">
+									<!-- <label class="radio-inline radio-common">
 										<input type="radio" id="shipping" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="Shipping" ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
 										<label for="shipping">Standard Shipping<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
-									</label>
+									</label> -->
 									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitems)" value="School"  ng-disabled="{{lineitems.xp.NoDeliveryExInStore}}">
 										<label for="school">School<span ng-if="lineitems.xp.NoDeliveryExInStore">(Not Available)</span></label>
@@ -328,7 +330,7 @@
 											<div>
 												<h1>Pick-up Date <span>*</span></h1>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-required="true" />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>
@@ -338,12 +340,12 @@
 										<div class="location-Code" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 											<div class="zipCode">
 												<p>Zip Code <span>*</span></p>
-												<input type="number" ng-model="lineitems.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)"></input>
+												<input type="number" ng-model="lineitems.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" required></input>
 											</div>
 											<div class="delivery-date" ng-if="addressType!='Will Call'">
 												<p>Delivery Date <span>*</span></p>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" ng-required="true" />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" required />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>
@@ -352,7 +354,7 @@
 										</div>
 										<div class="location-addressL1">
 											<h1>Address <span>*</span></h1>
-											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" placeholder="Street1" />
+											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" placeholder="Street1" required max-length="100" />
 											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" placeholder="Street2 (optional)" />
 											<div class="location-addressL2">
 												<div class="location-state">
@@ -361,11 +363,11 @@
 														<option selected>K</option>
 														<option>RNR</option>
 													</select>-->
-													<input type="text" ng-model="lineitems.ShippingAddress.State" />
+													<input type="text" ng-model="lineitems.ShippingAddress.State" required />
 												</div>
 												<div class="location-city">
 													<p>City <span>*</span></p>
-													<input type="text" ng-model="lineitems.ShippingAddress.City" />
+													<input type="text" ng-model="lineitems.ShippingAddress.City" required />
 												</div>
 											</div>
 											<div class="location-contact">
@@ -388,146 +390,6 @@
 											</div>
 										</div>
 									</div>
-									<!--<div class="hospital-address" ng-if="addressType=='Funeral'">
-										<div>
-											<label><input type="checkbox" ng-checked="Wire" ng-model="Wire">Outgoing Wire</label>
-										</div>
-										<div class="hospital-search">
-											<h1>Find Hospital/Church/Funeral Home*</h1>
-											<input type="search" auto-complete ui-items="hospitalsList" ng-model="recip.hos.Search" ng-init="recip.hos.Search=''">
-											<h1>Find School*</h1>
-											<input type="text" ng-model="recip.sch.Search" ng-init="recip.sch.Search=''">
-										</div>
-										<div class="outgoingWire" ng-if="Wire">
-										<div class="location-addressL1">
-											<h1>Address</h1>
-											<input type="text" ng-model="recip.hos.Addr1" ng-init="recip.hos.Addr1=''">
-											<input type="text" ng-model="recip.hos.Addr2" ng-init="recip.hos.Addr2=''">
-											<div class="location-addressL2">
-												<div class="location-city">
-													<p>City</p>
-													<input type="text" ng-model="recip.hos.City" ng-init="recip.hos.City=''">
-												</div>
-												<div class="location-state">
-													<p>State</p>
-													<select ng-model="recip.hos.State" ng-init="recip.hos.State=''">
-														<option selected>R</option>
-														<option selected>RNR</option>
-													</select>
-												</div>
-											</div>
-											<div class="location-Code">
-												<div class="zipCode">
-													<p>Zip Code*</p>
-													<input type="number" ng-model="recip.hos.Zip" ng-init="recip.hos.Zip=''"></input>
-												</div>
-												<div class="delivery-date">
-													<p>Delivery Date*</p>
-													<input type="date" placeholder="MM/DD/YYYY" ng-model="recip.hos.Date" ng-init="recip.hos.Date=''"></input>
-												</div>
-											</div>
-											<div class="location-contact">
-												<p>Phone Number</p>
-												<input type="number" ng-model="recip.hos.Phn1" ng-init="recip.hos.Phn1=''"></input>
-												<input type="number" ng-model="recip.hos.Phn2" ng-init="recip.hos.Phn2=''"></input>
-												<input type="number" ng-model="recip.hos.Phn3" ng-init="recip.hos.Phn3=''"></input>
-											</div>
-										</div>
-										<div class="location-recipientName">
-											<h3>Patient Name</h3>
-											<div class="firstNm">
-												<p>First Name*</p>
-												<input type="text" ng-model="recip.hos.PatFName" ng-init="recip.hos.PatFName=''"></input>
-											</div>
-											<div>
-												<p>Last Name*</p>
-												<input type="text" ng-model="recip.hos.PatLName" ng-init="recip.hos.PatLName=''"></input>
-											</div>
-										</div>
-										</div>
-									</div>
-									<div class="school-address" ng-if="addressType=='School'">
-										<div class="outgoingWire">
-											<h1>Find School*</h1>
-											<input type="text" ng-model="recip.sch.Search" ng-init="recip.sch.Search=''">
-										<div class="location-addressL1">
-											<h1>Address</h1>
-											<input type="text" ng-model="recip.sch.Addr1" ng-init="recip.sch.Addr1=''">
-											<input type="text" ng-model="recip.sch.Addr2" ng-init="recip.sch.Addr2=''">
-											<div class="location-addressL2">
-												<div class="location-city">
-													<p>City</p>
-													<input type="text" ng-model="recip.sch.City" ng-init="recip.sch.City=''">
-												</div>
-												<div class="location-state">
-													<p>State</p>
-													<select ng-model="recip.sch.State" ng-init="recip.sch.State=''">
-														<option selected>K</option>
-														<option>RNR</option>
-													</select>
-												</div>
-											</div>
-											<div class="location-Code">
-												<div class="zipCode">
-													<p>Zip Code*</p>
-													<input type="number" ng-model="recip.sch.Zip" ng-init="recip.sch.Zip=''"></input>
-												</div>
-												<div class="delivery-date">
-													<p>Delivery Date*</p>
-													<input type="date" placeholder="MM/DD/YYYY" ng-model="recip.sch.Date" ng-init="recip.sch.Date=''"></input>
-												</div>
-											</div>
-											<div class="location-contact">
-												<p>Recipients Phone Number</p>
-												<input type="number" ng-model="recip.sch.Phn1" ng-init="recip.sch.Phn1=''"></input>
-												<input type="number" ng-model="recip.sch.Phn2" ng-init="recip.sch.Phn2=''"></input>
-												<input type="number" ng-model="recip.sch.Phn3" ng-init="recip.sch.Phn3=''"></input>
-											</div>
-										</div>
-										</div>
-									</div>
-									<div class="shipping-address" ng-if="!addressType || addressType=='Shipping'">
-										<div class="location-addressL1">
-											<h1>Address</h1>
-											<input type="text" ng-model="recip.ship.Addr1" ng-init="recip.ship.Addr1=''">
-											<input type="text" ng-model="recip.ship.Addr1" ng-init="recip.ship.Addr2=''">
-											<div class="location-addressL2">
-												<div class="location-city">
-													<p>City</p>
-													<input type="text" ng-model="recip.ship.City" ng-init="recip.ship.City=''">
-												</div>
-												<div class="location-state">
-													<p>State</p>
-													<select ng-model="recip.ship.State" ng-init="recip.ship.State=''">
-														<option selected>K</option>
-														<option>RNR</option>
-													</select>
-												</div>
-											</div>
-											<div class="location-Code">
-												<div class="zipCode">
-													<p>Zip Code*</p>
-													<input type="number" ng-model="recip.ship.Zip" ng-init="recip.ship.Zip=''"></input>
-												</div>
-											</div>
-											<div class="location-contact">
-												<p>Recipients Phone Number</p>
-												<input type="number" ng-model="recip.ship.Phn1" ng-init="recip.ship.Phn1=''"></input>
-												<input type="number" ng-model="recip.ship.Phn2" ng-init="recip.ship.Phn2=''"></input>
-												<input type="number" ng-model="recip.ship.Phn3" ng-init="recip.ship.Phn3=''"></input>
-											</div>
-										</div>
-									</div>
-									<div class="willCall-address" ng-if="addressType=='Will Call'">
-										<div class="willCall-search">
-											<h1>Find store*</h1>
-											<input type="search" ng-model="recip.will.Search" auto-complete ui-items="storeNames" ng-init="recip.will.Search=''" />
-										</div>
-										<div>
-											<h1>Pick-up Date*</h1>
-											<input type="date" ng-model="recip.will.Date" ng-init="recip.will.Date=''"/>
-										</div>
-									</div>-->
 									<uib-accordion close-others="oneAtATimeSub">
 										<div class="location-note" ng-if="addressType && addressType!='Shipping'">
 											<uib-accordion-group>
@@ -599,7 +461,7 @@
 									<h4>Estimated Tax <span>$0.00</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
 								</div>
-								<input type="submit" value="SAVE" class="notes" />
+								<input type="submit" value="SAVE" class="notes" ng-disabled="!buildOrderRight.lineItemForm[lineitems.ID].$valid" />
 							</div>
 						</form>
 						</uib-accordion-group>

@@ -197,7 +197,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 
     vm.Grouping(ProductInfo);
-	$scope.payment = function(line,index){
+	vm.payment = function(line,index){
 		var $this = this;
 		var addrValidate = {
 			"addressLine1": line.ShippingAddress.Street1, 
@@ -221,7 +221,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			}
 		});
 	};
-	$scope.review = function(){
+	vm.review = function(){
 		vm.status.delInfoOpen = false;
 		vm.status.paymentOpen = false;
 		vm.status.reviewOpen = true;
@@ -284,7 +284,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 	};
-	$scope.viewAddrBook = function(Index){
+	vm.viewAddrBook = function(Index){
 		$scope['isAddrShow'+Index] = true;
 		this.limit = 3;
 		$scope.addressesList = [];
@@ -308,16 +308,16 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		});
 	};
-	$scope.reviewAddress = function(){
+	vm.reviewAddress = function(){
 		$scope.usercard = {};
-		console.log("$scope.seluser", $scope.seluser);
+		//console.log("$scope.seluser", $scope.seluser);
 		OrderCloud.CreditCards.ListAssignments(null, $scope.seluser).then(function(assign){
 			OrderCloud.CreditCards.Get(assign.Items[0].CreditCardID).then(function(data){
 				$scope.usercard = data;
 			});
 		})
 	};
-	$scope.UpdateAddress = function(addr, index){
+	vm.UpdateAddress = function(addr, index){
 		var $this = this;
 		addr.Phone = "("+addr.Phone1+")"+addr.Phone2+"-"+addr.Phone3;
 		var addrValidate = {
@@ -358,7 +358,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 	};
-	$scope.CreateAddress = function(line, index){
+	vm.CreateAddress = function(line, index){
 		var $this = this, params, addrValidate;
 		//var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+")"+line.Phone2+"-"+line.Phone3,"Country":"US"};
 		line.Phone = "("+line.Phone1+")"+line.Phone2+"-"+line.Phone3;
@@ -393,17 +393,17 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 	};
-	$scope.viewMore = function(){
+	vm.viewMore = function(){
 		this.limit = $scope.addressesList.length;
 	};
-	$scope.newAddress = function(Index){
+	vm.newAddress = function(Index){
 		$scope['showNewAddress'+Index] = true;
 	};
-	$scope.deliveryAddr = function(Index){
+	vm.deliveryAddr = function(Index){
 		this['isDeliAddrShow'+Index] = true;
 	};
 	//$scope.deliveryOrStore = 1;
-	$scope.fromStoreOrOutside = 1;
+	vm.fromStoreOrOutside = 1;
 	var storesData;
 	vm.getStores = function(line){
 		if(!vm.storeNames){
@@ -423,7 +423,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}
 	};
 	vm.getStores();
-	$scope.addStoreAddress = function(item, line){
+	vm.addStoreAddress = function(item, line){
 		var filt = _.filter(storesData, function(row){
 			return _.indexOf([item],row.storeName) > -1;
 		});
@@ -443,7 +443,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		});
 		vm.getDeliveryCharges(line);
 	};
-	$scope.changeAddrType = function(line){
+	vm.changeAddrType = function(line){
 		//line.xp.addressType = line.addressTypeD;
 		/*if(line.xp.addressType != "Will Call"){
 			line.deliveryOrStore = 1;
@@ -612,7 +612,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			d.resolve("1");
 		});
 	}
-	$scope.selectedAddr = function(line,addr){
+	vm.selectedAddr = function(line,addr){
 		if(addr.isAddrOpen){
 			line.selectedAddrID = addr.ID;
 			//var del = _.findWhere(vm.buyerDtls.xp.ZipCodes, {zip: addr.Zip.toString()});
@@ -624,7 +624,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			delete line.selectedAddrID;
 	};
 	//------Date picker starts----------
-	$scope.dateSelect = function(text,line,index){
+	vm.dateSelect = function(text,line,index){
 		text = text+index;
 		vm['data'+index]=text;
 		line.dateVal = {};
@@ -703,8 +703,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.modifyDeliveryPopover = {
 		templateUrl: 'modifyDeliveryTemplate.html'
     };
-	$scope.closePopover = function () {
-		$scope.showDeliveryToolTip = false;
+	vm.closePopover = function () {
+		vm.showDeliveryToolTip = false;
 	};
 	$scope.gotobuildorder = function(){
 		$state.go('buildOrder', {showOrdersummary: true}, {reload:true});

@@ -79,7 +79,7 @@
 			<form ng-submit="addNote()" ng-show="show">
 				<input type="text" ng-model="note.descp" placeholder="New Note" ng-required/>
 			</form>
-			<li ng-repeat="note in buildOrderLeft.list.Notes | limitTo: itemsLimit()"> 
+			<li ng-repeat="note in buildOrderLeft.list.Notes | limitTo: itemsLimit() track by $index">
 				<div class="noteMsg">
 					<p>{{note.Date | date:'yyyy-MM-dd'}}</p>
 					<h5>{{note.Description}}</h5>

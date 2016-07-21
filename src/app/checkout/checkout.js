@@ -67,6 +67,7 @@ function checkoutConfig( $stateProvider ) {
 		parent: 'base',
 		url: '/checkout/:ID',
 		templateUrl:'checkout/templates/checkout.tpl.html',
+        loadingMessage: 'Preparing for Checkout',
 		views: {
 			'': {
 				templateUrl: 'checkout/templates/checkout.tpl.html',
@@ -92,7 +93,7 @@ function checkoutConfig( $stateProvider ) {
                         return BuildOrderService.GetBuyerDtls()
                     },
                     GetTax: function(TaxService, Order) {
-                        TaxService.GetTax(Order.ID)
+                        return TaxService.GetTax(Order.ID);
                     }
                 }
 			},
@@ -106,11 +107,12 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, CreditCardService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
     vm.orderID = Order.ID;
+    vm.order.TaxInfo = GetTax;
     vm.lineItems = OrderLineItems.Items;
     vm.buyerDtls = GetBuyerDetails;
     vm.buyerDtls.xp.deliveryChargeAdjReasons.unshift("---select---");
@@ -136,6 +138,22 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		reviewOpen : false,
 		isFirstDisabled: false
 	};
+
+    vm.getSubTotal = function(lineitems) {
+            return Underscore.pluck(lineitems, 'LineTotal').reduce(function(prev, current) {
+                return prev + current;
+            }, 0);
+    };
+
+    vm.getTax = function(lineitems) {
+        angular.forEach(vm.lineItems, function(item){
+            var line = Underscore.findWhere(GetTax.TaxLines, {LineNo: item.ID});
+            item.TaxCost = line.Tax;
+        });
+        return Underscore.pluck(lineitems, 'TaxCost').reduce(function(prev, current) {
+            return prev + current;
+        }, 0);
+    };
 
     vm.submitOrder = function() {
         if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {

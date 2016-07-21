@@ -536,25 +536,29 @@
 				<h1>Order [ {{checkout.lineTotalQty}} items ] <a ui-sref="buildOrder({ID:checkout.order.FromUserID,SearchType:'User',showOrdersummary: true})">Edit</a> </h1>
 			</div>
 			<uib-accordion close-others="checkout.oneAtATime">
-				<uib-accordion-group ng-repeat="line in checkout.recipients">
+				<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup">
 					<uib-accordion-heading>
 						<div class="checkoutorderhead">
-							<p><span>Recipient:</span> {{line}}</p>
-							<p><span>Zip Code:</span> {{checkout.recipientsGroup[line][0].ShippingAddress.Zip}}</p>
+							<p><span>Recipient:</span> {{recipient}}</p>
+							<p><span>Zip Code:</span> {{lineitems[0].ShippingAddress.Zip}}</p>
 						</div>
 					</uib-accordion-heading>
-					<div class="ordersummaryproductdata" ng-repeat="recip in checkout.recipientsGroup[line]">
+					<div class="ordersummaryproductdata" ng-repeat="item in lineitems">
 						<div class="prod-img">
 							<img src="assets/images/flowers.jpg">
 						</div>
 						<div class="prod-details">
-							<p>{{recip.Product.Name}}</p>
+							<p>{{item.Product.Name}}</p>
 							<p>Item no: 141927</p>
 							<p>Type: Deluxe</p>
-							<span class="qty">Qty: {{recip.Quantity}}</span>
-							<span class="price">{{recip.LineTotal | currency}}</span>
+							<span class="qty">Qty: {{item.Quantity}}</span>
+							<span class="price">{{item.LineTotal | currency}}</span>
 						</div>
 					</div>
+                    <div class="charges-total">
+                        <p>Recipient Subtotal: <span>{{ checkout.getSubTotal(lineitems) | currency }}</span></p>
+                        <p>Recipient Tax: <span>{{ checkout.getTax(lineitems) | currency }}</span></p>
+                    </div>
 				</uib-accordion-group>
 				<div class="charges-total">
 					<p>Subtotal  <span>{{checkout.order.Subtotal | currency}}</span></p>

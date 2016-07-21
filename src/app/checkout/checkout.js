@@ -139,10 +139,21 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		isFirstDisabled: false
 	};
 
-    angular.forEach(vm.lineItems, function(item){
-        var line = Underscore.findWhere(GetTax.TaxLines, {LineNo: item.ID});
-        item.TaxCost = line.Tax;
-    });
+    vm.getSubTotal = function(lineitems) {
+            return Underscore.pluck(lineitems, 'LineTotal').reduce(function(prev, current) {
+                return prev + current;
+            }, 0);
+    };
+
+    vm.getTax = function(lineitems) {
+        angular.forEach(vm.lineItems, function(item){
+            var line = Underscore.findWhere(GetTax.TaxLines, {LineNo: item.ID});
+            item.TaxCost = line.Tax;
+        });
+        return Underscore.pluck(lineitems, 'TaxCost').reduce(function(prev, current) {
+            return prev + current;
+        }, 0);
+    };
 
     vm.submitOrder = function() {
         if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {

@@ -471,19 +471,24 @@
         </div>
 		<modal title="Address Book" visible="showModal" id="mymodal" class="view-addr-book modal-pop-up">
 			<table>
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Phone</th>
+				</tr>
 				<tr ng-repeat="addr in addressesList" ng-click="getBookAddress(addr)">
 					<td>
-						<h4>Name</h4>
+						
 						<p>{{addr.FirstName}} {{addr.LastName}}</p>
 					</td>
 					<td>	
-						<h4>Address</h4>
+						
 						<p>{{addr.Street1}}</p>
 						<p>{{addr.Street2}}</p>
 						<p>{{addr.City}} {{addr.State}} {{addr.Country}} {{addr.Zip}}</p>
 					</td>
 					<td>
-						<h4>Phone</h4>
+						
 						<p>{{addr.Phone}}</p>
 					</td>			
 				</tr>
@@ -491,19 +496,24 @@
 		</modal>
 		<modal title="Address Book" visible="showAboveRecipientModal" id="mymodal" class="view-addr-book modal-pop-up">
 			<table ng-repeat="line in lineItemProducts track by line">
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Phone</th>
+				</tr>
 				<tr ng-repeat="val in activeOrders[line] track by val.ID" ng-click="getBookAddress(val.ShippingAddress, 'TempAddr')" ng-if="val.ShippingAddress.Zip && val.ShippingAddress.Street1 && val.ShippingAddress.FirstName">
 					<td>
-						<h4>Name</h4>
+						
 						<p>{{val.ShippingAddress.FirstName}} {{val.ShippingAddress.LastName}}</p>
 					</td>
 					<td>	
-						<h4>Address</h4>
+						
 						<p>{{val.ShippingAddress.Street1}}</p>
 						<p>{{val.ShippingAddress.Street2}}</p>
 						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>
 					</td>
 					<td>
-						<h4>Phone</h4>
+						
 						<p>{{val.ShippingAddress.Phone}}</p>
 					</td>			
 				</tr>

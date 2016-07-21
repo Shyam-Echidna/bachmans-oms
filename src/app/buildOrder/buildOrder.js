@@ -312,11 +312,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		angular.forEach(LineItems.lineItemForm, function(val, key){
 			arr.push(val.$valid);
 			arr2.push(val.$pristine);
-			if(!val.$pristine){
+			if(!val.$pristine || !val.$valid){
 				id = $('#lineItemForm_' + key).parent().parent().attr('id');
 				$('#'+id.replace('panel','tab')).css({'border':'1px solid red'});
 				obj[key] = id.replace('panel','tab');
 				LineItems.HighLightErrors[key] = id.replace('panel','tab');
+				angular.forEach(val.$error.required, function(val1, key1){
+					
+				}, true);
 			}
 		},true);
 		if(!_.contains(arr, false) && !_.contains(arr2, false)){
@@ -851,6 +854,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 		e.stopPropagation();
 		OrderCloud.As().LineItems.Delete(vm.order.ID, listItemID).then(function(res){
 			$scope.getLineItems();
+			vm.lineItemForm[listItemID].$setPristine();
 		});
 	};
 	$scope.getLineItems = function(){

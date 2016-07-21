@@ -1093,10 +1093,10 @@
 								
 							</tbody>
 							<tfoot>
-								<tr>
+								<tr ng-if="groups[line][0].xp.deliveryFeesDtls && groups[line][0].xp.deliveryFeesDtls!={}">
 								<td colspan="5">
 								<div class="edit">
-									<button ng-if="groups[line][0].xp.deliveryFeesDtls && groups[line][0].xp.deliveryFeesDtls!={}" ng-click="buildordersummary.EditSaveCharges(groups[line][0])">
+									<button  ng-click="buildordersummary.EditSaveCharges(groups[line][0])">
 							<span>
 							<?xml version="1.0" encoding="utf-8"?>
 								<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -1216,7 +1216,8 @@
 										<h5>{{key}}  </h5><span>{{val | currency}}</span>
 									 </div>
 									 <div ng-if="groups[line][0].EditCharges" ng-repeat="(key, val) in groups[line][0].xp.deliveryFeesDtls">
-										<h5>{{key}}  </h5><p><input type="text" value="{{val}}" ng-model="groups[line][0].xp.deliveryFeesDtls[key]" /></p>
+										<h5>{{key}}  </h5>
+										<div class="edit-input"><input type="text" value="{{val}}" ng-model="groups[line][0].xp.deliveryFeesDtls[key]" /></div>
 									 </div>
 									 <div>
 										<h5>Delivery </h5><span>{{groups[line][0].xp.deliveryCharges | currency}}</span>

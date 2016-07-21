@@ -917,19 +917,19 @@ button {
 							.helvetica-bold;
 							font-size: 9px;
 							line-height: 24px;
-						    width: 100px;
 						    border-radius: 4px;
 						    color: #fff;
 						    background: #b0b3bd;
-						    padding: 0px 4px;
+						   padding: 0 10px 0 5px;
+                           
 							span {
 								 float:left;
 								 height: 24px;
 								svg {
 									fill: #fff;
-									width: 20px;
-    								height: 20px;
-   									margin: 1px 0px 0px 4px;
+									width: 17px;
+								    height: 17px;
+								    margin: 3px 0px 0px 0px;
 								}
 							}
 							&:hover{
@@ -1160,19 +1160,19 @@ button {
 							.helvetica-bold;
 							font-size: 9px;
 							line-height: 24px;
-						    width: 100px;
 						    border-radius: 4px;
 						    color: #fff;
 						    background: #b0b3bd;
-						    padding: 0px 4px;
+						   padding: 0 10px 0 5px;
+                           margin-right:6px;
 							span {
 								 float:left;
 								 height: 24px;
 								svg {
 									fill: #fff;
-									width: 20px;
-    								height: 20px;
-   									margin: 1px 0px 0px 4px;
+									width: 17px;
+								    height: 17px;
+								    margin: 3px 6px 0px 0px;
 								}
 							}
 							&:hover{
@@ -1187,12 +1187,12 @@ button {
     				        float: right;
     					    border-left: 1px solid @color21 !important;
     					    div{
-    					    	padding: 0 25px 0px 0;
+    					    	padding: 0 16px 0px 0;
     					    	h5{
     					    		display: inline;
 								    text-align: right;
 								    padding-right: 0px;
-								    margin-right: 50px;
+								    margin-right: 27px;
 								    .helvetica-regular;
 								    font-size: 13px;
 								    color:@color1;
@@ -1201,12 +1201,23 @@ button {
     					            font-size: 15px;
 								    color: #8c58b5;
 								    float: right;
-								    width: 28%;
+								    width: 30%;
 								    border-left:1px solid @color21;
 								    line-height: 35px;
 								    .helvetica-bold;
 								    color: @primary-dark-color;
-
+								    padding-left: 25px;
+    								text-align: center;
+    					    	}
+    					    	.edit-input{
+    					    		display:inline;
+    					    		padding: 10px 0px 10px 35px;
+    					    		border-left:1px solid @color21;
+    					    		input{
+    					    			width: 20%;
+                                        text-align: center;
+                                         color: @primary-dark-color;
+    					    		}
     					    	}
     					    }
 					    }
@@ -1349,6 +1360,9 @@ button {
 		}
 		.receipient-details {
 			clear:both;	
+			.collapse{
+ 				transition:5s linear all !important;
+			}
 			.panel-heading {
 				background-color: @color11;
 				padding: 0;
@@ -1417,6 +1431,9 @@ button {
 			}
 			.receipient-drpDown {
 				padding: 10px 18px;
+				.star{
+				   color:#f32929;
+				 }
 				.qty {
 					margin-top: 15px;
 					p {
@@ -1542,6 +1559,10 @@ button {
 						.delivery-date {
 							width: 67%;
 							margin-left: 1%;
+							.btn{
+								padding:5px 12px;
+								line-height:18px;
+							}
 						}
 						input {
 							width: 100%;
@@ -1708,8 +1729,10 @@ button {
 							border: 1px solid @color21;
 							.helvetica-regular;
 							font-size: 11px;
-							height: 25px;
+							height:31px;
+							background:#fff;
 						}
+						
 						label {
 							font-size: 11px;
 							.helvetica-medium;
@@ -2194,6 +2217,21 @@ button {
 	    margin-top: -179px;
 		.modal-content{
 			border-radius:0;
+			.modal-header{
+				h4{
+					.helvetica-bold;
+					font-size: 21px ;
+					color: @primary-dark-color;
+					margin:10px 0 0 10px;
+				}
+				button.close{
+				background-color:#54565d;
+				opacity:0.9;
+				 &:hover{
+				 	background:#8c58b5;
+				 }
+				}
+			}
 			.modal-body{
 				position: absolute;
 				top: 56px;
@@ -2206,8 +2244,15 @@ button {
 						width:100%;
 						tr{
 							border:1px solid @color21;
-							background-color:@color25;
 							margin-bottom: 15px;
+							th{
+							padding: 0 0 0 15px;
+						    .helvetica-bold;
+						    font-size: 14px;
+						    line-height: 48px;
+						    background:#fff;
+
+							}
 							td{
 								padding: 15px 10px 15px 10px;
 								vertical-align: top;
@@ -2233,6 +2278,9 @@ button {
 							&:hover{
 								background-color:@color14;
 							}
+							&:nth-child(odd) {
+								background: #f7f8fa;
+							}
 						}
 					}
 			}
@@ -2254,6 +2302,11 @@ button {
 		z-index: 9;
 		cursor: pointer;
 		-webkit-transition: all 0.25s linear;
+		span{
+			  font-size: 8px;
+		      color:#d80c0c; 
+		      margin-left: 4px;
+		}
 	}
 	.radio{
 		display: block;

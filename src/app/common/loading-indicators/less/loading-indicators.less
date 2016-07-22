@@ -1,5 +1,15 @@
 .cg-busy-backdrop {
-  background-color:@body-bg;
+  background-color:white;
+  opacity:.7;
+}
+
+.cg-busy{
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  z-index:1001;
 }
 
 .indicator-container { //fade the indicator in and out
@@ -34,7 +44,7 @@
 	  margin:0 2px;
 	  width: 15px;
 	  height: 15px;
-	  background-color:@brand-primary;
+	  background-color:#a77bca;
 	  border-radius: 2px;
 	  animation-name:indicator-fade-in-out;
 	  animation-iteration-count: infinite;
@@ -48,7 +58,9 @@
 	}
   }
   .message {
-	margin-top:15px;
+	margin-bottom:15px;
+    font-size:16px;
+    color:#555;
   }
 }
 

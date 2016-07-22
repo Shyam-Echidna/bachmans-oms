@@ -67,7 +67,9 @@ function checkoutConfig( $stateProvider ) {
 		parent: 'base',
 		url: '/checkout/:ID',
 		templateUrl:'checkout/templates/checkout.tpl.html',
-        loadingMessage: 'Preparing for Checkout',
+        data: {
+            loadingMessage: 'Preparing for Checkout'
+        },
 		views: {
 			'': {
 				templateUrl: 'checkout/templates/checkout.tpl.html',
@@ -107,7 +109,7 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
@@ -139,13 +141,13 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		isFirstDisabled: false
 	};
 
-    vm.getSubTotal = function(lineitems) {
+    vm.getRecipientSubTotal = function(lineitems) {
             return Underscore.pluck(lineitems, 'LineTotal').reduce(function(prev, current) {
                 return prev + current;
             }, 0);
     };
 
-    vm.getTax = function(lineitems) {
+    vm.getRecipientTax = function(lineitems) {
         angular.forEach(vm.lineItems, function(item){
             var line = Underscore.findWhere(GetTax.TaxLines, {LineNo: item.ID});
             item.TaxCost = line.Tax;
@@ -161,8 +163,19 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
                 .then(function(){
                     OrderCloud.Orders.Submit(vm.orderID)
                         .then(function(){
-                            $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+                            TaxService.CollectTax(vm.orderID)
+                                .then(function(){
+                                    $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+                                })
                         });
+                });
+        } else {
+            OrderCloud.Orders.Submit(vm.orderID)
+                .then(function(){
+                    TaxService.CollectTax(vm.orderID)
+                        .then(function(){
+                            $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+                        })
                 });
         }
     };

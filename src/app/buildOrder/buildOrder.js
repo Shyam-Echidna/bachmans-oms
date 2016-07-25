@@ -1612,7 +1612,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 			delete line.xp.deliveryDate;
 			line.xp.storeName = line.willSearch;
 		}
-		OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
+		OrderCloud.As().LineItems.Patch(vm.order.ID, line.ID, {xp: line.xp, Quantity: line.Quantity}).then(function(dat){
 			OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
 				$scope.orderSummaryShow();
 				alert("Data submitted successfully");

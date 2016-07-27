@@ -330,7 +330,7 @@
 											<div>
 												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitems)" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>
@@ -345,7 +345,7 @@
 											<div class="delivery-date" ng-if="addressType!='Will Call'">
 												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" required />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitems)" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>
@@ -458,7 +458,7 @@
 									<h4 ng-if="!lineitems.xp.deliveryFeesDtls && lineitems.ShippingAddress.Zip && lineitems.ShippingAddress.Street1">Delivery Charges<span>$0.00</span></h4>
 									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && lineitems.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b> <span>{{val | currency}}</span></h4>
 									<h4 ng-if="lineitems.xp.Discount">Discount <span>{{lineitems.xp.Discount | currency}}</span></h4>
-									<h4>Estimated Tax <span>$0.00</span></h4>
+									<h4 ng-if="lineitems.xp.Tax">Estimated Tax <span>{{ lineitems.xp.Tax | currency }}</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
 								</div>
 								<input type="submit" value="SAVE" class="notes" ng-disabled="!buildOrderRight.lineItemForm[lineitems.ID].$valid" />
@@ -513,7 +513,6 @@
 						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>
 					</td>
 					<td>
-						
 						<p>{{val.ShippingAddress.Phone}}</p>
 					</td>			
 				</tr>

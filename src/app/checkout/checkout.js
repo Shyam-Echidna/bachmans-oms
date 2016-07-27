@@ -148,7 +148,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     };
 
     vm.getRecipientTax = function(lineitems) {
-        angular.forEach(vm.lineItems, function(item){
+        angular.forEach(lineitems, function(item){
             var line = Underscore.findWhere(GetTax.TaxLines, {LineNo: item.ID});
             item.TaxCost = line.Tax;
         });

@@ -124,7 +124,7 @@
 			</div>
 			<h4>POINTS EARNED:<span>{{custInfo.spendingAcc.purple.xp.PointsEarned}}</span></h4>
 			<h5>CURRENT BALANCE:<span>{{custInfo.spendingAcc.purple.Balance | currency}}</span></h5>
-			<p>EXPIRES: <span>{{custInfo.spendingAcc.purple.EndDate | date:'MM/dd/yyyy'}}<span></p>
+			<p>(EXPIRES: <span>{{custInfo.spendingAcc.purple.EndDate | date:'MM/dd/yyyy'}}<span>)</p>
 		</div>
 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
 			<h1>PAYMENT OPTIONS <button ng-click="add">ADD CARD</button></h1>
@@ -198,13 +198,38 @@
 		<form name="myForm" ng-submit="ok()" >
 				<div class="form-group security-qtn-block">
                   <label for="security-select">Choose a Security Question</label>
-                  <select class="form-control" id="security-select">
+               <!--    <select class="form-control" id="security-select">
                      <option value="Select a Security Question">Select a Security Question</option>
                      <option value="What was your childhood nickname?">What was your childhood nickname?</option>
                      <option value="What was the name of the hospital where you were born?">What was the name of the hospital where you were born?</option>
                      <option value="What is your favorite movie?">What is your favorite movie?</option>
-                  </select>
-
+                  </select> -->
+ 				  <div uib-dropdown class="form-control " id="security-select2">
+                     <div id="sort-dropdown" uib-dropdown-toggle>
+                     <p class="sort-active-show">Select a Security Question</p></div>
+                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+                       
+                        <li>
+                           <a href="">What was your childhood nickname?</a>
+                        </li>
+                         <li>
+                           <a href="">What was the name of the hospital where you were born?</a>
+                        </li>
+                         <li>
+                           <a href="">What is your favorite movie?</a>
+                        </li>
+                         <li>
+                           <a href="">What was your childhood nickname?</a>
+                        </li>
+                         <li>
+                           <a href="">What was the name of the hospital where you were born?</a>
+                        </li>
+                         <li>
+                           <a href="">What is your favorite movie?</a>
+                        </li>
+                     </ul>
+                     
+                  </div>
                   <input type="text" class="form-control" placeholder="Enter Your Answer">
                </div>
 			<div class="form-group">

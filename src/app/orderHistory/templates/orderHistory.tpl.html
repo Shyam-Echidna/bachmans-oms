@@ -1,7 +1,7 @@
 <div class="container-fluid order-history-main">
 	<div class="order-history" ng-if="orderHistory.order.length>0">
 		<h5>
-			<span>Order History for: {{orderHistory.uname}}</span>
+			<span class="order-header">Order History for:</span> {{orderHistory.uname}}
 			<button>Create Non-Order Claim</button>
 		</h5>
 		<div ui-grid="gridHistory" class="order-grid col-md-12 col-sm-12"></div>

@@ -481,9 +481,9 @@
 	                                        <div class="col-xs-12 p0 form-group card-remember">
 	                                            <div class="check-common">
 	                                                <input type="checkbox" id="save">
-	                                                <label for="save" class="check">Save this card for future payments</label>
+	                                                <label for="save" class="check"></label>
 	                                            </div>
-	                                           
+	                                           <span>Save this card for future payments</span>
 	                                        </div>
 	                                    </form>
                                      </div>
@@ -696,11 +696,70 @@
 					<p>Delivery Charges   <span>{{checkout.order.ShippingCost | currency}} </span></p>
 					<p>Estimated Tax   <span>{{checkout.order.TaxCost | currency}} </span></p>
 					<p ng-if="checkout.orderDtls.SpendingAccounts.CouponCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'CouponCharges')">x</button> Coupon Applied <span>-{{checkout.orderDtls.SpendingAccounts.CouponCharges | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'BachmansCharges')">x</button>Bachman’s Charge applied   <span>-{{checkout.orderDtls.SpendingAccounts.BachmansCharges | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'GiftCardCharges')">x</button>Gift Card applied   <span>-{{checkout.orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PaidCash')">x</button>Paid Through Cash   <span>-{{checkout.orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'ChequeCharges')">x</button>Paid through Cheque   <span>-{{checkout.orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PurplePerk')">x</button>Purple Perks Balance applied   <span>-{{checkout.orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges">
+					<button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'BachmansCharges')">
+						<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+
+							<g transform="translate(0,-952.36218)">
+							<path  d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+								v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+								c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+								c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+							</g>
+					  	</svg>
+					</button>Bachman’s Charge applied   <span>-{{checkout.orderDtls.SpendingAccounts.BachmansCharges | currency}} </span>
+					</p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'GiftCardCharges')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+
+							<g transform="translate(0,-952.36218)">
+							<path  d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+								v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+								c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+								c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+							</g>
+					  	</svg></button>Gift Card applied   <span>-{{checkout.orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PaidCash')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+
+							<g transform="translate(0,-952.36218)">
+							<path  d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+								v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+								c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+								c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+							</g>
+					  	</svg></button>Paid Through Cash   <span>-{{checkout.orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'ChequeCharges')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+
+							<g transform="translate(0,-952.36218)">
+							<path  d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+								v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+								c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+								c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+							</g>
+					  	</svg></button>Paid through Cheque   <span>-{{checkout.orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PurplePerk')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+
+							<g transform="translate(0,-952.36218)">
+							<path  d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+								v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+								c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+								c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+							</g>
+					  	</svg></button>Purple Perks Balance applied   <span>-{{checkout.orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
 					<p class="total">Total   <span>{{checkout.order.Total | currency}}  </span></p>
 				</div>
 				<div class="promo-code">

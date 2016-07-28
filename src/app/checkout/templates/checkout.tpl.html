@@ -16,7 +16,7 @@
 							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime">
-						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="delInfoRecipient[$index]">
+						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="checkout.delInfoRecipient[$index]">
 							<uib-accordion-heading>
 								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}} | {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
@@ -686,10 +686,10 @@
 							<span class="price">{{item.LineTotal | currency}}</span>
 						</div>
 					</div>
-                    <!-- <div class="charges-total">
+                     <div class="charges-total">
                         <p>Recipient Subtotal: <span>{{ checkout.getRecipientSubTotal(lineitems) | currency }}</span></p>
                         <p>Recipient Tax: <span>{{ checkout.getRecipientTax(lineitems) | currency }}</span></p>
-                    </div> -->
+                    </div>
 				</uib-accordion-group>
 				<div class="charges-total">
 					<p>Subtotal  <span>{{checkout.order.Subtotal | currency}}</span></p>

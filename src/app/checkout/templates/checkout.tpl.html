@@ -75,7 +75,8 @@
 									<input type="text" ng-model="line.ShippingAddress.City" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								</div>
 								<div class="check-top state-block">
-									<p class="check-top">State</p>
+									<!-- <p class="check-top">State</p> -->
+									<p class="">State</p>
 									<!--<select ng-model="line.ShippingAddress.State">
 										<option selected>K</option>
 										<option>RNR</option>
@@ -89,8 +90,16 @@
 									<input type="number" ng-model="line.ShippingAddress.Phone3" />
 								</div>
 								<div class="delivery-details">
-									<label class="radio-inline"><input type="radio" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='Will Call' ? line.xp.addressType : 'Residence'">Delivery</label>
-									<label class="radio-inline"><input type="radio" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">In-Store Pick Up</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="delivery-dot" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='Will Call' ? line.xp.addressType : 'Residence'">
+										<label for="delivery-dot">Delivery</label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="store-pickUp" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">
+										<label for="store-pickUp">In-Store Pick Up</label>
+										<div class="radio"></div>
+									</label>
 									<div ng-if="line.xp.addressType!='Will Call'">
 										<p class="check-top">Delivery Date</p>
 										<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
@@ -189,7 +198,12 @@
 								<uib-accordion close-others="checkout.oneAtATime">
 									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: limit" is-open="addr.isAddrOpen" ng-click="checkout.selectedAddr(line,addr)">
 										<uib-accordion-heading>
-											<input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span>
+											<!-- <input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span> -->
+											<div class="check-common">
+													<input type="checkbox" id="" ng-checked="addr.isAddrOpen" />
+													<label for="" class="check"></label>
+												</div>
+												<span>{{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}}</span><span ng-if="defualtAddressID==addr.ID">(Default)</span>
 										</uib-accordion-heading>
 										<div ng-show="!checkout.isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
 											<a ng-click="checkout.deliveryAddr($index)">Edit</a>
@@ -324,7 +338,11 @@
 								<div ng-init="cardMsg=false">
 									<div class="no-msg">
 										<span>Card Message:</span>
-										<input type="checkbox" name="cardmessage" ng-model="cardMsg"></input>
+										<!-- <input type="checkbox" name="cardmessage" ng-model="cardMsg"></input> -->
+										<div class="check-common">
+											<input type="checkbox" name="cardmessage" ng-model="cardMsg" id="noMessage">
+											<label for="noMessage" class="check"></label>
+										</div>
 										<span>No Message</span>
 									</div>
 									<div class="line-msgs" ng-class="{'hideItem': !cardMsg}">
@@ -355,11 +373,31 @@
 					<div class="payment-method">
 						<div class="payment-method-header">
 							<h1>Payment Method</h1>
-							<div class="payment-tab" ng-click="checkout.paymentOption = 'CreditCard'">Credit Card<span class="selected"></span></div>
-							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges<span class="selected"></span></div>
-							<div ng-click="checkout.paymentOption = 'GiftCard'">Gift Card<span class="selected"></span></div>
-							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']">Purple Perks<span class="selected"></span></div>
-							<div ng-click="checkout.paymentOption = 'CashCheque'">Cash/Cheque<span class="selected"></span></div>
+							<div class="payment-tab active-tab" ng-click="checkout.paymentOption = 'CreditCard'">Credit Card
+								<span class="selected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
+								</span>
+							</div>
+							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges
+								<span class="selected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
+								</span>
+							</div>
+							<div ng-click="checkout.paymentOption = 'GiftCard'">Gift Card
+								<span class="selected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
+								</span>
+							</div>
+							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']">Purple Perks
+								<span class="selected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
+								</span>
+							</div>
+							<div ng-click="checkout.paymentOption = 'CashCheque'">Cash/Cheque
+								<span class="selected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
+								</span>
+							</div>
 						</div>
 						<!-- credit card -->
 						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CreditCard'">

@@ -75,7 +75,7 @@
 							<div class="searchelement"  ng-repeat="user in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ui-sref="buildOrder({ID:user.ID,SearchType:'User',showOrdersummary: false})" class="search_result">
 									<p>{{user.FirstName}} {{user.LastName}}</p>
-									<div>{{user.Email}}</div>
+									<div class="user-name">{{user.Email}}</div>
 								</a>
 							</div>
 						</div>
@@ -87,7 +87,7 @@
 							<div class="searchelement"  ng-repeat="orders in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ng-click="baseTop.searchGoTo(orders.FromUserID, orders.ID)" class="search_result">
 									<p>{{orders.ID}}</p>
-									<div>{{orders.FromUserFirstName}} {{orders.FromUserLastName}}</div>
+									<div class="order-name">{{orders.FromUserFirstName}} {{orders.FromUserLastName}}</div>
 								</a>
 							</div>
 						</div>
@@ -109,7 +109,7 @@
 									</svg>
 									
 									{{recipient.FirstName}} {{recipient.LastName}} {{}}</p>
-									<div>{{recipient.FromUserFirstName}} {{recipient.FromUserLastName}}</div>
+									<div class="recipient-name">{{recipient.FromUserFirstName}} {{recipient.FromUserLastName}}</div>
 									<div class="recepient-order">
 										<p>{{recipient.ID}}</p>
 										<div ng-if="recipient.DateSubmitted == 'null'">{{recipient.DateCreated | date }}</div>
@@ -137,7 +137,7 @@
 							<div class="searchelement"  ng-repeat="phone in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
 								<a ui-sref="buildOrder({ID:phone.ID,SearchType:'User',showOrdersummary: false})" class="search_result">
 									<p>{{phone.PhoneNumber}}</p>
-									<div>{{phone.FirstName}} {{phone.LastName}}</div>
+									<div class="phone-num">{{phone.FirstName}} {{phone.LastName}}</div>
 								</a>
 							</div>
 						</div>

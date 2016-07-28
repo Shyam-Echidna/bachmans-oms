@@ -3,6 +3,7 @@ angular.module( 'orderCloud', [
         'ngAnimate',
         'ngMessages',
         'ngTouch',
+        'cgBusy',
         'ui.tree',
         'ui.router',
         'ui.bootstrap',
@@ -66,13 +67,46 @@ function ErrorHandling( $provide ) {
     }
 }
 
-function AppCtrl( $rootScope, $state, $http, appname, LoginService, toastr, $ocMedia, localdeliverytimeurl ) {
+function AppCtrl($q, $rootScope, $state, $http, appname, LoginService, toastr, $ocMedia, localdeliverytimeurl ) {
     var vm = this;
     vm.name = appname;
     vm.title = appname;
     vm.showLeftNav = true;
     vm.$state = $state;
     vm.$ocMedia = $ocMedia;
+    vm.contentLoading = undefined;
+
+    function cleanLoadingIndicators() {
+        if (vm.contentLoading && vm.contentLoading.promise && !vm.contentLoading.promise.$cgBusyFulfilled) vm.contentLoading.resolve(); //resolve leftover loading promises
+    }
+
+    $rootScope.$on('$stateChangeStart', function(e, toState) {
+        cleanLoadingIndicators();
+        var defer = $q.defer();
+        defer.wrapperClass = 'indicator-container';
+        (toState.data && toState.data.loadingMessage) ? defer.message = toState.data.loadingMessage : defer.message = null;
+        defer.templateUrl = 'common/loading-indicators/templates/view.loading.tpl.html';
+        vm.contentLoading = defer;
+    });
+
+    $rootScope.$on('$stateChangeSuccess', function(e, toState) {
+        cleanLoadingIndicators();
+        if (toState.data && toState.data.componentName) {
+            vm.title = toState.data.componentName + ' | ' + appname;
+        } else {
+            vm.title = appname;
+        }
+
+        if(toState.name == 'buildOrder'){
+            vm.headerstat = true;
+        }
+        else if(toState.name == 'checkout'){
+            vm.headerstat = true;
+        }
+        else{
+            vm.headerstat = false;
+        }
+    });
 
     vm.datepickerOptions = {
         showWeeks: false,
@@ -87,24 +121,17 @@ function AppCtrl( $rootScope, $state, $http, appname, LoginService, toastr, $ocM
         LoginService.Logout();
     };
 
-    $rootScope.$on('$stateChangeSuccess', function(e, toState) {
-		if(toState.name == 'buildOrder'){
-			vm.headerstat = true;
-		}
-		else if(toState.name == 'checkout'){
-			vm.headerstat = true;
-		}
-		else{
-			vm.headerstat = false;
-		}
-		if (toState.data && toState.data.componentName) {
-			vm.title = appname + ' - ' + toState.data.componentName
-		} else {
-			vm.title = appname;
-		}
-    });
+    //$rootScope.$on('$stateChangeSuccess', function(e, toState) {
+    //
+		//if (toState.data && toState.data.componentName) {
+		//	vm.title = appname + ' - ' + toState.data.componentName
+		//} else {
+		//	vm.title = appname;
+		//}
+    //});
 
     $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+        cleanLoadingIndicators();
         console.log(error);
     });
 

@@ -28,11 +28,6 @@ function BaseConfig( $stateProvider ) {
                     controller: 'BaseTopCtrl',
                     controllerAs: 'baseTop'
                 },
-                'left@base': {
-                    templateUrl: 'base/templates/base.left.tpl.html',
-                    controller: 'BaseLeftCtrl',
-                    controllerAs: 'baseLeft'
-                },
                 'down@base': {
                     templateUrl: 'base/templates/base.down.tpl.html',
                     controller: 'BaseDownCtrl',

@@ -538,7 +538,6 @@ input[type=number]::-webkit-outer-spin-button {
 .container-fluid .promotion_wrapper {
 	height:auto;
 	/* overflow:auto; */
-	padding:15px 0 10px 15px;
 	.orders_on_hold {
 		height:auto;
 		padding:15px 0 10px;
@@ -706,9 +705,6 @@ input[type=number]::-webkit-outer-spin-button {
 		border-right:1px solid @color4;
 	}
 }
-.container-fluid {
-	padding:74px 15px 10px;
-}
 .order_name {
 	width:60% !important;
 }
@@ -744,6 +740,9 @@ input[type=number]::-webkit-outer-spin-button {
 	}
 	.searchelement{
 		    border-bottom: 1px solid @color4;
+		    .user-name,.order-name,.phone-num{
+		    	text-align:right;
+		    }
 	}
 	&.prod-dropdown{
 		.search_result p{
@@ -754,7 +753,7 @@ input[type=number]::-webkit-outer-spin-button {
 		.search_result{
 			height:initial;
 			line-height: initial;
-			padding: 5px 15px 5px 20px;
+			padding: 5px 13px 5px 9px;
 			.recepient-order{
 				width:@width0;
 				margin-top: 5px;
@@ -763,6 +762,23 @@ input[type=number]::-webkit-outer-spin-button {
 				font-size:12px;
 				.helvetica-regular;
 			}
+			.recipient-name{
+				text-align:right;
+				float:right;
+			}
+		}
+		svg{
+			    margin-right: 8px;
+		}
+		.recepient-order{
+			p{
+		       margin-left: 22px;
+               display: inline;
+			}
+			div{
+				text-align:right;
+				float:right;
+			}
 		}
 	}
 }
@@ -770,7 +786,7 @@ input[type=number]::-webkit-outer-spin-button {
 .search_result {
 	border-bottom: 1px solid @color12;
 	overflow:auto;
-	padding: 0px 15px 0 20px;
+	padding: 0px 10px 0 20px;
 	width:@width3;
 	height:45px;
 	display:block;

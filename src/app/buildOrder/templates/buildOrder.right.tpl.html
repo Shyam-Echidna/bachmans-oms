@@ -237,18 +237,18 @@
 								<a ng-click="viewAddrBook(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">View Address Book</a>
 								<a ng-click="buildOrderRight.GetAboveAddresses(lineitems)" ng-if="!lineitems.xp.NoDeliveryExInStore">Above Address</a>
 								<div class="qty">
-									<p>Quantity <span>*</span></p>
+									<p>Quantity <span class="star">*</span></p>
 									<input type="number" name="qty" ng-model="lineitems.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" ng-min="1" ng-max="999" ng-required="true" />
 									<p ng-if="buildOrderRight.lineItemForm[lineitems.ID].qty.$error.min"><span>Minimum 1 Quantity</span></p>
 									<p ng-if="buildOrderRight.lineItemForm[lineitems.ID].qty.$error.max"><span>Maximum 999 Quantity</span></p>
 								</div>
 								<div class="receipient-name" ng-init="buildOrderRight.GetAllList(lineitems.xp.addressType)">
 									<div class="firstNm">
-										<p>First Name <span>*</span></p>
+										<p>First Name <span class="star">*</span></p>
 										<input type="text" ng-model="lineitems.ShippingAddress.FirstName" name="FirstName" ng-required="true" max-length="100" />
 									</div>
 									<div>
-										<p>Last Name <span>*</span></p>
+										<p>Last Name <span class="star">*</span></p>
 										<input type="text" ng-model="lineitems.ShippingAddress.LastName" name="LastName" ng-required="true" max-length="100" />
 									</div>
 								</div>
@@ -304,33 +304,33 @@
 								<div class="location-selected">
 									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitems)">
 										<div class="hospital-search" ng-if="addressType=='Hospital'">
-											<h1>Find Hospital <span>*</span></h1>
+											<h1>Find Hospital <span class="star">*</span></h1>
 											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.hosSearch" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='Funeral'">
-											<h1>Find Funeral <span>*</span></h1>
+											<h1>Find Funeral <span class="star">*</span></h1>
 											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.funeralSearch" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='Church'">
-											<h1>Find Church <span>*</span></h1>
+											<h1>Find Church <span class="star">*</span></h1>
 											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.churchSearch" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='School'">
-											<h1>Find School <span>*</span></h1>
+											<h1>Find School <span class="star">*</span></h1>
 											<input type="text" uib-typeahead="hosp for hosp in buildOrderRight.SchoolNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.schSearch" />
 										</div>
 										<div class="willCall-address" ng-show="addressType=='Will Call'" ng-if="addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">
-												<h1>Find store*</h1>
+												<h1>Find store <span class="star">*</span></h1>
 												<input type="search" ng-model="lineitems.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" />
 											</div>
 											<div>
-												<h1>Pick-up Date <span>*</span></h1>
+												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitems)" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>
@@ -339,13 +339,13 @@
 										</div>
 										<div class="location-Code" ng-if="addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 											<div class="zipCode">
-												<p>Zip Code <span>*</span></p>
+												<p>Zip Code <span class="star">*</span></p>
 												<input type="number" ng-model="lineitems.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" required></input>
 											</div>
 											<div class="delivery-date" ng-if="addressType!='Will Call'">
-												<p>Delivery Date <span>*</span></p>
+												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" required />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.deliveryDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitems)" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>
@@ -353,12 +353,12 @@
 											</div>
 										</div>
 										<div class="location-addressL1">
-											<h1>Address <span>*</span></h1>
+											<h1>Address <span class="star">*</span></h1>
 											<input type="text" ng-model="lineitems.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" placeholder="Street1" required max-length="100" />
 											<input type="text" ng-model="lineitems.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitems)" placeholder="Street2 (optional)" />
 											<div class="location-addressL2">
 												<div class="location-state">
-													<p>State <span>*</span></p>
+													<p>State <span class="star">*</span></p>
 													<!--<select ng-model="lineitems.ShippingAddress.State">
 														<option selected>K</option>
 														<option>RNR</option>
@@ -366,7 +366,7 @@
 													<input type="text" ng-model="lineitems.ShippingAddress.State" required />
 												</div>
 												<div class="location-city">
-													<p>City <span>*</span></p>
+													<p>City <span class="star">*</span></p>
 													<input type="text" ng-model="lineitems.ShippingAddress.City" required />
 												</div>
 											</div>
@@ -458,7 +458,7 @@
 									<h4 ng-if="!lineitems.xp.deliveryFeesDtls && lineitems.ShippingAddress.Zip && lineitems.ShippingAddress.Street1">Delivery Charges<span>$0.00</span></h4>
 									<h4 ng-repeat="(key, val) in lineitems.xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && lineitems.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b> <span>{{val | currency}}</span></h4>
 									<h4 ng-if="lineitems.xp.Discount">Discount <span>{{lineitems.xp.Discount | currency}}</span></h4>
-									<h4>Estimated Tax <span>$0.00</span></h4>
+									<h4 ng-if="lineitems.xp.Tax">Estimated Tax <span>{{ lineitems.xp.Tax | currency }}</span></h4>
 									<h5>Estimate Total<span>{{lineitems.xp.TotalCost | currency}}</span></h5>
 								</div>
 								<input type="submit" value="SAVE" class="notes" ng-disabled="!buildOrderRight.lineItemForm[lineitems.ID].$valid" />
@@ -471,19 +471,24 @@
         </div>
 		<modal title="Address Book" visible="showModal" id="mymodal" class="view-addr-book modal-pop-up">
 			<table>
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Phone</th>
+				</tr>
 				<tr ng-repeat="addr in addressesList" ng-click="getBookAddress(addr)">
 					<td>
-						<h4>Name</h4>
+						
 						<p>{{addr.FirstName}} {{addr.LastName}}</p>
 					</td>
 					<td>	
-						<h4>Address</h4>
+						
 						<p>{{addr.Street1}}</p>
 						<p>{{addr.Street2}}</p>
 						<p>{{addr.City}} {{addr.State}} {{addr.Country}} {{addr.Zip}}</p>
 					</td>
 					<td>
-						<h4>Phone</h4>
+						
 						<p>{{addr.Phone}}</p>
 					</td>			
 				</tr>
@@ -491,19 +496,23 @@
 		</modal>
 		<modal title="Address Book" visible="showAboveRecipientModal" id="mymodal" class="view-addr-book modal-pop-up">
 			<table ng-repeat="line in lineItemProducts track by line">
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Phone</th>
+				</tr>
 				<tr ng-repeat="val in activeOrders[line] track by val.ID" ng-click="getBookAddress(val.ShippingAddress, 'TempAddr')" ng-if="val.ShippingAddress.Zip && val.ShippingAddress.Street1 && val.ShippingAddress.FirstName">
 					<td>
-						<h4>Name</h4>
+						
 						<p>{{val.ShippingAddress.FirstName}} {{val.ShippingAddress.LastName}}</p>
 					</td>
 					<td>	
-						<h4>Address</h4>
+						
 						<p>{{val.ShippingAddress.Street1}}</p>
 						<p>{{val.ShippingAddress.Street2}}</p>
 						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>
 					</td>
 					<td>
-						<h4>Phone</h4>
 						<p>{{val.ShippingAddress.Phone}}</p>
 					</td>			
 				</tr>

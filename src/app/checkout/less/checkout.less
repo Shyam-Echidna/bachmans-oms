@@ -303,6 +303,7 @@
 						width:30%;
 					}
 					.phone-block{
+						width: 70%;
 						input{
 							.in-block;
 							width:30%;
@@ -350,6 +351,7 @@
 					.delivery-details{
 						.modify{
 							text-align: right;
+							margin-top: -10px;
 							a{
 								text-decoration: underline;
 								.helvetica-regular;
@@ -384,6 +386,9 @@
 							.helvetica-bold;
 							font-size:12px;
 							margin:20px 15px 15px 0;
+								label{
+									margin: 0px;
+								}
 						}
 						.delivery-date{
 							margin-top:25px;
@@ -400,10 +405,11 @@
 								border-right:1px solid @color20;
 								.in-block;
 								height:90px;
-								padding:5px 5px 5px 8px;
+								padding:10px 5px 5px 8px;
 								width:30.6%;
 								margin-left: -4px;
 								vertical-align: top;
+								text-align: center;
 								p:nth-child(2){
 									.helvetica-regular;
 									font-size:12px;
@@ -414,6 +420,7 @@
 								}
 								&.active{
 									background-color:@color20;
+									border-bottom: 2px solid #000;
 								}
 								&:last-child{
 									border-right:none;
@@ -545,6 +552,7 @@
 						}
 					}
 					.phone-block{
+						width: 100%;
 						label{
 							.helvetica-bold;
 							font-size:13px;
@@ -554,6 +562,18 @@
 							width:auto;
 							margin-right:5px;
 						}
+							button{
+								padding:0px 20px;
+								margin: 22px 0px 0px 40px;
+								height: 27px;
+								line-height: 27px; 
+								background-color:@primary-color;
+								color:@color0;
+								.background-fade;
+								&:hover{
+									background-color:@primary-dark-color;
+								}
+							}
 					}
 					.name, .radio-grp, .location, .city, .zip-code, .phone-block, .phone-block div{
 						padding:0;
@@ -583,6 +603,32 @@
 					width:auto;
 					padding:10px 20px;
 					border:1px solid @color6;
+					margin-right: 10px;
+					position: relative;
+					.selected{
+						display: none;
+					}
+					&.active-tab{
+						background: #fff;
+						border: 1px solid #000;
+							.selected{
+								vertical-align: middle;
+                                display: inline-block;
+                                height: 20px;
+                                width: 20px;
+                                border-radius: 50%;
+                                background: green;
+                                text-align: center;
+                                position: absolute;
+							    top: -12px;
+							    right: -7px;
+
+                                svg {
+                                    height: 20px;
+                                    width: 16px;
+                                }
+							}
+					}
 				}
 			}
 		.payment-method-container{

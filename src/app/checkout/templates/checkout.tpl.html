@@ -359,6 +359,75 @@
                                 </div>
                             </div>
 						</div>
+						<!-- Add/pay new card-->
+						<div class="add-card-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CreditCard'">
+                            <div ng-repeat="card in checkout.creditCardsList">
+                                <div class="add-card-header">
+                                    <label>
+                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card"/>
+                                        <span>+ Add/Pay with a new card</span>
+                                       
+                                    </label>
+                                </div>
+                                <div class="add-card-method-container row" ng-if="card === checkout.selectedCard">
+                                    <div class="col-xs-12 card-info-cont">
+	                                    <form class="input-card-form" role="form" novalidate>
+	                                        <div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="cardholderName">Cardholder's Name</label>
+	                                            <input type="text" class="form-control" id="cardholderName" placeholder="Name" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="cardNumber">Card Number</label>
+	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" />
+	                                        </div>
+	                                        <div class="col-xs-6 form-group exp-date p0">
+	                                            <label for="expDate">Expiration Date</label>
+	                                            <select class="form-control" id="month" placeholder="MM">
+	                                                <option>MM</option>
+	                                                <option>MM</option>
+	                                                <option>MM</option>
+	                                            </select>
+	                                            <select class="form-control" id="year" placeholder="YY">
+	                                                <option>YY</option>
+	                                                <option>YY</option>
+	                                                <option>YY</option>
+	                                            </select>
+	                                        </div>
+	                                        <div class="col-xs-6 form-group cvv-number">
+	                                            <label for="cvvNumber">CVV</label>
+	                                            <input type="text" class="form-control" id="cvvNumber" />
+	                                            <span class="cvv-help">
+	                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	                                                 viewBox="-652.2 494.3 18.7 18.7" style="enable-background:new -652.2 494.3 18.7 18.7;" xml:space="preserve">
+	                                                <g>
+	                                                    <g>
+	                                                        <path d="M-643.1,505.6c-0.3-0.3-0.5-0.6-0.5-1.1c0-0.3,0.1-0.6,0.2-0.8c0.2-0.2,0.4-0.5,0.6-0.6
+	                                                            c0.2-0.2,0.5-0.3,0.7-0.5c0.2-0.2,0.4-0.3,0.6-0.6c0.2-0.2,0.2-0.4,0.2-0.7c0-0.4-0.1-0.6-0.4-0.9c-0.3-0.2-0.6-0.3-1.1-0.3
+	                                                            c-0.9,0-1.6,0.4-2.1,1.1l-0.7-0.7c0.7-0.9,1.6-1.3,2.9-1.3c0.8,0,1.4,0.2,1.9,0.6c0.5,0.4,0.7,0.9,0.7,1.5c0,0.4-0.1,0.7-0.3,1
+	                                                            c-0.2,0.3-0.4,0.5-0.6,0.7s-0.5,0.4-0.7,0.5c-0.2,0.2-0.5,0.4-0.6,0.6c-0.2,0.2-0.3,0.4-0.3,0.7c0,0.3,0.1,0.5,0.3,0.6
+	                                                            L-643.1,505.6z M-642.3,507.9c-0.1,0.1-0.3,0.2-0.5,0.2c-0.2,0-0.4-0.1-0.5-0.2c-0.1-0.1-0.2-0.3-0.2-0.5c0-0.2,0.1-0.4,0.2-0.5
+	                                                            c0.1-0.1,0.3-0.2,0.5-0.2c0.2,0,0.4,0.1,0.5,0.2c0.1,0.1,0.2,0.3,0.2,0.5C-642.1,507.6-642.2,507.8-642.3,507.9z"/>
+	                                                    </g>
+	                                                    <g>
+	                                                        <path d="M-642.8,512.4c-4.8,0-8.8-3.9-8.8-8.8s3.9-8.8,8.8-8.8s8.8,3.9,8.8,8.8S-638,512.4-642.8,512.4z
+	                                                             M-642.8,495.6c-4.4,0-8,3.6-8,8s3.6,8,8,8s8-3.6,8-8S-638.4,495.6-642.8,495.6z"/>
+	                                                    </g>
+	                                                </g>
+	                                                </svg>
+	                                            </span>
+	                                        </div>
+	                                        <div class="col-xs-12 p0 form-group card-remember">
+	                                            <div class="check-common">
+	                                                <input type="checkbox" id="save">
+	                                                <label for="save" class="check">Save this card for future payments</label>
+	                                            </div>
+	                                           
+	                                        </div>
+	                                    </form>
+                                     </div>
+                                </div>
+                            </div>
+						</div>
 						<!-- Bachmans charges -->
 						<div class="payment-method-container charges col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-show="checkout.paymentOption == 'BachmansCharge'">
 							<div>

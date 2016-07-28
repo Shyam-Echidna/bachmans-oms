@@ -681,7 +681,100 @@
 				}
 			}
 		}
+		  .add-card-container{
+		  	margin-top:25px;
+			border:2px solid @color20;
+			padding:0;
+			.add-card-header{
+			  padding:10px;
+			  background-color:@color20;
+			}
+			.add-card-method-container{
+			  margin:0 auto;
+			  width: auto;
+			  .card-info-cont {
+	background-color: #fafafa;
+	margin: 25px 0 0 0;
+	padding-bottom: 25px;
+	.title {
+		.helvetica-bold;
+		font-size:12px;
+		text-transform: uppercase;
+		margin-bottom: 0;
+	}
+	.input-card-form {
+		.holder-name,
+		.card-number,
+		.exp-date,
+		.cvv-number {
+			margin: 25px 0 0 0;
+			label {
+				color: #464646;
+				.helvetica-regular;
+				font-size:14px;
+				margin-bottom: 10px;
+			}
+			input,
+			select {
+				color: #666666;
+				.helvetica-regular;
+				font-size:14px;
+				height: 45px;
+				background: #F4F4F4;
+				border-radius: 2px;
+				box-shadow: none;
+				-webkit-appearance: none;
+			}
 		}
+		.exp-date {
+			label {
+				display: block;
+			}
+			select#month,
+			select#year {
+				width: 85px;
+				display: inline-block;
+				-webkit-appearance: none;
+				-moz-appearance: none;
+				text-indent: 1px;
+				text-overflow: '';
+				background-image: url('../../assets/images/button-down.svg');
+				background-repeat: no-repeat;
+				background-position: right center;
+				background-size: 35px 12px;
+			}
+			select#year {
+				margin-left: 5px;
+			}
+		}
+		.cvv-number {
+			padding: 0;
+			float: right;
+			label {
+				display: block;
+			}
+			select,
+			input {
+				width: 85px;
+				display: inline-block;
+			}
+			.cvv-help {
+				margin-left: 5px;
+				svg {
+					width: 18px;
+					height: 18px;
+					fill: #a983c8;
+					vertical-align: middle;
+					margin-left: 5px;
+				}
+			}
+		}
+		
+	  }
+	} 
+  }
+ }
+}
 
 		/*For Checkout Place order button starts*/
 		.review-content{

@@ -726,8 +726,8 @@ input[type=number]::-webkit-outer-spin-button {
 	border-radius:0;
 	right:0;
 	top:34px;
-	width:@width0;
-    min-height: -1px;
+	width:425px;
+   
 	max-height:400px;
     overflow-y: auto;
 	.search_result {
@@ -801,6 +801,11 @@ input[type=number]::-webkit-outer-spin-button {
 	height:45px;
 	display:block;
 	line-height: 45px;
+	  a{
+	   	 &:focus{
+	   	 	 text-decoration:none;
+	   	 }
+	  }
 	p {
 		color:@color2;
 	    line-height: initial;

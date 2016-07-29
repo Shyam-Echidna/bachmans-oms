@@ -18,7 +18,7 @@
 									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
 									<ul class="menu_level_3" ng-if="subcategories.ChildCount">
 										<li ng-repeat="subchildcategories in subcategories.children">
-											<a  ui-sref="plp({ID:subchildcategories.ID,childCount:subchildcategories.ChildCount})">{{subchildcategories.Name}}</a>	 
+											<a ui-sref="buildOrder({ID:subchildcategories.ID,SearchType:'plp'})" ng-click="base.isopen=false">{{subchildcategories.Name}}</a>	 
 										</li>
 									</ul> 
 								</li>
@@ -61,7 +61,7 @@
 							<li ng-click="selectChange('customer')">Customer</li>
 							<li ng-click="selectChange('order')">Order Number</li>
 							<li ng-click="selectChange('recipient')">Recipient</li>
-							<li ng-click="selectChange('products')">Product</li>
+							<li ng-click="selectChange('product')">Product</li>
 							<li ng-click="selectChange('phone')">Phone Number</li>
 						</ul>
 					</div>
@@ -120,7 +120,7 @@
 						</div>
 					</div>
 					<!-- algolia search for products -->
-					<div ng-switch-when="products" uib-dropdown>
+					<div ng-switch-when="product" uib-dropdown>
 						<ordercloud-search servicename="products" controlleras="base" placeholder="Search products" uib-dropdown-toggle></ordercloud-search>
 						<div class="search_dropdown" uib-dropdown-menu>
 							<div class="searchelement"  ng-repeat="products in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
@@ -145,7 +145,7 @@
 				</div>
 			</div>
             <div class="build_order">
-                <a ui-sref="buildOrder"><img src="../assets/images/icons-svg/build-order.svg"><p>Build Order</p></a>
+                <a ui-sref="buildOrder({SearchType:'BuildOrder'})"><img src="../assets/images/icons-svg/build-order.svg"><p>Build Order</p></a>
             </div>
             <div class="build_order" uib-dropdown>
                 <a href uib-dropdown-toggle>

@@ -109,7 +109,7 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
@@ -237,29 +237,31 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 
     vm.Grouping(ProductInfo);
-	vm.payment = function(line,index){
-		var $this = this;
-		var addrValidate = {
-			"addressLine1": line.ShippingAddress.Street1, 
-			"addressLine2": line.ShippingAddress.Street2,
-			"zipcode": line.ShippingAddress.Zip, 
-			"country": "US"
-		};
-		BuildOrderService.addressValidation(addrValidate).then(function(res){
-			if(res.data.ResultCode == "Success"){
-				if($this.$parent.$parent.$$nextSibling!=null){
-					$this.$parent.$parent.$$nextSibling.delInfoRecipient[index+1] = true;
-				}else{
-					vm.status.delInfoOpen = false;
-					vm.status.paymentOpen = true;
-					vm.status.isFirstDisabled=true;
-				}
-				vm.lineDtlsSubmit(line);
-				vm.Grouping(vm.deliveryInfo);
-			}else{
-				alert("Address not found...");
-			}
-		});
+	vm.payment = function(line,index) {
+        AddressValidationService.Validate(line.ShippingAddress)
+            .then(function(response){
+                if(response.ResultCode == 'Success') {
+                    var validatedAddress = response.Address;
+                    var zip = validatedAddress.PostalCode.substring(0, 5);
+                    line.ShippingAddress.Zip = parseInt(zip);
+                    line.ShippingAddress.Street1 = validatedAddress.Line1;
+                    line.ShippingAddress.Street2 = null;
+                    line.ShippingAddress.City = validatedAddress.City;
+                    line.ShippingAddress.State = validatedAddress.Region;
+                    if (vm.delInfoRecipient[index + 1] != null) {
+                        vm.delInfoRecipient[index + 1] = true;
+                    } else {
+                        vm.status.delInfoOpen = false;
+                        vm.status.paymentOpen = true;
+                        vm.status.isFirstDisabled = true;
+                    }
+                    vm.lineDtlsSubmit(line);
+                    vm.Grouping(vm.deliveryInfo);
+                }
+                else{
+                    alert("Address not found...");
+                }
+        });
 	};
 	vm.review = function(){
 		vm.status.delInfoOpen = false;
@@ -307,7 +309,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 					$scope.onLoadCheckout();
 				});
 			});*/
-			
+			line.ShipFromAddressID = 'testShipFrom';
 			OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
 				OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
 					if(line.xp.Status){

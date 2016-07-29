@@ -303,34 +303,34 @@
 								</div>
 								<div class="location-selected">
 									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitems)">
-										<div class="hospital-search" ng-if="addressType=='Hospital'">
+										<div class="hospital-search" ng-if="addressType=='Hospital'" >
 											<h1>Find Hospital <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.hosSearch" />
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.hosSearch" ng-required="addressType=='Hospital'" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='Funeral'">
 											<h1>Find Funeral <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.funeralSearch" />
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.funeralSearch" ng-required="addressType=='Funeral'" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='Church'">
 											<h1>Find Church <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.churchSearch" />
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.churchSearch" ng-required="addressType=='Church'" />
 										</div>
 										
 										<div class="hospital-search" ng-if="addressType=='School'">
 											<h1>Find School <span class="star">*</span></h1>
-											<input type="text" uib-typeahead="hosp for hosp in buildOrderRight.SchoolNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.schSearch" />
+											<input type="text" uib-typeahead="hosp for hosp in buildOrderRight.SchoolNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitems)" ng-model="lineitems.schSearch" ng-required="addressType=='School'" />
 										</div>
 										<div class="willCall-address" ng-show="addressType=='Will Call'" ng-if="addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">
 												<h1>Find store <span class="star">*</span></h1>
-												<input type="search" ng-model="lineitems.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" />
+												<input type="search" ng-model="lineitems.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="addressType=='Will Call'"  />
 											</div>
 											<div>
 												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitems)" />
+												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitems.xp.pickupDate" is-open="lineitems.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitems.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitems)" ng-required="addressType=='Will Call'" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitems.openCalenderPopUp=!lineitems.openCalenderPopUp"><i class="glyphicon glyphicon-calendar"></i></button>
 												  </span>

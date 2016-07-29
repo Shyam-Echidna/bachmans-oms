@@ -694,7 +694,7 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 	};
 }
 
-function buildOrderRightController($scope, Order, LineItemHelpers, $q, $stateParams, $http, CurrentOrder, $filter, OrderCloud, BuildOrderService, $timeout, TaxService) {
+function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService) {
 	var vm = this;
 	vm.order = Order;
 	$scope.showDeliveryMethods = {
@@ -875,12 +875,12 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 						console.log("Order OnHold Removed....");
 					});
 					$scope.lineItemProducts = [];
-					$scope.activeOrders = data;
+					vm.activeOrders = data;
 					$scope.prodQty = {};
 					angular.forEach(data,function(val1, key1){
 						$scope.lineItemProducts.push(key1);
 						$scope.prodQty[key1] = _.reduce(_.pluck(data[key1], 'Quantity'), function(memo, num){ return memo + num; }, 0);
-						angular.forEach($scope.activeOrders[key1],function(val, key){
+						angular.forEach(vm.activeOrders[key1],function(val, key){
 							if(val.ShippingAddress && val.xp.deliveryFeesDtls){
 								//if(val.Product.xp.Specs_Options){
 									val.ShippingAddress.deliveryDate = val.xp.deliveryDate;
@@ -1009,7 +1009,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 			});
 		});
 	};
-	$scope.lineDtlsSubmit = function(line){
+	vm.lineDtlsSubmit = function(line, index){
 		/*var addrValidate = {
 			"addressLine1": line.ShippingAddress.Street1, 
 			"addressLine2": line.ShippingAddress.Street2,
@@ -1028,6 +1028,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+") "+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";
 		line.xp.addressType = this.addressType;
+
 		var deliverySum = 0;
 		angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 			deliverySum += parseFloat(val);
@@ -1096,20 +1097,35 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 					line.ShipFromAddressID = "testShipFrom";
 					if(line.OutgoingWire==true)
 						line.xp.Status = "OnHold";
-					OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
-						OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
-							if(line.xp.Status){
-								OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}}).then(function(res){
-									console.log("Order Status OnHold Updated.......");
-									$scope.getLineItems();
-									alert("Data submitted successfully");
-								});
-							}else{
-								$scope.getLineItems();
-								alert("Data submitted successfully");
-							}
-						});
-					});
+                AddressValidationService.Validate(line.ShippingAddress)
+                    .then(function(response){
+                        if(response.ResultCode == 'Success') {
+                            var validatedAddress = response.Address;
+                            var zip = validatedAddress.PostalCode.substring(0, 5);
+                            vm.activeOrders[line.ProductID][index].ShippingAddress.Zip = parseInt(zip);
+                            vm.activeOrders[line.ProductID][index].ShippingAddress.Street1 = validatedAddress.Line1;
+                            vm.activeOrders[line.ProductID][index].ShippingAddress.Street2 = null;
+                            vm.activeOrders[line.ProductID][index].ShippingAddress.City = validatedAddress.City;
+                            vm.activeOrders[line.ProductID][index].ShippingAddress.State = validatedAddress.Region;
+                        }
+                        OrderCloud.As().LineItems.Update(vm.order.ID, vm.activeOrders[line.ProductID][index].ID, vm.activeOrders[line.ProductID][index])
+                            .then(function(){
+                                OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, vm.activeOrders[line.ProductID][index].ShippingAddress)
+                                    .then(function(){
+                                        if(line.xp.Status){
+                                            OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}})
+                                                .then(function(){
+                                                    console.log("Order Status OnHold Updated.......");
+                                                    $scope.getLineItems();
+                                                    alert("Data submitted successfully");
+                                            });
+                                        }else{
+                                            $scope.getLineItems();
+                                            alert("Data submitted successfully");
+                                        }
+                                    });
+                                });
+                            });
 				/*});
 			}else{
 				alert("Address not found...");
@@ -1478,7 +1494,7 @@ function buildOrderPDPController() {
 	var vm = this;
 }
   
-function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Order, CurrentOrder, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q) {
+function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q) {
     var vm = this;
     if($stateParams.SearchType != 'Products'){
 		vm.order=Order;		
@@ -1525,8 +1541,8 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 				}
 			});
 		}
-		$scope.groups = data;
-	}
+		vm.groups = _.toArray(data);
+	};
 	vm.orderSummaryShow = function(){
 		OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
 			//console.log("res", res);
@@ -1594,8 +1610,8 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		deliveryCharges = res.xp.ZipCodes;
 	});
 	
-	vm.lineDtlsSubmit = function(array, index){
-		var line = array[index];
+	vm.lineDtlsSubmit = function(recipient, index){
+		var line = recipient[index];
 		OrderCloud.Products.Patch(line.Product.ID, {"xp":{"productNote":line.Product.xp.productNote}}).then(function(){
 			
 		});
@@ -1633,18 +1649,38 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 			line.xp.storeName = line.willSearch;
 		}
 		line.ShipFromAddressID = "testShipFrom";
-		line.ShippingAddress = array[0].ShippingAddress;
-		OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
-			OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
-				if((array.length)-1 > index){
-					vm.lineDtlsSubmit(array, index+1);
-				}else{
-					vm.orderSummaryShow();
-					alert("Data submitted successfully");
-				}
-			});
-		});
+		//line.ShippingAddress = recipient[0].ShippingAddress;
+        AddressValidationService.Validate(line.ShippingAddress)
+            .then(function(response){
+                if(response.ResultCode == 'Success') {
+                    var validatedAddress = response.Address;
+                    var zip = validatedAddress.PostalCode.substring(0, 5);
+                    vm.groups[index][0].ShippingAddress.Zip = parseInt(zip);
+                    vm.groups[index][0].ShippingAddress.Street1 = validatedAddress.Line1;
+                    vm.groups[index][0].ShippingAddress.Street2 = null;
+                    vm.groups[index][0].ShippingAddress.City = validatedAddress.City;
+                    vm.groups[index][0].ShippingAddress.State = validatedAddress.Region;
+                    line.ShippingAddress.Zip = parseInt(zip);
+                    line.ShippingAddress.Street1 = validatedAddress.Line1;
+                    line.ShippingAddress.Street2 = null;
+                    line.ShippingAddress.City = validatedAddress.City;
+                    line.ShippingAddress.State = validatedAddress.Region;
+                }
+                OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line)
+                    .then(function(){
+                        OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress)
+                            .then(function(){
+                                if((recipient.length)-1 > index){
+                                    vm.lineDtlsSubmit(recipient, index+1);
+                                }else{
+                                    vm.orderSummaryShow();
+                                    alert("Data submitted successfully");
+                                }
+                        });
+                });
+        });
 	};
+
 	vm.GetDeliveryChrgs = function(line, DeliveryMethod, dt){
 		var d = $q.defer();
 		if(dt){
@@ -1819,8 +1855,8 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 								}
 								if(_.isEmpty(line.xp.deliveryFeesDtls))
 									delete line.xp.deliveryFeesDtls;
-								var arr = [];	
-								angular.forEach($scope.groups, function(val, key){
+								var arr = [];
+								angular.forEach(vm.groups, function(val){
 									arr = _.union(arr, val);
 								}, true);
 								if((array.length)-1 > index)
@@ -2159,7 +2195,7 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 				delChrgs += parseFloat(val1);
 			},true);
 		},true);	
-		OrderCloud.As().Orders.Patch(orderID, {"ID": orderID, "ShippingCost": delChrgs}).then(function(res){
+		OrderCloud.As().Orders.Patch(orderID, {ShippingCost: delChrgs}).then(function(res){
 			d.resolve(res);
 		});
 		return d.promise;

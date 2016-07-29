@@ -89,7 +89,10 @@ function buildOrderConfig( $stateProvider ) {
 	.state( 'buildOrder', {
 		parent: 'base',
 		url: '/buildOrder/:SearchType/:ID/:prodID/:orderID/:orderDetails',
-		templateUrl:'buildOrder/templates/buildOrder.tpl.html',            
+		templateUrl:'buildOrder/templates/buildOrder.tpl.html',
+		data: {
+            loadingMessage: 'Preparing for Active Orders'
+        },
 		params: {
 			showOrdersummary: false,
 			prodID:{
@@ -1284,6 +1287,7 @@ function buildOrderRightController($scope, Order, LineItemHelpers, $q, $statePar
 	});
 	vm.changeAddrType = function(addressType, line){
 		line.xp.addressType = addressType;
+		vm.lineItemForm[line.ID].$setPristine();
 		if(addressType != "Will Call" || line.willSearch){
 			vm.getDeliveryCharges(line);
 		}

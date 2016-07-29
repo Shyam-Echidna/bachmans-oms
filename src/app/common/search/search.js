@@ -215,7 +215,7 @@ function ordercloudSearch () {
     }
 }
 
-function ordercloudSearchCtrl($timeout, $scope, TrackSearch, OrderCloud, algolia ) {
+function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud, algolia, Underscore, BuildOrderService) {
     var searching;	
 	if($scope.servicename!='address'){
 		var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');
@@ -277,6 +277,11 @@ function ordercloudSearchCtrl($timeout, $scope, TrackSearch, OrderCloud, algolia
 				}, 300);
 			}
 		});
+		$scope.showProducts = function(){
+			if($scope.placeholder=="Search products"){
+				$state.go('buildOrder',{SearchType:'Products'});
+			}
+		}
 	}
 	if($scope.servicename=='Addresses'){
 		var impersonation = {

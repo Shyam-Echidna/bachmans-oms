@@ -235,7 +235,7 @@
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
 								<a ng-click="viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
-								<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">Above Address</a>
+								<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore" class="above-addr">Above Address</a>
 								<div class="qty">
 									<p>Quantity <span class="star">*</span></p>
 									<input type="number" name="qty" ng-model="lineitem.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" ng-min="1" ng-max="999" ng-required="true" />
@@ -298,8 +298,13 @@
 										<div class="radio"></div>
 									</label>
 							</div>
-								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'">
-									<label><input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire">Outgoing Wire</label>
+								<div ng-if="addressType=='Hospital' || addressType=='Funeral' || addressType=='Church'" class="outgoing-wire">
+									<!-- <label><input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire">Outgoing Wire</label> -->
+									<div class="check-common">
+										<input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire" id="outgoingwire">
+										<label for="outgoingwire" class="check"></label>
+									</div>
+									<span>Outgoing Wire</span>
 								</div>
 								<div class="location-selected">
 									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)">
@@ -327,7 +332,7 @@
 												<h1>Find store <span class="star">*</span></h1>
 												<input type="search" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="addressType=='Will Call'"  />
 											</div>
-											<div>
+											<div class="pick-up-date">
 												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
 												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-required="addressType=='Will Call'" />

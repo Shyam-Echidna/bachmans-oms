@@ -431,6 +431,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}	
 	}
 	if($stateParams.SearchType == 'Products'){
+		vm.disable=true;
 		if($stateParams.ID==""){
 			console.log("********************", $scope.$parent.base.list);
 			vm.searchList=$scope.$parent.base.list;

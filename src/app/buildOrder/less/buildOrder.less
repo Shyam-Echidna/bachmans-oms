@@ -169,6 +169,22 @@ button {
 					}
 				}
 			}
+			&.disable{
+				li{
+					a{
+						pointer-events:none;
+					}
+					&:hover {
+						background-color: transparent;
+						svg {
+							fill: @primary-color;
+						}
+						p {
+							color: @color1;
+						}
+					}
+				}
+			}
 		}
 		.create-note {
 			background-color: @color11;
@@ -2362,6 +2378,4 @@ button {
 		color: @primary-dark-color;
 	}
 }
-
-
 

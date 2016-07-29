@@ -50,7 +50,7 @@ function OrderHistoryController($scope, $stateParams, Order) {
 	vm.order=Order;
 	if(vm.order.length>0){
 		console.log("oredr", vm.order);
-		vm.uname=Order[0].FromUserFirstName + " " + Order[0].FromUserLastName;
+		$scope.uname=Order[0].FromUserFirstName + " " + Order[0].FromUserLastName;
 		console.log("vm.uname", vm.uname);
 		$scope.userID=$stateParams.userID;
 		$scope.searchType='User';
@@ -64,7 +64,7 @@ function OrderHistoryController($scope, $stateParams, Order) {
 				{ name: 'Occasion', displayName:'Occasion'},
 				{ name: 'Total', displayName:'Total', cellTemplate: '<div class="data_cell">{{row.entity.Total | currency:$}}</div>'},
 				{ name: 'xp.Status', displayName:'Order Status'},
-				{ name: 'orderClaim', displayName:'', cellTemplate: '<div class="data_cell"><button>Create Order Claim</button></div>'}
+				{ name: 'orderClaim', displayName:'', cellTemplate: '<div class="data_cell"><button ui-sref="orderClaim({userID:grid.appScope.userID, name:grid.appScope.uname, orderID:row.entity.ID})">Create Order Claim</button></div>'}
 		]
 	}
 	}

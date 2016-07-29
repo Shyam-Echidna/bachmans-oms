@@ -238,29 +238,28 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 
     vm.Grouping(ProductInfo);
 	vm.payment = function(line,index) {
-        AddressValidationService.Validate(line.ShippingAddress)
-            .then(function(response){
-                if(response.ResultCode == 'Success') {
-                    var validatedAddress = response.Address;
-                    var zip = validatedAddress.PostalCode.substring(0, 5);
-                    line.ShippingAddress.Zip = parseInt(zip);
-                    line.ShippingAddress.Street1 = validatedAddress.Line1;
-                    line.ShippingAddress.Street2 = null;
-                    line.ShippingAddress.City = validatedAddress.City;
-                    line.ShippingAddress.State = validatedAddress.Region;
-                    if (vm.delInfoRecipient[index + 1] != null) {
-                        vm.delInfoRecipient[index + 1] = true;
-                    } else {
-                        vm.status.delInfoOpen = false;
-                        vm.status.paymentOpen = true;
-                        vm.status.isFirstDisabled = true;
-                    }
-                    vm.lineDtlsSubmit(line);
-                    vm.Grouping(vm.deliveryInfo);
-                }
-                else{
-                    alert("Address not found...");
-                }
+        AddressValidationService.Validate(line.ShippingAddress).then(function(response){
+			if(response.ResultCode == 'Success') {
+				var validatedAddress = response.Address;
+				var zip = validatedAddress.PostalCode.substring(0, 5);
+				line.ShippingAddress.Zip = parseInt(zip);
+				line.ShippingAddress.Street1 = validatedAddress.Line1;
+				line.ShippingAddress.Street2 = null;
+				line.ShippingAddress.City = validatedAddress.City;
+				line.ShippingAddress.State = validatedAddress.Region;
+				if (vm.delInfoRecipient[index + 1] != null) {
+					vm.delInfoRecipient[index + 1] = true;
+				} else {
+					vm.status.delInfoOpen = false;
+					vm.status.paymentOpen = true;
+					vm.status.isFirstDisabled = true;
+				}
+				vm.lineDtlsSubmit(line);
+				vm.Grouping(vm.deliveryInfo);
+			}
+			else{
+				alert("Address not found...");
+			}
         });
 	};
 	vm.review = function(){
@@ -369,8 +368,15 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			"country": "US"
 		};
 		if(addrValidate){
-			BuildOrderService.addressValidation(addrValidate).then(function(res){
-				if(res.data.ResultCode == "Success"){
+			AddressValidationService.Validate(line.ShippingAddress).then(function(response){
+				if(response.ResultCode == 'Success') {
+					var validatedAddress = response.Address;
+					var zip = validatedAddress.PostalCode.substring(0, 5);
+					addr.Zip = parseInt(zip);
+					addr.Street1 = validatedAddress.Line1;
+					addr.Street2 = null;
+					addr.City = validatedAddress.City;
+					addr.State = validatedAddress.Region;
 					OrderCloud.Addresses.Update(addr.ID,addr).then(function(res){
 						var params = {"AddressID": res.ID,"UserID": vm.order.FromUserID,"IsBilling": false,"IsShipping": true};
 						OrderCloud.Addresses.SaveAssignment(params).then(function(data){
@@ -412,8 +418,15 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			"country": "US"
 		};
 		if(addrValidate){
-			BuildOrderService.addressValidation(addrValidate).then(function(res){
-				if(res.data.ResultCode == "Success"){
+			AddressValidationService.Validate(line.ShippingAddress).then(function(response){
+				if(response.ResultCode == 'Success'){
+					var validatedAddress = response.Address;
+					var zip = validatedAddress.PostalCode.substring(0, 5);
+					line.Zip = parseInt(zip);
+					line.Street1 = validatedAddress.Line1;
+					line.Street2 = null;
+					line.City = validatedAddress.City;
+					line.State = validatedAddress.Region;
 					OrderCloud.Addresses.Create(line).then(function(data){
 						data.Zip = parseInt(data.Zip);
 						BuildOrderService.GetPhoneNumber(data.Phone).then(function(res){
@@ -518,10 +531,10 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			}
 		}, true);
 		if(line.ShippingAddress){
-			BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
+			/*BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
 				line.ShippingAddress.City = res.City;
 				line.ShippingAddress.State = res.State;
-			});
+			});*/
 			var addrValidate = {
 				"addressLine1": line.ShippingAddress.Street1, 
 				"addressLine2": line.ShippingAddress.Street2,
@@ -549,9 +562,16 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			}
 		}
 		if(addrValidate){
-			BuildOrderService.addressValidation(addrValidate).then(function(res){
-				if(res.data.ResultCode == "Success"){
-					if(res.data.Address.City == "Minneapolis" || res.data.Address.City == "Saint Paul"){
+			 AddressValidationService.Validate(line.ShippingAddress).then(function(res){
+				if(res.ResultCode == 'Success') {
+					var validatedAddress = res.Address;
+					var zip = validatedAddress.PostalCode.substring(0, 5);
+					line.ShippingAddress.Zip = parseInt(zip);
+					line.ShippingAddress.Street1 = validatedAddress.Line1;
+					line.ShippingAddress.Street2 = null;
+					line.ShippingAddress.City = validatedAddress.City;
+					line.ShippingAddress.State = validatedAddress.Region;
+					if(line.ShippingAddress.City == "Minneapolis" || line.ShippingAddress.City == "Saint Paul"){
 						DeliveryMethod = "LocalDelivery";
 						dt = line.xp.deliveryDate;
 					}else{
@@ -574,7 +594,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						DeliveryMethod = line.xp.DeliveryMethod;
 						dt = undefined;
 					}*/
-					if(res.data.Address.City != "Minneapolis" && res.data.Address.City != "Saint Paul"){
+					if(line.ShippingAddress.City != "Minneapolis" && line.ShippingAddress.City != "Saint Paul"){
 						DeliveryMethod = "UPS";
 						dt = undefined;
 						if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
@@ -770,9 +790,15 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		//line.addressTypeD = line.xp.addressType;
 	};
 	$scope.GetCityState = function(addr){
-		BuildOrderService.getCityState(addr.Zip).then(function(res){
+		/*BuildOrderService.getCityState(addr.Zip).then(function(res){
 			addr.City = res.City;
 			addr.State = res.State;
+		});*/
+		AddressValidationService.Validate(addr).then(function(res){
+			if(res.ResultCode == 'Success') {
+				addr.City = res.Address.City;
+				addr.State = res.Address.Region;
+			}
 		});
 	}
 	vm.ApplyCoupon = function(coupon, orderDtls){

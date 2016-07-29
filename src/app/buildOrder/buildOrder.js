@@ -769,8 +769,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 	};
 	$scope.createListItem = function(prodID, DeliveryMethod){
-		if($scope.activeOrders[prodID] != undefined){
-			var len = $scope.activeOrders[prodID].length;
+		if(vm.activeOrders[prodID] != undefined){
+			var len = vm.activeOrders[prodID].length;
 			this.isOpen = parseInt(len)+1;
 		}
 		lineItemParams.ProductID = prodID;
@@ -1097,36 +1097,35 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					line.ShipFromAddressID = "testShipFrom";
 					if(line.OutgoingWire==true)
 						line.xp.Status = "OnHold";
-                AddressValidationService.Validate(line.ShippingAddress)
-                    .then(function(response){
-                        if(response.ResultCode == 'Success') {
-                            var validatedAddress = response.Address;
-                            var zip = validatedAddress.PostalCode.substring(0, 5);
-                            vm.activeOrders[line.ProductID][index].ShippingAddress.Zip = parseInt(zip);
-                            vm.activeOrders[line.ProductID][index].ShippingAddress.Street1 = validatedAddress.Line1;
-                            vm.activeOrders[line.ProductID][index].ShippingAddress.Street2 = null;
-                            vm.activeOrders[line.ProductID][index].ShippingAddress.City = validatedAddress.City;
-                            vm.activeOrders[line.ProductID][index].ShippingAddress.State = validatedAddress.Region;
-                        }
-                        OrderCloud.As().LineItems.Update(vm.order.ID, vm.activeOrders[line.ProductID][index].ID, vm.activeOrders[line.ProductID][index])
-                            .then(function(){
-                                OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, vm.activeOrders[line.ProductID][index].ShippingAddress)
-                                    .then(function(){
-                                        if(line.xp.Status){
-                                            OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}})
-                                                .then(function(){
-                                                    console.log("Order Status OnHold Updated.......");
-                                                    $scope.getLineItems();
-                                                    alert("Data submitted successfully");
-                                            });
-                                        }else{
-                                            $scope.getLineItems();
-                                            alert("Data submitted successfully");
-                                        }
-                                    });
-                                });
-                            });
+                /*AddressValidationService.Validate(line.ShippingAddress).then(function(response){
+					if(response.ResultCode == 'Success') {
+						var validatedAddress = response.Address;
+						var zip = validatedAddress.PostalCode.substring(0, 5);
+						line.ShippingAddress.Zip = parseInt(zip);
+						line.ShippingAddress.Street1 = validatedAddress.Line1;
+						line.ShippingAddress.Street2 = null;
+						line.ShippingAddress.City = validatedAddress.City;
+						line.ShippingAddress.State = validatedAddress.Region;*/
+						OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(){
+							OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(){
+								if(line.xp.Status){
+									OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}})
+										.then(function(){
+											console.log("Order Status OnHold Updated.......");
+											$scope.getLineItems();
+											alert("Data submitted successfully");
+									});
+								}else{
+									$scope.getLineItems();
+									alert("Data submitted successfully");
+								}
+							});
+						});
+					/*}else{
+						alert("Address not found...");
+					}*/
 				/*});
+				});
 			}else{
 				alert("Address not found...");
 			}
@@ -1372,10 +1371,10 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 		}, true);
 		if(line.ShippingAddress){
-			BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
+			/*BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
 				line.ShippingAddress.City = res.City;
 				line.ShippingAddress.State = res.State;
-			});
+			});*/
 			var addrValidate = {
 				"addressLine1": line.ShippingAddress.Street1, 
 				"addressLine2": line.ShippingAddress.Street2,
@@ -1402,16 +1401,16 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 		}
 		if(addrValidate){
-			//BuildOrderService.addressValidation(addrValidate).then(function(res){
-				var res = {"data":{
-						"Address":{
-							"City": "Minneapolis"
-						},
-						"ResultCode":"Success"
-					}
-				};
-				if(res.data.ResultCode == "Success"){
-					if(res.data.Address.City == "Minneapolis" || res.data.Address.City == "Saint Paul"){
+			AddressValidationService.Validate(line.ShippingAddress).then(function(res){
+				if(res.ResultCode == 'Success') {
+					var validatedAddress = res.Address;
+					var zip = validatedAddress.PostalCode.substring(0, 5);
+					line.ShippingAddress.Zip = parseInt(zip);
+					line.ShippingAddress.Street1 = validatedAddress.Line1;
+					line.ShippingAddress.Street2 = null;
+					line.ShippingAddress.City = validatedAddress.City;
+					line.ShippingAddress.State = validatedAddress.Region;
+					if(line.ShippingAddress.City == "Minneapolis" || line.ShippingAddress.City == "Saint Paul"){
 						DeliveryMethod = "LocalDelivery";
 						dt = line.xp.deliveryDate;
 					}else{
@@ -1434,7 +1433,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						DeliveryMethod = line.xp.DeliveryMethod;
 						dt = undefined;
 					}*/
-					if(res.data.Address.City != "Minneapolis" && res.data.Address.City != "Saint Paul"){
+					if(line.ShippingAddress.City != "Minneapolis" && line.ShippingAddress.City != "Saint Paul"){
 						DeliveryMethod = "UPS";
 						dt = undefined;
 						if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
@@ -1470,7 +1469,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				}else{
 					alert("Address not found...!");
 				}
-			//});
+			});
 		}	
 	};
 	$scope.editProduct = function(line){
@@ -1759,10 +1758,10 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 				}
 			}, true);
 			if(line.ShippingAddress){
-				BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
+				/*BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
 					line.ShippingAddress.City = res.City;
 					line.ShippingAddress.State = res.State;
-				});
+				});*/
 				var addrValidate = {
 					"addressLine1": line.ShippingAddress.Street1, 
 					"addressLine2": line.ShippingAddress.Street2,
@@ -1790,16 +1789,16 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 				}
 			}
 			if(addrValidate){
-				//BuildOrderService.addressValidation(addrValidate).then(function(res){
-					var res = {"data":{
-							"Address":{
-								"City": "Minneapolis"
-							},
-							"ResultCode":"Success"
-						}
-					};
-					if(res.data.ResultCode == "Success"){
-						if(res.data.Address.City == "Minneapolis" || res.data.Address.City == "Saint Paul"){
+				AddressValidationService.Validate(line.ShippingAddress).then(function(res){
+					if(res.ResultCode == 'Success') {
+						var validatedAddress = res.Address;
+						var zip = validatedAddress.PostalCode.substring(0, 5);
+						line.ShippingAddress.Zip = parseInt(zip);
+						line.ShippingAddress.Street1 = validatedAddress.Line1;
+						line.ShippingAddress.Street2 = null;
+						line.ShippingAddress.City = validatedAddress.City;
+						line.ShippingAddress.State = validatedAddress.Region;
+						if(line.ShippingAddress.City == "Minneapolis" || line.ShippingAddress.City == "Saint Paul"){
 							DeliveryMethod = "LocalDelivery";
 							dt = line.xp.deliveryDate;
 						}else{
@@ -1822,7 +1821,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 							DeliveryMethod = line.xp.DeliveryMethod;
 							dt = undefined;
 						}*/
-						if(res.data.Address.City != "Minneapolis" && res.data.Address.City != "Saint Paul"){
+						if(line.ShippingAddress.City != "Minneapolis" && line.ShippingAddress.City != "Saint Paul"){
 							DeliveryMethod = "UPS";
 							dt = undefined;
 							if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
@@ -1868,7 +1867,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 					}else{
 						alert("Address not found...!");
 					}
-				//});
+				});
 			}
 		//}, true);
 	};	
@@ -1892,8 +1891,8 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 		GetCrossDetails: _getCrossDetails,
 		GetProductID: _getProductID,
 		GetSpendingAccount: _getSpendingAccount,
-		addressValidation: _addressValidation,
-		getCityState: _getCityState,
+		//addressValidation: _addressValidation,
+		//getCityState: _getCityState,
 		GetPhoneNumber: _GetPhoneNumber,
 		GetDeliveryOptions: _GetDeliveryOptions,
 		GetBuyerDtls: _GetBuyerDtls,
@@ -1996,16 +1995,16 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 		return deferred.promise;
     }
 	
-	function _addressValidation(obj){
+	/*function _addressValidation(obj){
 		var deferred = $q.defer();
 		$http.defaults.headers.common['Authorization'] = 'Basic QXZhbGFyYTpDNGxjdWw0dDNUYXghIQ==';
 		$http.post('https://Four51TRIAL104401.jitterbit.net/Four51Test/v1/AvalaraValidateAddress', obj).then(function(res){
 			deferred.resolve(res);
 		});
 		return deferred.promise;
-    }
+    }*/
 	
-	function _getCityState(zip){
+	/*function _getCityState(zip){
 		var d = $q.defer();
 		$http.defaults.headers.common['Authorization'] = undefined;
 		$http.get('http://maps.googleapis.com/maps/api/geocode/json?address='+zip).then(function(res){
@@ -2024,7 +2023,7 @@ function BuildOrderService( $q, $window, OrderCloud, $http) {
 			d.resolve({"City":city, "State":state});
 		});
 		return d.promise;
-	}
+	}*/
 	
 	function _GetPhoneNumber(phn){
 		var d = $q.defer();

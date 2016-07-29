@@ -431,7 +431,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}	
 	}
 	if($stateParams.SearchType == 'Products'){
-		vm.productdata($stateParams.ID);
+		if($stateParams.ID==""){
+			console.log("********************", $scope.$parent.base.list);
+			vm.searchList=$scope.$parent.base.list;
+			vm.searchTxt=$scope.$parent.base.searchval;
+		}
+		else{
+			vm.productdata($stateParams.ID);
+		}
 	}
 	if($stateParams.prodID!=""){
 		vm.productdata($stateParams.prodID);
@@ -620,6 +627,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		})		
 		});		
 	}
+	vm.searchType=$stateParams.SearchType;
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {

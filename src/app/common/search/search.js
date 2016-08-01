@@ -245,43 +245,48 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 			$scope.index.search($scope.search.query)
 			.then(function searchSuccess(content) {
 				console.log(content);
-				// if($scope.switchSearch=='phone'){
-					// index.setSettings({
-					// attributesToIndex: ['PhoneNumber']
-					// },
-					// function(err, content) {
-					  // if(err)
-					  // {
-						// console.log("error", err);
-					  // }
-					// })
-				// }
-				// else{
-					// index.setSettings({
-					// attributesToIndex: ['Username', 'FirstName', 'LastName']
-					// },
-					// function(err, content) {
-					  // if(err)
-					  // {
-						// console.log("error", err);
-					  // }
-					// })
-				// }
-				// add content of search results to scope for display in view
-				
 				$scope.controlleras.list = content.hits;
 				console.log("dddddd", $scope.controlleras.list);
+				$scope.showProducts = function(){
+					var seqList=[];
+					var seqId=[];
+					if($scope.placeholder=="Search products"){
+						var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
+						seqId=_.union(seqId, searchedProdId);
+						console.log("seqIdseqId", seqId);
+						var ticket = localStorage.getItem("alf_ticket");
+						if(seqId.length>0){
+							BuildOrderService.GetProductImages(ticket).then(function(imagesList){
+								BuildOrderService.GetSeqProd(seqId).then(function(res){
+									seqList = _.union(seqList, res);
+									if(res.length==0){		
+										$scope.controlleras.list="";
+										$state.go('buildOrder',{SearchType:'Products'});
+									}
+									else if(res.length==seqList.length){
+										console.log("imagesList", imagesList);
+										BuildOrderService.GetProductList(seqList, imagesList.items).then(function(prodList){
+											$scope.controlleras.list=prodList;
+											console.log("$scope.controlleras.list", $scope.controlleras.list);
+											$state.go('buildOrder',{SearchType:'Products'});
+										});
+										
+									}
+								});	
+							})
+						}
+						else{
+							$scope.controlleras.list="";
+							$state.go('buildOrder',{SearchType:'Products'});
+						}
+					}
+				}
 			}, function searchFailure(err) {
 				console.log(err);
 			});
 				}, 300);
 			}
 		});
-		$scope.showProducts = function(){
-			if($scope.placeholder=="Search products"){
-				$state.go('buildOrder',{SearchType:'Products'});
-			}
-		}
 	}
 	if($scope.servicename=='Addresses'){
 		var impersonation = {

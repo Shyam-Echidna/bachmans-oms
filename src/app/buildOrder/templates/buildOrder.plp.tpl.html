@@ -46,13 +46,35 @@
 				<div class="plp-block">
 					<div ng-click="buildOrder.productdata(prod.ID)">
 						<div class="product_img">
-							<img ng-model="prodImage" ng-src= "{{prod.xp.BaseImageUrl}}"/>
+							<img ng-model="prodImage" ng-src= "{{prod.imgUrl}}"/>
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
 						</div>
 						<div class="price_lst">
 							<h5 class="Price">{{prod.Price | currency}}</h5>
+						</div>	
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- category Product List starts -->
+	<div class="home-search-list" ng-if="buildOrder.searchType == 'plp' &&  buildOrder.searchval.length == 0">
+		<h1 ng-if="buildOrderPLP.catList.length == 0">No results found for <span>"{{buildOrder.searchTxt}}"</span></h1>
+		<ul class="plp-container">
+			<li class="col-md-3" ng-repeat="prod in buildOrderPLP.catList track by $index">
+				<div class="plp-block">
+					<div ng-click="buildOrder.productdata(prod.ID)">
+						<div class="product_img">
+							<img ng-model="prodImage" ng-src= "{{prod.imgUrl}}"/>
+						</div>
+						<div class="plp-product-data">
+							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
+							<h4>Color {{prod.xp.SpecsOptions.Color}}</h4>
+						</div>
+						<div class="price_lst">
+							<h5 class="Price">{{prod.StandardPriceSchedule.PriceBreaks[0].Price | currency}}</h5>
 						</div>	
 					</div>
 				</div>

@@ -3,17 +3,17 @@
 		<span class="custom">Order Claim Summary for: </span>
 		<span class="custom-name">{{orderClaim.uname}}, Order # {{orderClaim.orderID}}</span>
 	</div>
-	<div ng-repeat="line in lineVal track by line">
+	<div ng-repeat="line in orderClaim.lineVal track by line">
 		
 	
 		<div class="adress-details">
 			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-				<span class="name">{{groups[line][0].ShippingAddress.FirstName}} {{groups[line][0].ShippingAddress.LastName}}</span><br>
+				<span class="name">{{orderClaim.groups[line][0].ShippingAddress.FirstName}} {{orderClaim.groups[line][0].ShippingAddress.LastName}}</span><br>
 				<!-- <span class="edit">Edit Recepient</span> -->
 			</div>
 			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  pull-right">
 				<div class="address"> 
-				   {{groups[line][0].ShippingAddress.Street1}} {{groups[line][0].ShippingAddress.Street2}}<br> {{groups[line][0].ShippingAddress.City}}, {{groups[line][0].ShippingAddress.State}}{{groups[line][0].ShippingAddress.City}}, {{groups[line][0].ShippingAddress.Country}} {{groups[line][0].ShippingAddress.Zip}}
+				   {{orderClaim.groups[line][0].ShippingAddress.Street1}} {{orderClaim.groups[line][0].ShippingAddress.Street2}}<br> {{orderClaim.groups[line][0].ShippingAddress.City}}, {{orderClaim.groups[line][0].ShippingAddress.State}}{{orderClaim.groups[line][0].ShippingAddress.City}}, {{orderClaim.groups[line][0].ShippingAddress.Country}} {{orderClaim.groups[line][0].ShippingAddress.Zip}}
 				</div>
 			</div>
 		</div>
@@ -31,10 +31,10 @@
 				    </tr>
 				</thead>
 				<tbody>
-				    <tr ng-repeat="orderSummary in groups[line]">
+				    <tr ng-repeat="orderSummary in orderClaim.groups[line]">
 				    	<th scope="row" class="select-module">
 				      		<div class="Checkbox">
-			                	<input type="checkbox" ng-init="orderSummary.checkclaim=false" ng-model="orderSummary.checkclaim" ng-click="orderClaim.selectorderclaims(orderSummary)">
+			                	<input type="checkbox" ng-disabled="orderSummary.selectresolution=='' || orderSummary.selectcode==''" ng-model="orderSummary.checkclaim" ng-click="orderClaim.selectorderclaims(orderSummary)">
 			                	<!-- <div class="Checkbox-visible"></div> -->
 			            	</div>
 			        	</th>

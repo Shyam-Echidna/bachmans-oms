@@ -3,7 +3,7 @@
 		<div class="buildOrder-order-summary-content">
 			<div class="order-info">
 				<h1>Order History details</h1>
-				<div ng-repeat="line in lineVal track by line"><!-- 
+				<div ng-repeat="line in buildordersummary.groups track by $index"><!-- 
 				<p>lineeeeee{{line}}</p><p>{{groups[line]}}</p>
 				<p>{{groups[line][0].ShippingAddress}}</p> -->
 				<div class="order-header  row">
@@ -15,7 +15,7 @@
 								"></path>
 							</svg>
 						</span>
-						<p  ng-show="!isEditing">{{groups[line][0].ShippingAddress.FirstName}} {{groups[line][0].ShippingAddress.LastName}}</p>
+						<p  ng-show="!isEditing">{{line[0].ShippingAddress.FirstName}} {{line[0].ShippingAddress.LastName}}</p>
 					</div>
 					<div class="col-xs-8 address">
 						<span>
@@ -28,7 +28,7 @@
 						</svg>
 						</span>
 						<p ng-show="!isEditing">
-							{{groups[line][0].ShippingAddress.Street1}}, {{groups[line][0].ShippingAddress.Street2}}, {{groups[line][0].ShippingAddress.City}}, {{groups[line][0].ShippingAddress.State}} {{groups[line][0].ShippingAddress.Country}} {{groups[line][0].ShippingAddress.Zip}}, {{groups[line][0].ShippingAddress.Phone}}
+							{{line[0].ShippingAddress.Street1}}, {{line[0].ShippingAddress.Street2}}, {{line[0].ShippingAddress.City}}, {{line[0].ShippingAddress.State}} {{line[0].ShippingAddress.Country}} {{line[0].ShippingAddress.Zip}}, {{line[0].ShippingAddress.Phone}}
 						</p>
 					</div>
 				</div>
@@ -46,7 +46,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="orderSummary in groups[line]">
+								<tr ng-repeat="orderSummary in line track by orderSummary.ID">
 									<td>
 										<span ng-show="!isProEdit">{{orderSummary.Quantity}}</span>
 										<input ng-show="isProEdit" type="number" ng-model="orderSummary.Quantity" />
@@ -794,8 +794,8 @@
 									</td>
 									<td colspan="5" class="price">
 										<div>
-											<h5>{{groups[line][0].xp.deliveryCharges | currency}}</h5>
-											<span>{{groups[line][0].xp.TotalCost | currency}}</span>
+											<h5>{{line[0].xp.deliveryCharges | currency}}</h5>
+											<span>{{line[0].xp.TotalCost | currency}}</span>
 										</div>
 
 									</td>

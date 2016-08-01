@@ -468,15 +468,15 @@
 											<h1>Add Card Message</h1>
 										</div>
 									</uib-accordion>
-									<div ng-init="buildOrderRight.visible=false">
+									<div ng-init="lineitem.visible=false">
 										<div class="no-message" ng-show="lineitem.xp.addressType && lineitem.xp.addressType!='Shipping'">
 												<div class="check-common">
-													<input type="checkbox" ng-model="buildOrderRight.visible" id="noMessage">
+													<input type="checkbox" ng-model="lineitem.visible" id="noMessage">
 													<label for="noMessage" class="check"></label>
 												</div>
 												<span>No Card Message</span>
 										</div>
-										<div class="message-lines" ng-class="{'hideItem': !buildOrderRight.visible}" ng-show="lineitem.xp.addressType && lineitem.xp.addressType!='Shipping'">
+										<div class="message-lines" ng-class="{'hideItem': !lineitem.visible}" ng-show="lineitem.xp.addressType && lineitem.xp.addressType!='Shipping'">
 											<p>Line 1</p>
 											<input type="text" ng-model="lineitem.xp.CardMessage.line1" />
 											<p>Line 2</p>

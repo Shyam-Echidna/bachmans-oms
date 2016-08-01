@@ -1032,7 +1032,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				delete vm.HighLightErrors[key];
 			}
 		}, true);
-		if(vm.visible == true)
+		if(line.visible == true)
 			delete line.xp.CardMessage;
 		line.ShippingAddress.Phone = "("+line.ShippingAddress.Phone1+") "+line.ShippingAddress.Phone2+"-"+line.ShippingAddress.Phone3;
 		line.ShippingAddress.Country = "US";

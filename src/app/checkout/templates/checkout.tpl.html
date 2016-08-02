@@ -373,27 +373,27 @@
 					<div class="payment-method">
 						<div class="payment-method-header">
 							<h1>Payment Method</h1>
-							<div class="payment-tab active-tab" ng-click="checkout.paymentOption = 'CreditCard'">Credit Card
+							<div class="payment-tab" ng-click="checkout.paymentOption = 'CreditCard'">Credit Card
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges
+							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.BachmansCharges}" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'GiftCard'">Gift Card
+							<div ng-click="checkout.paymentOption = 'GiftCard'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.GiftCardCharges}">Gift Card
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']">Purple Perks
+							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerk}">Purple Perks
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'CashCheque'">Cash/Cheque
+							<div ng-click="checkout.paymentOption = 'CashCheque'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PaidCash || checkout.orderDtls.SpendingAccounts.ChequeCharges}">Cash/Cheque
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>

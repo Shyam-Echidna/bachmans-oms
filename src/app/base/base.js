@@ -122,7 +122,7 @@ function BaseService($q, $localForage, Underscore, OrderCloud) {
         var deferred = $q.defer();
         var queue = [];
  
-        OrderCloud.Categories.List(null, 1, 100, null, null, null, null,'all').then(function(data) {
+        OrderCloud.Categories.List(null, 1, 100, null, null, null, 'all').then(function(data) {
             console.log(data);
             categories = categories.concat(data.Items);
             for (var i = 2; i <= data.Meta.TotalPages; i++) {

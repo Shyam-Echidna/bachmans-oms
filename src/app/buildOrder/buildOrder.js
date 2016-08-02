@@ -333,7 +333,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}*/
 	};
 	$scope.OrderSummary=function(){
-		var LineItems = angular.element(document.getElementById("BuildOrderRightNav")).scope().buildOrderRight;
+		/*var LineItems = angular.element(document.getElementById("BuildOrderRightNav")).scope().buildOrderRight;
 		var arr = [], arr2 = [], id, obj = {};
 		LineItems.HighLightErrors = {};
 		angular.forEach(LineItems.lineItemForm, function(val, key){
@@ -351,20 +351,21 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 				}
 			}	
 		},true);
-		if(!_.contains(arr, false) && !_.contains(arr2, false)){
-			$scope.ordersumry();
-			$scope.hideSearchBox=true;
-			$scope.showOrdersummary = true;
-			vm.showPDP = false;
-			$scope.showplp = false;
-		}
+		if(!_.contains(arr, false) && !_.contains(arr2, false)){*/
+		angular.element(document.getElementById("BuildOrderRightNav")).scope().buildOrderRight.OrderConfirmPopUp = false;
+		$scope.ordersumry();
+		$scope.hideSearchBox=true;
+		$scope.showOrdersummary = true;
+		vm.showPDP = false;
+		$scope.showplp = false;
+		//}
 	};
 	if($stateParams.orderDetails){
 		$scope.hideSearchBox=true;
 		$scope.orderDetails=true;
 	}
 	$scope.BacktoOrder = function(){
-		angular.element(document.getElementById("oms-plp-right")).scope().getLineItems();
+		angular.element(document.getElementById("oms-plp-right")).scope().buildOrderRight.getLineItems();
 		$scope.showOrdersummary = false;
 		$scope.hideSearchBox=false;
 	}
@@ -521,7 +522,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 									onInitialized: function(data){
 										console.log("====",data);
 									}
-										
 								});
 							},600);
 						}	
@@ -867,6 +867,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								dat.setHours(0, 0, 0, 0);
 								if(new Date(val.xp.deliveryDate) < dat)
 									delete val.xp.deliveryDate;
+								else
+									val.xp.deliveryDate = new Date(val.xp.deliveryDate);
 							}
 							if(val.xp.MinDate){
 								angular.forEach(val.xp.MinDate, function(val1, key1){
@@ -899,8 +901,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								});
 								val.ShippingAddress.Zip = parseInt(val.ShippingAddress.Zip);
 							}
-							if(val.xp.deliveryDate)
-								val.xp.deliveryDate = new Date(val.xp.deliveryDate);
+							//if(val.xp.deliveryDate)
+								//val.xp.deliveryDate = new Date(val.xp.deliveryDate);
 							if(!val.xp.addressType)
 								val.xp.addressType = "Residence";
 							if(val.xp.addressType=="Will Call"){

@@ -563,5 +563,5 @@
 				</div>
 			</div>
 			<p>Order Total <span>{{buildOrderRight.orderTotal | currency}}</span></p>
-			<button>PROCEED TO CHECKOUT</button>
+			<button ng-click="gotoCheckout();OrderSummary();">PROCEED TO CHECKOUT</button>
 		</modal>

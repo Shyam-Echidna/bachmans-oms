@@ -126,7 +126,7 @@ function BaseService($q, $localForage, Underscore, OrderCloud) {
             console.log(data);
             categories = categories.concat(data.Items);
             for (var i = 2; i <= data.Meta.TotalPages; i++) {
-                queue.push(OrderCloud.Categories.List(null, i, 100,  null, null, null, null, 'all'));
+                queue.push(OrderCloud.Categories.List(null, i, 100,  null, null, null, 'all'));
             }
             $q.all(queue).then(function(results) {
                 angular.forEach(results, function(result) {

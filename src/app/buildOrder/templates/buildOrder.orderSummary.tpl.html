@@ -1215,6 +1215,9 @@
 									 <div ng-if="!line[0].EditCharges" ng-repeat="(key, val) in line[0].xp.deliveryFeesDtls">
 										<h5>{{key}}  </h5><span>{{val | currency}}</span>
 									 </div>
+									 <div>
+										<h5>Total Tax  </h5><span>{{line[0].TotalTax | currency}}</span>
+									 </div>
 									 <div ng-if="line[0].EditCharges" ng-repeat="(key, val) in line[0].xp.deliveryFeesDtls">
 										<h5>{{key}}  </h5>
 										<div class="edit-input"><input type="text" value="{{val}}" ng-model="line[0].xp.deliveryFeesDtls[key]" /></div>
@@ -1226,7 +1229,6 @@
 										<h5>Subtotal</h5><span>{{line[0].TotalCost | currency}}</span>
 									 </div>
 									 </div>
-									
 									</td>
 								</tr>
 							</tfoot>

@@ -1,6 +1,8 @@
 <div class="build-order-footer" ng-show="application.headerstat" id="build-order-footer">
-	<div class="order-checkout" id="order-checkout" ng-click="gotoCheckout();OrderSummary();">
-		<button>PROCEED TO CHECKOUT</button>
+	<!-- <div class="order-checkout" id="order-checkout" ng-click="gotoCheckout();OrderSummary();"> -->
+	<div class="order-checkout" id="order-checkout">
+		<button ng-if="!showOrdersummary" ng-click="buildOrderDown.SaveAllLineItems()">SAVE &amp; PROCEED</button>
+		<button ng-if="showOrdersummary" ng-click="gotoCheckout();OrderSummary();">PROCEED TO CHECKOUT</button>
 		<div class="order-total">
 			<p>Order Total</p>
 			<span>{{orderTotal | currency}}</span>

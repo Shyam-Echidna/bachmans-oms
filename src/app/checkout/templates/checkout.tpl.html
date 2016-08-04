@@ -18,11 +18,27 @@
 					<uib-accordion close-others="checkout.oneAtATime">
 						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="checkout.delInfoRecipient[$index]">
 							<uib-accordion-heading>
-								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}} | {{line.ShippingAddress.Zip}}</h2>
+								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}}  |  {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
-							<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="!checkout.isAddrShow{{$index}}">
-								<h3>Delivery Address</h3>
-								<p ng-click="checkout.viewAddrBook($index)" class="view-addr">View Address Book +</p>
+							<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6 delivery-address" ng-show="!checkout.isAddrShow{{$index}}">
+								<!-- <h3>Delivery Address</h3>
+								<p ng-click="checkout.viewAddrBook($index)" class="view-addr">View Address Book +</p> -->
+								<div class="address-header">
+									<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6  delivery-address-header">
+										Delivery Address
+									</div>
+									<div ng-click="checkout.viewAddrBook($index)" class=" col-xs-6 col-sm-6 col-md-6 col-lg-6 view-address">
+										 View Address Book
+										 <span>
+											 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+												<g>
+													<rect x="10"  width="4" height="24" />
+													<rect y="10"  width="24" height="4" />
+												</g>
+											</svg>
+										</span>
+									</div>
+								</div>
 								<div class="check-top inline-blk">
 									<p>First Name</p>
 									<input type="text" ng-model="line.ShippingAddress.FirstName"></input>
@@ -112,7 +128,11 @@
 													<div>
 														<p>Delivery Fees</p>
 														<!-- <input type="text" ng-model="line.xp.deliveryCharges" /> -->
-														<h5 ng-repeat="(key, val) in line.xp.deliveryFeesDtls">{{key}} <b ng-if="key=='ServiceFee' && line.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b><input type="text" value="{{val}}" ng-model="line.xp.deliveryFeesDtls[key]" /></h5>
+														<div ng-repeat="(key, val) in line.xp.deliveryFeesDtls" class="delivery-handling">
+															<h5>{{key}} <b ng-if="key=='ServiceFee' && line.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b></h5>
+															<input type="text" value="{{val}}" ng-model="line.xp.deliveryFeesDtls[key]" />
+														</div>
+														
 													</div>
 													<div>
 														<p>Reason For Adjustment</p>
@@ -121,21 +141,22 @@
 													</div>
 												</div>
 											</script>
-										<ul>
-										   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:checkout.data{{$index}} == 'dt{{$index}}'}">
-												<p>Deliver Today</p>
-												<p>{{dt | date:'longDate'}}</p>
-												<span>Available</span>
+										<ul class="delivery-days-info">
+										   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:checkout.data{{$index}} == 'dt{{$index}}'}" class="delivery-days1">
+												<p class="delivery-header">Deliver Today</p>
+												<p class="delivery-day">{{dt | date:'longDate'}}</p>
+												<span class="delivery-day">Available</span>
 										   </li>
-										   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:checkout.data{{$index}} == 'tom{{$index}}'}">
-												<p>Deliver Tomorrow</p>
-												<p>{{tom | date:'longDate'}}</p>
-												<span>Available</span>
+										   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:checkout.data{{$index}} == 'tom{{$index}}'}" class="delivery-days2">
+												<p class="delivery-header">Deliver Tomorrow</p>
+												<p class="delivery-day">{{tom | date:'longDate'}}</p>
+												<span class="delivery-day">Available</span>
 										   </li>
-										   <li ng-class="{active:checkout.data{{$index}} == 'selDate{{$index}}'}">
-												<p>Select Date</p>
-												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />
-												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="checkout.dateSelect()" />
+										   <li ng-class="{active:checkout.data{{$index}} == 'selDate{{$index}}'}" class="select-date-info">
+												<p class="select-date">Select Date</p>
+												<div class="date">
+												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />/
+												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="checkout.dateSelect()" />/
 												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
 												<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="checkout.initDate" init-date="checkout.initDate">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -154,26 +175,27 @@
 													</g>
 													</svg>
 												</button>
+												</div>
 											</li>
 										</ul>
 										<p class="delivery-date">Delivery Preference</p>
-										<ul>
-											<li ng-click="line.xp.deliveryRun='Run1'" ng-class="{active:line.xp.deliveryRun=='Run1'}">
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
+										<ul class="delivery-days-info">
+											<li ng-click="line.xp.deliveryRun='Run1'" ng-class="{active:line.xp.deliveryRun=='Run1'}" class="preference">
+												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
+												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
 											</li>
-											<li ng-click="line.xp.deliveryRun='Run2'" ng-class="{active:line.xp.deliveryRun=='Run2'}">
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
+											<li ng-click="line.xp.deliveryRun='Run2'" ng-class="{active:line.xp.deliveryRun=='Run2'}" class="preference">
+												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
+												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
 											</li>
-											<li ng-click="line.xp.deliveryRun='Run3'" ng-class="{active:line.xp.deliveryRun=='Run3'}">
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
+											<li ng-click="line.xp.deliveryRun='Run3'" ng-class="{active:line.xp.deliveryRun=='Run3'}" class="preference">
+												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
+												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
 											</li>
-											<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}">
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
-												<p>{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
-												<p>${{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
+											<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}" class="preference">
+												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
+												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
+												<p class="delivery-day">${{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
 											</li>
 										</ul>
 									</div>
@@ -193,7 +215,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="saved-addr col-sm-6 col-xs-6 col-lg-6 col-md-6" ng-show="checkout.isAddrShow{{$index}}">
+							<div class="saved-addr col-sm-5 col-xs-5 col-lg-5 col-md-5vi" ng-show="checkout.isAddrShow{{$index}}">
 									<h3>Saved Delivery Address</h3>
 								<uib-accordion close-others="checkout.oneAtATime">
 									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: limit" is-open="addr.isAddrOpen" ng-click="checkout.selectedAddr(line,addr)">
@@ -237,7 +259,7 @@
 												</div>
 												<p class="check-top">Address1</p>
 												<input type="text" ng-model="addr.Street1" />
-												<p class="check-top">address2</p>
+												<p class="check-top">Address2</p>
 												<input type="text" ng-model="addr.Street2" />
 												<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -254,7 +276,7 @@
 													</div>
 												</div>
 												<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 														<p>Phone Number</p>
 														<div>
 															<input type="number" ng-model="addr.Phone1" placeholder="Area Code" />
@@ -272,8 +294,22 @@
 									</uib-accordion-group>
 								</uib-accordion>
 								<div class="more-link">
-									<p ng-click="checkout.viewMore()">View More+ </p>
-									<p ng-click="checkout.newAddress($index)">Add a New Address+</p>
+									<p ng-click="checkout.viewMore()">View More<span>
+										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+											<g>
+												<rect x="10"  width="4" height="24" />
+												<rect y="10"  width="24" height="4" />
+											</g>
+										</svg>
+									</span></p>
+									<p ng-click="checkout.newAddress($index)">Add a New Address<span>
+										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+											<g>
+												<rect x="10"  width="4" height="24" />
+												<rect y="10"  width="24" height="4" />
+											</g>
+										</svg>
+									</span></p>
 								</div>
 								<!-- Add a new address -->
 								<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="showNewAddress{{$index}}">
@@ -300,7 +336,7 @@
 									</div>
 									<p class="check-top">Address1</p>
 									<input type="text" ng-model="addr.Street1" />
-									<p class="check-top">address2</p>
+									<p class="check-top">Address2</p>
 									<input type="text" ng-model="addr.Street2" />
 									<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -317,7 +353,7 @@
 										</div>
 									</div>
 									<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p>Phone Number</p>
 											<div>
 												<input type="number" ng-model="addr.Phone1" placeholder="Area Code" />
@@ -333,15 +369,15 @@
 							</div>
 							<div class="delivery-instructions col-lg-6 col-md-6">
 								<h3>Delivery Instructions</h3>
-								<p class="check-top">Delivery Instructions:</p>
+								<p>Delivery Instructions:</p>
 								<textarea rows="3" ng-model="line.xp.deliveryNote"></textarea>
 								<div ng-init="cardMsg=false">
 									<div class="no-msg">
-										<span>Card Message:</span>
+										<span>Card Message</span>
 										<!-- <input type="checkbox" name="cardmessage" ng-model="cardMsg"></input> -->
-										<div class="check-common">
-											<input type="checkbox" name="cardmessage" ng-model="cardMsg" id="noMessage">
-											<label for="noMessage" class="check"></label>
+										<div class="check-common msg">
+											<input type="checkbox" name="cardmessage" ng-model="cardMsg" id="noMessage{{$index}}">
+											<label for="noMessage{{$index}}" class="check"></label>
 										</div>
 										<span>No Message</span>
 									</div>
@@ -360,7 +396,10 @@
 									<b>instruction :</b>
 								</div>
 							</div>
-							<input type="button" ng-value="checkout.deliveryInfo.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(line,$index)" />
+							<div class="col-lg-6 col-md-6">
+								<input type="button" ng-value="checkout.deliveryInfo.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(line,$index)" />
+							</div>
+							
 						</uib-accordion-group>
 					</uib-accordion>
 					

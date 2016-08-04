@@ -122,7 +122,7 @@ function BaseService($q, $localForage, Underscore, OrderCloud) {
         var deferred = $q.defer();
         var queue = [];
  
-        OrderCloud.Categories.List(null, 1, 100, null, null, null, 'all').then(function(data) {
+        OrderCloud.Categories.List(null, 1, 100, null, null, null,'all').then(function(data) {
             console.log(data);
             categories = categories.concat(data.Items);
             for (var i = 2; i <= data.Meta.TotalPages; i++) {
@@ -200,8 +200,8 @@ function BaseController($sce, CurrentUser, defaultErrorMessageResolver, ProductL
     };
 	$scope.switchSearch = 'customer';
     $scope.selectChange = function (confirmed) {
+		$scope.base.list="";
         $scope.switchSearch = confirmed;
-        // $scope.search.query = "";
         console.log("qqueryyyyy", $scope.search.query);
     };
 }

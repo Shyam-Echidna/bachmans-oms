@@ -64,6 +64,7 @@ function HomeConfig( $stateProvider ) {
 
 function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList) {
 	var vm = this;
+	OrderCloud.Auth.RemoveImpersonationToken();
 	vm.eventList=EventList;
 	console.log("dataaaaaaaaaa", vm.eventList);
 	var log = [];

@@ -245,35 +245,48 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 			$scope.index.search($scope.search.query)
 			.then(function searchSuccess(content) {
 				console.log(content);
-				$scope.controlleras.list = content.hits;
+				$scope.SearchResults= function(seqId){
+					var ticket = localStorage.getItem("alf_ticket");
+					BuildOrderService.GetProductImages(ticket).then(function(imagesList){
+						BuildOrderService.GetSeqProd(seqId).then(function(res){
+							// seqList = _.union(seqList, res);
+							if(res.length==0){		
+								$scope.controlleras.list="";
+								$state.go('buildOrder',{SearchType:'Products'});
+							}
+							else {
+								console.log("imagesList", imagesList);
+								BuildOrderService.GetProductList(res, imagesList.items).then(function(prodList){
+									$scope.controlleras.list=prodList;
+									console.log("$scope.controlleras.list", $scope.controlleras.list);
+									if($scope.placeholder=="Search products"){
+										$state.go('buildOrder',{SearchType:'Products'});
+									}
+								});
+								
+							}
+						});	
+					})
+				}
+				if($scope.controlleras.searchType){
+					var seqId=[];
+					var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
+					seqId=_.union(seqId, searchedProdId);
+					$scope.SearchResults(seqId);
+				}
+				else{
+					$scope.controlleras.list = content.hits;
+				}
 				console.log("dddddd", $scope.controlleras.list);
 				$scope.showProducts = function(){
-					var seqList=[];
+					// var seqList=[];
 					var seqId=[];
 					if($scope.placeholder=="Search products"){
 						var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
 						seqId=_.union(seqId, searchedProdId);
 						console.log("seqIdseqId", seqId);
-						var ticket = localStorage.getItem("alf_ticket");
 						if(seqId.length>0){
-							BuildOrderService.GetProductImages(ticket).then(function(imagesList){
-								BuildOrderService.GetSeqProd(seqId).then(function(res){
-									seqList = _.union(seqList, res);
-									if(res.length==0){		
-										$scope.controlleras.list="";
-										$state.go('buildOrder',{SearchType:'Products'});
-									}
-									else if(res.length==seqList.length){
-										console.log("imagesList", imagesList);
-										BuildOrderService.GetProductList(seqList, imagesList.items).then(function(prodList){
-											$scope.controlleras.list=prodList;
-											console.log("$scope.controlleras.list", $scope.controlleras.list);
-											$state.go('buildOrder',{SearchType:'Products'});
-										});
-										
-									}
-								});	
-							})
+							$scope.SearchResults(seqId);
 						}
 						else{
 							$scope.controlleras.list="";

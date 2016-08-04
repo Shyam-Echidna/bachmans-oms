@@ -24,14 +24,16 @@
     <ul class="plp-container">
         <li class="col-md-3" ng-repeat="products in buildOrder.list track by $index" ng-if="buildOrder.searchval.length > 0" >
             <div class="plp-block" ng-click="buildOrder.productdata(products.ID)">
-                <div class="product_img"></div>
+                <div class="product_img">
+					<img ng-model="prodImage" ng-src= "{{products.imgUrl}}"/>
+				</div>
                 <div class="plp-product-data">
                     <h2>{{products.Name}}</h2>
                     <h3>Option Deluxe</h3>
-                    <h4>Color Red</h4>
+                    <h4>Color {{products.xp.SpecsOptions.Color}}</h4>
                 </div>
                 <div class="price_lst">
-                    <h5>{{products.Price | currency}}</h5>
+                    <h5>{{products.StandardPriceSchedule.PriceBreaks[0].Price | currency}}</h5>
                 </div>
             </div>
         </li>
@@ -50,9 +52,10 @@
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
+							<h4>Color {{prod.xp.SpecsOptions.Color}}</h4>
 						</div>
 						<div class="price_lst">
-							<h5 class="Price">{{prod.Price | currency}}</h5>
+							<h5 class="Price">{{prod.StandardPriceSchedule.PriceBreaks[0].Price | currency}}</h5>
 						</div>	
 					</div>
 				</div>

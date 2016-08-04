@@ -717,13 +717,13 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		/*else
 			line.deliveryOrStore = 1;*/
 		
-		var filt = _.filter($scope.storeNames, function(row,index){
+		var filt = _.filter(vm.storeNames, function(row,index){
 			return _.indexOf([line.xp.storeName],row.storeName) > -1;
 		});
 		if(filt.length!=0)
-			line.selected = $scope.storeNames[parseInt(filt[0].id)];
+			line.selected = vm.storeNames[parseInt(filt[0].id)];
 		else
-			line.selected = $scope.storeNames[0];
+			line.selected = vm.storeNames[0];
 		//line.addressTypeD = line.xp.addressType;
 	};
 	$scope.GetCityState = function(addr){

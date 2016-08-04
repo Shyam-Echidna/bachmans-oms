@@ -439,8 +439,8 @@
 							</div>
 						</div>
 						<!-- credit card -->
-						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CreditCard'">
-                            <div ng-repeat="card in checkout.creditCardsList">
+						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-repeat="card in checkout.creditCardsList" ng-if="checkout.paymentOption == 'CreditCard'">
+                            <div>
                                 <div class="payment-container-header">
                                     <label>
                                         <input type="radio" ng-model="checkout.selectedCard" ng-value="card"/>
@@ -629,7 +629,7 @@
 								</div>
 							</div>
 						</div>
-						<!-- <input type="button" value="Review Order" ng-click="checkout.review()" />-->
+						<input type="button" value="Review Order" ng-click="checkout.review()" />
 					</div>
 				</uib-accordion-group>
 				<uib-accordion-group is-open="checkout.status.reviewOpen">
@@ -689,16 +689,21 @@
 								</li>
 							</ul>
 						</uib-accordion-group>
+						<div class="row review-content">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<button class="place-order" ng-click="checkout.submitOrder()">Place Order</button>
+							</div>
+						</div>
 					</uib-accordion>
 				</uib-accordion-group>
 			</uib-accordion>
 
 			<!-- For Place order button section STARTS -->
-			<div class="row review-content">
+			<!-- <div class="row review-content">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <button class="place-order" ng-click="checkout.submitOrder()">Place Order</button>
                 </div>
-            </div>
+            </div> -->
 			<!-- For Place order button section ENDS -->
 		</div>
 	</div>

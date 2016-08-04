@@ -270,7 +270,7 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 				}
 				if($scope.controlleras.searchType){
 					var seqId=[];
-					var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
+					var searchedProdId=Underscore.pluck(content.hits, "ProductCode");
 					seqId=_.union(seqId, searchedProdId);
 					$scope.SearchResults(seqId);
 				}
@@ -282,7 +282,7 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 					// var seqList=[];
 					var seqId=[];
 					if($scope.placeholder=="Search products"){
-						var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
+						var searchedProdId=Underscore.pluck(content.hits, "ProductCode");
 						seqId=_.union(seqId, searchedProdId);
 						console.log("seqIdseqId", seqId);
 						if(seqId.length>0){

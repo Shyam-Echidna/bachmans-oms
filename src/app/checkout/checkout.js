@@ -188,7 +188,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		var groups = _.groupBy(data, function(obj){
 			dt = new Date(obj.xp.deliveryDate);
 			var deliverySum=0;
-			//obj.xp.deliveryDate = dt.toLocaleString(locale, { month: "long" })+" "+dt.getDate()+", "+dt.getFullYear();
 			dat = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
 			BuildOrderService.GetPhoneNumber(obj.ShippingAddress.Phone).then(function(res){
 				obj.ShippingAddress.Phone1 = res[0];
@@ -218,14 +217,12 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				deliverySum = 250;
 			}
 			orderDtls.deliveryCharges += deliverySum;
-			//orderDtls.deliveryCharges = obj.xp.deliveryCharges;
 			return obj.ShippingAddress.FirstName + ' ' + obj.ShippingAddress.LastName;
 		});
 		vm.AvoidMultipleDelryChrgs = _.uniq(vm.AvoidMultipleDelryChrgs, 'lineID');
 		vm.orderDtls.subTotal = orderDtls.subTotal;
 		vm.orderDtls.deliveryCharges = orderDtls.deliveryCharges;
 		vm.orderDtls.SpendingAccounts = {};
-		//$scope.orderDtls.Total = orderDtls.subTotal + orderDtls.deliveryCharges;
 		OrderCloud.As().Orders.Patch(vm.order.ID, {"ID": vm.order.ID, "ShippingCost": orderDtls.deliveryCharges}).then(function(res){
             vm.order = res;
         });
@@ -247,6 +244,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				line.ShippingAddress.Street2 = null;
 				line.ShippingAddress.City = validatedAddress.City;
 				line.ShippingAddress.State = validatedAddress.Region;
+				line.ShippingAddress.Country = validatedAddress.Country;
 				if (vm.delInfoRecipient[index + 1] != null) {
 					vm.delInfoRecipient[index + 1] = true;
 				} else {
@@ -256,8 +254,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				}
 				vm.lineDtlsSubmit(line);
 				vm.Grouping(vm.deliveryInfo);
-			}
-			else{
+			}else{
 				alert("Address not found...");
 			}
         });
@@ -269,7 +266,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 	vm.lineDtlsSubmit = function(line){
 		var params = {
-			"FirstName":line.ShippingAddress.FirstName,"LastName":line.ShippingAddress.LastName,"Street1":line.ShippingAddress.Street1,"Street2":line.ShippingAddress.Street2,"City":line.ShippingAddress.City,"State":line.ShippingAddress.State,"Zip":line.ShippingAddress.Zip,"Phone":line.ShippingAddress.Phone,"Country":"US"
+			"FirstName":line.ShippingAddress.FirstName,"LastName":line.ShippingAddress.LastName,"Street1":line.ShippingAddress.Street1,"Street2":line.ShippingAddress.Street2,"City":line.ShippingAddress.City,"State":line.ShippingAddress.State,"Zip":line.ShippingAddress.Zip,"Phone":line.ShippingAddress.Phone
 		};
 		var common = {}, deliverySum=0;
 		if(this.cardMsg != true && line.xp.CardMessage){
@@ -290,35 +287,22 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			line.xp.Discount = deliverySum - 250;
 			deliverySum = 250;
 		}
-		line.xp.TotalCost = deliverySum+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice));
-		//line.xp.addressType = line.addressTypeD;
+		line.xp.TotalCost = deliverySum+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))+line.Tax;
 		if(line.selectedAddrID){
-			//params = _.extend(common,{"deliveryNote":line.xp.deliveryNote,"deliveryDate":line.xp.deliveryDate,"deliveryCharges":line.xp.deliveryCharges,"addressType":line.xp.addressType,"deliveryCharges": line.xp.deliveryCharges,"TotalCost": parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))});
 			if(line.xp.deliveryChargeAdjReason == "---select---")
 				delete line.xp.deliveryChargeAdjReason;
 			OrderCloud.As().LineItems.Patch(vm.order.ID, line.ID, {"ShippingAddressID":line.selectedAddrID,"xp":line.xp}).then(function(res){
-				$scope.onLoadCheckout();
+				
 			});
 		}else{
-			/*OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, params).then(function(data){
-				params = _.extend(common,{"deliveryNote":line.xp.deliveryNote,"deliveryDate":line.xp.deliveryDate,"deliveryCharges":line.xp.deliveryCharges,"addressType":line.xp.addressType,"deliveryCharges": line.xp.deliveryCharges,"TotalCost": parseFloat(line.xp.deliveryCharges)+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))});
-				if(line.xp.deliveryChargeAdjReason != "---select---")
-					params.deliveryChargeAdjReason = line.xp.deliveryChargeAdjReason;
-				OrderCloud.As().LineItems.Patch(vm.order.ID, line.ID, {"xp":params}).then(function(res){
-					$scope.onLoadCheckout();
-				});
-			});*/
 			line.ShipFromAddressID = 'testShipFrom';
 			OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(dat){
 				OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(data){
 					if(line.xp.Status){
 						OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}}).then(function(res){
-							console.log("Order Status OnHold Updated.......");
-							$scope.onLoadCheckout();
 							alert("Data submitted successfully");
 						});
 					}else{
-						$scope.onLoadCheckout();
 						alert("Data submitted successfully");
 					}
 				});
@@ -351,7 +335,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 	vm.reviewAddress = function(){
 		$scope.usercard = {};
-		//console.log("$scope.seluser", $scope.seluser);
 		OrderCloud.CreditCards.ListAssignments(null, $scope.seluser).then(function(assign){
 			OrderCloud.CreditCards.Get(assign.Items[0].CreditCardID).then(function(data){
 				$scope.usercard = data;
@@ -361,92 +344,76 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.UpdateAddress = function(addr, index){
 		var $this = this;
 		addr.Phone = "("+addr.Phone1+") "+addr.Phone2+"-"+addr.Phone3;
-		var addrValidate = {
-			"addressLine1": addr.Street1, 
-			"addressLine2": addr.Street2,
-			"zipcode": addr.Zip, 
-			"country": "US"
-		};
-		if(addrValidate){
-			AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-				if(response.ResultCode == 'Success') {
-					var validatedAddress = response.Address;
-					var zip = validatedAddress.PostalCode.substring(0, 5);
-					addr.Zip = parseInt(zip);
-					addr.Street1 = validatedAddress.Line1;
-					addr.Street2 = null;
-					addr.City = validatedAddress.City;
-					addr.State = validatedAddress.Region;
-					OrderCloud.Addresses.Update(addr.ID,addr).then(function(res){
-						var params = {"AddressID": res.ID,"UserID": vm.order.FromUserID,"IsBilling": false,"IsShipping": true};
-						OrderCloud.Addresses.SaveAssignment(params).then(function(data){
-							$scope.addressesList = _.map($scope.addressesList, function(obj){
-								if(obj.ID == addr.ID) {
-									obj.FirstName = res.FirstName;
-									obj.LastName = res.LastName;
-									obj.Street1 = res.Street1;
-									obj.Street2 = res.Street2;
-									obj.City = res.City;
-									obj.State = res.State;
-									obj.Zip = parseInt(res.Zip);
-									BuildOrderService.GetPhoneNumber(res.Phone).then(function(res){
-										obj.Phone1 = res[0];
-										obj.Phone2 = res[1];
-										obj.Phone3 = res[2];
-									});
-								}
-								return obj;
-							});
-							vm['isDeliAddrShow'+index] = false;
+		AddressValidationService.Validate(line.ShippingAddress).then(function(response){
+			if(response.ResultCode == 'Success') {
+				var validatedAddress = response.Address;
+				var zip = validatedAddress.PostalCode.substring(0, 5);
+				addr.Zip = parseInt(zip);
+				addr.Street1 = validatedAddress.Line1;
+				addr.Street2 = null;
+				addr.City = validatedAddress.City;
+				addr.State = validatedAddress.Region;
+				addr.Country = validatedAddress.Country;
+				OrderCloud.Addresses.Update(addr.ID,addr).then(function(res){
+					var params = {"AddressID": res.ID,"UserID": vm.order.FromUserID,"IsBilling": false,"IsShipping": true};
+					OrderCloud.Addresses.SaveAssignment(params).then(function(data){
+						$scope.addressesList = _.map($scope.addressesList, function(obj){
+							if(obj.ID == addr.ID) {
+								obj.FirstName = res.FirstName;
+								obj.LastName = res.LastName;
+								obj.Street1 = res.Street1;
+								obj.Street2 = res.Street2;
+								obj.City = res.City;
+								obj.State = res.State;
+								obj.Zip = parseInt(res.Zip);
+								BuildOrderService.GetPhoneNumber(res.Phone).then(function(res){
+									obj.Phone1 = res[0];
+									obj.Phone2 = res[1];
+									obj.Phone3 = res[2];
+								});
+							}
+							return obj;
 						});
+						vm['isDeliAddrShow'+index] = false;
 					});
-				}else{
-					alert("Address Not Found........");
-				}
-			});
-		}
+				});
+			}else{
+				alert("Address Not Found........");
+			}
+		});
 	};
 	vm.CreateAddress = function(line, index){
-		var $this = this, params, addrValidate;
-		//var params = {"FirstName":line.FirstName,"LastName":line.LastName,"Street1":line.Street1,"Street2":line.Street2,"City":line.City,"State":line.State,"Zip":line.Zip,"Phone":"("+line.Phone1+") "+line.Phone2+"-"+line.Phone3,"Country":"US"};
+		var $this = this, params;
 		line.Phone = "("+line.Phone1+") "+line.Phone2+"-"+line.Phone3;
-		line.Country = "US";
-		addrValidate = {
-			"addressLine1": line.Street1, 
-			"addressLine2": line.Street2,
-			"zipcode": line.Zip, 
-			"country": "US"
-		};
-		if(addrValidate){
-			AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-				if(response.ResultCode == 'Success'){
-					var validatedAddress = response.Address;
-					var zip = validatedAddress.PostalCode.substring(0, 5);
-					line.Zip = parseInt(zip);
-					line.Street1 = validatedAddress.Line1;
-					line.Street2 = null;
-					line.City = validatedAddress.City;
-					line.State = validatedAddress.Region;
-					OrderCloud.Addresses.Create(line).then(function(data){
-						data.Zip = parseInt(data.Zip);
-						BuildOrderService.GetPhoneNumber(data.Phone).then(function(res){
-							data.Phone1 = res[0];
-							data.Phone2 = res[1];
-							data.Phone3 = res[2];
-						});
-						$scope.addressesList.push(data);
-						$this.limit = $scope.addressesList.length;
-						params = {"AddressID": data.ID, "UserID": vm.order.FromUserID, "IsBilling": false, "IsShipping": true};
-						OrderCloud.Addresses.SaveAssignment(params).then(function(res){
-							console.log("Address saved for the user....!" +res);
-						});
-						$this['showNewAddress'+index] = false;
+		AddressValidationService.Validate(line.ShippingAddress).then(function(response){
+			if(response.ResultCode == 'Success'){
+				var validatedAddress = response.Address;
+				var zip = validatedAddress.PostalCode.substring(0, 5);
+				line.Zip = parseInt(zip);
+				line.Street1 = validatedAddress.Line1;
+				line.Street2 = null;
+				line.City = validatedAddress.City;
+				line.State = validatedAddress.Region;
+				line.Country = validatedAddress.Country;
+				OrderCloud.Addresses.Create(line).then(function(data){
+					data.Zip = parseInt(data.Zip);
+					BuildOrderService.GetPhoneNumber(data.Phone).then(function(res){
+						data.Phone1 = res[0];
+						data.Phone2 = res[1];
+						data.Phone3 = res[2];
 					});
-				}else{
-					alert("Address Not Found........");
-				}
-			});
-		}
+					$scope.addressesList.push(data);
+					$this.limit = $scope.addressesList.length;
+					params = {"AddressID": data.ID, "UserID": vm.order.FromUserID, "IsBilling": false, "IsShipping": true};
+					OrderCloud.Addresses.SaveAssignment(params).then(function(res){
+						
+					});
+					$this['showNewAddress'+index] = false;
+				});
+			}else{
+				alert("Address Not Found........");
+			}
+		});
 	};
 	vm.viewMore = function(){
 		this.limit = $scope.addressesList.length;
@@ -468,10 +435,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 		if(line){
-			/*if(line.deliveryOrStore==2){
-				line.xp.addressType = "Will Call";
-				line.xp.addressType = "Will Call";
-			}*/
 			if(line.xp.addressType == "Will Call" && line.willSearch){
 				vm.getDeliveryCharges(line);
 			}
@@ -484,10 +447,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		});
 		if(line.ShippingAddress == null)
 			line.ShippingAddress = {};
-		//store.ShippingAddress.FirstName = filt[0].storeName;
-		//store.ShippingAddress.LastName = filt[0].storeName;
 		line.ShippingAddress.Street1 = filt[0].storeAddress;
-		//store.ShippingAddress.Street2 = filt[0].Street2;
 		line.ShippingAddress.City = filt[0].city;
 		line.ShippingAddress.State = filt[0].state;
 		line.ShippingAddress.Zip = parseInt(filt[0].zipCode);
@@ -499,25 +459,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		vm.getDeliveryCharges(line);
 	};
 	vm.changeAddrType = function(line){
-		//line.xp.addressType = line.addressTypeD;
-		/*if(line.xp.addressType != "Will Call"){
-			line.deliveryOrStore = 1;
-		}else{
-			line.deliveryOrStore = 2;
-		}*/
 		vm.getDeliveryCharges(line);
-		/*if(addressType == "Hospital" && !vm.HospitalNames){
-			vm.GetAllList("Hospitals");
-		}
-		if(addressType == "Funeral" && !vm.FuneralNames){
-			vm.GetAllList("FuneralHome");
-		}
-		if(addressType == "Church" && !vm.ChurchNames){
-			vm.GetAllList("Church");
-		}
-		if(addressType == "School" && !vm.SchoolNames){
-			vm.GetAllList("School");
-		}*/
 	}
 	vm.getDeliveryCharges = function(line){
 		vm.NoDeliveryFees = false;
@@ -530,18 +472,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				vm.NoDeliveryFees = true;
 			}
 		}, true);
-		if(line.ShippingAddress){
-			/*BuildOrderService.getCityState(line.ShippingAddress.Zip).then(function(res){
-				line.ShippingAddress.City = res.City;
-				line.ShippingAddress.State = res.State;
-			});*/
-			var addrValidate = {
-				"addressLine1": line.ShippingAddress.Street1, 
-				"addressLine2": line.ShippingAddress.Street2,
-				"zipcode": line.ShippingAddress.Zip, 
-				"country": "US"
-			};
-		}
 		var deliverySum = 0, DeliveryMethod, dt;
 		angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 			deliverySum += parseFloat(val);
@@ -561,77 +491,72 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				DeliveryMethod = "DirectShip";
 			}
 		}
-		if(addrValidate){
-			 AddressValidationService.Validate(line.ShippingAddress).then(function(res){
-				if(res.ResultCode == 'Success') {
-					var validatedAddress = res.Address;
-					var zip = validatedAddress.PostalCode.substring(0, 5);
-					line.ShippingAddress.Zip = parseInt(zip);
-					line.ShippingAddress.Street1 = validatedAddress.Line1;
-					line.ShippingAddress.Street2 = null;
-					line.ShippingAddress.City = validatedAddress.City;
-					line.ShippingAddress.State = validatedAddress.Region;
-					if(line.ShippingAddress.City == "Minneapolis" || line.ShippingAddress.City == "Saint Paul"){
-						DeliveryMethod = "LocalDelivery";
-						dt = line.xp.deliveryDate;
-					}else{
-						DeliveryMethod = "UPS";
-						dt = undefined;
-						if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
-							console.log("Don't delete deliveryFeesDtls");
-						else
-							delete line.xp.deliveryFeesDtls;
-					}
-					if(line.xp.DeliveryMethod == "DirectShip" && DeliveryMethod != "UPS"){
-						DeliveryMethod = "DirectShip";
-						dt = line.xp.deliveryDate;
-					}
-					if(line.xp.DeliveryMethod == "Mixed"){
-						DeliveryMethod = "Mixed";
-						dt = line.xp.deliveryDate;
-					}
-					/*if(line.xp.deliveryFeesDtls && (res.data.Address.City != "Minneapolis" || res.data.Address.City != "Saint Paul")){
-						DeliveryMethod = line.xp.DeliveryMethod;
-						dt = undefined;
-					}*/
-					if(line.ShippingAddress.City != "Minneapolis" && line.ShippingAddress.City != "Saint Paul"){
-						DeliveryMethod = "UPS";
-						dt = undefined;
-						if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
-							console.log("Don't delete deliveryFeesDtls");
-						else
-							delete line.xp.deliveryFeesDtls;
-					}
-					if(line.xp.DeliveryMethod == "Courier"){
-						DeliveryMethod = "Courier";
-						dt = line.xp.deliveryDate;
-					}
-					if(line.xp.DeliveryMethod == "USPS"){
-						DeliveryMethod = "USPS";
-						dt = line.xp.deliveryDate;
-					}
-					if(line.xp.addressType == "Will Call"){
-						DeliveryMethod = "InStorePickUp";
-						dt = undefined;
-						delete line.xp.deliveryFeesDtls;
-					}
-					if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed" ){
-						alert("Faster Delivery Is Only Local Delivery...!");
-					}else{
-						vm.GetDeliveryChrgs(line, DeliveryMethod, dt).then(function(){
-							console.log("linedata", line);
-							if(vm.NoDeliveryFees == true){
-								delete line.xp.deliveryFeesDtls;
-								line.xp.deliveryCharges = 0;
-								line.xp.TotalCost = parseFloat(line.Quantity)*parseFloat(line.UnitPrice);
-							}
-						});
-					}
+		 AddressValidationService.Validate(line.ShippingAddress).then(function(res){
+			if(res.ResultCode == 'Success') {
+				var validatedAddress = res.Address;
+				var zip = validatedAddress.PostalCode.substring(0, 5);
+				line.ShippingAddress.Zip = parseInt(zip);
+				line.ShippingAddress.Street1 = validatedAddress.Line1;
+				line.ShippingAddress.Street2 = null;
+				line.ShippingAddress.City = validatedAddress.City;
+				line.ShippingAddress.State = validatedAddress.Region;
+				line.ShippingAddress.Country = validatedAddress.Country;
+				if(line.ShippingAddress.City == "Minneapolis" || line.ShippingAddress.City == "Saint Paul"){
+					DeliveryMethod = "LocalDelivery";
+					dt = line.xp.deliveryDate;
 				}else{
-					alert("Address not found...!");
+					DeliveryMethod = "UPS";
+					dt = undefined;
+					if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
+						console.log("Don't delete deliveryFeesDtls");
+					else
+						delete line.xp.deliveryFeesDtls;
 				}
-			});
-		}
+				if(line.xp.DeliveryMethod == "DirectShip" && DeliveryMethod != "UPS"){
+					DeliveryMethod = "DirectShip";
+					dt = line.xp.deliveryDate;
+				}
+				if(line.xp.DeliveryMethod == "Mixed"){
+					DeliveryMethod = "Mixed";
+					dt = line.xp.deliveryDate;
+				}
+				if(line.ShippingAddress.City != "Minneapolis" && line.ShippingAddress.City != "Saint Paul"){
+					DeliveryMethod = "UPS";
+					dt = undefined;
+					if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed")
+						console.log("Don't delete deliveryFeesDtls");
+					else
+						delete line.xp.deliveryFeesDtls;
+				}
+				if(line.xp.DeliveryMethod == "Courier"){
+					DeliveryMethod = "Courier";
+					dt = line.xp.deliveryDate;
+				}
+				if(line.xp.DeliveryMethod == "USPS"){
+					DeliveryMethod = "USPS";
+					dt = line.xp.deliveryDate;
+				}
+				if(line.xp.addressType == "Will Call"){
+					DeliveryMethod = "InStorePickUp";
+					dt = undefined;
+					delete line.xp.deliveryFeesDtls;
+				}
+				if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed" ){
+					alert("Faster Delivery Is Only Local Delivery...!");
+				}else{
+					vm.GetDeliveryChrgs(line, DeliveryMethod, dt).then(function(){
+						console.log("linedata", line);
+						if(vm.NoDeliveryFees == true){
+							delete line.xp.deliveryFeesDtls;
+							line.xp.deliveryCharges = 0;
+							line.xp.TotalCost = parseFloat(line.Quantity)*parseFloat(line.UnitPrice);
+						}
+					});
+				}
+			}else{
+				alert("Address not found...!");
+			}
+		});
 	};
 	vm.GetDeliveryChrgs = function(line, DeliveryMethod, dt){
 		var d = $q.defer();
@@ -677,9 +602,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.selectedAddr = function(line,addr){
 		if(addr.isAddrOpen){
 			line.selectedAddrID = addr.ID;
-			//var del = _.findWhere(vm.buyerDtls.xp.ZipCodes, {zip: addr.Zip.toString()});
-			//line.xp.deliveryCharges = del.DeliveryCharge;
-			//line.xp.TotalCost = parseFloat(line.xp.deliveryCharges) + (parseFloat(line.Quantity) * parseFloat(line.UnitPrice));
 			line.xp.deliveryChargeAdjReason = vm.buyerDtls.xp.deliveryChargeAdjReasons[0];
 		}
 		else
@@ -699,7 +621,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.toggle = function(line,index){
 		vm.opened = true;
 		$scope.datePickerLine = line;
-		//$scope.datePickerLine.vmData = vmData;
 		$scope.datePickerLine.index = index;
 	};
 	$scope.datePicker = {date:null};
@@ -734,9 +655,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 	$scope.saveForLater = function(note){
 		OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(res){
-			/*var filt = _.filter(res.Items, function(row){
-				return _.indexOf([vm.order.FromUserID],row.FromUserID) > -1;
-			});*/
 			angular.forEach(res.Items,function(val, key){
 				if(val.FromUserID == vm.order.FromUserID && val.ID == vm.order.ID){
 					OrderCloud.As().Orders.Patch(vm.order.ID,{"xp":{"SavedOrder":{"Name":note,"Flag":true}}}).then(function(res1){
@@ -790,14 +708,11 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		//line.addressTypeD = line.xp.addressType;
 	};
 	$scope.GetCityState = function(addr){
-		/*BuildOrderService.getCityState(addr.Zip).then(function(res){
-			addr.City = res.City;
-			addr.State = res.State;
-		});*/
 		AddressValidationService.Validate(addr).then(function(res){
 			if(res.ResultCode == 'Success') {
 				addr.City = res.Address.City;
 				addr.State = res.Address.Region;
+				addr.Country = res.Address.Country;
 			}
 		});
 	}
@@ -807,7 +722,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				OrderCloud.Coupons.Get(res.Items[0].CouponID).then(function(res1){
 					BuildOrderService.CompareDate().then(function(dt){
 						if(new Date(res1.StartDate) <= new Date(dt) && new Date(res1.ExpirationDate) >= new Date(dt)){
-							//orderDtls.Total = orderDtls.Total - res1.UsagesRemaining;
 							orderDtls.SpendingAccounts.CouponCharges = res1.UsagesRemaining;
 							vm.SumSpendingAccChrgs(orderDtls);
 						}else{
@@ -845,10 +759,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.ApplySpendingAccCharges = function(obj, model, customCharges, orderDtls, type){
 		var dat;
 		if(model != 'Full'){
-			//orderDtls.Total = orderDtls.Total - customCharges;
 			dat = customCharges;
 		}else{
-			//orderDtls.Total = orderDtls.Total - obj.Balance;
 			dat = obj.Balance;
 		}
 		if(type=="Bachman Charges")

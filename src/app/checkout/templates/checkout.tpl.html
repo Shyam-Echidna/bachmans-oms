@@ -423,41 +423,40 @@
 						</div>
 						<!-- Add/pay new card-->
 						<div class="add-card-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CreditCard'">
-                            <div ng-repeat="card in checkout.creditCardsList">
+                            <div>
                                 <div class="add-card-header">
                                     <label>
-                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card"/>
+                                        <input type="radio" ng-model="checkout.selectedCard" value="createcreditcard" />
                                         <span>+ Add/Pay with a new card</span>
-                                       
                                     </label>
                                 </div>
-                                <div class="add-card-method-container row" ng-if="card === checkout.selectedCard">
+                                <div class="add-card-method-container row" ng-if="checkout.selectedCard === 'createcreditcard'">
                                     <div class="col-xs-12 card-info-cont">
 	                                    <form class="input-card-form" role="form" novalidate>
 	                                        <div class="col-xs-12 form-group holder-name p0">
 	                                            <label for="cardholderName">Cardholder's Name</label>
-	                                            <input type="text" class="form-control" id="cardholderName" placeholder="Name" />
+	                                            <input type="text" class="form-control" id="cardholderName" placeholder="Name" ng-model="checkout.card.CardholderName" />
 	                                        </div>
 	                                        <div class="col-xs-12 form-group card-number p0">
 	                                            <label for="cardNumber">Card Number</label>
-	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" />
+	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" ng-model="checkout.card.CardNumber" />
 	                                        </div>
 	                                        <div class="col-xs-6 form-group exp-date p0">
 	                                            <label for="expDate">Expiration Date</label>
-	                                            <select class="form-control" id="month" placeholder="MM">
-	                                                <option>MM</option>
-	                                                <option>MM</option>
-	                                                <option>MM</option>
+	                                            <select class="form-control" id="month" placeholder="MM" ng-model="checkout.card.ExpMonth">
+	                                                <option>01</option>
+	                                                <option>02</option>
+	                                                <option>03</option>
 	                                            </select>
-	                                            <select class="form-control" id="year" placeholder="YY">
-	                                                <option>YY</option>
-	                                                <option>YY</option>
-	                                                <option>YY</option>
+	                                            <select class="form-control" id="year" placeholder="YY" ng-model="checkout.card.ExpYear">
+	                                                <option>16</option>
+	                                                <option>17</option>
+	                                                <option>18</option>
 	                                            </select>
 	                                        </div>
 	                                        <div class="col-xs-6 form-group cvv-number">
 	                                            <label for="cvvNumber">CVV</label>
-	                                            <input type="text" class="form-control" id="cvvNumber" />
+	                                            <input type="text" class="form-control" id="cvvNumber" ng-model="checkout.card.CVV" />
 	                                            <span class="cvv-help">
 	                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	                                                 viewBox="-652.2 494.3 18.7 18.7" style="enable-background:new -652.2 494.3 18.7 18.7;" xml:space="preserve">
@@ -478,9 +477,12 @@
 	                                                </svg>
 	                                            </span>
 	                                        </div>
+											<div class="col-xs-12 p0 form-group card-remember">
+	                                           <span ng-if="checkout.ErrorMessage.resultCode=='Error'">{{checkout.ErrorMessage.message[0].text}}</span>
+	                                        </div>
 	                                        <div class="col-xs-12 p0 form-group card-remember">
 	                                            <div class="check-common">
-	                                                <input type="checkbox" id="save">
+	                                                <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card)">
 	                                                <label for="save" class="check"></label>
 	                                            </div>
 	                                           <span>Save this card for future payments</span>

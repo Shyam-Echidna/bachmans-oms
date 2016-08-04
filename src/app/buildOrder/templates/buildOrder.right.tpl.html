@@ -1,4 +1,4 @@
-		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary">
+		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="buildOrderRight.myPromise">
             <h1>ACTIVE ORDER</h1>
 			<div ng-repeat="line in lineItemProducts track by line">
 				<div class="pdt_name">

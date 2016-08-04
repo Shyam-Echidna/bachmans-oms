@@ -504,22 +504,18 @@
 		                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		                                         	<div uib-dropdown class="form-control " id="expmonth">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
-								                     <p class="sort-active-show">MM</p></div>
+								                     <p class="sort-active-show" ng-init="checkout.card.ExpMonth = 'MM'">{{checkout.card.ExpMonth}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
-								                        <li><a href="">MM</a></li>
-								                        <li><a href="">MM</a></li>
-								                        <li><a href="">MM</a></li>
+								                        <li ng-repeat="month in ['01 (Jan)','02 (Feb)','03 (Mar)','04 (Apr)','05 (May)','06 (Jun)','07 (Jul)','08 (Aug)','09 (Sep)','10 (Oct)','11 (Nov)','12 (Dec)']" ng-click="checkout.card.ExpMonth=month"><a href="">{{month}}</a></li>
 								                     </ul>
 								                    </div>
 		                                         </div>
 		                                       	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		                                       		 <div uib-dropdown class="form-control " id="expyear">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
-								                     <p class="sort-active-show">YY</p></div>
+								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YY'">{{checkout.card.ExpYear}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
-								                        <li><a href="">YY</a></li>
-								                        <li><a href="">YY</a></li>
-								                        <li><a href="">YY</a></li>
+								                        <li ng-repeat="year in checkout.CardExpYears" ng-click="checkout.card.ExpYear=year"><a href="">{{year}}</a></li>
 								                     </ul>
 								                    </div>
 		                                       	</div>

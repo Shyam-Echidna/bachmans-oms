@@ -128,6 +128,10 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.opened = false;
 	var dt = new Date();
 	$scope.dt = new Date();//today
+	vm.CardExpYears = [];
+	for(var i=0; i<11; i++){
+		vm.CardExpYears.push(dt.getFullYear()+i);
+	}
 	var today = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
 	dt = new Date();
 	$scope.tom = new Date(dt.setDate(dt.getDate() + 1));//tomorrow

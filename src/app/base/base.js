@@ -200,8 +200,8 @@ function BaseController($sce, CurrentUser, defaultErrorMessageResolver, ProductL
     };
 	$scope.switchSearch = 'customer';
     $scope.selectChange = function (confirmed) {
+		$scope.base.list="";
         $scope.switchSearch = confirmed;
-        // $scope.search.query = "";
         console.log("qqueryyyyy", $scope.search.query);
     };
 }

@@ -2,18 +2,42 @@
 	<div class="oms_main_container buildOrder-pdp-container" id="buildOrder-pdp-container">
 		<div class="buildOrder-pdp" ng-if="UpsellSimilar!=true">
 			<h1>
-			<a ng-click="gotoplp()">
-				<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-				viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
-					<style type="text/css">
-						.st0{fill:#8B8E96;}
-					</style>
-					<g>
-						<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
-					</g>
-				</svg>
-				Back to Search Results
-			</a>
+				<a ng-click="gotoplp()" ng-if="buildOrder.searchType!='Products'">
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+						<style type="text/css">
+							.st0{fill:#8B8E96;}
+						</style>
+						<g>
+							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+						</g>
+					</svg>
+					Back to Search Results
+				</a>
+				<a ng-click="gotoplp()" ng-if="buildOrder.searchType=='Products' && buildOrder.id==''" >
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+						<style type="text/css">
+							.st0{fill:#8B8E96;}
+						</style>
+						<g>
+							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+						</g>
+					</svg>
+					Back to Search Results
+				</a>
+				<a ng-click="buildOrder.gotoSearchPlp(6374)" ng-if="buildOrder.searchType=='Products' && buildOrder.id!=''" >
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+						<style type="text/css">
+							.st0{fill:#8B8E96;}
+						</style>
+						<g>
+							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+						</g>
+					</svg>
+					Back to Search Results
+				</a>
 			</h1>
 			<div class="buildOrder-pdp-content row">
 				<div class="pdp-left col-md-7 col-lg-7">

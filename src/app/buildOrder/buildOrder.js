@@ -254,21 +254,18 @@ function buildOrderConfig( $stateProvider ) {
 				return dfd.promise;
 				}
 			},
-			productImages: function(BuildOrderService){
-				var ticket = localStorage.getItem("alf_ticket");
-				return BuildOrderService.GetProductImages(ticket).then(function(res){
-					return res.items;
-				});
-            },
-			productList: function (OrderCloud, $stateParams, BuildOrderService, productImages, $q) {
+			productList: function (OrderCloud, $stateParams, BuildOrderService, $q) {
 					var dfr = $q.defer();
 					if($stateParams.SearchType == 'plp'){
 						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
 						.then(function(data) {
 							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
 							return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
-								var prodList=BuildOrderService.GetProductList(res.Items, productImages);
-								dfr.resolve(prodList);
+								var ticket = localStorage.getItem("alf_ticket");
+								BuildOrderService.GetProductImages(ticket).then(function(imgList){
+									var prodList=BuildOrderService.GetProductList(res.Items, imgList.items);
+									dfr.resolve(prodList);
+								})
 							})
 						})
 					}
@@ -652,6 +649,25 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		});		
 	}
 	vm.searchType=$stateParams.SearchType;
+	vm.id=$stateParams.ID;
+	vm.gotoSearchPlp=function(prodCode){
+		var ticket = localStorage.getItem("alf_ticket");
+		BuildOrderService.GetProductImages(ticket).then(function(imagesList){
+			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
+			.then(function(data) {
+				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
+					OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":prodCode}).then(function(res){
+						BuildOrderService.GetProductList(res.Items, imagesList.items).then(function(prodList){
+						vm.searchTxt=$scope.$parent.base.searchval;
+						vm.searchList=prodList;
+						vm.showPDP = false;
+						console.log("vm.searchList", vm.searchList);
+					});
+				})
+			})
+		})
+		console.log("prodCodeprodCode", prodCode);
+	}
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -1917,7 +1933,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 	}
 }
 
-function BuildOrderService( $q, $window, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore) {
+function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore) {
     var upselldata = [];
     var crossdata = [];
     var productdetail = [];
@@ -2263,13 +2279,6 @@ function BuildOrderService( $q, $window, OrderCloud, $http, alfrescoOmsUrl, alfr
 	function _getProductList(res, productImages){
 		var defferred = $q.defer();
 		var ticket = localStorage.getItem("alf_ticket");      
-		  var imgcontentArray = [];
-		  // for(var i=0;i<res.length;i++){
-			// res[i].imgUrl=Underscore.where(productImages, {title: res[i].ID})
-			// if(i=>res.length){
-				 // defferred.resolve(res);
-			// }
-		  // }
 		 var data = Underscore.filter(res, function(row){
 			var imgUrl = Underscore.where(productImages, {title: row.ID});
 			if(imgUrl.length > 0)
@@ -2281,24 +2290,31 @@ function BuildOrderService( $q, $window, OrderCloud, $http, alfrescoOmsUrl, alfr
 		   return defferred.promise;
 	}
 	function _getSeqProd(sequence) {
+		var vs=this;
 		var defferred = $q.defer();
-		var arr=[];
+		var arr=[];	
 		var count=0;
-		OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
-		.then(function(data) {
-			OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-				angular.forEach(sequence, function(seqId, key){
-					OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":seqId}).then(function(res){
-						count++;
-						console.log("ListProducts--->", res);
-						arr = _.union(arr, res.Items);
-						console.log("arrarr--->", arr);
-						if(sequence.length == count)
-						defferred.resolve(arr);
-					})
-			})	
-		})
-
+		vs.listAllProducts= function(){
+			angular.forEach(sequence, function(seqId, key){
+				OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":seqId}).then(function(res){
+					count++;
+					arr = _.union(arr, res.Items);
+					console.log("arrarr--->", arr);
+					if(sequence.length == count)
+					defferred.resolve(arr);
+				})
+			})
+		}
+		if($stateParams.SearchType != 'Products' && $stateParams.SearchType!=undefined){
+				vs.listAllProducts();
+		}
+		else{
+			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
+			.then(function(data) {
+				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
+				vs.listAllProducts();
+			})
+		}
 		return defferred.promise;
 	}
     return service;

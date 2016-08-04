@@ -12,7 +12,7 @@
 				<div uib-dropdown-menu class="browse dropdown-menu">
 					<ul role="menu" aria-labelledby="btn-append-to-body" class="col-sm-12 dropdown-menu main_cat">
 						<li ng-repeat="categories in baseTop.tree" class="sub-nav">
-							<a ui-sref="plp({ID:categories.ID,childCount:categories.ChildCount})" class="maincat_link" ng-class="{'category-arw': categories.ChildCount}" ng-mouseover="baseTop.page = 1">{{categories.Name}}</a>
+							<a class="maincat_link" ng-class="{'category-arw': categories.ChildCount}" ng-mouseover="baseTop.page = 1">{{categories.Name}}</a>
 							<ul class="menu_level_2" ng-if="categories.ChildCount">
 								<li ng-repeat="subcategories in categories.children track by $index" ng-if="((categories.ID =='c1') && ((subcategories.xp.StartDate| date:'MM/dd') < (application.cstTime| date:'MM/dd')) && ((subcategories.xp.EndDate| date:'MM/dd') > (application.cstTime| date:'MM/dd')))">
 									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>

@@ -179,6 +179,21 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
                 });
         }
     };
+	
+	vm.addCreditCard = function(card){
+		BuildOrderService.GetCardType(card.CardNumber).then(function(cardtype){
+			card.CardType = cardtype;
+			CreditCardService.Create(card).then(function(res){
+				if(res.messages.resultCode != 'Error'){
+					OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
+						vm.creditCardsList = response.Items;
+					});
+				}else{
+					vm.ErrorMessage = res.messages;
+				}	
+			});
+		});
+	};
 
 	vm.Grouping = function(data){
 		var orderDtls = {"subTotal":0,"deliveryCharges":0};

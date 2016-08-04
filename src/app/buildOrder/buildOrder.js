@@ -1001,12 +1001,12 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			delete line.xp.pickupDate;
 		}
 		line.ShipFromAddressID = "testShipFrom";
-		OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(){
-			OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(){
+		vm.myPromise=OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line).then(function(){
+			vm.myPromise=OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress).then(function(){
 				if((LineItemLists.length-1) > index){
 					vm.lineDtlsSubmit(LineItemLists, index+1);
 				}else{
-					TaxService.GetTax(vm.order.ID).then(function(res){
+					vm.myPromise=TaxService.GetTax(vm.order.ID).then(function(res){
 						var count=0;
 						angular.forEach(res.TaxLines, function(val, key){
 							var row = _.findWhere(LineItemLists, {ID: val.LineNo});
@@ -1730,7 +1730,8 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		PatchOrder: _PatchOrder,
 		GetProductImages: _getProductImages,
 		GetProductList:_getProductList,
-		GetSeqProd:_getSeqProd
+		GetSeqProd:_getSeqProd,
+		GetCardType: _getCardType
     }
 	function _getProductDetails(data) {
 		var deferred = $q.defer();
@@ -2052,6 +2053,27 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
 				vs.listAllProducts();
 			})
+		}
+		return defferred.promise;
+	}
+	function _getCardType(CardNumber){
+		var cards = {
+			"Electron": /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
+			"Maestro": /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
+			"Dankort": /^(5019)\d+$/,
+			"Interpayment": /^(636)\d+$/,
+			"Unionpay": /^(62|88)\d+$/,
+			"Visa": /^4[0-9]{12}(?:[0-9]{3})?$/,
+			"MasterCard": /^5[1-5][0-9]{14}$/,
+			"AmericanExpress": /^3[47][0-9]{13}$/,
+			"Diners": /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
+			"Discover": /^6(?:011|5[0-9]{2})[0-9]{12}$/,
+			"Jcb": /^(?:2131|1800|35\d{3})\d{11}$/
+		}, defferred = $q.defer();
+		for(var key in cards) {
+			if(cards[key].test(CardNumber)) {
+				defferred.resolve(key);
+			}
 		}
 		return defferred.promise;
 	}

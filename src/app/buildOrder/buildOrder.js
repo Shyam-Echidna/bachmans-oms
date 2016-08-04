@@ -427,6 +427,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.productdata($stateParams.ID);
 		}
 	}
+	if($stateParams.SearchType == 'plp'){
+		vm.disable=true;
+	}
 	if($stateParams.prodID!=""){
 		vm.productdata($stateParams.prodID);
 	}
@@ -620,7 +623,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
 			.then(function(data) {
 				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-					OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":prodCode}).then(function(res){
+					OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":prodCode}).then(function(res){
 						BuildOrderService.GetProductList(res.Items, imagesList.items).then(function(prodList){
 						vm.searchTxt=$scope.$parent.base.searchval;
 						vm.searchList=prodList;

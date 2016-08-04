@@ -6,19 +6,10 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
             &:focus{
                 background:#fff !important;
 				}
-				border: 1px solid #e4e6ea;
-				    .helvetica-regular;
-				    font-size: 16px;
-				    line-height: 25px;
-				    text-indent: 5px;
-				    height: 35px;
-				    -webkit-appearance: none;
-				    background: #F4F4F4;
-				    border-radius: 2px;
-				    margin-bottom: 25px;
-				    box-shadow:none;
+				
 }
 #CheckoutTopNav{
+		
 	.checkoutHeader {
 		position: relative;
 		.header{
@@ -166,6 +157,19 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 	width:@width0;
 	background-color:@color0;
 	margin:0;
+	input[type="number"],input[type="text"],input[type="email"],textarea{
+		     border: 1px solid #e4e6ea;
+		    .helvetica-regular;
+		    font-size: 16px;
+		    line-height: 25px;
+		    text-indent: 5px;
+		    height: 35px;
+		    -webkit-appearance: none;
+		    background: #F4F4F4;
+		    border-radius: 2px;
+		    margin-bottom: 25px;
+		    box-shadow:none;
+		}
 	a{
 		cursor: pointer;
 	}
@@ -900,9 +904,10 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 				}
 			}
 		.payment-method-container{
-			margin-top:25px;
+			margin-top:20px;
 			border:1px solid #f1f1f1;
 			padding:0;
+			border-radius: 5px;
 			.payment-container-header{
 				padding:10px;
 				background-color:#f9f9f9;
@@ -911,18 +916,103 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 					.helvetica-bold;
 					font-size: 16px;
 					vertical-align:middle;
-					margin-right:20px;
+					margin:0 10px;
 				}
 				span.card-type{
 					border:1px solid;
 					padding:5px 10px;
 				}
+				.radio-common{
+					 .radio{
+					 	top: 9px;
+					 }
+				}
 			}
 			.payment-container{
 				margin:0 auto;
 				width: auto;
+				.radio-common{
+					.radio{
+						top:-7px;
+					}
+				}
+				 span{
+				 	text-transform: capitalize;
+				 	font-size:14px;
+				 	.helvetica-regular;
+				 }
 				.pay-m{
-					margin:15px 0 25px;
+					margin:20px 0 0 0;
+					.cvv-title {
+							p {
+								font-size:16px;
+							   .helvetica-regular;
+								color: #464646;
+							}
+							}
+						 .cvv-value {
+							input#cvvNumber {
+								color: #000;
+								background: #f6f6f6;
+								width: 145px;
+								height: 45px;
+								border-radius: 2px;
+								display: inline-block;
+								margin-bottom: 5px;
+								font-size:16px;
+							}
+							.cvv-help-icon {
+								svg {
+									width: 15px;
+									height: 15px;
+									fill: #a983c8;
+									vertical-align: middle;
+									margin-left: 10px;
+								}
+							}
+							label {
+								color: #464646;
+								font-size:12px;
+								 .helvetica-regular;
+								display: block;
+							}
+						}
+						 .bill-addr-title {
+							p {
+								font-size:16px;
+								.helvetica-regular;
+								color: #464646;
+							}
+						}
+						.bill-addr-value {
+							position: relative;
+							p {
+								color: #666666;
+								 .helvetica-regular;
+								 font-size:16px;
+								margin-bottom: 5px;
+							}
+							.edit-link {
+								color: #666666;
+								font-size: 14px;
+								 .helvetica-regular;
+								border-bottom: 1px solid #e3e3e3;
+								&:hover {
+									color: #8b5bb3 !important;
+								}
+								position: absolute;
+								top: 0;
+								right: 0;
+							}
+						}
+						 .email-value {
+							p {
+								color: #464646;
+								font-size:16px;
+								 .helvetica-regular;
+								 margin-bottom:20px;
+							}
+						}
 					div{
 
 						p{
@@ -976,7 +1066,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 						.helvetica-bold;
 						font-size: 13px;
 						border:1px solid @color20;
-						height:25px;
+						height:35px;
 					}
 					div{
 						p{
@@ -1007,7 +1097,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 			}
 			.payment-container{
 				div{
-					margin:15px 0;
+					margin:10px 0;
 					p, div{
 						padding:0;
 					}
@@ -1025,15 +1115,32 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 			}
 		}
 		  .add-card-container{
-		  	margin-top:25px;
-			border:2px solid @color20;
-			padding:0;
+		  	margin-top: 20px;
+		    border: 1px solid #f1f1f1;
+		    padding: 0;
+		    border-radius: 5px;
 			.add-card-header{
-			  padding:10px;
-			  background-color:@color20;
+			  padding: 10px;
+			  background-color: #f9f9f9;
 			  span{
-			  	margin-left: 15px;
-
+			  	display: inline-block;
+			    .helvetica-bold;
+			    font-size: 16px;
+			    vertical-align: middle;
+			    margin: 0px 10px;
+			    text-transform:uppercase;
+			    svg {
+	                    width:15px;
+	                    height:10px;
+	                    fill: #8b5bb3;
+	                    margin: 5px 11px 0 0;
+	                    float:left;
+                 }
+			  }
+			  .radio-common{
+				 .radio{
+					top:3px;
+				 }
 			  }
 			}
 			.add-card-method-container{

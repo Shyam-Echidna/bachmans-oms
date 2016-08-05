@@ -162,7 +162,35 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     };
 
     vm.submitOrder = function() {
-        if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {
+		var PaymentType, TempStoredArray = [];
+		angular.forEach(vm.orderDtls.SpendingAccounts, function(val, key){
+			PaymentType = {"Type":"SpendingAccount", "SpendingAccountID":val.ID, "Description": key, "Amount": val.Amount, "xp":null};
+			if(key == "Cheque" || key == "PaidCash"){
+				PaymentType.Type = "PurchaseOrder";
+				delete PaymentType.ID;
+				if(key == "Cheque")
+					PaymentType.xp = {"ChequeNo": val.CheckNo};
+			}
+			TempStoredArray.push(OrderCloud.Payments.Create(vm.order.ID, PaymentType));
+		}, true);
+		$q.all(TempStoredArray).then(function(result){
+			//console.log("-------->"+result);
+			TempStoredArray = [];
+			angular.forEach(result, function(val, key){
+				TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, val.ID, {"Type": val.Type, "DateExecuted": val.DateCreated, "Amount": val.Amount}));
+			}, true);
+			$q.all(TempStoredArray).then(function(result2){
+				console.log("===========>>>"+result2);
+			});
+			//TempStoredArray = result;
+			//TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, res.ID, {"Type": res.Type, "DateExecuted": new Date, "Amount": res.Amount}));
+		});
+			// OrderCloud.Payments.Create(vm.order.ID, PaymentType).then(function(res){
+				// OrderCloud.Payments.CreateTransaction(vm.order.ID, res.ID, {"Type": res.Type, "DateExecuted": new Date, "Amount": res.Amount}).then(function(res1){
+					// console.log("Created Transactions... "+ res1);
+				// });
+			// });
+        /*if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {
             CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
                 .then(function(){
                     OrderCloud.Orders.Submit(vm.orderID)
@@ -181,7 +209,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
                             $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
                         })
                 });
-        }
+        }*/
     };
 	
 	vm.addCreditCard = function(card){
@@ -741,7 +769,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				OrderCloud.Coupons.Get(res.Items[0].CouponID).then(function(res1){
 					BuildOrderService.CompareDate().then(function(dt){
 						if(new Date(res1.StartDate) <= new Date(dt) && new Date(res1.ExpirationDate) >= new Date(dt)){
-							orderDtls.SpendingAccounts.CouponCharges = res1.UsagesRemaining;
+							vm.orderDtls.SpendingAccounts.Coupon = {"ID":res1.ID, "Amount":res1.UsagesRemaining};
 							vm.SumSpendingAccChrgs(orderDtls);
 						}else{
 							alert("Coupon Expired.....");
@@ -783,36 +811,34 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			dat = obj.Balance;
 		}
 		if(type=="Bachman Charges")
-			orderDtls.SpendingAccounts.BachmansCharges = dat;
+			vm.orderDtls.SpendingAccounts.BachmansCharges = {"ID":obj.ID, "Amount":dat};
 		if(type=="Purple Perks")
-			orderDtls.SpendingAccounts.PurplePerk = dat;
-		vm.SumSpendingAccChrgs(orderDtls);		
+			vm.orderDtls.SpendingAccounts.PurplePerks = {"ID":obj.ID, "Amount":dat};
+		vm.SumSpendingAccChrgs(orderDtls);	
 	}
 	vm.SumSpendingAccChrgs = function(orderDtls){
 		var sum=0;
-		angular.forEach(orderDtls.SpendingAccounts, function(val, key){
-			if(key!="ChequeNo")
-				sum = sum + val;
+		angular.forEach(vm.orderDtls.SpendingAccounts, function(val, key){
+			//if(key!="Cheque")
+			sum = sum + val.Amount;
 		}, true);
-		if(_.isEmpty(orderDtls.SpendingAccounts)){
-			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost;
+		if(_.isEmpty(vm.orderDtls.SpendingAccounts)){
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost + TaxCost;
 		}else{
-			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum;
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum + vm.order.TaxCost;
 		}
 	}
 	vm.deleteSpendingAcc = function(orderDtls, ChargesType){
-		delete orderDtls.SpendingAccounts[ChargesType];
+		delete vm.orderDtls.SpendingAccounts[ChargesType];
 		vm.SumSpendingAccChrgs(orderDtls);
 	}
 	vm.PayByChequeOrCash = function(orderDtls){
 		if(vm.PayCashCheque=='PayCash'){
-			orderDtls.SpendingAccounts.PaidCash = vm.txtPayCash;
-			delete orderDtls.SpendingAccounts.ChequeCharges;
-			delete orderDtls.SpendingAccounts.ChequeNo;
+			vm.orderDtls.SpendingAccounts.PaidCash = {"Amount":vm.txtPayCash};
+			delete vm.orderDtls.SpendingAccounts.Cheque;
 		}else if(vm.PayCashCheque=='PayCheque'){
-			orderDtls.SpendingAccounts.ChequeCharges = vm.txtChequeAmt;
-			orderDtls.SpendingAccounts.ChequeNo = vm.txtChequeNumber;
-			delete orderDtls.SpendingAccounts.PaidCash;
+			vm.orderDtls.SpendingAccounts.Cheque = {"CheckNo":vm.txtChequeNumber, "Amount":vm.txtChequeAmt};
+			delete vm.orderDtls.SpendingAccounts.PaidCash;
 		}
 		vm.SumSpendingAccChrgs(orderDtls);		
 	}
@@ -822,7 +848,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				if(res1.Items.length > 0){
 					OrderCloud.SpendingAccounts.Get(res1.Items[0].SpendingAccountID).then(function(data){
 						vm.UserSpendingAcc[data.Name] = data;
-						orderDtls.SpendingAccounts.GiftCardCharges = data.Balance;
+						vm.orderDtls.SpendingAccounts.GiftCard = {"ID":data.ID, "Amount":data.Balance};
 						vm.SumSpendingAccChrgs(orderDtls);
 					});
 				}else{

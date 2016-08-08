@@ -89,7 +89,7 @@
 								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false" max-length="5" ></input>
 								<p class="check-top">Address1</p>
 								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
-								<p class="check-top">Address2(optional)</p>
+								<p class="check-top">Address2  (optional)</p>
 								<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								<div class="check-top city-block">
 									<p>City</p>
@@ -213,8 +213,18 @@
 											 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
 										 <p>
 										<fieldset id="group2">
-											<label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label>
-											<label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">Product is coming from somewhere else</label>
+											<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label> -->
+											<label class="radio-inline radio-common">
+												<input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">
+												<span>Product is coming from my store</span>
+												<div class="radio"></div>
+											</label>
+											<label class="radio-inline radio-common">
+												<input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">
+												<span>Product is coming from somewhere else</span>
+												<div class="radio"></div>
+											</label>
+											<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">Product is coming from somewhere else</label> -->
 										</fieldset>
 										</p>
 									</div>
@@ -234,10 +244,18 @@
 										</uib-accordion-heading>
 										<div ng-show="!checkout.isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
 											<a ng-click="checkout.deliveryAddr($index)">Edit</a>
+											<!-- <p>{{addr.Street1}}</p>
+											<p>{{addr.Street2}}</p>
+											<p>{{addr.Zip}}</p>
+											<p>{{addr.Phone}}</p> -->
+											<div class="col-xs-8 bill-addr-value">
 											<p>{{addr.Street1}}</p>
 											<p>{{addr.Street2}}</p>
 											<p>{{addr.Zip}}</p>
+											</div>
+											<div class="col-xs-8 email-value">
 											<p>{{addr.Phone}}</p>
+											</div> 
 										</div>
 										<div ng-show="checkout.isDeliAddrShow{{$index}}">
 											
@@ -465,7 +483,7 @@
 
                                 </div>
                                 <div class="payment-container row" ng-if="card === checkout.selectedCard">
-                                    <div class="pay-m col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                    <div class="pay-m col-xs-12 col-sm-12 col-md-8 col-lg-8 col-lg-offset-2">
                                        <div class="col-xs-4 cvv-title">
 										<p>Enter CVV Code</p>
 										</div>
@@ -474,18 +492,22 @@
 											<div class="form-group">
 												<input type="text" class="form-control" id="cvvNumber" />
 												<span class="cvv-help-icon">
-													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-													  viewBox="0 0 14.4 23.9" style="enable-background:new 0 0 14.4 23.9;" xml:space="preserve">
-												  
+													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-652.2 494.3 18.7 18.7" style="enable-background:new -652.2 494.3 18.7 18.7;" xml:space="preserve">
 													<g>
-													 <path d="M6.6,16.1c-0.7-0.6-1.1-1.4-1.1-2.3c0-0.7,0.2-1.2,0.5-1.8c0.3-0.5,0.8-1,1.3-1.3c0.5-0.4,1-0.7,1.5-1.1
-													  C9.3,9.3,9.7,9,10,8.5c0.3-0.4,0.5-0.9,0.5-1.5c0-0.7-0.3-1.4-0.9-1.9C9.1,4.7,8.3,4.4,7.3,4.4c-1.8,0-3.3,0.8-4.5,2.3L1.4,5.2
-													  c1.5-1.9,3.5-2.9,6.1-2.9c1.7,0,3,0.4,4,1.2c1,0.8,1.5,1.9,1.5,3.1c0,0.8-0.2,1.5-0.6,2.1c-0.4,0.6-0.8,1.1-1.4,1.5
-													  s-1.1,0.8-1.6,1.1c-0.5,0.4-1,0.7-1.3,1.2c-0.4,0.4-0.6,0.9-0.6,1.4c0,0.6,0.2,1,0.7,1.3L6.6,16.1z M8.3,21.1
-													  c-0.3,0.3-0.7,0.4-1.1,0.4c-0.4,0-0.8-0.1-1.1-0.4c-0.3-0.3-0.5-0.7-0.5-1.1c0-0.4,0.2-0.8,0.5-1.1c0.3-0.3,0.7-0.4,1.1-0.4
-													  c0.4,0,0.8,0.1,1.1,0.4c0.3,0.3,0.5,0.7,0.5,1.1C8.7,20.5,8.6,20.8,8.3,21.1z"/>
+														<g>
+															<path d="M-643.1,505.6c-0.3-0.3-0.5-0.6-0.5-1.1c0-0.3,0.1-0.6,0.2-0.8c0.2-0.2,0.4-0.5,0.6-0.6
+																c0.2-0.2,0.5-0.3,0.7-0.5c0.2-0.2,0.4-0.3,0.6-0.6c0.2-0.2,0.2-0.4,0.2-0.7c0-0.4-0.1-0.6-0.4-0.9c-0.3-0.2-0.6-0.3-1.1-0.3
+																c-0.9,0-1.6,0.4-2.1,1.1l-0.7-0.7c0.7-0.9,1.6-1.3,2.9-1.3c0.8,0,1.4,0.2,1.9,0.6c0.5,0.4,0.7,0.9,0.7,1.5c0,0.4-0.1,0.7-0.3,1
+																c-0.2,0.3-0.4,0.5-0.6,0.7s-0.5,0.4-0.7,0.5c-0.2,0.2-0.5,0.4-0.6,0.6c-0.2,0.2-0.3,0.4-0.3,0.7c0,0.3,0.1,0.5,0.3,0.6
+																L-643.1,505.6z M-642.3,507.9c-0.1,0.1-0.3,0.2-0.5,0.2c-0.2,0-0.4-0.1-0.5-0.2c-0.1-0.1-0.2-0.3-0.2-0.5c0-0.2,0.1-0.4,0.2-0.5
+																c0.1-0.1,0.3-0.2,0.5-0.2c0.2,0,0.4,0.1,0.5,0.2c0.1,0.1,0.2,0.3,0.2,0.5C-642.1,507.6-642.2,507.8-642.3,507.9z"></path>
+														</g>
+														<g>
+															<path d="M-642.8,512.4c-4.8,0-8.8-3.9-8.8-8.8s3.9-8.8,8.8-8.8s8.8,3.9,8.8,8.8S-638,512.4-642.8,512.4z
+																 M-642.8,495.6c-4.4,0-8,3.6-8,8s3.6,8,8,8s8-3.6,8-8S-638.4,495.6-642.8,495.6z"></path>
+														</g>
 													</g>
-												   </svg>
+													</svg>
 												</span>
 												<label for="cvvNumber">CVV code is on the back side of your card-radio</label>
 											</div>
@@ -609,7 +631,7 @@
 									<span class="total">{{checkout.UserSpendingAcc['Bachman Charges'].Balance | currency}}</span>
 								</div>
 								<div class="payment-container row">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 payment-options">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<!-- <label><input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Full" />use {{checkout.UserSpendingAcc['Bachman Charges'].Balance | currency}} Bachman's Charge</label> -->
 										<label class="radio-inline radio-common">
@@ -618,7 +640,7 @@
 										</label>	
 										</div>
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 											<!-- <label><input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Custom" /><span>Enter Custom Charge</span></label> -->
 											<label class="radio-inline radio-common">
 											<input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Custom" /><span>Enter Custom Charge</span>
@@ -644,15 +666,18 @@
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> -->
 											<!-- <p><label><input type="radio" ng-model="GiftCharges" name="GiftCharge" value="Full" />use {{checkout.UserSpendingAcc['Gift Card'].Balance | currency}} Gift Card balance</label></p> -->
-											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-													<span>Enter 14 or 16 Digit Gift Card Number</span>
+											<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 payment-options">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+														<span>Enter 14 or 16 Digit Gift Card Number</span>
+													</div>
+													<input ng-model="GiftCardNo" type="text" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 												</div>
-												<input ng-model="GiftCardNo" type="text" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
+												<button ng-click="checkout.RedeemGiftCard(GiftCardNo, checkout.orderDtls)">Apply</button>
 											</div>
 										<!-- </div> -->
 										<!-- <span style="color:red;" ng-if="txtGiftCharges > checkout.UserSpendingAcc['Gift Card'].Balance">You cannot exceed your balance limit...!</span> -->
-										<button ng-click="checkout.RedeemGiftCard(GiftCardNo, checkout.orderDtls)">Apply</button>
+									
 									</div>
 								</div>
 							</div>
@@ -661,18 +686,18 @@
 						<div class="payment-method-container cheque col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CashCheque'">
 							<div>
 								<div class="payment-container row">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 payment-options1">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<div>
 											<!-- <p class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<input type="radio" name="CashCharge" value="PayCash" ng-model="checkout.PayCashCheque" />Pay through Cash </p>
 											<p class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Amount paid through cash</p> 
 											<input type="number" ng-disabled="checkout.PayCashCheque == 'PayCheque'" ng-model="checkout.txtPayCash"  class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/><span></span>-->
-											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+											<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 												<label class="radio-inline radio-common">
 													<input type="radio" name="CashCharge" value="PayCash" ng-model="checkout.PayCashCheque" />
-													<span>Pay through Cash</span><br>
-													<span>Amount paid through cash</span>
+													<p>Pay through Cash</p><br>
+													<p>Amount paid through cash</p>
 													<div class="radio"></div>
 												</label>
 											</div>
@@ -687,19 +712,19 @@
 													<input ng-disabled="checkout.PayCashCheque == 'PayCash'" type="number" ng-model="checkout.txtChequeAmt" class="col-xs-6 col-sm-6 col-md-6 col-lg-6"/><span></span>
 												</div> -->
 												<div>
-													<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 													<label class="radio-inline radio-common">
 														<input type="radio" name="CashCharge" ng-model="checkout.PayCashCheque" value="PayCheque" />
-														<span>Pay through Cheque</span><br>
-														<span>Check Number</span>
+														<p>Pay through Cheque</p><br>
+														<p>Check Number</p>
 														<div class="radio"></div>
 													</label>
 													</div>
 													<input type="number" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" ng-disabled="checkout.PayCashCheque == 'PayCash'" ng-model="checkout.txtChequeNumber" />
 													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 payment-amt">
 													<label class="radio-inline radio-common">
-														<span>Amount Paid through Cheque</span>
+														<p>Amount Paid through Cheque</p>
 														<div class="radio"></div>
 													</label>
 													</div>
@@ -721,7 +746,7 @@
 									<span class="total">{{checkout.UserSpendingAcc['Purple Perks'].Balance | currency}}</span>
 								</div>
 								<div class="payment-container row">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 payment-options">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- <p><label><input type="radio" name="PurpleCharge" ng-model="PurpleCharges" value="Full" />use {{checkout.UserSpendingAcc['Purple Perks'].Balance | currency}} Purple Perks balance</label></p> -->
 											<div>
@@ -738,7 +763,7 @@
 														Enter Custom charge</label>
 													</p> -->
 													
-												<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+												<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 													 <label class="radio-inline radio-common">
 														<input type="radio" ng-model="PurpleCharges" name="PurpleCharge" value="Custom" /><span>
 															Enter Custom charge
@@ -760,7 +785,7 @@
 						</div>
 					</div>
 				</uib-accordion-group>
-				<uib-accordion-group is-open="checkout.status.reviewOpen">
+				<uib-accordion-group is-open="checkout.status.reviewOpen" class="review-container">
 					<uib-accordion-heading>
 						<h1>3. Review & Confirm Order</h1>
 					</uib-accordion-heading>
@@ -769,11 +794,16 @@
 							<uib-accordion-heading>
 								<h2 ng-click="checkout.reviewAddress()">Customer Name <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
-							<p>{{checkout.order.FromUserFirstName}} {{checkout.order.FromUserLastName}}</p>
+							<div class="user-name">{{checkout.order.FromUserFirstName}} {{checkout.order.FromUserLastName}}</div>
 						</uib-accordion-group>
 						<uib-accordion-group>
 							<uib-accordion-heading>
-								<h2>1. Shipping Information <button class="review-edit">edit</button></h2>
+								<h2>1. <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
+								<g>
+									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
+										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"></path>
+								</g>
+							</svg>Shipping Information <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
 							<ul ng-repeat="line in checkout.deliveryInfo track by line.ID" class="shipping-info">
 								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
@@ -797,9 +827,14 @@
 						</uib-accordion-group>
 						<uib-accordion-group>
 							<uib-accordion-heading>
-								<h2 ng-click="checkout.reviewAddress()">2. Payment <button class="review-edit">edit</button></h2>
+								<h2 ng-click="checkout.reviewAddress()">2. <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
+								<g>
+									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
+										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"></path>
+								</g>
+							</svg>Payment <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
-							<ul>
+							<!-- <ul>
 								<li>
 									<span>{{userAddr.address.FirstName}} {{userAddr.address.LastName}}</span>
 									<p>{{userAddr.address.Street1}} </p>
@@ -814,6 +849,25 @@
 									</span>
 									<span>Card Expires: {{usercard.ExpirationDate | date:'mm/dd'}}</span>
 									<span ng-if="checkout.orderDtls.SpendingAccounts.PurplePerks">Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerks.Amount | currency}}</span>
+								</li>
+							</ul> -->
+							<ul ng-repeat="line in checkout.deliveryInfo track by line.ID" class="shipping-info">
+								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
+								<li class="shipping-Addresses">
+									<p>{{line.ShippingAddress.Street1}}</p>
+									<p>{{line.ShippingAddress.Street2}}</p>
+									<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}}</p>
+									<p>{{line.ShippingAddress.Country}}</p>
+									<p>{{line.ShippingAddress.Zip}}</p>
+									<span class="shipping-Phone">{{line.ShippingAddress.Phone}}</span> 
+								</li>
+								<li class="shipping-Date">
+									<p class="shipping-subTitle">Delivery Date</p>
+									<p>{{line.xp.deliveryDate | date}}</p>
+								</li>
+								<li class="shipping-DeliveryPref">
+									<p class="shipping-subTitle">Delivery Preference</p>
+									<p>{{line.xp.deliveryRun}}</p>
 								</li>
 							</ul>
 						</uib-accordion-group>

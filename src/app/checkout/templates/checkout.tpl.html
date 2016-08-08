@@ -793,7 +793,12 @@
 						</uib-accordion-group>
 						<uib-accordion-group>
 							<uib-accordion-heading>
-								<h2>1. Shipping Information <button class="review-edit">edit</button></h2>
+								<h2>1. <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
+								<g>
+									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
+										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"></path>
+								</g>
+							</svg>Shipping Information <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
 							<ul ng-repeat="line in checkout.deliveryInfo track by line.ID" class="shipping-info">
 								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
@@ -817,9 +822,14 @@
 						</uib-accordion-group>
 						<uib-accordion-group>
 							<uib-accordion-heading>
-								<h2 ng-click="checkout.reviewAddress()">2. Payment <button class="review-edit">edit</button></h2>
+								<h2 ng-click="checkout.reviewAddress()">2. <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
+								<g>
+									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
+										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"></path>
+								</g>
+							</svg>Payment <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
-							<ul>
+							<!-- <ul>
 								<li>
 									<span>{{userAddr.address.FirstName}} {{userAddr.address.LastName}}</span>
 									<p>{{userAddr.address.Street1}} </p>
@@ -834,6 +844,25 @@
 									</span>
 									<span>Card Expires: {{usercard.ExpirationDate | date:'mm/dd'}}</span>
 									<span ng-if="checkout.orderDtls.SpendingAccounts.PurplePerks">Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerks.Amount | currency}}</span>
+								</li>
+							</ul> -->
+							<ul ng-repeat="line in checkout.deliveryInfo track by line.ID" class="shipping-info">
+								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
+								<li class="shipping-Addresses">
+									<p>{{line.ShippingAddress.Street1}}</p>
+									<p>{{line.ShippingAddress.Street2}}</p>
+									<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}}</p>
+									<p>{{line.ShippingAddress.Country}}</p>
+									<p>{{line.ShippingAddress.Zip}}</p>
+									<span class="shipping-Phone">{{line.ShippingAddress.Phone}}</span> 
+								</li>
+								<li class="shipping-Date">
+									<p class="shipping-subTitle">Delivery Date</p>
+									<p>{{line.xp.deliveryDate | date}}</p>
+								</li>
+								<li class="shipping-DeliveryPref">
+									<p class="shipping-subTitle">Delivery Preference</p>
+									<p>{{line.xp.deliveryRun}}</p>
 								</li>
 							</ul>
 						</uib-accordion-group>

@@ -185,6 +185,25 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 		left:0;
 		top:90px;
 		.checkoutSection {
+			.review-container{
+				.panel-body{
+					padding:10px 0px !important;
+					.user-name{
+						padding: 10px 0 10px 40px;		
+					}
+				}
+				.panel{
+					border: 2px solid #f5f5f5 !important;
+					padding: 0px !important;
+					margin-bottom: 13px !important;
+					svg{
+						 width: 17px;
+		    			fill: #8c58b5;
+		    			vertical-align: bottom;
+		    			margin-right: 7px;	
+					}
+				}
+			}
 			.panel-open{
 				.panel-heading{
 					h1{
@@ -298,12 +317,14 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 				 	 }
 				    }
 					ul.shipping-info{
+					margin-left:40px;
 						li{
 							display: inline-block;
 						    vertical-align: top;
-						    padding: 0 10px 10px 10px;
+						    padding: 0 10px 10px 20px;
 						    margin-top: 20px;
-						    /*border-left: 1px solid #f5f5f5;*/
+						    min-height: 120px;
+						    border-left: 1px solid #f5f5f5;
 						    p{
 						    	line-height: 1.4;
 						    	margin-bottom: 0;
@@ -324,7 +345,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 							border: 0;
 						}
 						li.shipping-FirstName, li.shipping-Date{
-							width: 18%;
+							width: 17%;
 						}
 						li.shipping-Addresses{
 							width: 35%;

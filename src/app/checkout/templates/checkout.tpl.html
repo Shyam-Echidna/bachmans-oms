@@ -68,6 +68,11 @@
 										<label for="church">Church</label>
 										<div class="radio"></div>
 									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="cemetery" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Cemetery" />
+										<label for="cemetery">Cemetery</label>
+										<div class="radio"></div>
+									</label>
 									<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
 									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />
@@ -81,7 +86,7 @@
 									</label>
 								</div>
 								<p class="check-top">Zip Code</p>
-								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
+								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false" max-length="5" ></input>
 								<p class="check-top">Address1</p>
 								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								<p class="check-top">Address2(optional)</p>
@@ -101,9 +106,9 @@
 								</div>
 								<p class="check-top">Phone Number</p>
 								<div class="phone-block">
-									<input type="number" ng-model="line.ShippingAddress.Phone1" placeholder="Area Code" />
-									<input type="number" ng-model="line.ShippingAddress.Phone2" placeholder="Prefix" />
-									<input type="number" ng-model="line.ShippingAddress.Phone3" placeholder="Number" />
+									<input type="number" ng-model="line.ShippingAddress.Phone1" placeholder="Area Code" max-length="3" />
+									<input type="number" ng-model="line.ShippingAddress.Phone2" placeholder="Prefix" max-length="3" />
+									<input type="number" ng-model="line.ShippingAddress.Phone3" placeholder="Number" max-length="4" />
 								</div>
 								<div class="delivery-details">
 									<label class="radio-inline radio-common">
@@ -255,7 +260,7 @@
 												</div>-->
 												<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<p class="check-top">Zip Code</p>
-													<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" />
+													<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" />
 												</div>
 												<p class="check-top">Address1</p>
 												<input type="text" ng-model="addr.Street1" />
@@ -279,9 +284,9 @@
 													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 														<p>Phone Number</p>
 														<div>
-															<input type="number" ng-model="addr.Phone1" placeholder="Area Code" />
-															<input type="number" ng-model="addr.Phone2" placeholder="Prefix" />
-															<input type="number" ng-model="addr.Phone3" placeholder="Number" />
+															<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3" />
+															<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
+															<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -332,7 +337,7 @@
 									</div> -->
 									<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<p>Zip Code</p>
-										<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" />
+										<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" />
 									</div>
 									<p class="check-top">Address1</p>
 									<input type="text" ng-model="addr.Street1" />
@@ -356,9 +361,9 @@
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p>Phone Number</p>
 											<div>
-												<input type="number" ng-model="addr.Phone1" placeholder="Area Code" />
-												<input type="number" ng-model="addr.Phone2" placeholder="Prefix" />
-												<input type="number" ng-model="addr.Phone3" placeholder="Number" />
+												<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3"  />
+												<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
+												<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
 											</div>
 										</div>
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">

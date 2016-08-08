@@ -283,11 +283,11 @@
 										<label for="church">Church<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
-									<!-- <label class="radio-inline radio-common">
-										<input type="radio" id="shipping" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitem)" value="Shipping" ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
-										<label for="shipping">Standard Shipping<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="Cemetery" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="Cemetery" ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
+										<label for="Cemetery">Cemetery<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
-									</label> -->
+									</label>
 									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="School"  ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
 										<label for="school">School<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
@@ -311,12 +311,16 @@
 									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)">
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Hospital'" >
 											<h1>Find Hospital <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.hosSearch" ng-required="lineitem.xp.addressType=='Hospital'" />
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.hosSearch" ng-required="lineitem.xp.addressType=='Hospital'" ng-value="lineitem.xp.addressType=='Hospital' ? lineitem.ShippingAddress.CompanyName : ''" />
 										</div>
 										
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Funeral'">
 											<h1>Find Funeral <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.funeralSearch" ng-required="lineitem.xp.addressType=='Funeral'" />
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.funeralSearch" ng-required="lineitem.xp.addressType=='Funeral'" ng-value="lineitem.xp.addressType=='Funeral' ? lineitem.ShippingAddress.CompanyName : ''" />
+										</div>
+										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Cemetery'">
+											<h1>Find Cemetery <span class="star">*</span></h1>
+											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.cemeterySearch" ng-required="lineitem.xp.addressType=='Cemetery'" ng-value="lineitem.xp.addressType=='Cemetery' ? lineitem.ShippingAddress.CompanyName : ''"/>
 										</div>
 										
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Church'">
@@ -361,7 +365,7 @@
 										</div>
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 											<div class="zipCode">
-												<p>Zip Code <span class="star">*</span></p>
+												<p>Zip Code <span class="star">*</span></p>{{buildOrderRight.lineItemForm[lineitem.ID]['Zip']}}
 												<input type="number" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" required></input>
 											</div>
 											<div class="delivery-date" ng-if="lineitem.xp.addressType!='Will Call'">
@@ -414,8 +418,9 @@
 											</div>
 										</div>
 										
-										<div class="location-recipientName" ng-if="lineitem.xp.addressType=='Hospital'">
-											<h3>Patient Name</h3>
+										<div class="location-recipientName" ng-if="lineitem.xp.addressType=='Hospital' || lineitem.xp.addressType=='Funeral' || lineitem.xp.addressType=='Cemetery'">
+											<h3 ng-if="lineitem.xp.addressType=='Hospital'">Patient Name</h3>
+											<h3 ng-if="lineitem.xp.addressType=='Funeral' || lineitem.xp.addressType=='Cemetery'">In Memory of:</h3>
 											<div class="firstNm">
 												<p>First Name</p>
 												<input type="text" ng-model="lineitem.xp.PatientFName"></input>

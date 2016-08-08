@@ -162,7 +162,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     };
 
     vm.submitOrder = function() {
-		var PaymentType, TempStoredArray = [];
+		var PaymentType, TempStoredArray = [], dat = new Date();
 		angular.forEach(vm.orderDtls.SpendingAccounts, function(val, key){
 			PaymentType = {"Type":"SpendingAccount", "SpendingAccountID":val.ID, "Description": key, "Amount": val.Amount, "xp":null};
 			if(key == "Cheque" || key == "PaidCash"){
@@ -174,22 +174,14 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			TempStoredArray.push(OrderCloud.Payments.Create(vm.order.ID, PaymentType));
 		}, true);
 		$q.all(TempStoredArray).then(function(result){
-			//console.log("-------->"+result);
 			TempStoredArray = [];
 			angular.forEach(result, function(val, key){
-				TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, val.ID, {"Type": val.Type, "DateExecuted": val.DateCreated, "Amount": val.Amount}));
+				TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, val.ID, {"Type": val.Type, "DateExecuted": (dat.getMonth()+1)+"/"+dat.getDate()+"/"+dat.getFullYear(), "Amount":val.Amount, "xp": null}));
 			}, true);
 			$q.all(TempStoredArray).then(function(result2){
 				console.log("===========>>>"+result2);
 			});
-			//TempStoredArray = result;
-			//TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, res.ID, {"Type": res.Type, "DateExecuted": new Date, "Amount": res.Amount}));
 		});
-			// OrderCloud.Payments.Create(vm.order.ID, PaymentType).then(function(res){
-				// OrderCloud.Payments.CreateTransaction(vm.order.ID, res.ID, {"Type": res.Type, "DateExecuted": new Date, "Amount": res.Amount}).then(function(res1){
-					// console.log("Created Transactions... "+ res1);
-				// });
-			// });
         /*if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {
             CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
                 .then(function(){
@@ -823,7 +815,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			sum = sum + val.Amount;
 		}, true);
 		if(_.isEmpty(vm.orderDtls.SpendingAccounts)){
-			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost + TaxCost;
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost + vm.order.TaxCost;
 		}else{
 			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum + vm.order.TaxCost;
 		}

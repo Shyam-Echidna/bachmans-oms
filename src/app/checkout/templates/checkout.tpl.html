@@ -440,17 +440,17 @@
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'GiftCard'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.GiftCardCharges}">Gift Card
+							<div ng-click="checkout.paymentOption = 'GiftCard'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.GiftCard}">Gift Card
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerk}">Purple Perks
+							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerks}">Purple Perks
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'CashCheque'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PaidCash || checkout.orderDtls.SpendingAccounts.ChequeCharges}">Cash/Cheque
+							<div ng-click="checkout.paymentOption = 'CashCheque'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PaidCash || checkout.orderDtls.SpendingAccounts.Cheque}">Cash/Cheque
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
@@ -469,7 +469,6 @@
                                     </label> -->
                                     <label class="radio-inline radio-common">
 										<input type="radio" ng-model="checkout.selectedCard" ng-value="card">
-										
 										<div class="radio"></div>
 										<span><i class="fa fa-2x" ng-class="{' fa-cc-amex': card.CardType === 'AmericanExpress', ' fa-cc-mastercard': card.CardType === 'MasterCard', ' fa-cc-visa': card.CardType === 'Visa', ' fa-cc-discover': card.CardType === 'Discover'}"></i></span>
                                         <span>XXXX XXX XXX {{card.PartialAccountNumber}}</span>
@@ -834,7 +833,7 @@
 										Credit Card: xxxx xxxx xxxx {{userAddr.card.PartialAccountNumber}}
 									</span>
 									<span>Card Expires: {{usercard.ExpirationDate | date:'mm/dd'}}</span>
-									<span ng-if="checkout.orderDtls.SpendingAccounts.PurplePerk">Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerk | currency}}</span>
+									<span ng-if="checkout.orderDtls.SpendingAccounts.PurplePerks">Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerks.Amount | currency}}</span>
 								</li>
 							</ul>
 						</uib-accordion-group>
@@ -890,7 +889,7 @@
 					<p>Subtotal  <span>{{checkout.order.Subtotal | currency}}</span></p>
 					<p>Delivery Charges   <span>{{checkout.order.ShippingCost | currency}} </span></p>
 					<p>Estimated Tax   <span>{{checkout.order.TaxCost | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.CouponCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'CouponCharges')">x</button> Coupon Applied <span>-{{checkout.orderDtls.SpendingAccounts.CouponCharges | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.Coupon"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'Coupon')">x</button> Coupon Applied <span>-{{checkout.orderDtls.SpendingAccounts.Coupon.Amount | currency}} </span></p>
 					<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges">
 					<button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'BachmansCharges')">
 						<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -905,9 +904,9 @@
 								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 							</g>
 					  	</svg>
-					</button>Bachman’s Charge applied   <span>-{{checkout.orderDtls.SpendingAccounts.BachmansCharges | currency}} </span>
+					</button>Bachman’s Charge applied   <span>-{{checkout.orderDtls.SpendingAccounts.BachmansCharges.Amount | currency}} </span>
 					</p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.GiftCardCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'GiftCardCharges')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					<p ng-if="checkout.orderDtls.SpendingAccounts.GiftCard"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'GiftCard')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
 
 							<g transform="translate(0,-952.36218)">
@@ -918,7 +917,7 @@
 								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
 								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 							</g>
-					  	</svg></button>Gift Card applied   <span>-{{checkout.orderDtls.SpendingAccounts.GiftCardCharges | currency}} </span></p>
+					  	</svg></button>Gift Card applied   <span>-{{checkout.orderDtls.SpendingAccounts.GiftCard.Amount | currency}} </span></p>
 					<p ng-if="checkout.orderDtls.SpendingAccounts.PaidCash"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PaidCash')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
 
@@ -930,8 +929,8 @@
 								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
 								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 							</g>
-					  	</svg></button>Paid Through Cash   <span>-{{checkout.orderDtls.SpendingAccounts.PaidCash | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.ChequeCharges"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'ChequeCharges')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					  	</svg></button>Paid Through Cash   <span>-{{checkout.orderDtls.SpendingAccounts.PaidCash.Amount | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.Cheque"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'Cheque')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
 
 							<g transform="translate(0,-952.36218)">
@@ -942,8 +941,8 @@
 								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
 								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 							</g>
-					  	</svg></button>Paid through Cheque   <span>-{{checkout.orderDtls.SpendingAccounts.ChequeCharges | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerk"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PurplePerk')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					  	</svg></button>Paid through Cheque   <span>-{{checkout.orderDtls.SpendingAccounts.Cheque.Amount | currency}} </span></p>
+					<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerks"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'PurplePerks')"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
 
 							<g transform="translate(0,-952.36218)">
@@ -954,7 +953,7 @@
 								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
 								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 							</g>
-					  	</svg></button>Purple Perks Balance applied   <span>-{{checkout.orderDtls.SpendingAccounts.PurplePerk | currency}} </span></p>
+					  	</svg></button>Purple Perks Balance applied   <span>-{{checkout.orderDtls.SpendingAccounts.PurplePerks.Amount | currency}} </span></p>
 					<p class="total">Total <span>{{checkout.order.Total | currency}}  </span></p>
 				</div>
 				<div class="promo-code">

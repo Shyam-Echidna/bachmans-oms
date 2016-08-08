@@ -554,15 +554,9 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
                                 border-left: 1px solid #ededed;
                                 border-radius: 2px;
                                 float:left;
-	                                  li{
-	                                  		&:hover{
-		                      					background: #f6edfd;
-		                                        border-bottom: 2px solid #8b5bb3;
-				                      		}
-											&:active{
-												 background: #f6edfd;
-												 border-bottom: 2px solid #8b5bb3;
-											}
+	                                  .active{
+	                                  		background: #f6edfd;
+										    border-bottom: 2px solid #8b5bb3 !important;
 	                                  }
                                 	.preference{
                                 		width:25%;
@@ -725,7 +719,10 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 			                        }
                                 }
                                .delivery-days1,.delivery-days2,.select-date-info,.preference,.preference1{
-                      				
+                      				&:hover{
+		                      					background: #f6edfd;
+		                                        border-bottom: 2px solid #8b5bb3;
+				                      		}
 	                  			}
                             }
 							.select-store{

@@ -2,7 +2,7 @@
 	<div class="cust-info-container row">
 		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
-				<h1>PERSONAL INFORMATION <button ng-click="isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
 				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
 					<div class="info-blk form-group">
@@ -38,26 +38,26 @@
 								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].LastName" placeholder="LastName">
 							</div>
 							<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].Street1}} {{custInfo.list.defaultAddr[0].Street2}} {{custInfo.list.defaultAddr[0].City}}</span>
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1" ng-blur="custInfo.getLocation()" required>
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street2" placeholder="Street2">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City" readonly>
 							<div>
 								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].State}} {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</span>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Zip" placeholder="Zip">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Zip" ng-blur="custInfo.getLocation()" placeholder="Zip" required>
 							</div>
 						</div>
-					<div class="info-blk cust-top">
-						<div class="col-md-6">Phone Number:</div>
-						<div class="col-md-6">
-						<!-- <span ng-show="!isEditing">{{custInfo.list.user.Phone}}</span>
-						<input type="text" ng-show="isEditing" ng-model="custInfo.list.user.Phone"> -->
-						<input type="number"  placeholder="Area Code" max-length="3">
-						<input type="number"  placeholder="Prefix" max-length="3">
-						<input type="number" placeholder="Number" max-length="4">
+						<div class="info-blk cust-top">
+							<div class="col-md-6">Phone Number:</div>
+							<div class="col-md-6">
+							<span ng-show="!isEditing">{{custInfo.list.user.Phone}}</span><!--
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.user.Phone"> -->
+							<input type="number" ng-show="isEditing" placeholder="Area Code" ng-model="custInfo.list.user.contact.Phone1" max-length="3">
+							<input type="number" ng-show="isEditing" placeholder="Prefix" ng-model="custInfo.list.user.contact.Phone2" max-length="3">
+							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4">
+							</div>
 						</div>
-					</div>
 					<div class="info-blk">
 						<div class="col-md-6">Tax Exempt Number:</div>
 						<div class="col-md-6">

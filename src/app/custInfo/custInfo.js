@@ -125,7 +125,7 @@ function CustInfoConfig( $stateProvider ) {
 }
 
 
-function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact) {
+function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact, BuildOrderService, AddressValidationService) {
 	var vm = this;
 	vm.list = UserList;
 	vm.subscribedList=userSubscription;
@@ -145,17 +145,41 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 		 console.log(vm.list.TermsAccepted);
     }	
      vm.Submit = function() {
+		AddressValidationService.Validate(vm.list.defaultAddr[0]).then(function(res){
+		var validatedAddress = res.Address;
+		var zip = validatedAddress.PostalCode.substring(0, 5);
+		vm.list.defaultAddr[0].Zip = parseInt(zip);
+		vm.list.defaultAddr[0].Street1 = validatedAddress.Line1;
+		vm.list.defaultAddr[0].Street2 = null;
+		vm.list.defaultAddr[0].City = validatedAddress.City;
+		vm.list.defaultAddr[0].State = validatedAddress.Region;
+		vm.list.defaultAddr[0].Country = validatedAddress.Country;
 		var today = new Date();
+		vm.list.user.Phone = "("+vm.list.user.contact.Phone1+") "+vm.list.user.contact.Phone2+"-"+vm.list.user.contact.Phone3;
         vm.list.user.TermsAccepted = today;
-		OrderCloud.Users.Update(userid, vm.list.user).then(function(){
-			OrderCloud.Addresses.Update(vm.list.user.xp.DefaultAddress,vm.list.defaultAddr).then(function(){
-				$state.go('custInfo', {}, {reload:true});
+		if(res.ResultCode == 'Success') {
+			OrderCloud.As().Me.Update(vm.list.user).then(function(){
+				OrderCloud.As().Me.UpdateAddress(vm.list.defaultAddr[0].ID,vm.list.defaultAddr[0]).then(function(){
+					$state.go('custInfo', {}, {reload:true});
+				})
 			})
+		}
 		})
-          .catch(function(ex) {
-                 $exceptionHandler(ex)
-            });
      }
+	vm.editAddress = function(editAddr){
+		vm.list.user.contact={};
+		BuildOrderService.GetPhoneNumber(editAddr).then(function(res){
+			vm.list.user.contact.Phone1 = res[0];
+			vm.list.user.contact.Phone2 = res[1];
+			vm.list.user.contact.Phone3 = res[2];
+		});
+	}
+	vm.getLocation=function(){
+		AddressValidationService.Validate(vm.list.defaultAddr[0]).then(function(res){
+			vm.list.defaultAddr[0].City = res.Address.City;
+			vm.list.defaultAddr[0].State = res.Address.Region;
+		});
+	}
 	$scope.ok=function(){
 		OrderCloud.Users.Update(userid, vm.list.user).then(function(){
 			alert("Password changed");

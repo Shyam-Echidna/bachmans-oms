@@ -16,39 +16,38 @@ function CustInfoConfig( $stateProvider ) {
                 ID:null                
             },
 			resolve: {
-                UserList: function( OrderCloud, $stateParams, $state, $q) {
+                UserList: function( OrderCloud, $state, $q) {
                     var arr={};
 					var dfr = $q.defer();
-                    console.log($stateParams);
-                    OrderCloud.Users.Get($stateParams.ID).then(function(data){
-					  console.log("dsbhsbhsb", data);
-					  arr["user"] = data;
-					 // Addresses.ListAssignments('pyAS_zcYkkGWpdeNbvjz1Q').then(function(assign){
-						// console.log("assignnn",assign);
-						// dfr.resolve(arr);
-					 // });
-					 console.log("userssss", arr);
-					   console.log(arr);
-						OrderCloud.Addresses.ListAssignments(null,arr.user.ID).then(function(addrList){
-						var addr = {};
-						angular.forEach(addrList.Items, function(value, key) {
-								OrderCloud.Addresses.Get(value.AddressID).then(function(address){
-								// log.push(key + ': ' + final);
-								addr[key]=address;
-								console.log(addr);
-								if(address.xp.IsDefault){
-									arr["defaultAddr"]=address;
-								}
-							 });
-							}, addr);
-							arr["addresses"] = addr;
-							console.log("addresses", arr);
-						 
-					 });
-					 dfr.resolve(arr);
-					 console.log(arr);
+                    OrderCloud.As().Me.Get().then(function(data){
+						console.log("dsbhsbhsb", data);
+						arr["user"] = data;
+						console.log("userssss", arr);
+						console.log(arr);
+							/*OrderCloud.Addresses.ListAssignments(null,arr.user.ID).then(function(addrList){
+							var addr = {};
+							angular.forEach(addrList.Items, function(value, key) {
+									OrderCloud.Addresses.Get(value.AddressID).then(function(address){
+									addr[key]=address;
+									console.log(addr);
+									if(address.xp.IsDefault){
+										arr["defaultAddr"]=address;
+									}
+								 });
+								}, addr);
+								arr["addresses"] = addr;
+								console.log("addresses", arr);
+							 
+						 }); */
+						OrderCloud.As().Me.ListAddresses(null, 1, 100).then(function(addrList){
+							arr["addresses"]=addrList.Items;
+								arr["defaultAddr"]=_.filter(addrList.Items, function(obj) {
+									return _.indexOf([obj.xp.IsDefault], true) > -1
+								});
+							console.log("addrList", addrList);
+							dfr.resolve(arr);
+						})
                     });
-                    console.log(arr);
                     return dfr.promise;
                 },
 				spendingAccounts:function($q, $state, $stateParams, OrderCloud){
@@ -78,7 +77,7 @@ function CustInfoConfig( $stateProvider ) {
 				},
 				creditCard:function($q, $state, $stateParams, OrderCloud){
 					var dfd=$q.defer();
-					OrderCloud.CreditCards.ListAssignments(null, $stateParams.ID).then(function(assign){
+					/*OrderCloud.CreditCards.ListAssignments(null, $stateParams.ID).then(function(assign){
 						console.log("datadatadatadata", assign);
 						angular.forEach(assign.Items, function(value, key) {
 							OrderCloud.CreditCards.Get(value.CreditCardID).then(function(data){
@@ -89,6 +88,9 @@ function CustInfoConfig( $stateProvider ) {
 						if(assign.Items.length==0){
 							dfd.resolve();
 						}
+					}); */
+					OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
+						dfd.resolve(response);
 					});
 					return dfd.promise;
 				},
@@ -129,7 +131,8 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 	vm.subscribedList=userSubscription;
 	console.log("vm.subscribedLis", vm.subscribedList);
 	vm.spendingAcc=spendingAccounts;
-	vm.creditCard=creditCard;
+	vm.creditCard=creditCard.Items;
+	console.log("creditCard",vm.creditCard);
 	console.log("spendingAccounts", spendingAccounts);
 	console.log("vm.purple", vm.purple);
 	console.log("vm.charges", vm.charges);

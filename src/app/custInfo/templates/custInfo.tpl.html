@@ -24,22 +24,22 @@
 					<div class="cust-street cust-top">
 						<p>Street Address:</p>
 						<div>
-							<p ng-show="!isEditing">{{custInfo.list.defaultAddr.CompanyName}}</p>
+							<p ng-show="!isEditing">{{custInfo.list.defaultAddr[0].CompanyName}}</p>
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.CompanyName" placeholder="CompanyName">
 							<div>
-								<span ng-show="!isEditing">{{custInfo.list.defaultAddr.FirstName}} {{custInfo.list.defaultAddr.FirstName}}</span>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.FirstName" placeholder="FirstName">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.LastName" placeholder="LastName">
+								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].FirstName}} {{custInfo.list.defaultAddr[0].LastName}}</span>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].FirstName" placeholder="FirstName">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].LastName" placeholder="LastName">
 							</div>
-							<span ng-show="!isEditing">{{custInfo.list.defaultAddr.Street1}} {{custInfo.list.defaultAddr.Street2}} {{custInfo.list.defaultAddr.City}}</span>
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Street1" placeholder="Street1">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Street2" placeholder="Street2">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.City" placeholder="City">
+							<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].Street1}} {{custInfo.list.defaultAddr[0].Street2}} {{custInfo.list.defaultAddr[0].City}}</span>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street2" placeholder="Street2">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City">
 							<div>
-								<span ng-show="!isEditing">{{custInfo.list.defaultAddr.State}} {{custInfo.list.defaultAddr.Country}} {{custInfo.list.defaultAddr.Zip}}</span>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.State" placeholder="State">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Country" placeholder="Country">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Zip" placeholder="Zip">
+								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].State}} {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</span>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Zip" placeholder="Zip">
 							</div>
 						</div>
 					<div class="info-blk cust-top">
@@ -127,24 +127,24 @@
 			<p>(EXPIRES: <span>{{custInfo.spendingAcc.purple.EndDate | date:'MM/dd/yyyy'}}<span>)</p>
 		</div>
 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-			<h1>PAYMENT OPTIONS <button ng-click="add">ADD CARD</button></h1>
-			<div ng-show="!paymentEdit" class="credit-card-details">
-				<h4>{{custInfo.creditCard.CardType}} ENDING IN {{custInfo.creditCard.PartialAccountNumber }}</h4>
+			<h1>PAYMENT OPTIONS <!-- <button ng-click="add">ADD CARD</button> --></h1>
+			<div ng-repeat="creditCard in custInfo.creditCard" class="credit-card-details">
+				<h4>{{creditCard.CardType}} ENDING IN {{creditCard.PartialAccountNumber }}</h4>
 				<div class="card-left">
 					<p>Name on Card</p>
-					<p  class="sub-addr">{{custInfo.creditCard.CardholderName}}</p>
+					<p  class="sub-addr">{{creditCard.CardholderName}}</p>
 					<!-- <button ng-click='isEditing = !isEditing'>Edit</button> -->
 				</div>
 				<div>
 					<p>Billing Address:</p>
 					<p class="sub-addr">{{custInfo.list.user.FirstName}} {{custInfo.list.user.LastName}}</p>
-					<p class="sub-addr">{{custInfo.list.defaultAddr.Street1}}, {{custInfo.list.defaultAddr.Street2}}, {{custInfo.list.defaultAddr.City}}</p>
-					<p class="sub-addr">{{custInfo.list.defaultAddr.State}}, {{custInfo.list.defaultAddr.Country}} {{custInfo.list.defaultAddr.Zip}}</p>
+					<p class="sub-addr">{{custInfo.list.defaultAddr[0].Street1}}, {{custInfo.list.defaultAddr[0].Street2}}, {{custInfo.list.defaultAddr[0].City}}</p>
+					<p class="sub-addr">{{custInfo.list.defaultAddr[0].State}}, {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</p>
 				</div>
-				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">Edit</button>
-				<button>Delete</button>
+<!-- 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">Edit</button>
+				<button>Delete</button> -->
 			</div>
- 			<div ng-show="paymentEdit" class="credit-card-edit col-sm-12 col-xs-12 col-md-12 col-lg-12">
+<!--  			<div ng-show="paymentEdit" class="credit-card-edit col-sm-12 col-xs-12 col-md-12 col-lg-12">
 				<div>
 					<h5>Card Information</h5>
 					<p>Cardholder's Name</p>
@@ -178,7 +178,7 @@
 				</div>
 				<button ng-click='paymentEdit = !paymentEdit' class="save">Save</button>
 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">cancel</button>
-			</div> 
+			</div>  -->
 		</div>
 		<div class="account-credits col-sm-12 col-xs-12 col-md-12 col-lg-12">
 			<h1>ACCOUNT CREDITS</h1>

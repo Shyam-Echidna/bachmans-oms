@@ -92,8 +92,8 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 						});
 					}) */
 					OrderCloud.As().Me.CreateAddress(line).then(function(addrList){
-							dfr.resolve(addrList);
-							$state.go('addressBook', {}, {reload:true});
+							addAddr=!addAddr;
+							vm.list.push(addrList);
 					})
 					}else{
 						alert("enter valid address to save..");

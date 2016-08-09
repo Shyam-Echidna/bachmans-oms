@@ -1,3 +1,14 @@
+input[type="number"],input[type="text"],input[type="email"],textarea,input[type="search"]{
+	&:focus::-webkit-input-placeholder { color:transparent; }
+            &:focus:-moz-placeholder { color:transparent; }
+            &:focus::-moz-placeholder { color:transparent; } 
+            &:focus:-ms-input-placeholder { color:transparent; }
+            &:focus{
+                background:#fff !important;
+				}
+				
+}
+
 .customer-info{
 	position: absolute;
     top:0px;
@@ -80,10 +91,23 @@
 		}
 		.info-blk{
 			margin-bottom:0;
-			p, input{
+			p{
 				.in-block;
 				box-shadow:none;
 				background-color:@color0;
+			}
+			input{
+			border:1px solid @color20;
+			.helvetica-regular;
+			font-size: 16px;
+			line-height:25px;
+			text-indent: 5px;
+			width:@width0;
+			height:35px;
+			-webkit-appearance: none;
+			background: #F4F4F4;
+			border-radius: 2px;
+			margin-bottom: 25px;
 			}
 			span{
 				.helvetica-regular;
@@ -106,7 +130,18 @@
 				.in-block;
 				width:70%;
 				input{
+				border:1px solid @color20;
+				.helvetica-regular;
+				font-size: 16px;
+				line-height:25px;
+				text-indent: 5px;
 				width:@width0;
+				height:35px;
+				-webkit-appearance: none;
+				background: #F4F4F4;
+				border-radius: 2px;
+				margin-bottom: 25px;
+				box-shadow:none;
 				}
 				div{
 					width:@width0;

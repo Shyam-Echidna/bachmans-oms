@@ -1,4 +1,4 @@
-input[type="number"],input[type="text"],input[type="email"],textarea{
+input[type="number"],input[type="text"],input[type="email"],textarea,input[type="search"]{
 	&:focus::-webkit-input-placeholder { color:transparent; }
             &:focus:-moz-placeholder { color:transparent; }
             &:focus::-moz-placeholder { color:transparent; } 
@@ -157,7 +157,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 	width:@width0;
 	background-color:@color0;
 	margin:0;
-	input[type="number"],input[type="text"],input[type="email"],textarea{
+	input[type="number"],input[type="text"],input[type="email"],textarea,input[type="search"]{
 		     border: 1px solid #e4e6ea;
 		    .helvetica-regular;
 		    font-size: 16px;
@@ -170,6 +170,12 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 		    margin-bottom: 25px;
 		    box-shadow:none;
 		}
+		.check-common{
+			label.check{
+				top: -1px;
+	    		left: -4px;	
+			}
+		}
 	a{
 		cursor: pointer;
 	}
@@ -179,6 +185,25 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 		left:0;
 		top:90px;
 		.checkoutSection {
+			.review-container{
+				.panel-body{
+					padding:10px 0px !important;
+					.user-name{
+						padding: 10px 0 10px 40px;		
+					}
+				}
+				.panel{
+					border: 2px solid #f5f5f5 !important;
+					padding: 0px !important;
+					margin-bottom: 13px !important;
+					svg{
+						 width: 17px;
+		    			fill: #8c58b5;
+		    			vertical-align: bottom;
+		    			margin-right: 7px;	
+					}
+				}
+			}
 			.panel-open{
 				.panel-heading{
 					h1{
@@ -265,17 +290,18 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
                             font-size:13px;
                             span {
                                 svg {
-                                    width:42px;
-                                    height: 11px;
-                                    fill: #8b5bb3;
-                                    margin:7px 0 0 0;
-                                    float:left;
+                                    width: 15px;
+								    height: 11px;
+								    fill: #8b5bb3;
+								    margin: 8px 0 0 10px;
+								    float: right;
                                 }
                             }
                         }
 				 	 }
 				 	 .radio-grp{
 				 	 	padding:0px;
+				 	 	margin:10px 0;
 				 	 	.radio-inline{
 				 	 		width: 32%;
 				 	 		padding-left: 23px;
@@ -291,12 +317,14 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 				 	 }
 				    }
 					ul.shipping-info{
+					margin-left:40px;
 						li{
 							display: inline-block;
 						    vertical-align: top;
-						    padding: 0 10px 10px 10px;
+						    padding: 0 10px 10px 20px;
 						    margin-top: 20px;
-						    /*border-left: 1px solid #f5f5f5;*/
+						    min-height: 120px;
+						    border-left: 1px solid #f5f5f5;
 						    p{
 						    	line-height: 1.4;
 						    	margin-bottom: 0;
@@ -317,7 +345,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 							border: 0;
 						}
 						li.shipping-FirstName, li.shipping-Date{
-							width: 18%;
+							width: 17%;
 						}
 						li.shipping-Addresses{
 							width: 35%;
@@ -337,7 +365,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 						.in-block;
 						width: 46%;
 					    margin-right: 3%;
-					    margin-bottom: 23px;
+					    margin-bottom:0;
 					}
 
 					p{
@@ -440,6 +468,9 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 							display:none;
 							&.hideItem {
 								display: block;
+								input{
+									margin-bottom: 10px;
+								}
 							}
 						}
 						.instruction{
@@ -523,6 +554,10 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
                                 border-left: 1px solid #ededed;
                                 border-radius: 2px;
                                 float:left;
+	                                  .active{
+	                                  		background: #f6edfd;
+										    border-bottom: 2px solid #8b5bb3 !important;
+	                                  }
                                 	.preference{
                                 		width:25%;
                                         float:left;
@@ -685,18 +720,51 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
                                 }
                                .delivery-days1,.delivery-days2,.select-date-info,.preference,.preference1{
                       				&:hover{
-                      					background: #f6edfd;
-                                        border-bottom: 2px solid #8b5bb3;
-                      				}
-	                  				&:active{
-	                                     background: #f6edfd;
-	                                     border-bottom: 2px solid #8b5bb3;
-	                                    }
-                               }
+		                      					background: #f6edfd;
+		                                        border-bottom: 2px solid #8b5bb3;
+				                      		}
+	                  			}
                             }
 							.select-store{
-								padding:5px 0 25px 15px;
+								padding: 20px 20px 0;
 								border:1px solid @color20;
+								 input{
+								 	 margin-bottom:0px;
+								 }
+								 .radio-common{
+								 	.radio{
+								 		top:4px;
+								 	}
+								 	span{
+								 		text-transform: capitalize;
+									 	font-size:14px;
+									 	.helvetica-regular;
+								 	}
+								 }
+								.dropdown-menu{
+										width:45%;
+										border:1px solid @base-bg-purple-light;
+										padding:0px;
+										height:236px;
+										overflow-y: scroll;
+										li{
+											border-bottom:1px solid @color21;
+											a{
+												font-size:13px;
+												padding: 5px 10px;
+												.helvetica-regular;
+												color:@color1;
+												text-decoration:none;
+												overflow: hidden;
+												white-space: nowrap;
+												text-overflow: ellipsis;
+											}
+										}
+										}
+										.dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus{
+										background-color:@base-bg-purple-light;
+										color:@color0 !important;
+										}
 								label{
 									margin-right: 0;
 								    display: inline-block;
@@ -707,7 +775,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 				}
 				input[type="button"]{
 					   	float:right;
-					   	margin-top:40px;
+					   	margin-top:35px;
 						padding:10px 15px;
 						background-color:@base-bg-purple-light;
 						border:none;
@@ -742,6 +810,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 						span{
 							.helvetica-bold;
 							font-size:13px;
+							margin-left: 5px;
 						}
 					}
 				}
@@ -754,6 +823,24 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 					border-top:none;
 						.saved-delivery-addr{
 							padding: 5px 15px;
+							.bill-addr-value {
+								position: relative;
+								p {
+									color: #666666;
+									 .helvetica-regular;
+									 font-size: 12px;
+   									 margin: 5px 0 1px 8px;
+   									 line-height:10px;
+								}
+								}
+								.email-value {
+								p {
+							   	  color: #464646;
+								  font-size:12px;
+								 .helvetica-regular;
+								  margin: 10px 0 10px 8px;
+								}
+								}
 							a{
 								text-decoration:underline;
 								.helvetica-bold;
@@ -766,6 +853,12 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 								.helvetica-regular;
 								font-size:12px;
 							}
+						}
+						.check-common{
+						   label.check{
+						   	top: -1px;
+    						left: -7px;
+						   }
 						}
 				}
 				.more-link{
@@ -859,8 +952,9 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 				line-height:23px;
 				.font-spacing;
 				background-color: transparent;
+				text-transform: capitalize;
 			}
-
+			
 		}
 		.payment-method{
 			padding-left:30px;
@@ -936,13 +1030,31 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 						top:-7px;
 					}
 				}
+				.payment-options{
+					margin-left:23% !important;
+					input{
+						width:40%;
+					}
+				}
+				.payment-options1{
+					margin:20px 0 0 20% !important;
+					label{
+						margin-top: -30px;
+					}
+					.payment-amt{
+						label{
+						 margin-top:0px;
+						}
+					}
+
+				}
 				 span{
 				 	text-transform: capitalize;
 				 	font-size:14px;
 				 	.helvetica-regular;
 				 }
 				.pay-m{
-					margin:20px 0 0 0;
+					padding:20px 0 0 0;
 					.cvv-title {
 							p {
 								font-size:16px;
@@ -954,8 +1066,8 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 							input#cvvNumber {
 								color: #000;
 								background: #f6f6f6;
-								width: 145px;
-								height: 45px;
+								width: 180px;
+								height: 35px;
 								border-radius: 2px;
 								display: inline-block;
 								margin-bottom: 5px;
@@ -967,7 +1079,8 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 									height: 15px;
 									fill: #a983c8;
 									vertical-align: middle;
-									margin-left: 10px;
+								    margin-left: 10px;
+									margin-top: -7px;
 								}
 							}
 							label {
@@ -975,6 +1088,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 								font-size:12px;
 								 .helvetica-regular;
 								display: block;
+								font-weight:normal;
 							}
 						}
 						 .bill-addr-title {
@@ -1001,8 +1115,9 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 									color: #8b5bb3 !important;
 								}
 								position: absolute;
-								top: 0;
+								top:7px;
 								right: 0;
+								line-height:12px;
 							}
 						}
 						 .email-value {
@@ -1339,8 +1454,8 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 	.checkoutContainer-right{
 		.position-common;
 		right:0;
-		top:90px;
-		padding-right:0;
+		top:98px;
+		
 		h1{
 			margin:0;
 		}
@@ -1370,7 +1485,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 				}
 			}
 			.order-total{
-				padding: 8px 15px;
+				padding: 8px 27px;
 				background-color:@base-bg-purple-light;
 				margin-bottom: 10px;
 				h1{
@@ -1402,7 +1517,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 					}
 					.prod-details{
 						.in-block;
-						width:68.9%;
+						width:68%;
 						padding-left: 3%;
 						p{
 							.helvetica-regular;
@@ -1482,7 +1597,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea{
 					.helvetica-regular;
 					font: 12px;
 					line-height:27px;
-					padding:0 10px;
+					padding:5px 10px;
 					border:none;
 					color:@color0;
 					.background-fade;

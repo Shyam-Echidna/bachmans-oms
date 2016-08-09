@@ -217,6 +217,11 @@ function ordercloudSearch () {
 
 function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud, algolia, Underscore, BuildOrderService) {
     var searching;	
+	var vm=this;
+	$scope.clearData=function(){
+		$scope.search.query="";
+		$scope.controlleras.searchedAddr.Items="";
+	}
 	if($scope.servicename!='address'){
 		var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');
 		$scope.index = client.initIndex($scope.servicename);
@@ -322,23 +327,19 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 					n == '' ? n = null : angular.noop();
 					TrackSearch.SetTerm(n);
 					if($scope.servicename === 'Addresses') {
-						OrderCloud.Users.GetAccessToken($scope.$parent.addressBook.dd, impersonation)
-						.then(function(data) {
-							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-							if (!$scope.controlleras.searchfunction) {
-								OrderCloud.As().Me.ListAddresses(n)
-									.then(function (data){
-										$scope.controlleras.searchedAddr = data;
-										console.log("kkkkkkk", $scope.controlleras.searchedAddr);
-									});
-							}
-							else {
-								$scope.controlleras.searchfunction($scope.searchTerm)
-									.then(function (data){
-										$scope.controlleras.searchedAddr = data;
-									});
-							}
-						})
+						if (!$scope.controlleras.searchfunction) {
+							OrderCloud.As().Me.ListAddresses(n)
+								.then(function (data){
+									$scope.controlleras.searchedAddr = data;
+									console.log("kkkkkkk", $scope.controlleras.searchedAddr);
+								});
+						}
+						else {
+							$scope.controlleras.searchfunction($scope.searchTerm)
+								.then(function (data){
+									$scope.controlleras.searchedAddr = data;
+								});
+						}
 					}
 					else {
 						if (!$scope.controlleras.searchfunction) {

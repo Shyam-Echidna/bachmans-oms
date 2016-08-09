@@ -921,7 +921,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				});
 			    BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
 					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
-					vm.orderTotal = data.Total;
+					vm.order = data;
 				});
 			});
 		}else{
@@ -1271,7 +1271,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				SameDate = line.xp.deliveryDate;
 				vm.getDeliveryCharges(line);
 			}
-		}	
+		}
 	}
 	vm.getDeliveryCharges = function(line){
 		vm.NoDeliveryFees = false;
@@ -1443,6 +1443,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
     var vm = this;
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
 		vm.order=Order;
+	}
 	vm.grouping = function(data){
 		var totalCost = 0;
 		vm.AvoidMultipleDelryChrgs = [];
@@ -1741,7 +1742,6 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		line.EditCharges = !line.EditCharges;
 		if(!line.EditCharges)
 			vm.lineDtlsSubmit(array, 0);
-	}
 	}
 }
 

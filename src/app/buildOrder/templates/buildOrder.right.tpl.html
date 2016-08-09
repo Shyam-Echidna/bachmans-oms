@@ -559,91 +559,59 @@
 			</table>
 		</modal>
 		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up">
-			<!-- <div ng-repeat="line in lineItemProducts track by line">
-				<div ng-repeat="row in buildOrderRight.activeOrders[line]">
-					<p>Recipient <span>{{row.ShippingAddress.FirstName}} {{row.ShippingAddress.LastName}}</span></p>
-					<p>Delivery Charges <span>{{row.xp.deliveryCharges | currency}}</span></p>
-					<p>Tax <span>{{row.xp.Tax | currency}}</span></p>
-					<p>SubTotal <span>{{row.xp.TotalCost | currency}}</span></p>
-				</div>
-			</div>
-			<p>Order Total <span>{{buildOrderRight.orderTotal | currency}}</span></p>
-			<button ng-click="gotoCheckout();OrderSummary();">PROCEED TO CHECKOUT</button> -->
 			<div class="recipient-details">
-				<div class="recipient-header">
-					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
-						Recipient 1
-					</div>
-					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
-						Jon Snow |  55401
-					</div>
-					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
-						$ 214.00
-					</div>
-				</div>
-				<div class="recipient-amt col-md-offset-7 col-md-5">
-					<div class="">
-						<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">$ 200.00</span>
-					</div>
-					<div class="">
-						<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">$ 12.00</span>
-					</div>
-					<div class="">
-						<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">$ 4.00</span>
-					</div>
-					<div class="">
-					<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">$ 214.00</span>
-					</div>
-				</div>
-				<div class="recipient-header">
-					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
-						Recipient 1
-					</div>
-					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
-						Jon Snow |  55401
-					</div>
-					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
-						$ 214.00
-					</div>
-				</div>
-				<div class="recipient-amt col-md-offset-7 col-md-5">
-					<div class="">
-						<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">$ 200.00</span>
-					</div>
-					<div class="">
-						<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">$ 12.00</span>
-					</div>
-					<div class="">
-						<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">$ 4.00</span>
-					</div>
-					<div class="">
-					<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">$ 214.00</span>
+				<div ng-repeat="line in lineItemProducts track by line">
+					<div ng-repeat="row in buildOrderRight.activeOrders[line]">
+						<div class="recipient-header">
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
+								Recipient {{$index+1}}
+							</div>
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
+								{{row.ShippingAddress.FirstName}} {{row.ShippingAddress.LastName}} |  {{row.ShippingAddress.Zip}}
+							</div>
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
+								{{row.xp.TotalCost | currency}}
+							</div>
+						</div>
+						<div class="recipient-amt col-md-offset-7 col-md-5">
+							<div class="">
+								<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{row.LineTotal | currency}}</span>
+							</div>
+							<div class="">
+								<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{row.xp.deliveryCharges | currency}}</span>
+							</div>
+							<div class="">
+								<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{row.xp.Tax | currency}}</span>
+							</div>
+							<div class="">
+							<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{row.xp.TotalCost | currency}}</span>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="recipient-details1">
 					<div class="recipient-amt col-md-offset-7 col-md-5">
 					<div class="">
-						<span class="col-md-7">Total Amount </span><span class="col-md-5 amt-val">$ 428.00</span>
+						<span class="col-md-7">Total Amount </span><span class="col-md-5 amt-val">{{buildOrderRight.order.Subtotal | currency}}</span>
 					</div>
 					<div class="">
-						<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">$ 24.00</span>
+						<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{buildOrderRight.order.ShippingCost | currency}}</span>
 					</div>
 					<div class="">
-						<span class="col-md-7">Total Tax </span><span class="col-md-5 amt-val">$ 8.00 </span>
+						<span class="col-md-7">Total Tax </span><span class="col-md-5 amt-val">{{buildOrderRight.order.TaxCost | currency}}</span>
 					</div>
-					
 				</div>
 				</div>
 				<div class="total-content">
 					<div class="total-header col-md-offset-7 col-md-5">
-						<span class="col-md-7">Total</span><span class="col-md-5 amt-val">$ 460.00</span>
+						<span class="col-md-7">Total</span><span class="col-md-5 amt-val">{{buildOrderRight.order.Total | currency}}</span>
 					</div>
 				</div>
 				<div class="continue-shop">
-					<div class="col-md-6">
+					<div class="col-md-6" ng-click="buildOrderRight.OrderConfirmPopUp = !buildOrderRight.OrderConfirmPopUp">
 						<a href="">Modify Order</a>
 					</div>
-					<div class="col-md-6 cont-shop">Continue Shopping</div>
+					<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">Continue Shopping</div>
 				</div>
 			</div>
 		</modal>

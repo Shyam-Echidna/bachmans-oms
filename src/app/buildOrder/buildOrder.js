@@ -337,6 +337,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		$scope.orderDetails=false;
 	}
 	$scope.ordersumry = function () {
+		console.log($scope);
 		angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.orderSummaryShow();
 	};
 	console.log('stateparams', $stateParams);
@@ -564,9 +565,20 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		vm.showPDP = false;
 	}
 	$scope.AddtoCart = function(prodID, specID, varientsOption){
-		if($stateParams.SearchType == 'Products'){
+		/*if($stateParams.SearchType == 'Products'){
 			vm.guestUserModal =! vm.guestUserModal;
-		}
+		}*/
+		/*if($stateParams.SearchType == 'Products'){
+			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(res){
+				console.log(res);
+				OrderCloud.Auth.SetImpersonationToken(res.access_token);
+				var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
+				OrderCloud.As().Orders.Create(orderParams).then(function(res1){
+					console.log(res1);
+					OrderCloud.As().LineItems.Create(res1.ID, {"ProductID": prodID,"Quantity": 1});
+				})
+			})
+		}*/
 		var DeliveryMethod;
 		if(vm.DirectShip)
 			DeliveryMethod = "DirectShip";
@@ -763,6 +775,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	var lineItemParams = {"ProductID": "","Quantity": 1};
 	$scope.buildOrderItems = function(prodID, DeliveryMethod){
 		var buildorderPdp = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.productDetails;
+		console.log(buildorderPdp);
 		if($stateParams.prodID != null || $stateParams.orderID != ""){
 			if(buildorderPdp){
 				if(!buildorderPdp.editProducts){
@@ -789,19 +802,36 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 	};
 	$scope.beforeAddToCart = function(prodID, DeliveryMethod){
+		console.log(vm.order);
 		if(!vm.order){
-			OrderCloud.As().Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
+			OrderCloud.Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
 				if(res.Items.length != 0){
 					CurrentOrder.Set(res.Items[0].ID);
 					vm.order = res.Items[0];
 					$scope.buildOrderItems(prodID, DeliveryMethod);
 				}else{
 					var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
-					OrderCloud.As().Orders.Create(orderParams).then(function(res){
-						CurrentOrder.Set(res.ID);
-						vm.order = res;
-						$scope.buildOrderItems(prodID, DeliveryMethod);
-					});
+					if($stateParams.SearchType == 'Products'){
+						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(res){
+							console.log(res);
+							OrderCloud.Auth.SetImpersonationToken(res.access_token);
+							var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
+							OrderCloud.As().Orders.Create(orderParams).then(function(res1){
+								console.log(res1);
+								//OrderCloud.As().LineItems.Create(res1.ID, {"ProductID": prodID,"Quantity": 1});
+								CurrentOrder.Set(res1.ID);
+								vm.order = res1;
+								$scope.buildOrderItems(prodID, DeliveryMethod);
+							})
+						})
+					}
+					else{
+						OrderCloud.As().Orders.Create(orderParams).then(function(res){
+							CurrentOrder.Set(res.ID);
+							vm.order = res;
+							$scope.buildOrderItems(prodID, DeliveryMethod);
+						});
+					}
 				}
 			});
 		}else{
@@ -921,7 +951,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				});
 			    BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
 					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
-					vm.orderTotal = data.Total;
+					vm.order = data;
 				});
 			});
 		}else{
@@ -1271,7 +1301,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				SameDate = line.xp.deliveryDate;
 				vm.getDeliveryCharges(line);
 			}
-		}	
+		}
 	}
 	vm.getDeliveryCharges = function(line){
 		vm.NoDeliveryFees = false;
@@ -1443,6 +1473,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
     var vm = this;
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
 		vm.order=Order;
+	}
 	vm.grouping = function(data){
 		var totalCost = 0;
 		vm.AvoidMultipleDelryChrgs = [];
@@ -1742,7 +1773,6 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		if(!line.EditCharges)
 			vm.lineDtlsSubmit(array, 0);
 	}
-	}
 }
 
 function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore) {
@@ -1964,7 +1994,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 	}
 	function _CompareDate(endDate){
 		var d = $q.defer();
-		$.ajax({
+		/*$.ajax({
 			method:"GET",
 			dataType:"json",
 			contentType: "application/json",
@@ -1976,7 +2006,8 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				d.resolve(res.date);
 		}).error(function(err){
 			console.log("err"+err);
-		});
+		});*/
+		d.resolve();
 		return d.promise;
 	}
 	function _GetPreceedingZeroDate(dt){

@@ -1033,9 +1033,10 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 		if(line.xp.Tax)
 			line.xp.TotalCost = deliverySum + (parseFloat(line.Quantity) * parseFloat(line.UnitPrice)) + line.xp.Tax;
-		if(line.xp.addressType=="Hospital" ){
+		if(line.xp.addressType=="Hospital"){
 			line.ShippingAddress.CompanyName = line.hosSearch;
-		}else{
+		}
+		if(line.xp.addressType=="Residence" || line.xp.addressType=="Church" || line.xp.addressType=="School" || line.xp.addressType=="Will Call"){
 			delete line.xp.PatientFName;
 			delete line.xp.PatientLName;
 		}
@@ -1047,6 +1048,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 		if(line.xp.addressType=="Funeral" ){
 			line.ShippingAddress.CompanyName = line.funeralSearch;
+		}
+		if(line.xp.addressType=="Cemetery" ){
+			line.ShippingAddress.CompanyName = line.cemeterySearch;
 		}
 		if(line.xp.addressType=="Will Call"){
 			delete line.xp.deliveryDate;
@@ -1244,7 +1248,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		deliveryCharges = res.xp.ZipCodes;
 	});
 	vm.changeAddrType = function(addressType, line){
-		line.xp.addressType = addressType;
+		//line.xp.addressType = addressType;
 		vm.lineItemForm[line.ID].$setPristine();
 		if(addressType != "Will Call" || line.willSearch){
 			vm.getDeliveryCharges(line);
@@ -1260,6 +1264,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 		if(addressType == "School" && !vm.SchoolNames){
 			vm.GetAllList("School");
+		}
+		if(addressType == "Cemetery" && !vm.CemeteryNames){
+			vm.GetAllList("Cemetery");
 		}
 	}
 	vm.GetAllList = function(AddrType){
@@ -1280,6 +1287,10 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			if(AddrType=="School"){
 				vm.SchoolNames = res.data.Names;
 				vm.SchoolsList = res.data.List;
+			}
+			if(AddrType=="Cemetery"){
+				vm.CemeteryNames = res.data.Names;
+				vm.CemeterysList = res.data.List;
 			}
 		});
 	}
@@ -1439,7 +1450,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(!_.contains(arr, false) && _.contains(arr2, false)){
 			vm.lineDtlsSubmit(LineItemLists, 0);
 		}
-		if(!_.contains(arr2, false)){
+		if(!_.contains(arr2, false) && !_.contains(arr, false)){
 			vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 		}
 	}

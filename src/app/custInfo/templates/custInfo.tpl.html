@@ -2,7 +2,7 @@
 	<div class="cust-info-container row">
 		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
-				<h1>PERSONAL INFORMATION <button ng-click="isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
 				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
 					<div class="info-blk form-group">
@@ -52,7 +52,6 @@
 						<span ng-show="!isEditing"></span>
 						<input type="text" ng-show="isEditing" value="">
 					</div>
-
 			        <div class="form-group" ng-show="isEditing">
 						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			
 					</div>

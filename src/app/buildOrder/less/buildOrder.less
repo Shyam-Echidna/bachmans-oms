@@ -322,6 +322,7 @@ button {
 				}
 				.product_img img{
 					max-width:100%;
+
 				}
 				.price_lst h5{
 					padding:0 15px;
@@ -330,6 +331,26 @@ button {
 					color:@primary-dark-color;
 					margin:5px 0 0;
 				}
+				.product_img{
+					width:100%;
+					height:100%;
+					float:left;
+					overflow:hidden;
+					position:relative;
+					text-align:center;
+					cursor:default;
+				}
+				.product_img img{
+				display:block;
+				position:relative;
+				-webkit-transition:all 1s linear;
+				transition:all 1s linear;	
+				}
+				.product_img:hover img {
+					-ms-transform:scale(1.1);
+					-webkit-transform:scale(1.1);
+					transform:scale(1.1);
+			   }
 			}
 		}
 		.plp-container{

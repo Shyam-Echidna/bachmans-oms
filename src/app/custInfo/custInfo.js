@@ -16,39 +16,38 @@ function CustInfoConfig( $stateProvider ) {
                 ID:null                
             },
 			resolve: {
-                UserList: function( OrderCloud, $stateParams, $state, $q) {
+                UserList: function( OrderCloud, $state, $q) {
                     var arr={};
 					var dfr = $q.defer();
-                    console.log($stateParams);
-                    OrderCloud.Users.Get($stateParams.ID).then(function(data){
-					  console.log("dsbhsbhsb", data);
-					  arr["user"] = data;
-					 // Addresses.ListAssignments('pyAS_zcYkkGWpdeNbvjz1Q').then(function(assign){
-						// console.log("assignnn",assign);
-						// dfr.resolve(arr);
-					 // });
-					 console.log("userssss", arr);
-					   console.log(arr);
-						OrderCloud.Addresses.ListAssignments(null,arr.user.ID).then(function(addrList){
-						var addr = {};
-						angular.forEach(addrList.Items, function(value, key) {
-								OrderCloud.Addresses.Get(value.AddressID).then(function(address){
-								// log.push(key + ': ' + final);
-								addr[key]=address;
-								console.log(addr);
-								if(address.xp.IsDefault){
-									arr["defaultAddr"]=address;
-								}
-							 });
-							}, addr);
-							arr["addresses"] = addr;
-							console.log("addresses", arr);
-						 
-					 });
-					 dfr.resolve(arr);
-					 console.log(arr);
+                    OrderCloud.As().Me.Get().then(function(data){
+						console.log("dsbhsbhsb", data);
+						arr["user"] = data;
+						console.log("userssss", arr);
+						console.log(arr);
+							/*OrderCloud.Addresses.ListAssignments(null,arr.user.ID).then(function(addrList){
+							var addr = {};
+							angular.forEach(addrList.Items, function(value, key) {
+									OrderCloud.Addresses.Get(value.AddressID).then(function(address){
+									addr[key]=address;
+									console.log(addr);
+									if(address.xp.IsDefault){
+										arr["defaultAddr"]=address;
+									}
+								 });
+								}, addr);
+								arr["addresses"] = addr;
+								console.log("addresses", arr);
+							 
+						 }); */
+						OrderCloud.As().Me.ListAddresses(null, 1, 100).then(function(addrList){
+							arr["addresses"]=addrList.Items;
+								arr["defaultAddr"]=_.filter(addrList.Items, function(obj) {
+									return _.indexOf([obj.xp.IsDefault], true) > -1
+								});
+							console.log("addrList", addrList);
+							dfr.resolve(arr);
+						})
                     });
-                    console.log(arr);
                     return dfr.promise;
                 },
 				spendingAccounts:function($q, $state, $stateParams, OrderCloud){
@@ -58,17 +57,17 @@ function CustInfoConfig( $stateProvider ) {
 				    OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 					console.log("spending acoount iddddd:", assign);
 						angular.forEach(assign.Items, function(value, key) {
-						OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
-							arr.push(spendingacc);
-                            var filterPurple = _.filter(arr, function(row){
-                                return _.indexOf(["Purple Perks"],row.Name) > -1;
-                            });
-                            var filterCharges = _.filter(arr, function(row){
-                                return _.indexOf(["Bachman Charges"],row.Name) > -1;
-                            });
-                            spendingAcc.purple=filterPurple[0];
-                            spendingAcc.charges=filterCharges[0];
-						})
+							OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
+								arr.push(spendingacc);
+								var filterPurple = _.filter(arr, function(row){
+									return _.indexOf(["Purple Perks"],row.Name) > -1;
+								});
+								var filterCharges = _.filter(arr, function(row){
+									return _.indexOf(["Bachman Charges"],row.Name) > -1;
+								});
+								spendingAcc.purple=filterPurple[0];
+								spendingAcc.charges=filterCharges[0];
+							})
 						});
 						 console.log("spending final:", spendingAcc);
 						 dfd.resolve(spendingAcc);
@@ -78,7 +77,7 @@ function CustInfoConfig( $stateProvider ) {
 				},
 				creditCard:function($q, $state, $stateParams, OrderCloud){
 					var dfd=$q.defer();
-					OrderCloud.CreditCards.ListAssignments(null, $stateParams.ID).then(function(assign){
+					/*OrderCloud.CreditCards.ListAssignments(null, $stateParams.ID).then(function(assign){
 						console.log("datadatadatadata", assign);
 						angular.forEach(assign.Items, function(value, key) {
 							OrderCloud.CreditCards.Get(value.CreditCardID).then(function(data){
@@ -89,6 +88,9 @@ function CustInfoConfig( $stateProvider ) {
 						if(assign.Items.length==0){
 							dfd.resolve();
 						}
+					}); */
+					OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
+						dfd.resolve(response);
 					});
 					return dfd.promise;
 				},
@@ -123,13 +125,14 @@ function CustInfoConfig( $stateProvider ) {
 }
 
 
-function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact) {
+function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact, BuildOrderService, AddressValidationService) {
 	var vm = this;
 	vm.list = UserList;
 	vm.subscribedList=userSubscription;
 	console.log("vm.subscribedLis", vm.subscribedList);
 	vm.spendingAcc=spendingAccounts;
-	vm.creditCard=creditCard;
+	vm.creditCard=creditCard.Items;
+	console.log("creditCard",vm.creditCard);
 	console.log("spendingAccounts", spendingAccounts);
 	console.log("vm.purple", vm.purple);
 	console.log("vm.charges", vm.charges);
@@ -142,17 +145,41 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 		 console.log(vm.list.TermsAccepted);
     }	
      vm.Submit = function() {
-		var today = new Date();
-        vm.list.user.TermsAccepted = today;
-		OrderCloud.Users.Update(userid, vm.list.user).then(function(){
-			OrderCloud.Addresses.Update(vm.list.user.xp.DefaultAddress,vm.list.defaultAddr).then(function(){
-				$state.go('custInfo', {}, {reload:true});
-			})
+		AddressValidationService.Validate(vm.list.defaultAddr[0]).then(function(res){
+			var validatedAddress = res.Address;
+			var zip = validatedAddress.PostalCode.substring(0, 5);
+			vm.list.defaultAddr[0].Zip = parseInt(zip);
+			vm.list.defaultAddr[0].Street1 = validatedAddress.Line1;
+			vm.list.defaultAddr[0].Street2 = null;
+			vm.list.defaultAddr[0].City = validatedAddress.City;
+			vm.list.defaultAddr[0].State = validatedAddress.Region;
+			vm.list.defaultAddr[0].Country = validatedAddress.Country;
+			var today = new Date();
+			vm.list.user.Phone = "("+vm.list.user.contact.Phone1+") "+vm.list.user.contact.Phone2+"-"+vm.list.user.contact.Phone3;
+			vm.list.user.TermsAccepted = today;
+			if(res.ResultCode == 'Success') {
+				OrderCloud.As().Me.Update(vm.list.user).then(function(){
+					OrderCloud.As().Me.UpdateAddress(vm.list.defaultAddr[0].ID,vm.list.defaultAddr[0]).then(function(){
+						$state.go('custInfo', {}, {reload:true});
+					})
+				})
+			}
 		})
-          .catch(function(ex) {
-                 $exceptionHandler(ex)
-            });
      }
+	vm.editAddress = function(editAddr){
+		vm.list.user.contact={};
+		BuildOrderService.GetPhoneNumber(editAddr).then(function(res){
+			vm.list.user.contact.Phone1 = res[0];
+			vm.list.user.contact.Phone2 = res[1];
+			vm.list.user.contact.Phone3 = res[2];
+		});
+	}
+	vm.getLocation=function(){
+		AddressValidationService.Validate(vm.list.defaultAddr[0]).then(function(res){
+			vm.list.defaultAddr[0].City = res.Address.City;
+			vm.list.defaultAddr[0].State = res.Address.Region;
+		});
+	}
 	$scope.ok=function(){
 		OrderCloud.Users.Update(userid, vm.list.user).then(function(){
 			alert("Password changed");

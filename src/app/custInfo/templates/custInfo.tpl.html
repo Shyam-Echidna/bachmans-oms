@@ -2,57 +2,70 @@
 	<div class="cust-info-container row">
 		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
-				<h1>PERSONAL INFORMATION <button ng-click="isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
 				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
-					<div class="info-blk form-group">
-						<p>Email Address:</p>
-						<span ng-show="!isEditing">{{custInfo.list.user.Email}}</span>
-						<input ng-show="isEditing" type="email" class="form-control" ng-model="custInfo.list.user.Email" placeholder="email">
+					<div class="info-blk form-group col-md-12 cust-form">
+						<p class="col-md-3 cust-del">Email Address:</p>
+					
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.Email}}</span>
+						<input ng-show="isEditing" type="email" class="form-control col-md-6" ng-model="custInfo.list.user.Email" placeholder="email">
+						
 					</div>
-					<p class="cust-top">Primary Account Holder</p>
-					<div class="info-blk form-group">
-						<p>First Name:</p>
-						<span ng-show="!isEditing">{{custInfo.list.user.FirstName}}</span>
-						<input type="text" ng-show="isEditing" name="fname" class="form-control" ng-model="custInfo.list.user.FirstName"  placeholder="FirstName">
+					<p class="cust-top col-md-12">Primary Account Holder</p>
+					<div class="info-blk form-group col-md-12">
+						<p class="col-md-3 cust-del">First Name:</p>
+						
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.Email}}</span>
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.FirstName}}</span>
+						<input type="text" ng-show="isEditing" name="fname" class="form-control col-md-6" ng-model="custInfo.list.user.FirstName"  placeholder="FirstName">
+					
 					</div>
-					<div class="info-blk form-group">
-						<p>Last Name:</p>
-						<span ng-show="!isEditing">{{custInfo.list.user.LastName}}</span>
-						<input type="text" ng-show="isEditing" class="form-control" ng-model="custInfo.list.user.LastName"  placeholder="LastName">
+					<div class="info-blk form-group col-md-12">
+						<p class="col-md-3 cust-del">Last Name:</p>
+						
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.LastName}}</span>
+						<input type="text" ng-show="isEditing" class="form-control col-md-6" ng-model="custInfo.list.user.LastName"  placeholder="LastName">
+						
 					</div>
-					<div class="cust-street cust-top">
-						<p>Street Address:</p>
-						<div>
-							<p ng-show="!isEditing">{{custInfo.list.defaultAddr.CompanyName}}</p>
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.CompanyName" placeholder="CompanyName">
+					<div class="cust-street cust-top col-md-12">
+						<p class="col-md-3 cust-del">Street Address:</p>
+						<div class="col-md-6 cust-addr">
+							<p ng-show="!isEditing">{{custInfo.list.defaultAddr[0].CompanyName}}</p>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.CompanyName" placeholder="CompanyName" class="cust-addr1">
 							<div>
-								<span ng-show="!isEditing">{{custInfo.list.defaultAddr.FirstName}} {{custInfo.list.defaultAddr.FirstName}}</span>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.FirstName" placeholder="FirstName">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.LastName" placeholder="LastName">
+								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].FirstName}} {{custInfo.list.defaultAddr[0].LastName}}</span>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].FirstName" placeholder="FirstName">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].LastName" placeholder="LastName">
 							</div>
-							<span ng-show="!isEditing">{{custInfo.list.defaultAddr.Street1}} {{custInfo.list.defaultAddr.Street2}} {{custInfo.list.defaultAddr.City}}</span>
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Street1" placeholder="Street1">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Street2" placeholder="Street2">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.City" placeholder="City">
+							<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].Street1}} {{custInfo.list.defaultAddr[0].Street2}} {{custInfo.list.defaultAddr[0].City}}</span>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1" ng-blur="custInfo.getLocation()" required>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street2" placeholder="Street2">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City" readonly>
 							<div>
-								<span ng-show="!isEditing">{{custInfo.list.defaultAddr.State}} {{custInfo.list.defaultAddr.Country}} {{custInfo.list.defaultAddr.Zip}}</span>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.State" placeholder="State">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Country" placeholder="Country">
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.Zip" placeholder="Zip">
+								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].State}} {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</span>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Zip" ng-blur="custInfo.getLocation()" placeholder="Zip" required>
 							</div>
 						</div>
-					<div class="info-blk cust-top">
-						<p>Phone Number:</p>
-						<span ng-show="!isEditing">{{custInfo.list.user.Phone}}</span>
-						<input type="text" ng-show="isEditing" ng-model="custInfo.list.user.Phone">
-					</div>
+						<div class="info-blk cust-top">
+							<p class="col-md-3">Phone Number:</p>
+						
+							<span ng-show="!isEditing" class="col-md-6 phone-num">{{custInfo.list.user.Phone}}</span><!--
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.user.Phone"> -->
+							<input type="number" ng-show="isEditing" placeholder="Area Code" ng-model="custInfo.list.user.contact.Phone1" max-length="3" class="col-md-3 phone-val">
+							<input type="number" ng-show="isEditing" placeholder="Prefix" ng-model="custInfo.list.user.contact.Phone2" max-length="3" class="col-md-3 phone-val">
+							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4" class="col-md-3 phone-val">
+							
+						</div>
 					<div class="info-blk">
-						<p>Tax Exempt Number:</p>
-						<span ng-show="!isEditing"></span>
-						<input type="text" ng-show="isEditing" value="">
+						<p class="col-md-3">Tax Exempt Number:</p>
+					
+						<span ng-show="!isEditing" class="col-md-6"></span>
+						<input type="text" ng-show="isEditing" value="" class="col-md-6 phone-val1">
+					
 					</div>
-
 			        <div class="form-group" ng-show="isEditing">
 						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			
 					</div>
@@ -127,24 +140,24 @@
 			<p>(EXPIRES: <span>{{custInfo.spendingAcc.purple.EndDate | date:'MM/dd/yyyy'}}<span>)</p>
 		</div>
 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-			<h1>PAYMENT OPTIONS <button ng-click="add">ADD CARD</button></h1>
-			<div ng-show="!paymentEdit" class="credit-card-details">
-				<h4>{{custInfo.creditCard.CardType}} ENDING IN {{custInfo.creditCard.PartialAccountNumber }}</h4>
+			<h1>PAYMENT OPTIONS <!-- <button ng-click="add">ADD CARD</button> --></h1>
+			<div ng-repeat="creditCard in custInfo.creditCard" class="credit-card-details">
+				<h4>{{creditCard.CardType}} ENDING IN {{creditCard.PartialAccountNumber }}</h4>
 				<div class="card-left">
 					<p>Name on Card</p>
-					<p  class="sub-addr">{{custInfo.creditCard.CardholderName}}</p>
+					<p  class="sub-addr">{{creditCard.CardholderName}}</p>
 					<!-- <button ng-click='isEditing = !isEditing'>Edit</button> -->
 				</div>
 				<div>
 					<p>Billing Address:</p>
 					<p class="sub-addr">{{custInfo.list.user.FirstName}} {{custInfo.list.user.LastName}}</p>
-					<p class="sub-addr">{{custInfo.list.defaultAddr.Street1}}, {{custInfo.list.defaultAddr.Street2}}, {{custInfo.list.defaultAddr.City}}</p>
-					<p class="sub-addr">{{custInfo.list.defaultAddr.State}}, {{custInfo.list.defaultAddr.Country}} {{custInfo.list.defaultAddr.Zip}}</p>
+					<p class="sub-addr">{{custInfo.list.defaultAddr[0].Street1}}, {{custInfo.list.defaultAddr[0].Street2}}, {{custInfo.list.defaultAddr[0].City}}</p>
+					<p class="sub-addr">{{custInfo.list.defaultAddr[0].State}}, {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</p>
 				</div>
-				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">Edit</button>
-				<button>Delete</button>
+<!-- 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">Edit</button>
+				<button>Delete</button> -->
 			</div>
- 			<div ng-show="paymentEdit" class="credit-card-edit col-sm-12 col-xs-12 col-md-12 col-lg-12">
+<!--  			<div ng-show="paymentEdit" class="credit-card-edit col-sm-12 col-xs-12 col-md-12 col-lg-12">
 				<div>
 					<h5>Card Information</h5>
 					<p>Cardholder's Name</p>
@@ -178,7 +191,7 @@
 				</div>
 				<button ng-click='paymentEdit = !paymentEdit' class="save">Save</button>
 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">cancel</button>
-			</div> 
+			</div>  -->
 		</div>
 		<div class="account-credits col-sm-12 col-xs-12 col-md-12 col-lg-12">
 			<h1>ACCOUNT CREDITS</h1>

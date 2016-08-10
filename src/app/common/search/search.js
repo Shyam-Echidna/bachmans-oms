@@ -220,7 +220,11 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 	var vm=this;
 	$scope.clearData=function(){
 		$scope.search.query="";
-		$scope.controlleras.searchedAddr.Items="";
+		if($scope.servicename=='Addresses'){
+			$scope.controlleras.searchedAddr.Items="";
+		}
+		else
+		$scope.controlleras.list="";
 	}
 	if($scope.servicename!='address'){
 		var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');

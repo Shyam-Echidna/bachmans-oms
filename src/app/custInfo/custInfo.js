@@ -57,17 +57,17 @@ function CustInfoConfig( $stateProvider ) {
 				    OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 					console.log("spending acoount iddddd:", assign);
 						angular.forEach(assign.Items, function(value, key) {
-						OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
-							arr.push(spendingacc);
-                            var filterPurple = _.filter(arr, function(row){
-                                return _.indexOf(["Purple Perks"],row.Name) > -1;
-                            });
-                            var filterCharges = _.filter(arr, function(row){
-                                return _.indexOf(["Bachman Charges"],row.Name) > -1;
-                            });
-                            spendingAcc.purple=filterPurple[0];
-                            spendingAcc.charges=filterCharges[0];
-						})
+							OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
+								arr.push(spendingacc);
+								var filterPurple = _.filter(arr, function(row){
+									return _.indexOf(["Purple Perks"],row.Name) > -1;
+								});
+								var filterCharges = _.filter(arr, function(row){
+									return _.indexOf(["Bachman Charges"],row.Name) > -1;
+								});
+								spendingAcc.purple=filterPurple[0];
+								spendingAcc.charges=filterCharges[0];
+							})
 						});
 						 console.log("spending final:", spendingAcc);
 						 dfd.resolve(spendingAcc);
@@ -146,24 +146,24 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
     }	
      vm.Submit = function() {
 		AddressValidationService.Validate(vm.list.defaultAddr[0]).then(function(res){
-		var validatedAddress = res.Address;
-		var zip = validatedAddress.PostalCode.substring(0, 5);
-		vm.list.defaultAddr[0].Zip = parseInt(zip);
-		vm.list.defaultAddr[0].Street1 = validatedAddress.Line1;
-		vm.list.defaultAddr[0].Street2 = null;
-		vm.list.defaultAddr[0].City = validatedAddress.City;
-		vm.list.defaultAddr[0].State = validatedAddress.Region;
-		vm.list.defaultAddr[0].Country = validatedAddress.Country;
-		var today = new Date();
-		vm.list.user.Phone = "("+vm.list.user.contact.Phone1+") "+vm.list.user.contact.Phone2+"-"+vm.list.user.contact.Phone3;
-        vm.list.user.TermsAccepted = today;
-		if(res.ResultCode == 'Success') {
-			OrderCloud.As().Me.Update(vm.list.user).then(function(){
-				OrderCloud.As().Me.UpdateAddress(vm.list.defaultAddr[0].ID,vm.list.defaultAddr[0]).then(function(){
-					$state.go('custInfo', {}, {reload:true});
+			var validatedAddress = res.Address;
+			var zip = validatedAddress.PostalCode.substring(0, 5);
+			vm.list.defaultAddr[0].Zip = parseInt(zip);
+			vm.list.defaultAddr[0].Street1 = validatedAddress.Line1;
+			vm.list.defaultAddr[0].Street2 = null;
+			vm.list.defaultAddr[0].City = validatedAddress.City;
+			vm.list.defaultAddr[0].State = validatedAddress.Region;
+			vm.list.defaultAddr[0].Country = validatedAddress.Country;
+			var today = new Date();
+			vm.list.user.Phone = "("+vm.list.user.contact.Phone1+") "+vm.list.user.contact.Phone2+"-"+vm.list.user.contact.Phone3;
+			vm.list.user.TermsAccepted = today;
+			if(res.ResultCode == 'Success') {
+				OrderCloud.As().Me.Update(vm.list.user).then(function(){
+					OrderCloud.As().Me.UpdateAddress(vm.list.defaultAddr[0].ID,vm.list.defaultAddr[0]).then(function(){
+						$state.go('custInfo', {}, {reload:true});
+					})
 				})
-			})
-		}
+			}
 		})
      }
 	vm.editAddress = function(editAddr){

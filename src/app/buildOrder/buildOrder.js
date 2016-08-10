@@ -280,7 +280,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	$scope.showplp = true;
 	$scope.gotoCheckout=function(){
 		if($scope.showOrdersummary == true){
-			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+			if($stateParams.SearchType == 'Products'){
+				vm.guestUserModal =! vm.guestUserModal;
+			}
+			//$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
 		}
 	};
 	$scope.selectVarients = function(txt,index){
@@ -821,6 +824,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								//OrderCloud.As().LineItems.Create(res1.ID, {"ProductID": prodID,"Quantity": 1});
 								CurrentOrder.Set(res1.ID);
 								vm.order = res1;
+								if($stateParams.SearchType == 'Products'){
+									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order=res1;	
+								}
 								$scope.buildOrderItems(prodID, DeliveryMethod);
 							})
 						})
@@ -951,7 +957,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				});
 			    BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
 					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
-					vm.order = data;
+					vm.orderTotal = data.Total;
 				});
 			});
 		}else{
@@ -1301,7 +1307,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				SameDate = line.xp.deliveryDate;
 				vm.getDeliveryCharges(line);
 			}
-		}
+		}	
 	}
 	vm.getDeliveryCharges = function(line){
 		vm.NoDeliveryFees = false;
@@ -1474,6 +1480,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
 		vm.order=Order;
 	}
+	console.log(vm.order);
 	vm.grouping = function(data){
 		var totalCost = 0;
 		vm.AvoidMultipleDelryChrgs = [];
@@ -1521,15 +1528,18 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		}
 		vm.groups = _.toArray(data);
 	};
-	vm.orderSummaryShow = function(){
-		OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
-			LineItemHelpers.GetProductInfo(res.Items).then(function(data){
-				vm.grouping(data);
+	vm.orderSummaryShow = function(order){
+		if(vm.order){
+			console.log(vm.order);
+			OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
+				LineItemHelpers.GetProductInfo(res.Items).then(function(data){
+					vm.grouping(data);
+				});
+				BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
+					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
+				});
 			});
-			BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
-				angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
-			});
-		});
+		}
 	};
 	vm.orderSummaryShow();
     vm.deleteProduct = function(lineitem) {
@@ -1773,6 +1783,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		if(!line.EditCharges)
 			vm.lineDtlsSubmit(array, 0);
 	}
+	//}
 }
 
 function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore) {

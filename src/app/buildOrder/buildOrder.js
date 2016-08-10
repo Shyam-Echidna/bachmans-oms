@@ -899,6 +899,15 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 							}
 							var dt;
 							val.xp.MinDays = {};
+							if(val.xp.addressType == "Church")
+								val.churchSearch = val.ShippingAddress.CompanyName;
+							if(val.xp.addressType == "Funeral")
+								val.funeralSearch = val.ShippingAddress.CompanyName;	
+							if(val.xp.addressType == "Hospital")
+								val.hosSearch = val.ShippingAddress.CompanyName;
+							if(val.xp.addressType == "Cemetery")
+								val.cemeterySearch = val.ShippingAddress.CompanyName;	
+								
 							if(val.xp.deliveryDate){
 								var dat = new Date();
 								dat.setHours(0, 0, 0, 0);
@@ -1205,6 +1214,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		store.ShippingAddress.City = filt[0].city;
 		store.ShippingAddress.State = filt[0].state;
 		store.ShippingAddress.Zip = parseInt(filt[0].zipCode);
+		store.ShippingAddress.Country = filt[0].Country;
 		BuildOrderService.GetPhoneNumber(filt[0].phoneNumber).then(function(res){
 			store.ShippingAddress.Phone1 = res[0];
 			store.ShippingAddress.Phone2 = res[1];
@@ -1226,6 +1236,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			list = vm.ChurchsList;
 			delete line.funeralSearch;
 		}
+		if(line.xp.addressType=="Cemetery"){
+			list = vm.CemeterysList;
+		}
 		var filt = _.filter(list, function(row){
 			return _.indexOf([item],row.CompanyName) > -1;
 		});
@@ -1236,6 +1249,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		line.ShippingAddress.City = filt[0].City;
 		line.ShippingAddress.State = filt[0].State;
 		line.ShippingAddress.Zip = parseInt(filt[0].Zip);
+		line.ShippingAddress.Country = filt[0].Country;
 		BuildOrderService.GetPhoneNumber(filt[0].Phone).then(function(res){
 			line.ShippingAddress.Phone1 = res[0];
 			line.ShippingAddress.Phone2 = res[1];
@@ -1421,14 +1435,14 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	$scope.editProduct = function(line){
 		angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.productdata(line[0].ProductID, line[0].varientsOptions, line);
 	};
-	vm.GetSearchedVal = function(lineitems){
+	/*vm.GetSearchedVal = function(lineitems){
 		if(lineitems.xp.addressType=="School")
 			lineitems.schSearch = lineitems.xp.SearchedName;
 		if(lineitems.xp.addressType=="Funeral" || lineitems.xp.addressType=="Church")
 			lineitems.churchSearch = lineitems.xp.SearchedName;	
 		if(lineitems.xp.addressType=="Hospital")
 			lineitems.hosSearch = lineitems.xp.SearchedName;		
-	}
+	}*/
 	vm.SaveAllLineItems = function(){
 		var LineItemLists = [], arr = [], arr2 = [], id, obj = {};
 		angular.forEach(vm.activeOrders, function(val, key){
@@ -1437,6 +1451,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		vm.HighLightErrors = {};
 		angular.forEach(vm.lineItemForm, function(val, key){
 			if(val!=undefined){
+				val.$submitted = true;
 				arr.push(val.$valid);
 				arr2.push(val.$pristine);
 				if(!val.$valid){
@@ -1445,7 +1460,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					obj[key] = id.replace('panel','tab');
 					vm.HighLightErrors[key] = id.replace('panel','tab');
 				}
-			}	
+			}
 		},true);
 		if(!_.contains(arr, false) && _.contains(arr2, false)){
 			vm.lineDtlsSubmit(LineItemLists, 0);
@@ -2018,18 +2033,10 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		return d.promise;
 	}
 	function _GetHosChurchFuneral(type){
-		var d = $q.defer(), count = 0, List = [];
-		OrderCloud.Addresses.ListAssignments(null,null,type).then(function(data){
-			angular.forEach(data.Items, function(val, key){
-				OrderCloud.Addresses.Get(val.AddressID).then(function(res){
-					List.push(res);
-					count++;
-					if((data.Items).length == count){
-						var dtls = _.pluck(List, 'CompanyName');
-						d.resolve({"data": {"Names": dtls, "List": List}});
-					}	
-				});
-			});
+		var d = $q.defer();
+		OrderCloud.Addresses.List(null,null,null,null,null,{"ID":type+"-*"}).then(function(res){
+			var dtls = _.pluck(res.Items, 'CompanyName');
+			d.resolve({"data": {"Names": dtls, "List": res.Items}});
 		});
 		return d.promise;
 	}

@@ -142,7 +142,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		delInfoOpen : true,
 		paymentOpen : false,
 		reviewOpen : false,
-		isFirstDisabled: false
+		isFirstDisabled: false,
+		isSecondDisabled: false
 	};
 
     vm.getRecipientSubTotal = function(lineitems) {
@@ -169,7 +170,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				PaymentType.Type = "PurchaseOrder";
 				delete PaymentType.ID;
 				if(key == "Cheque")
-					PaymentType.xp = {"ChequeNo": val.CheckNo};
+					PaymentType.xp = {"ChequeNo": val.ChequeNo};
 			}
 			TempStoredArray.push(OrderCloud.Payments.Create(vm.order.ID, PaymentType));
 		}, true);
@@ -182,7 +183,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				console.log("===========>>>"+result2);
 			});
 		});
-        /*if(vm.paymentOption === 'CreditCard' && vm.selectedCard) {
+        /*if(vm.selectedCard && vm.order.Total > 0) {
             CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
                 .then(function(){
                     OrderCloud.Orders.Submit(vm.orderID)
@@ -193,18 +194,31 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
                                 })
                         });
                 });
-        } else {
-            OrderCloud.Orders.Submit(vm.orderID)
+        } else if(!vm.selectedCard && vm.order.Total > 0) {
+			CreditCardService.SingleUseAuthCapture(vm.card, vm.order)
                 .then(function(){
-                    TaxService.CollectTax(vm.orderID)
-                        .then(function(){
-                            $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
-                        })
-                });
+					OrderCloud.Orders.Submit(vm.orderID)
+						.then(function(){
+							TaxService.CollectTax(vm.orderID)
+								.then(function(){
+									$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+								})
+						});
+				});	
+        } else{
+			OrderCloud.Orders.Submit(vm.orderID)
+				.then(function(){
+					TaxService.CollectTax(vm.orderID)
+						.then(function(){
+							$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+						})
+				});
         }*/
     };
 	
 	vm.addCreditCard = function(card){
+		card.ExpMonth = card.ExpMonth.substring(0, 2);
+		card.ExpYear = card.ExpYear.substring(2, 4);
 		BuildOrderService.GetCardType(card.CardNumber).then(function(cardtype){
 			card.CardType = cardtype;
 			CreditCardService.Create(card).then(function(res){
@@ -290,6 +304,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 					vm.status.delInfoOpen = false;
 					vm.status.paymentOpen = true;
 					vm.status.isFirstDisabled = true;
+					vm.status.isSecondDisabled = false;
 				}
 				vm.lineDtlsSubmit(line);
 				vm.Grouping(vm.deliveryInfo);
@@ -302,6 +317,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		vm.status.delInfoOpen = false;
 		vm.status.paymentOpen = false;
 		vm.status.reviewOpen = true;
+		vm.status.isSecondDisabled = true;
 	};
 	vm.lineDtlsSubmit = function(line){
 		var params = {
@@ -348,9 +364,9 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 	};
-	vm.viewAddrBook = function(Index){
+	vm.viewAddrBook = function(Index, line){
 		vm['isAddrShow'+Index] = true;
-		this.limit = 3;
+		line.limit = 3;
 		$scope.addressesList = [];
 		OrderCloud.Addresses.ListAssignments(null,vm.order.FromUserID).then(function(data){
 			OrderCloud.Users.Get(vm.order.FromUserID).then(function(defAddress){
@@ -442,7 +458,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						data.Phone3 = res[2];
 					});
 					$scope.addressesList.push(data);
-					$this.limit = $scope.addressesList.length;
+					line.limit = $scope.addressesList.length;
 					params = {"AddressID": data.ID, "UserID": vm.order.FromUserID, "IsBilling": false, "IsShipping": true};
 					OrderCloud.Addresses.SaveAssignment(params).then(function(res){
 						
@@ -454,15 +470,21 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			}
 		});
 	};
-	vm.viewMore = function(){
-		this.limit = $scope.addressesList.length;
+	vm.viewMore = function(line){
+		if(line.limit == 3)
+			line.limit = $scope.addressesList.length;
+		else
+			line.limit = 3;
 	};
 	vm.newAddress = function(Index){
-		$scope['showNewAddress'+Index] = true;
+		$scope['showNewAddress'+Index] = !$scope['showNewAddress'+Index];
 	};
 	vm.deliveryAddr = function(Index){
 		vm['isDeliAddrShow'+Index] = true;
 	};
+	vm.back = function(Index){
+		vm['isAddrShow'+Index] = false;
+	}
 	//$scope.deliveryOrStore = 1;
 	vm.fromStoreOrOutside = 1;
 	var storesData;
@@ -723,8 +745,14 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.deliveryInfoEdit = function(e){
 		e.preventDefault();
 		e.stopPropagation();
-		vm.status.isFirstDisabled='false';
-		vm.status.delInfoOpen='true';
+		vm.status.isFirstDisabled = false;
+		vm.status.delInfoOpen = true;
+	};
+	vm.paymentInfoEdit = function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		vm.status.isSecondDisabled = false;
+		vm.status.paymentOpen = true;
 	};
 	vm.deliveryAdj = function(line){
 		if(!line.xp.deliveryChargeAdjReason)
@@ -829,7 +857,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			vm.orderDtls.SpendingAccounts.PaidCash = {"Amount":vm.txtPayCash};
 			delete vm.orderDtls.SpendingAccounts.Cheque;
 		}else if(vm.PayCashCheque=='PayCheque'){
-			vm.orderDtls.SpendingAccounts.Cheque = {"CheckNo":vm.txtChequeNumber, "Amount":vm.txtChequeAmt};
+			vm.orderDtls.SpendingAccounts.Cheque = {"ChequeNo":vm.txtChequeNumber, "Amount":vm.txtChequeAmt};
 			delete vm.orderDtls.SpendingAccounts.PaidCash;
 		}
 		vm.SumSpendingAccChrgs(orderDtls);		

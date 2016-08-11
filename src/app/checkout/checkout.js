@@ -289,7 +289,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     vm.Grouping(ProductInfo);
 	vm.payment = function(line,index) {
         AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResultCode == 'Success') {
+			if(response.ResponseBody.ResultCode == 'Success') {
 				var validatedAddress = response.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.ShippingAddress.Zip = parseInt(zip);
@@ -400,7 +400,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		var $this = this;
 		addr.Phone = "("+addr.Phone1+") "+addr.Phone2+"-"+addr.Phone3;
 		AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResultCode == 'Success') {
+			if(response.ResponseBody.ResultCode == 'Success') {
 				var validatedAddress = response.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				addr.Zip = parseInt(zip);
@@ -441,7 +441,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		var $this = this, params;
 		line.Phone = "("+line.Phone1+") "+line.Phone2+"-"+line.Phone3;
 		AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResultCode == 'Success'){
+			if(response.ResponseBody.ResultCode == 'Success'){
 				var validatedAddress = response.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.Zip = parseInt(zip);

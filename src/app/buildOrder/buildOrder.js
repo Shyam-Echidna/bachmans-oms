@@ -1608,7 +1608,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		line.ShipFromAddressID = "testShipFrom";
         AddressValidationService.Validate(line.ShippingAddress)
             .then(function(response){
-                if(response.ResultCode == 'Success') {
+                if(response.ResponseBody.ResultCode == 'Success') {
                     var validatedAddress = response.Address;
                     var zip = validatedAddress.PostalCode.substring(0, 5);
                     vm.groups[index][0].ShippingAddress.Zip = parseInt(zip);

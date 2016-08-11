@@ -89,9 +89,9 @@ function getConstants() {
         case 'test':
             result.authurl = 'https://testauth.ordercloud.io/oauth/token';
             result.apiurl = 'https://testapi.ordercloud.io';
-            result.authorizeneturl = 'https://testapi.ordercloud.io/v1/nativeintegrationproxy/authorizenet';
-            result.avalarataxurl = 'https://testapi.ordercloud.io/v1/nativeintegrationproxy/avalara';
-            result.avalaraaddressurl = 'https://testapi.ordercloud.io/v1/nativeintegrationproxy/validateaddress';
+            result.authorizeneturl = 'https://testapi.ordercloud.io/v1/integrationproxy/authorizenet';
+            result.avalarataxurl = 'https://testapi.ordercloud.io/v1/integrationproxy/avalara';
+            result.avalaraaddressurl = 'https://testapi.ordercloud.io/v1/integrationproxy/validateaddress';
             break;
         case 'qa':
             result.authurl = 'https://qaauth.ordercloud.io/oauth/token';
@@ -100,9 +100,9 @@ function getConstants() {
         default:
             result.authurl = 'https://auth.ordercloud.io/oauth/token';
             result.apiurl = 'https://api.ordercloud.io';
-            result.authorizeneturl = 'https://api.ordercloud.io/v1/nativeintegrationproxy/authorizenet';
-            result.avalarataxurl = 'https://api.ordercloud.io/v1/nativeintegrationproxy/avalara';
-            result.avalaraaddressurl = 'https://api.ordercloud.io/v1/nativeintegrationproxy/validateaddress';
+            result.authorizeneturl = 'https://api.ordercloud.io/v1/integrationproxy/authorizenet';
+            result.avalarataxurl = 'https://api.ordercloud.io/v1/integrationproxy/avalara';
+            result.avalaraaddressurl = 'https://api.ordercloud.io/v1/integrationproxy/validateaddress';
             break;
     }
     if (process.env.apiurl && process.env.authurl) {

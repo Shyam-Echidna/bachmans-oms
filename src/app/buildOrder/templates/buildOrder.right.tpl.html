@@ -372,9 +372,11 @@
 											</div>
 										</div>
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+										<div class="col-md-12 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>{{buildOrderRight.lineItemForm[lineitem.ID]['Zip']}}
 												<input type="number" name="zip" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
+											</div>
 											</div>
 											<div class="delivery-date" ng-if="lineitem.xp.addressType!='Will Call'">
 												<p>Delivery Date <span class="star">*</span></p>

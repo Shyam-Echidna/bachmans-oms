@@ -331,26 +331,23 @@ input.error {
 					color:@primary-dark-color;
 					margin:5px 0 0;
 				}
-				.product_img{
-					width:100%;
-					height:100%;
-					float:left;
-					overflow:hidden;
-					position:relative;
-					text-align:center;
-					cursor:default;
-				}
-				.product_img img{
-				display:block;
-				position:relative;
-				-webkit-transition:all 1s linear;
-				transition:all 1s linear;	
-				}
-				.product_img:hover img {
-					-ms-transform:scale(1.1);
-					-webkit-transform:scale(1.1);
-					transform:scale(1.1);
-			   }
+				   .product_img {
+	                 overflow:hidden;
+	                 position:relative;
+	               text-align:center;
+	                cursor:default;
+	               img{
+	                    display:block;
+	                    position:relative;
+	                    -webkit-transition:all .8s linear;
+	                    transition:all .8s linear; 
+	               }
+	                &:hover img {
+	                   -ms-transform:scale(1.2);
+	                     -webkit-transform:scale(1.2);
+	                     transform:scale(1.2);
+	                 }
+	            }
 			}
 		}
 		.plp-container{
@@ -1602,12 +1599,15 @@ input.error {
 						height: 25px;
 					}
 					.location-Code {
-						.zipCode {
+						.zipcont{
+							padding:0px;
+							.zipCode {
 							width: 30%;
 							margin-right: 2%;
 							input{
 								height:29px;
 							}
+						  }
 						}
 						.delivery-date {
 							width: 67%;
@@ -1821,6 +1821,7 @@ input.error {
 							.helvetica-medium;
 							color: @color2;
 							.in-block;
+							margin-left:6px;
 						}
 					}
 					.message-lines {
@@ -2373,6 +2374,7 @@ input.error {
 				button.close{
 				background-color:#54565d;
 				opacity:0.9;
+				padding-bottom:3px;
 				 &:hover{
 				 	background:#8c58b5;
 				 }

@@ -73,6 +73,23 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 		}
 	}
 	vm.completeclaim = function(orderID){
+      //  instructions for refunding credit card transactions
+      //once you have the functionality built to select the quantity of the line items being refunded, you can calculate the refund amount, and refund the credit card using the following methods
+      //  var returnDetails = [{lineNumber: LineItem.ID, quantity: theQuantityOfLineItemsBeingReturned}]
+      //  call 1: TaxService.EstimateRefund(orderID, returnDetails) -- will return the amount of tax to refund, if any
+      //  Add the amount returned above to (LineTotal/Quantity) * theQuantityOfLineItemsBeingRefunded
+      //  var card = {
+      //      paymentID: required - Get the payment ID using OrderCloud.Payments.List(orderID)
+      //      ID: only required if it was a saved credit card, get from the payment,
+      //      cardNumber: only required if it was a one time use card (no card ID) only last 4 digits,
+      //      ExpMonth: only required if it was a one time use card (no card ID),
+      //      ExpYear: only required if it was a one time use card (no card ID),
+      //  }
+      //  call 2. if you're refunding an amount less than the Order.Total:
+      //  CreditCardService.RefundTransaction(card, order, amount) -- refunds customer partially
+      //  if you're refunding the total Order amount:
+      //  CreditCardService.VoidTransaction(card, order, amount) -- voids transaction and refunds customer
+      //  call 3. TaxService.CollectRefund(orderID, returnDetails) -- creates a new tax document to reflect refund
 		var refundclaimobj={};
 		OrderCloud.As().Orders.Get(orderID).then(function(res){
 			for(var i=0; i<vm.orderclaimarr.length; i++){

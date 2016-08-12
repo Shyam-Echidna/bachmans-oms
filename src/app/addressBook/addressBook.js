@@ -17,7 +17,7 @@ function AddressBookConfig( $stateProvider ) {
 			resolve: {
                 AddressBook: function(OrderCloud, $stateParams, $state, $q) {
                     var arr={};
-					 var dfr = $q.defer()
+					 var dfr = $q.defer();
 						/*OrderCloud.Addresses.ListAssignments(null,$stateParams.ID).then(function(addrList){
 						var addr = [];
 						angular.forEach(addrList.Items, function(value, key) {
@@ -135,8 +135,8 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 		if(index != null){
 			$scope.defaultEdit=false;
 		}
-		vm['showedit' + prevIndex] = false;
-		prevIndex=angular.copy(index);
+		vm['showedit' + vm.prevIndex] = false;
+		vm.prevIndex=angular.copy(index);
 		vm['showedit' + index] = true;
 		vm.editAddr=angular.copy(editAddr);
 		$scope.showedit=false;

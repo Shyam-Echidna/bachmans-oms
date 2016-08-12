@@ -16,17 +16,33 @@ function HomeConfig( $stateProvider ) {
                 OrderList: function(OrderCloud, $q) {
 					var arr={};
 					var dd=$q.defer();
-					OrderCloud.Orders.ListOutgoing(null,null,'ME32SnOluUqPP71HnpuzAg', null, null, 'FromUserID').then(function(data){
-						console.log("searched order", data);
-						arr.saved=_.filter(data.Items, function(obj) {
-								return _.indexOf([obj.xp.SavedOrder.Flag], true) > -1
-						});
-						arr.onHold=_.filter(data.Items, function(obj) {
-								return _.indexOf([obj.xp.Status], "OnHold") > -1
-						});
-						dd.resolve(arr);
-					});
-					console.log("aaaaaa", arr);
+						// OrderCloud.Orders.ListOutgoing(null, null, null, i, 100).then(function(data){
+							// console.log("searched order", data);
+							// arr.saved=_.filter(data.Items, function(obj) {
+								// console.log(i);
+								// if(data.Items.xp)
+								// if(data.xp.SavedOrder)
+									// return _.indexOf([obj.xp.SavedOrder.Flag], true) > -1
+							// });
+							// arr.onHold=_.filter(data.Items, function(obj){
+								// if(data.Items.xp)
+								// if(data.xp.Status)
+									// return _.indexOf([obj.xp.Status], "OnHold") > -1
+							// });
+							// dd.resolve(arr);
+						// });
+					OrderCloud.Orders.ListOutgoing(null, null, null, null, null, null, null, {"xp.SavedOrder.Flag":true}).then(function(data){
+						arr.saved=data.Items;
+						console.log("ppppppppppppppppp",data);
+						 
+					})
+					OrderCloud.Orders.ListOutgoing(null, null, null, null, null, null, null, {"xp.Status":'OnHold'}).then(function(response){
+							arr.onHold=response.Items;
+							console.log("responsepp",response);
+						 dd.resolve(arr);
+					})
+					
+					//console.log("aaaaaa", arr);
                     return dd.promise;
                 },
                 /*ShipmentList: function(OrderCloud) {

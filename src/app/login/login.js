@@ -128,7 +128,7 @@ function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, L
     vm.submit = function() {
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
-                vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
+                vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : 'angular-noop';
                 OrderCloud.BuyerID.Set(buyerid);
                 OrderCloud.Auth.SetToken(data['access_token']);
                 $state.go('home');
@@ -137,7 +137,7 @@ function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, L
 				});
             })
             .catch(function(ex) {
-                $exceptionHandler(ex);
+                console.log(ex.data);
             })
     };
 

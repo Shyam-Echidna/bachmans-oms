@@ -7,14 +7,16 @@ angular.module('ordercloud-tax', [])
 function TaxService($q, $resource, avalarataxurl, OrderCloud) {
     return {
         GetTax: GetTax,
-        CollectTax: CollectTax
+        CollectTax: CollectTax,
+        GetRefund: GetRefund,
+        CollectRefund: CollectRefund
     };
     function GetTax(orderID) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var requestTax = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": orderID,
+            buyerID: OrderCloud.BuyerID.Get(),
+            orderID: orderID,
             taxRequestType: 'estimateTax'
         };
         $resource(avalarataxurl, {}, {
@@ -35,9 +37,55 @@ function TaxService($q, $resource, avalarataxurl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var requestTax = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": orderID,
-            "taxRequestType": 'collectTax'
+            buyerID: OrderCloud.BuyerID.Get(),
+            orderID: orderID,
+            taxRequestType: 'collectTax'
+        };
+        $resource(avalarataxurl, {}, {
+            authorize: {
+                method: 'POST',
+                headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}
+            }
+        }).authorize(requestTax).$promise
+            .then(function (response) {
+                dfd.resolve(response);
+            })
+            .catch(function (response) {
+                dfd.reject(response);
+            });
+        return dfd.promise;
+    }
+    function GetRefund(orderID, returnDetails) {
+        var dfd = $q.defer();
+        var token = OrderCloud.As().Auth.ReadToken();
+        var requestTax = {
+            buyerID: OrderCloud.BuyerID.Get(),
+            orderID: orderID,
+            taxRequestType: 'estimateRefund',
+            returnDetails: returnDetails
+        };
+        $resource(avalarataxurl, {}, {
+            authorize: {
+                method: 'POST',
+                headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}
+            }
+        }).authorize(requestTax).$promise
+            .then(function (response) {
+                dfd.resolve(response);
+            })
+            .catch(function (response) {
+                dfd.reject(response);
+            });
+        return dfd.promise;
+    }
+    function CollectRefund(orderID, returnDetails) {
+        var dfd = $q.defer();
+        var token = OrderCloud.As().Auth.ReadToken();
+        var requestTax = {
+            buyerID: OrderCloud.BuyerID.Get(),
+            orderID: orderID,
+            taxRequestType: 'collectRefund',
+            returnDetails: returnDetails
         };
         $resource(avalarataxurl, {}, {
             authorize: {

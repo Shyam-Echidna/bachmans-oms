@@ -233,6 +233,7 @@
 											c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 									</g>
 								</svg>
+								<img src="/src/assets/images/dialog_warning.png" ng-if="buildOrderRight.lineItemForm[lineitem.ID].formError" />
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
 								<a ng-click="viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
@@ -246,11 +247,11 @@
 								<div class="receipient-name" ng-init="buildOrderRight.GetAllList(lineitem.xp.addressType)">
 									<div class="firstNm">
 										<p>First Name <span class="star">*</span></p>
-										<input type="text" ng-model="lineitem.ShippingAddress.FirstName" name="FirstName" ng-required="true" max-length="100" />
+										<input type="text" ng-model="lineitem.ShippingAddress.FirstName" name="FirstName" ng-required="true" max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].FirstName.$invalid}" />
 									</div>
 									<div>
 										<p>Last Name <span class="star">*</span></p>
-										<input type="text" ng-model="lineitem.ShippingAddress.LastName" name="LastName" ng-required="true" max-length="100" />
+										<input type="text" ng-model="lineitem.ShippingAddress.LastName" name="LastName" ng-required="true" max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].LastName.$invalid}" />
 									</div>
 								</div>
 <!-- 								<div class="receipient-location" ng-init="addressType = lineitem.xp.addressType">
@@ -289,6 +290,11 @@
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
+										<input type="radio" id="Business" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="Business" ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
+										<label for="Business">Business<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="School"  ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
 										<label for="school">School<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
@@ -308,39 +314,41 @@
 									<span>Outgoing Wire</span>
 								</div>
 								<div class="location-selected">
-									<div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)">
+									<!-- <div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)"> -->
+									<div class="residence-address">
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Hospital'" >
 											<h1>Find Hospital <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.hosSearch" ng-required="lineitem.xp.addressType=='Hospital'" ng-value="lineitem.xp.addressType=='Hospital' ? lineitem.ShippingAddress.CompanyName : ''" />
+											<input type="search" name="hospital" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.hosSearch" ng-required="lineitem.xp.addressType=='Hospital'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].hospital.$invalid}" />
 										</div>
-										
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Funeral'">
 											<h1>Find Funeral <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.funeralSearch" ng-required="lineitem.xp.addressType=='Funeral'" ng-value="lineitem.xp.addressType=='Funeral' ? lineitem.ShippingAddress.CompanyName : ''" />
+											<input type="search" name="funeral" uib-typeahead="funeral for funeral in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.funeralSearch" ng-required="lineitem.xp.addressType=='Funeral'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].funeral.$invalid}" />
 										</div>
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Cemetery'">
 											<h1>Find Cemetery <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.cemeterySearch" ng-required="lineitem.xp.addressType=='Cemetery'" ng-value="lineitem.xp.addressType=='Cemetery' ? lineitem.ShippingAddress.CompanyName : ''"/>
+											<input type="search" name="cemetery" uib-typeahead="Cemetery for Cemetery in buildOrderRight.CemeteryNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.cemeterySearch" ng-required="lineitem.xp.addressType=='Cemetery'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].cemetery.$invalid}" />
 										</div>
-										
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Church'">
 											<h1>Find Church <span class="star">*</span></h1>
-											<input type="search" uib-typeahead="hosp for hosp in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.churchSearch" ng-required="lineitem.xp.addressType=='Church'" />
+											<input type="search" name="church" uib-typeahead="Church for Church in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.churchSearch" ng-required="lineitem.xp.addressType=='Church'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].church.$invalid}"/>
 										</div>
-										
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='School'">
-											<h1>Find School <span class="star">*</span></h1>
-											<input type="text" uib-typeahead="hosp for hosp in buildOrderRight.SchoolNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.schSearch" ng-required="lineitem.xp.addressType=='School'" />
+											<h1>School Name<span class="star">*</span></h1>
+											<input type="text" name="school" ng-model="lineitem.schSearch" ng-required="lineitem.xp.addressType=='School'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].school.$invalid}" />
+										</div>
+										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Business'">
+											<h1>Business Name<span class="star">*</span></h1>
+											<input type="text" name="business" ng-model="lineitem.businessSearch" ng-required="lineitem.xp.addressType=='Business'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].business.$invalid}" />
 										</div>
 										<div class="willCall-address" ng-show="lineitem.xp.addressType=='Will Call'" ng-if="lineitem.xp.addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">
 												<h1>Find store <span class="star">*</span></h1>
-												<input type="search" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="lineitem.xp.addressType=='Will Call'"  />
+												<input type="search" name="store" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].store.$invalid}" />
 											</div>
 											<div class="pick-up-date">
 												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-required="lineitem.xp.addressType=='Will Call'" />
+												  <input type="text" name="pickupdate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].pickupdate.$invalid}" />
 												<span class="input-group-btn">
 												  <button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -364,14 +372,16 @@
 											</div>
 										</div>
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+										<div class="col-md-12 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>{{buildOrderRight.lineItemForm[lineitem.ID]['Zip']}}
-												<input type="number" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" required></input>
+												<input type="number" name="zip" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
+											</div>
 											</div>
 											<div class="delivery-date" ng-if="lineitem.xp.addressType!='Will Call'">
 												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
-												  <input type="text" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitem)" />
+												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 													 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
@@ -394,7 +404,7 @@
 										</div>
 										<div class="location-addressL1">
 											<h1>Address <span class="star">*</span></h1>
-											<input type="text" ng-model="lineitem.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street1" required max-length="100" />
+											<input type="text" name="street1" ng-model="lineitem.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street1" required max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].street1.$invalid}" />
 											<input type="text" ng-model="lineitem.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street2 (optional)" />
 											<div class="location-addressL2">
 												<div class="location-state">
@@ -403,11 +413,11 @@
 														<option selected>K</option>
 														<option>RNR</option>
 													</select>-->
-													<input type="text" ng-model="lineitem.ShippingAddress.State" required />
+													<input type="text" name="state" ng-model="lineitem.ShippingAddress.State" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].state.$invalid}" />
 												</div>
 												<div class="location-city">
 													<p>City <span class="star">*</span></p>
-													<input type="text" ng-model="lineitem.ShippingAddress.City" required />
+													<input type="text" name="city" ng-model="lineitem.ShippingAddress.City" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].city.$invalid}" />
 												</div>
 											</div>
 											<div class="location-contact">

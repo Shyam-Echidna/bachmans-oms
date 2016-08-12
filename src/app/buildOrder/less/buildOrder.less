@@ -25,7 +25,7 @@ button {
 		z-index:9;
 	}
 }
-.lineItemForm input.ng-invalid.ng-touched {
+input.error {
     border: 1px solid red !important;
 }
 .buildOrderSummary-main{
@@ -322,6 +322,7 @@ button {
 				}
 				.product_img img{
 					max-width:100%;
+
 				}
 				.price_lst h5{
 					padding:0 15px;
@@ -330,6 +331,23 @@ button {
 					color:@primary-dark-color;
 					margin:5px 0 0;
 				}
+				   .product_img {
+	                 overflow:hidden;
+	                 position:relative;
+	               text-align:center;
+	                cursor:default;
+	               img{
+	                    display:block;
+	                    position:relative;
+	                    -webkit-transition:all .8s linear;
+	                    transition:all .8s linear; 
+	               }
+	                &:hover img {
+	                   -ms-transform:scale(1.2);
+	                     -webkit-transform:scale(1.2);
+	                     transform:scale(1.2);
+	                 }
+	            }
 			}
 		}
 		.plp-container{
@@ -1581,12 +1599,15 @@ button {
 						height: 25px;
 					}
 					.location-Code {
-						.zipCode {
+						.zipcont{
+							padding:0px;
+							.zipCode {
 							width: 30%;
 							margin-right: 2%;
 							input{
 								height:29px;
 							}
+						  }
 						}
 						.delivery-date {
 							width: 67%;
@@ -1800,6 +1821,7 @@ button {
 							.helvetica-medium;
 							color: @color2;
 							.in-block;
+							margin-left:6px;
 						}
 					}
 					.message-lines {
@@ -2352,6 +2374,7 @@ button {
 				button.close{
 				background-color:#54565d;
 				opacity:0.9;
+				padding-bottom:3px;
 				 &:hover{
 				 	background:#8c58b5;
 				 }
@@ -2399,12 +2422,16 @@ button {
 								width:100%;
 								.in-block;
 							}
+
 							}
 							&:hover{
 								background-color:@color14;
 							}
 							&:nth-child(odd) {
 								background: #f7f8fa;
+								 &:hover{
+								 	background-color:@color14;
+								 }
 							}
 						}
 					}

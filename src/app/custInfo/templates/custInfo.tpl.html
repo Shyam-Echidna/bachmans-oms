@@ -5,33 +5,34 @@
 				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
 				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
-					<div class="info-blk form-group">
-						<div class="col-md-6">Email Address:</div>
-						<div class="col-md-6">
-						<span ng-show="!isEditing">{{custInfo.list.user.Email}}</span>
-						<input ng-show="isEditing" type="email" class="form-control" ng-model="custInfo.list.user.Email" placeholder="email">
-						</div>
+					<div class="info-blk form-group col-md-12 cust-form">
+						<p class="col-md-3 cust-del">Email Address:</p>
+					
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.Email}}</span>
+						<input ng-show="isEditing" type="email" class="form-control col-md-6" ng-model="custInfo.list.user.Email" placeholder="email">
+						
 					</div>
-					<p class="cust-top">Primary Account Holder</p>
-					<div class="info-blk form-group">
-						<div class="col-md-6">First Name:</div>
-						<div class="col-md-6">
-						<span ng-show="!isEditing">{{custInfo.list.user.FirstName}}</span>
-						<input type="text" ng-show="isEditing" name="fname" class="form-control" ng-model="custInfo.list.user.FirstName"  placeholder="FirstName">
-						</div>
+					<p class="cust-top col-md-12">Primary Account Holder</p>
+					<div class="info-blk form-group col-md-12">
+						<p class="col-md-3 cust-del">First Name:</p>
+						
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.Email}}</span>
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.FirstName}}</span>
+						<input type="text" ng-show="isEditing" name="fname" class="form-control col-md-6" ng-model="custInfo.list.user.FirstName"  placeholder="FirstName">
+					
 					</div>
-					<div class="info-blk form-group">
-						<div class="col-md-6">Last Name:</div>
-						<div class="col-md-6">
-						<span ng-show="!isEditing">{{custInfo.list.user.LastName}}</span>
-						<input type="text" ng-show="isEditing" class="form-control" ng-model="custInfo.list.user.LastName"  placeholder="LastName">
-						</div>
+					<div class="info-blk form-group col-md-12">
+						<p class="col-md-3 cust-del">Last Name:</p>
+						
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.LastName}}</span>
+						<input type="text" ng-show="isEditing" class="form-control col-md-6" ng-model="custInfo.list.user.LastName"  placeholder="LastName">
+						
 					</div>
-					<div class="cust-street cust-top">
-						<p>Street Address:</p>
-						<div>
+					<div class="cust-street cust-top col-md-12">
+						<p class="col-md-3 cust-del">Street Address:</p>
+						<div class="col-md-6 cust-addr">
 							<p ng-show="!isEditing">{{custInfo.list.defaultAddr[0].CompanyName}}</p>
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.CompanyName" placeholder="CompanyName">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.CompanyName" placeholder="CompanyName" class="cust-addr1">
 							<div>
 								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].FirstName}} {{custInfo.list.defaultAddr[0].LastName}}</span>
 								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].FirstName" placeholder="FirstName">
@@ -49,21 +50,21 @@
 							</div>
 						</div>
 						<div class="info-blk cust-top">
-							<div class="col-md-6">Phone Number:</div>
-							<div class="col-md-6">
-							<span ng-show="!isEditing">{{custInfo.list.user.Phone}}</span><!--
+							<p class="col-md-3">Phone Number:</p>
+						
+							<span ng-show="!isEditing" class="col-md-6 phone-num">{{custInfo.list.user.Phone}}</span><!--
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.user.Phone"> -->
-							<input type="number" ng-show="isEditing" placeholder="Area Code" ng-model="custInfo.list.user.contact.Phone1" max-length="3">
-							<input type="number" ng-show="isEditing" placeholder="Prefix" ng-model="custInfo.list.user.contact.Phone2" max-length="3">
-							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4">
-							</div>
+							<input type="number" ng-show="isEditing" placeholder="Area Code" ng-model="custInfo.list.user.contact.Phone1" max-length="3" class="col-md-3 phone-val">
+							<input type="number" ng-show="isEditing" placeholder="Prefix" ng-model="custInfo.list.user.contact.Phone2" max-length="3" class="col-md-3 phone-val">
+							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4" class="col-md-3 phone-val">
+							
 						</div>
 					<div class="info-blk">
-						<div class="col-md-6">Tax Exempt Number:</div>
-						<div class="col-md-6">
-						<span ng-show="!isEditing"></span>
-						<input type="text" ng-show="isEditing" value="">
-						</div>
+						<p class="col-md-3">Tax Exempt Number:</p>
+					
+						<span ng-show="!isEditing" class="col-md-6"></span>
+						<input type="text" ng-show="isEditing" value="" class="col-md-6 phone-val1">
+					
 					</div>
 			        <div class="form-group" ng-show="isEditing">
 						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			

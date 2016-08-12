@@ -10,7 +10,9 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         Update: Update,
         Delete: Delete,
         ExistingCardAuthCapture: ExistingCardAuthCapture,
-        SingleUseAuthCapture: SingleUseAuthCapture
+        SingleUseAuthCapture: SingleUseAuthCapture,
+        RefundTransaction: RefundTransaction,
+        VoidTransaction: VoidTransaction
     };
     //Use this function to create a new credit card for an existing customer profile or create a new credit card and a new payment profile at the same time.
     function Create(card) {
@@ -218,6 +220,72 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
                             dfd.resolve();
                         });
                 }
+            })
+            .catch(function(){
+                toastr.info('Sorry, something went wrong. Please try again')
+            });
+        return dfd.promise;
+    }
+    //Use this function to create PARTIAL refunds. Use the VoidTransaction method to refund an entire order
+    function RefundTransaction(card, order, amount) {
+        var dfd = $q.defer();
+        var token = OrderCloud.As().Auth.ReadToken();
+        var cc = {
+            "buyerID": OrderCloud.BuyerID.Get(),
+            "orderID": order.ID,
+            "transactionType": "refundTransaction",
+            "amount": amount,
+            "cardDetails": {
+                "paymentID": card.paymentID,
+                "creditCardID": card.ID != null ? card.ID : null,
+                "cardType": null,
+                "cardNumber": card.cardNumber != null ? card.cardNumber : null,
+                "expirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
+                "cardCode": null
+            }
+        };
+        //refund partial payment
+        $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
+            .then(function(response){
+                if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                } else  if(response.Error) {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                }
+                dfd.resolve();
+            })
+            .catch(function(){
+                toastr.info('Sorry, something went wrong. Please try again')
+            });
+        return dfd.promise;
+    }
+    //Use this function to create FULL refunds. Use the RefundTransaction method to refund a partial order amount
+    function VoidTransaction(card, order, amount) {
+        var dfd = $q.defer();
+        var token = OrderCloud.As().Auth.ReadToken();
+        var cc = {
+            "buyerID": OrderCloud.BuyerID.Get(),
+            "orderID": order.ID,
+            "transactionType": "refundTransaction",
+            "amount": amount,
+            "cardDetails": {
+                "paymentID": card.paymentID,
+                "creditCardID": card.ID != null ? card.ID : null,
+                "cardType": null,
+                "cardNumber": card.cardNumber != null ? card.cardNumber : null,
+                "expirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
+                "cardCode": null
+            }
+        };
+        //refund full payment
+        $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
+            .then(function(response){
+                if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                } else  if(response.Error) {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                }
+                dfd.resolve();
             })
             .catch(function(){
                 toastr.info('Sorry, something went wrong. Please try again')

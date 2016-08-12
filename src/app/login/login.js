@@ -111,7 +111,7 @@ function LoginService( $q, $window, toastr, $state,OrderCloud, clientid, buyerid
     }
 }
 
-function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, LoginService, buyerid, TokenRefresh, AlfrescoCommon ) {
+function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, LoginService, buyerid, TokenRefresh, AlfrescoCommon, $cookieStore) {
     var vm = this;
 	vm.logo=AlfrescoCommon;
     vm.credentials = {
@@ -132,6 +132,9 @@ function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, L
                 OrderCloud.BuyerID.Set(buyerid);
                 OrderCloud.Auth.SetToken(data['access_token']);
                 $state.go('home');
+				OrderCloud.AdminUsers.List(null, 1, 100, null, null, {"Username":vm.credentials.Username, "Password":vm.credentials.Password}).then(function(res){
+					$cookieStore.put('OMS.CSRID', res.Items[0].ID);
+				});
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);

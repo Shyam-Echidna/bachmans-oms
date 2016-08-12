@@ -73,6 +73,11 @@
 										<label for="cemetery">Cemetery</label>
 										<div class="radio"></div>
 									</label>
+									<label class="radio-inline radio-common">
+										<input type="radio" id="business" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Business" />
+										<label for="business">Business</label>
+										<div class="radio"></div>
+									</label>
 									<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
 									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />

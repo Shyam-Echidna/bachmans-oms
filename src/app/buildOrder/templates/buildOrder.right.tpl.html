@@ -233,6 +233,7 @@
 											c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 									</g>
 								</svg>
+								<img src="/src/assets/images/dialog_warning.png" ng-if="buildOrderRight.lineItemForm[lineitem.ID].formError" />
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
 								<a ng-click="viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
@@ -289,6 +290,11 @@
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
+										<input type="radio" id="Business" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="Business" ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
+										<label for="Business">Business<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
+										<div class="radio"></div>
+									</label>
+									<label class="radio-inline radio-common">
 										<input type="radio" id="school" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="School"  ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">
 										<label for="school">School<span ng-if="lineitem.xp.NoDeliveryExInStore">(Not Available)</span></label>
 										<div class="radio"></div>
@@ -327,8 +333,12 @@
 											<input type="search" name="church" uib-typeahead="Church for Church in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.churchSearch" ng-required="lineitem.xp.addressType=='Church'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].church.$invalid}"/>
 										</div>
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='School'">
-											<h1>Find School <span class="star">*</span></h1>
-											<input type="text" name="school" uib-typeahead="School for School in buildOrderRight.SchoolNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.schSearch" ng-required="lineitem.xp.addressType=='School'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].school.$invalid}" />
+											<h1>School Name<span class="star">*</span></h1>
+											<input type="text" name="school" ng-model="lineitem.schSearch" ng-required="lineitem.xp.addressType=='School'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].school.$invalid}" />
+										</div>
+										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Business'">
+											<h1>Business Name<span class="star">*</span></h1>
+											<input type="text" name="business" ng-model="lineitem.businessSearch" ng-required="lineitem.xp.addressType=='Business'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].business.$invalid}" />
 										</div>
 										<div class="willCall-address" ng-show="lineitem.xp.addressType=='Will Call'" ng-if="lineitem.xp.addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">

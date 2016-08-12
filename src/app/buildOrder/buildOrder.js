@@ -283,7 +283,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			if($stateParams.SearchType == 'Products'){
 				vm.guestUserModal =! vm.guestUserModal;
 			}
-			//$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
 		}
 	};
 	$scope.selectVarients = function(txt,index){
@@ -729,7 +729,7 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 	};
 }
 
-function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService) {
+function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService, $cookieStore) {
 	var vm = this;
 	vm.order = Order;
 	$scope.showDeliveryMethods = {
@@ -813,25 +813,21 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					vm.order = res.Items[0];
 					$scope.buildOrderItems(prodID, DeliveryMethod);
 				}else{
-					var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
+					var orderParams = {"Type":"Standard","xp":{"OrderSource":"OMS","CSRID":$cookieStore.get('OMS.CSRID')}};
 					if($stateParams.SearchType == 'Products'){
 						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(res){
 							console.log(res);
 							OrderCloud.Auth.SetImpersonationToken(res.access_token);
-							var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
 							OrderCloud.As().Orders.Create(orderParams).then(function(res1){
-								console.log(res1);
-								//OrderCloud.As().LineItems.Create(res1.ID, {"ProductID": prodID,"Quantity": 1});
 								CurrentOrder.Set(res1.ID);
 								vm.order = res1;
 								if($stateParams.SearchType == 'Products'){
-									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order=res1;	
+									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order = res1;	
 								}
 								$scope.buildOrderItems(prodID, DeliveryMethod);
-							})
-						})
-					}
-					else{
+							});
+						});
+					}else{
 						OrderCloud.As().Orders.Create(orderParams).then(function(res){
 							CurrentOrder.Set(res.ID);
 							vm.order = res;
@@ -967,6 +963,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			    BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
 					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
 					vm.orderTotal = data.Total;
+					vm.order = data;
 				});
 			});
 		}else{
@@ -1030,7 +1027,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		vm.lineItemForm[line.ID].$setPristine();
 		angular.forEach(vm.HighLightErrors, function(val, key){
 			if(key==line.ID){
-				$('#'+val).css({'border': 'none'});
+				//$('#'+val).css({'border': 'none'});
+				val.formError = false;
 				delete vm.HighLightErrors[key];
 			}
 		}, true);
@@ -1058,6 +1056,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(line.xp.addressType=="School" ){
 			line.ShippingAddress.CompanyName = line.schSearch;
 		}
+		if(line.xp.addressType=="Business" ){
+			line.ShippingAddress.CompanyName = line.businessSearch;
+		}
 		if(line.xp.addressType=="Church" ){
 			line.ShippingAddress.CompanyName = line.churchSearch;
 		}
@@ -1084,7 +1085,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				}else{
 					vm.myPromise=TaxService.GetTax(vm.order.ID).then(function(res){
 						var count=0;
-						angular.forEach(res.TaxLines, function(val, key){
+						angular.forEach(res.ResponseBody.TaxLines, function(val, key){
 							var row = _.findWhere(LineItemLists, {ID: val.LineNo});
 							row.xp.deliveryCharges = 0;
 							_.filter(row.xp.deliveryFeesDtls, function(val){
@@ -1093,7 +1094,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 							row.TotalCost = _.reduce(_.pluck(row, 'deliveryFeesDtls'), function(memo, num){ return memo + num; }, 0);
 							OrderCloud.As().LineItems.Patch(vm.order.ID, val.LineNo, {"xp":{"Tax":val.Tax, "TotalCost":row.xp.deliveryCharges+row.LineTotal+val.Tax, "deliveryCharges": row.xp.deliveryCharges}}).then(function(response){
 								count++;
-								if(res.TaxLines.length == count){
+								if(res.ResponseBody.TaxLines.length == count){
 									vm.getLineItems();
 									vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 								}
@@ -1102,7 +1103,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					});
 				}
 				if(line.xp.Status || line.OutgoingWire){
-					OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": "OnHold"}}).then(function(){
+					OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": "OnHold","CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(){
 						console.log("Order Status OnHold Updated.......");
 					});
 				}
@@ -1273,7 +1274,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(addressType != "Will Call" || line.willSearch){
 			vm.getDeliveryCharges(line);
 		}
-		if(addressType == "Hospital" && !vm.HospitalNames){
+		if(addressType == "Hospital" && (vm.HospitalNames.length==0 || !vm.HospitalNames)){
 			vm.GetAllList("Hospitals");
 		}
 		if(addressType == "Funeral" && !vm.FuneralNames){
@@ -1351,8 +1352,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 		}
 		AddressValidationService.Validate(line.ShippingAddress).then(function(res){
-			if(res.ResultCode == 'Success') {
-				var validatedAddress = res.Address;
+			if(res.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = res.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.ShippingAddress.Zip = parseInt(zip);
 				line.ShippingAddress.Street1 = validatedAddress.Line1;
@@ -1461,11 +1462,18 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				arr.push(val.$valid);
 				arr2.push(val.$pristine);
 				if(!val.$valid){
-					id = $('#lineItemForm_' + key).parent().parent().attr('id');
+					val.formError = true;
+					/*id = $('#lineItemForm_' + key).parent().parent().attr('id');
 					$('#'+id.replace('panel','tab')).css({'border':'1px solid red'});
 					obj[key] = id.replace('panel','tab');
-					vm.HighLightErrors[key] = id.replace('panel','tab');
+					vm.HighLightErrors[key] = id.replace('panel','tab');*/
+					vm.HighLightErrors[key] = val;
+				}else{
+					val.formError = false;
 				}
+				/*if(!val.$pristine){
+					LineItemLists.splice(arr2.length-1, 1);
+				}*/
 			}
 		},true);
 		if(!_.contains(arr, false) && _.contains(arr2, false)){
@@ -1493,7 +1501,7 @@ function buildOrderPDPController() {
 function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q) {
     var vm = this;
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
-		vm.order=Order;
+		vm.order = Order;
 	}
 	console.log(vm.order);
 	vm.grouping = function(data){
@@ -1587,7 +1595,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 		}
 		if(line.xp.Tax)
 			line.xp.TotalCost = deliverySum+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice))+line.xp.Tax;
-		if(line.xp.addressType=="Residence" || !line.xp.addressType || line.xp.addressType=="Shipping"){
+		/*if(line.xp.addressType=="Residence" || !line.xp.addressType || line.xp.addressType=="Business"){
 			delete line.xp.PatientFName;
 			delete line.xp.PatientLName;
 			delete line.xp.pickupDate;
@@ -1604,18 +1612,18 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 			delete line.xp.PatientLName;
 			delete line.xp.deliveryDate;
 			line.xp.storeName = line.willSearch;
-		}
+		}*/
 		line.ShipFromAddressID = "testShipFrom";
         AddressValidationService.Validate(line.ShippingAddress)
             .then(function(response){
-                if(response.ResultCode == 'Success') {
-                    var validatedAddress = response.Address;
+                if(response.ResponseBody.ResultCode == 'Success') {
+                    var validatedAddress = response.ResponseBody.Address;
                     var zip = validatedAddress.PostalCode.substring(0, 5);
-                    vm.groups[index][0].ShippingAddress.Zip = parseInt(zip);
+                    /*vm.groups[index][0].ShippingAddress.Zip = parseInt(zip);
                     vm.groups[index][0].ShippingAddress.Street1 = validatedAddress.Line1;
                     vm.groups[index][0].ShippingAddress.Street2 = null;
                     vm.groups[index][0].ShippingAddress.City = validatedAddress.City;
-                    vm.groups[index][0].ShippingAddress.State = validatedAddress.Region;
+                    vm.groups[index][0].ShippingAddress.State = validatedAddress.Region;*/
                     line.ShippingAddress.Zip = parseInt(zip);
                     line.ShippingAddress.Street1 = validatedAddress.Line1;
                     line.ShippingAddress.Street2 = null;
@@ -1711,8 +1719,8 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 			}
 		}
 		AddressValidationService.Validate(line.ShippingAddress).then(function(res){
-			if(res.ResultCode == 'Success') {
-				var validatedAddress = res.Address;
+			if(res.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = res.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.ShippingAddress.Zip = parseInt(zip);
 				line.ShippingAddress.Street1 = validatedAddress.Line1;
@@ -1801,7 +1809,7 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
 	//}
 }
 
-function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore) {
+function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore) {
     var upselldata = [];
     var crossdata = [];
     var productdetail = [];
@@ -2062,7 +2070,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		var d = $q.defer(), OrderOnHold = _.pluck(data, 'xp');
 		OrderOnHold = _.pluck(OrderOnHold, 'Status');
 		if(OrderOnHold.indexOf("OnHold") == -1){
-			OrderCloud.As().Orders.Patch(ID, {"xp": {"Status": ""}}).then(function(res){
+			OrderCloud.As().Orders.Patch(ID, {"xp": {"Status": "","CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(res){
 				d.resolve(res);
 			});
 		}else{

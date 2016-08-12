@@ -109,7 +109,7 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
@@ -154,7 +154,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 
     vm.getRecipientTax = function(lineitems) {
         angular.forEach(lineitems, function(item){
-            var line = Underscore.findWhere(GetTax.TaxLines, {LineNo: item.ID});
+            var line = Underscore.findWhere(GetTax.ResponseBody.TaxLines, {LineNo: item.ID});
             item.TaxCost = line.Tax;
         });
         return Underscore.pluck(lineitems, 'TaxCost').reduce(function(prev, current) {
@@ -185,25 +185,29 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		});
         /*if(vm.selectedCard && vm.order.Total > 0) {
             CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
-                .then(function(){
-                    OrderCloud.Orders.Submit(vm.orderID)
-                        .then(function(){
-                            TaxService.CollectTax(vm.orderID)
-                                .then(function(){
-                                    $state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
-                                })
-                        });
+                .then(function(res){
+					if(res.ResponseBody.messages.resultCode != "Error"){
+						OrderCloud.Orders.Submit(vm.orderID)
+							.then(function(){
+								TaxService.CollectTax(vm.orderID)
+									.then(function(){
+										$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+									})
+							});
+					}	
                 });
         } else if(!vm.selectedCard && vm.order.Total > 0) {
 			CreditCardService.SingleUseAuthCapture(vm.card, vm.order)
-                .then(function(){
-					OrderCloud.Orders.Submit(vm.orderID)
-						.then(function(){
-							TaxService.CollectTax(vm.orderID)
-								.then(function(){
-									$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
-								})
-						});
+                .then(function(res){
+					if(res.ResponseBody.messages.resultCode != "Error"){
+						OrderCloud.Orders.Submit(vm.orderID)
+							.then(function(){
+								TaxService.CollectTax(vm.orderID)
+									.then(function(){
+										$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+									})
+							});
+					}		
 				});	
         } else{
 			OrderCloud.Orders.Submit(vm.orderID)
@@ -218,11 +222,12 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	
 	vm.addCreditCard = function(card){
 		card.ExpMonth = card.ExpMonth.substring(0, 2);
+		card.ExpYear = card.ExpYear.toString();
 		card.ExpYear = card.ExpYear.substring(2, 4);
 		BuildOrderService.GetCardType(card.CardNumber).then(function(cardtype){
 			card.CardType = cardtype;
 			CreditCardService.Create(card).then(function(res){
-				if(res.messages.resultCode != 'Error'){
+				if(res.ResponseHttpStatusCode == 200){
 					OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
 						vm.creditCardsList = response.Items;
 					});
@@ -289,8 +294,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     vm.Grouping(ProductInfo);
 	vm.payment = function(line,index) {
         AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResultCode == 'Success') {
-				var validatedAddress = response.Address;
+			if(response.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = response.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.ShippingAddress.Zip = parseInt(zip);
 				line.ShippingAddress.Street1 = validatedAddress.Line1;
@@ -400,8 +405,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		var $this = this;
 		addr.Phone = "("+addr.Phone1+") "+addr.Phone2+"-"+addr.Phone3;
 		AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResultCode == 'Success') {
-				var validatedAddress = response.Address;
+			if(response.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = response.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				addr.Zip = parseInt(zip);
 				addr.Street1 = validatedAddress.Line1;
@@ -441,8 +446,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		var $this = this, params;
 		line.Phone = "("+line.Phone1+") "+line.Phone2+"-"+line.Phone3;
 		AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResultCode == 'Success'){
-				var validatedAddress = response.Address;
+			if(response.ResponseBody.ResultCode == 'Success'){
+				var validatedAddress = response.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.Zip = parseInt(zip);
 				line.Street1 = validatedAddress.Line1;
@@ -553,8 +558,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			}
 		}
 		 AddressValidationService.Validate(line.ShippingAddress).then(function(res){
-			if(res.ResultCode == 'Success') {
-				var validatedAddress = res.Address;
+			if(res.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = res.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.ShippingAddress.Zip = parseInt(zip);
 				line.ShippingAddress.Street1 = validatedAddress.Line1;
@@ -776,10 +781,10 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 	$scope.GetCityState = function(addr){
 		AddressValidationService.Validate(addr).then(function(res){
-			if(res.ResultCode == 'Success') {
-				addr.City = res.Address.City;
-				addr.State = res.Address.Region;
-				addr.Country = res.Address.Country;
+			if(res.ResponseBody.ResultCode == 'Success') {
+				addr.City = res.ResponseBody.Address.City;
+				addr.State = res.ResponseBody.Address.Region;
+				addr.Country = res.ResponseBody.Address.Country;
 			}
 		});
 	}
@@ -880,11 +885,34 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.UserSpendingAccounts = function(){
 		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(res){
 			vm.UserSpendingAcc = {};
+			var params = {
+				"transactionDate":"",
+				"customerNumber":$stateParams.ID,
+				"cardNumber":"2147443647",
+				"transactionAmountFromF51":data.Balance,
+				"four51TimeStamp":"2016-08-09 09:32:20" 
+			}, TempStoredArray = [];
 			angular.forEach(res.Items, function(val, key){
-				OrderCloud.SpendingAccounts.Get(val.SpendingAccountID).then(function(data){
-					vm.UserSpendingAcc[data.Name] = data;
-				});
+				TempStoredArray.push(OrderCloud.SpendingAccounts.Get(val.SpendingAccountID));
 			},true);
+			$q.all(TempStoredArray).then(function(result1){
+				TempStoredArray = [];
+				angular.forEach(result1, function(val, key){
+					if(val.Name == "Purple Perks")
+						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getPurplePerksRedemptionLatestValue', params));
+					if(val.Name == "Gift Card")
+						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getGiftCardRedemption'));
+					if(val.Name == "Bachman Charges")
+						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getGiftCardRedemption'));
+				},true);
+				$q.all(TempStoredArray).then(function(result2){
+					angular.forEach(result2, function(val, key){
+						if(val.LatestValue != result1[key].Balance)
+							result1[key].Balance = val.LatestValue;
+						vm.UserSpendingAcc[val.Name] = result1[key];
+					},true);
+				});
+			});
 		});
 	}
 	vm.UserSpendingAccounts();

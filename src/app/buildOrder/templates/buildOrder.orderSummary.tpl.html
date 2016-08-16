@@ -1245,8 +1245,8 @@
 			<div uib-dropdown>
 				<ordercloud-search servicename="customer" controlleras="buildordersummary" placeholder="Search user" uib-dropdown-toggle></ordercloud-search>
                 <div class="search_dropdown" uib-dropdown-menu>
-                    <div class="searchelement"  ng-repeat="user in buildOrder.list track by $index">
-                        <a class="search_result" ng-click="buildOrder.selectUser(user);">
+                    <div class="searchelement"  ng-repeat="user in buildordersummary.list track by $index">
+                        <a class="search_result" ng-click="buildordersummary.selectUser(user);">
                             <p>{{user.Username}}</p>
                             <div>{{user.Email}}</div>
                         </a>
@@ -1256,12 +1256,12 @@
 			<a class="create" ng-click="userEdit=!userEdit">Create New User</a>
 		</div>
 		<div ng-hide="!showUser" class="showUserDetails">
-			<p>First Name: <span>{{buildOrder.showDetails.FirstName}}</span></p>
-			<p>Last Name: <span>{{buildOrder.showDetails.LastName}}</span></p>
-			<p>email Address: <span>{{buildOrder.showDetails.Email}}</span></p>
-			 <p>Phone Number: <span>{{buildOrder.showDetails.PhoneNumber}}</span></p>
+			<p>First Name: <span>{{buildordersummary.showDetails.FirstName}}</span></p>
+			<p>Last Name: <span>{{buildordersummary.showDetails.LastName}}</span></p>
+			<p>email Address: <span>{{buildordersummary.showDetails.Email}}</span></p>
+			 <p>Phone Number: <span>{{buildordersummary.showDetails.PhoneNumber}}</span></p>
 			<div class="button-list user-top">
-				<button type="button" class="save"  ng-click="buildOrder.openUser(buildOrder.showDetails.ID)">Open</button>
+				<button type="button" class="save"  ng-click="buildordersummary.openUser()">Open</button>
 				<button type="button" ng-click="showUser=!showUser">CANCEL</button>
 			</div>
 		</div>

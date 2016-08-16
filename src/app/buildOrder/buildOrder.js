@@ -611,11 +611,11 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		vm.showDetails=user;		
 		$scope.showUser=true;
 	}		
-	vm.openUser=function(user){
+	/*vm.openUser=function(user){
 		vm.guestUserModal = !vm.guestUserModal;
 		console.log("..", SearchData.productID);
 		$state.go($state.current, {ID:user,SearchType:'User',prodID:SearchData.productID}, {reload:true});
-	}
+	}*/
 	vm.createUser=function(newUser, createaddr){		
 		$scope.showModal = !$scope.showModal;		
 		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
@@ -1502,6 +1502,11 @@ function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Or
     var vm = this;
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
 		vm.order = Order;
+	}
+	vm.openUser=function(){
+		vm.guestUserModal = !vm.guestUserModal;
+		console.log("..", SearchData.productID);
+		//$state.go($state.current, {ID:user,SearchType:'User',prodID:SearchData.productID}, {reload:true});
 	}
 	console.log(vm.order);
 	vm.grouping = function(data){

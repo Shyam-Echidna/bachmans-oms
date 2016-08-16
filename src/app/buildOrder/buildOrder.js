@@ -283,7 +283,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			if($stateParams.SearchType == 'Products'){
 				vm.guestUserModal =! vm.guestUserModal;
 			}
-			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+			//$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
 		}
 	};
 	$scope.selectVarients = function(txt,index){

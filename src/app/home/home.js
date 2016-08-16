@@ -115,9 +115,8 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 			{ name: 'ID', displayName:'Shipment'},
 			{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
 			{ name: 'FromUserFirstName', displayName:'Sender Name'},
-			{ name: 'DateCreated', displayName:'Delivery Date'},
 			{ name: 'BillingAddress', displayName:'Occassions'},
-			{ name: 'Total', displayName:'Wire Status Code'},
+			{ name: 'Totl', displayName:'Wire Status Code'},
 			{ name: 'xp.CSRID', displayName:'CSR ID'},
 			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:row.entity.FromUserID,SearchType:grid.appScope.user,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
 		]

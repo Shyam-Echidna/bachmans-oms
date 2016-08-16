@@ -20,7 +20,7 @@
           <input type="radio" class="form control" name="name" id="tab2">
           <label class="radio" for="tab2">Forgot Password</label>
          <div class="login-tab">
-          <form class="panel-body" name="LoginForm" ng-submit="login.submit()">
+          <form class="panel-body" name="login.LoginForm" ng-submit="login.submit()">
             
             <div class="input-group form-group">
               <span class="input-group-addon" id="basic-addon1"><span class="login-lock glyphicon glyphicon-user" ></span></span>
@@ -42,9 +42,10 @@
 				</span>
 			  </span>
               <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" id="Password" ng-model="login.credentials.Password" ng-required="true" >
+              <span class="help-block has-error error-msg1" ng-if="login.credentials.Password && login.credentials.Username">{{login.LoginForm.error}}</span>
             </div>
             <div class="input-group form-group login-submit">
-              <button id="submit_login" type="submit" class="btn btn-primary" ng-disabled="LoginForm.$invalid">Login</button>
+              <button id="submit_login" type="submit" class="btn btn-primary" ng-disabled="login.LoginForm.$invalid">Login</button>
             </div>
           </form>
         </div>

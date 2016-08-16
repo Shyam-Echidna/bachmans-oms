@@ -138,6 +138,7 @@ function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, L
             })
             .catch(function(ex) {
                 console.log(ex.data);
+				vm.LoginForm.error = ex.data.error;
             })
     };
 

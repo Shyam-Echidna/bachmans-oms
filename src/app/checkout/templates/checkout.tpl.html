@@ -49,52 +49,52 @@
 								</div>
 								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<label class="radio-inline radio-common">
-										<input type="radio" id="residence" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />
-										<label for="residence">Residence</label>
+										<input type="radio" id="residence{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />
+										<label for="residence{{$index}}">Residence</label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="hospital" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />
-										<label for="hospital">Hospital</label>
+										<input type="radio" id="hospital{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />
+										<label for="hospital{{$index}}">Hospital</label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="funeral" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />
-										<label for="funeral">Funeral</label>
+										<input type="radio" id="funeral{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />
+										<label for="funeral{{$index}}">Funeral</label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="church" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />
-										<label for="church">Church</label>
+										<input type="radio" id="church{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />
+										<label for="church{{$index}}">Church</label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="cemetery" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Cemetery" />
-										<label for="cemetery">Cemetery</label>
+										<input type="radio" id="cemetery{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Cemetery" />
+										<label for="cemetery{{$index}}">Cemetery</label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="business" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Business" />
-										<label for="business">Business</label>
+										<input type="radio" id="business{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Business" />
+										<label for="business{{$index}}">Business</label>
 										<div class="radio"></div>
 									</label>
 									<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
 									<label class="radio-inline radio-common">
-										<input type="radio" id="school" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />
-										<label for="school">School</label>
+										<input type="radio" id="school{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />
+										<label for="school{{$index}}">School</label>
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="store" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />
-										<label for="store">In-Store Pick Up</label>
+										<input type="radio" id="store{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />
+										<label for="store{{$index}}">In-Store Pick Up</label>
 										<div class="radio"></div>
 									</label>
 								</div>
 								<p class="check-top">Zip Code</p>
 								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false" max-length="5" ></input>
-								<p class="check-top">Address1</p>
+								<p class="check-top">Address 1</p>
 								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
-								<p class="check-top">Address2  (optional)</p>
+								<p class="check-top">Address 2(optional)</p>
 								<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
 								<div class="check-top city-block">
 									<p>City</p>
@@ -165,9 +165,9 @@
 										   <li ng-class="{active:checkout.data{{$index}} == 'selDate{{$index}}'}" class="select-date-info">
 												<p class="select-date">Select Date</p>
 												<div class="date">
-												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" />/
-												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" ng-change="checkout.dateSelect()" />/
-												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" />
+												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" max-length="2" />/
+												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" max-length="2" ng-change="checkout.dateSelect()" />/
+												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" max-length="4" />
 												<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="checkout.initDate" init-date="checkout.initDate">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 														 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
@@ -349,9 +349,9 @@
 										<p>Zip Code</p>
 										<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" />
 									</div>
-									<p class="check-top">Address1</p>
+									<p class="check-top">Address 1</p>
 									<input type="text" ng-model="addr.Street1" />
-									<p class="check-top">Address2</p>
+									<p class="check-top">Address 2</p>
 									<input type="text" ng-model="addr.Street2" />
 									<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -399,11 +399,11 @@
 									<div class="line-msgs" ng-class="{'hideItem': !cardMsg}">
 										<p>Line 1</p>
 										<input type="text" ng-model="line.xp.CardMessage.line1"></input>
-										<p>Line2</p>
+										<p>Line 2</p>
 										<input type="text" ng-model="line.xp.CardMessage.line2"></input>
-										<p>Line3</p>
+										<p>Line 3</p>
 										<input type="text" ng-model="line.xp.CardMessage.line3"></input>
-										<p>Line4</p>
+										<p>Line 4</p>
 										<input type="text" ng-model="line.xp.CardMessage.line4"></input>
 									</div>
 								</div>

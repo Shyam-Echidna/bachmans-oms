@@ -889,8 +889,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				"transactionDate":"",
 				"customerNumber":$stateParams.ID,
 				"cardNumber":"2147443647",
-				"transactionAmountFromF51":data.Balance,
-				"four51TimeStamp":"2016-08-09 09:32:20" 
+				"transactionAmountFromF51":"",
+				"four51TimeStamp":""
 			}, TempStoredArray = [];
 			angular.forEach(res.Items, function(val, key){
 				TempStoredArray.push(OrderCloud.SpendingAccounts.Get(val.SpendingAccountID));
@@ -898,6 +898,12 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			$q.all(TempStoredArray).then(function(result1){
 				TempStoredArray = [];
 				angular.forEach(result1, function(val, key){
+					if(val.xp.RedeemDate)
+						val.xp.RedeemDate = new Date(val.xp.RedeemDate);
+					else
+						val.xp.RedeemDate = new Date();
+					params.four51TimeStamp = val.xp.RedeemDate.getFullYear()+"-"+(val.xp.RedeemDate.getMonth()+1)+"-"+val.xp.RedeemDate.getDate()+" "+val.xp.RedeemDate.getHours()+":"+val.xp.RedeemDate.getMinutes()+":"+val.xp.RedeemDate.getSeconds()
+					params.transactionAmountFromF51 = val.Balance;
 					if(val.Name == "Purple Perks")
 						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getPurplePerksRedemptionLatestValue', params));
 					if(val.Name == "Gift Card")

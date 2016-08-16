@@ -1274,7 +1274,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(addressType != "Will Call" || line.willSearch){
 			vm.getDeliveryCharges(line);
 		}
-		if(addressType == "Hospital" && (vm.HospitalNames.length==0 || !vm.HospitalNames)){
+		if(addressType == "Hospital" && (vm.HospitalNames.length == 0 || !vm.HospitalNames)){
 			vm.GetAllList("Hospitals");
 		}
 		if(addressType == "Funeral" && !vm.FuneralNames){

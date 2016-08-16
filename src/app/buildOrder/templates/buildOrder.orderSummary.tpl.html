@@ -31,7 +31,7 @@
 						</svg>
 						</span>
 						<p ng-show="!isEditing">
-							{{line[0].ShippingAddress.Street1}}, {{line[0].ShippingAddress.Street2}}, {{line[0].ShippingAddress.City}}, {{line[0].ShippingAddress.State}} {{line[0].ShippingAddress.Country}} {{line[0].ShippingAddress.Zip}}, {{line[0].ShippingAddress.Phone}}
+							{{line[0].ShippingAddress.Street1}} {{line[0].ShippingAddress.Street2}}, {{line[0].ShippingAddress.City}}, {{line[0].ShippingAddress.State}} {{line[0].ShippingAddress.Country}} {{line[0].ShippingAddress.Zip}}, {{line[0].ShippingAddress.Phone}}
 						</p>
 						<input type="text" ng-show="isEditing" ng-model="line[0].ShippingAddress.Street1" placeholder="Street1" ng-blur="buildordersummary.getDeliveryCharges(line, 0)"/>
 						<input type="text" ng-show="isEditing" ng-model="line[0].ShippingAddress.Street2" placeholder="Street2" ng-blur="buildordersummary.getDeliveryCharges(line, 0)"/>

@@ -1549,6 +1549,7 @@ input.error {
 					    margin: 0;
 						width: 49%;
 					}
+					
 				}
 				.outgoing-wire{
 					span{
@@ -1617,7 +1618,7 @@ input.error {
 							}
 						  }
 						}
-						.delivery-date {
+						.delivery-date{
 							width:76%;
 							
 							.btn{
@@ -1629,6 +1630,9 @@ input.error {
 									    fill: #8c58b5;
 								  }
 							}
+							.uib-datepicker-popup{
+								left:-80px !important;
+							}
 						}
 						input {
 							width: 100%;
@@ -1637,76 +1641,7 @@ input.error {
 							line-height:23px;
 							.helvetica-regular;
 						}
-						.uib-datepicker-popup{
-                    border: none;
-                    border-radius: 0;
-                    margin:0px 0px 0px -13px;
-                    -webkit-appearance:none;
-                    outline: 0;
-                    left:-67px !important;
-                        li{
-                            -webkit-appearance:none;
-                            outline: 0;
-                            div{
-                                width: 100%;
-                            }
-                            table{
-                                -webkit-appearance:none;
-                                outline: 0;
-                                width: 100%;
-                               th, tr td{
-                                    button{
-                                        border-radius: 0px;
-                                        border: none;
-                                         .glyphicon{
-                                            border-right:none !important;
-                                            color:#d6de4d;
-                                         }
-                                        span{
-                                            color: #000;
-                                            &.text-muted{
-                                                color: #ccc;
-                                            }
-
-                                        }
-                                        &:hover,&.active,&.active:hover,&:active,&.btn-info{
-                                            background: #9f64cc;
-                                            border-color: #8c58b5;
-                                            box-shadow: none;
-                                            -webkit-appearance:none;
-                                            span{
-                                                color: #fff;
-                                            }
-                                            i{
-                                                color:#fff;
-                                            }
-                                        }
-                                        &:hover{
-                                            background: transparent;
-                                             span ,i{
-                                                color: #8c58b5;
-                                             }
-                                        }
-                                        
-                                    }
-                                    small,strong{
-                                        color:  #8c58b5;
-                                    }
-                                }
-                                th{
-                                    button{
-                                        &:active,&:focus{
-                                            background: transparent;
-                                            box-shadow: none;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        &:active,&:focus,&:hover,&:active:hover{
-                            border: none;
-                        }
-                }
+						
 					}
 					.location-state,
 					.location-city,
@@ -1857,6 +1792,12 @@ input.error {
 						  display: block;
 						}
 					}
+					.residence-address{
+						.location-addressL1{
+									clear:both;
+									padding-top:10px;
+							}	
+						}
 					.hospital-address,
 					.residence-address,
 					.shipping-address,
@@ -1934,7 +1875,9 @@ input.error {
 									    fill: #8c58b5;
 								  }
 							}
-
+							.uib-datepicker-popup{
+								left:-20px !important;
+							}
 						}
 					}
 				}

@@ -372,13 +372,13 @@
 											</div>
 										</div>
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
-										<div class="col-md-12 zipcont">
+										<div class="col-md-6 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>{{buildOrderRight.lineItemForm[lineitem.ID]['Zip']}}
 												<input type="number" name="zip" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
 											</div>
 											</div>
-											<div class="delivery-date" ng-if="lineitem.xp.addressType!='Will Call'">
+											<div class="delivery-date col-md-6" ng-if="lineitem.xp.addressType!='Will Call'">
 												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
 												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
@@ -407,7 +407,7 @@
 											<input type="text" name="street1" ng-model="lineitem.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street1" required max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].street1.$invalid}" />
 											<input type="text" ng-model="lineitem.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street2 (optional)" />
 											<div class="location-addressL2">
-												<div class="location-state">
+												<div class="location-state col-md-6">
 													<p>State <span class="star">*</span></p>
 													<!--<select ng-model="lineitem.ShippingAddress.State">
 														<option selected>K</option>
@@ -415,7 +415,7 @@
 													</select>-->
 													<input type="text" name="state" ng-model="lineitem.ShippingAddress.State" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].state.$invalid}" />
 												</div>
-												<div class="location-city">
+												<div class="location-city col-md-6">
 													<p>City <span class="star">*</span></p>
 													<input type="text" name="city" ng-model="lineitem.ShippingAddress.City" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].city.$invalid}" />
 												</div>

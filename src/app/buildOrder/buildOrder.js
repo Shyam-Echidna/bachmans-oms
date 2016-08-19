@@ -43,7 +43,7 @@ angular.module( 'orderCloud' )
 					scope.$apply(function(){
 						scope.$parent[attrs.visible] = false;
 						scope.$parent.buildOrder.guestUserModal = false;
-						scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
+						//scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
 					});
 				});
 			}
@@ -272,6 +272,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         'query' : '',
         'hits' : []
     };
+    vm.ID1= $stateParams.ID;
 	vm.productSearchData = [];
 	vm.showPDP = false;
 	$scope.hideSearchBox=false;
@@ -283,7 +284,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			if($stateParams.SearchType == 'Products'){
 				vm.guestUserModal =! vm.guestUserModal;
 			}
-			//$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+			else{
+				$state.go('checkout', {ID:$stateParams.ID}, {reload:true});	
+			}
 		}
 	};
 	$scope.selectVarients = function(txt,index){
@@ -607,11 +610,11 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}
 	$scope.oneAtATime = true;
 	$scope.oneAtATimeSub = true;
-	vm.selectUser = function(user){	
+	/*vm.selectUser = function(user){	
 		vm.showDetails=user;		
 		$scope.showUser=true;
 	}		
-	/*vm.openUser=function(user){
+	vm.openUser=function(user){
 		vm.guestUserModal = !vm.guestUserModal;
 		console.log("..", SearchData.productID);
 		$state.go($state.current, {ID:user,SearchType:'User',prodID:SearchData.productID}, {reload:true});
@@ -818,6 +821,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(res){
 							console.log(res);
 							OrderCloud.Auth.SetImpersonationToken(res.access_token);
+							vm.anonymoustoken=res.access_token;
 							OrderCloud.As().Orders.Create(orderParams).then(function(res1){
 								CurrentOrder.Set(res1.ID);
 								vm.order = res1;
@@ -1498,15 +1502,43 @@ function buildOrderPDPController() {
 	var vm = this;
 }
   
-function buildOrderSummaryController($scope, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q) {
+function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q, SearchData) {
     var vm = this;
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
 		vm.order = Order;
 	}
-	vm.openUser=function(){
-		vm.guestUserModal = !vm.guestUserModal;
+	vm.selectUser = function(user){	
+		vm.showDetails=user;		
+		$scope.showUser=true;
+	}
+	vm.openUser=function(data){
+		console.log(data);
+		angular.element(document.getElementById("buildorder")).scope().$parent.buildOrder.guestUserModal=false;
+		var anonymoustoken=angular.element(document.getElementById("oms-plp-right")).scope().buildOrderRight.anonymoustoken;
 		console.log("..", SearchData.productID);
+		var credentials={"Username": data.Username, "Password":data.Password};
+		if($stateParams.SearchType == 'Products'){
+			var anonUserToken = OrderCloud.Auth.ReadToken();
+			console.log(anonUserToken);
+			OrderCloud.Users.GetAccessToken(data.ID, impersonation)
+				.then(function(res) {
+					console.log(res);
+					OrderCloud.Auth.SetImpersonationToken(res['access_token']);
+					OrderCloud.Orders.TransferTempUserOrder(anonymoustoken)
+	                    .then(function(res1){
+	                    	console.log(res1);
+	                    })
+				})
+			//$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+		}
 		//$state.go($state.current, {ID:user,SearchType:'User',prodID:SearchData.productID}, {reload:true});
+	}
+	vm.statechange = function(){
+		angular.element(document.getElementById("buildorder")).scope().$parent.buildOrder.guestUserModal=false;
+		$stateParams.ID=vm.order.FromUserID;
+		if($stateParams.SearchType == 'Products'){
+			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+		}
 	}
 	console.log(vm.order);
 	vm.grouping = function(data){

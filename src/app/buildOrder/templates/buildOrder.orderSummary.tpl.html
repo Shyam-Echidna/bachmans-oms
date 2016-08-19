@@ -1259,11 +1259,15 @@
 			<p>First Name: <span>{{buildordersummary.showDetails.FirstName}}</span></p>
 			<p>Last Name: <span>{{buildordersummary.showDetails.LastName}}</span></p>
 			<p>email Address: <span>{{buildordersummary.showDetails.Email}}</span></p>
-			 <p>Phone Number: <span>{{buildordersummary.showDetails.PhoneNumber}}</span></p>
-			<div class="button-list user-top">
-				<button type="button" class="save"  ng-click="buildordersummary.openUser()">Open</button>
-				<button type="button" ng-click="showUser=!showUser">CANCEL</button>
-			</div>
+			<p>Phone Number: <span>{{buildordersummary.showDetails.PhoneNumber}}</span></p>
+			<!-- <div class="button-list user-top">
+				<button type="button" class="save" ng-click="buildordersummary.openUser()">Login</button>
+				<button type="button" ng-click="showUser=!showUser">Continue as Guest</button>
+			</div> -->
+		</div>
+		<div class="button-list user-top">
+			<button type="button" class="save" ng-hide="!showUser" ng-click="buildordersummary.openUser(buildordersummary.showDetails)">Login</button>
+			<button type="button" ng-click="buildordersummary.statechange()">Continue as Guest</button>
 		</div>
 		<form ng-hide="!userEdit" class="create-user">
 			<h1>Enter user Sign Up details</h1>

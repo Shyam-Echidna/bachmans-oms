@@ -118,7 +118,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 			{ name: 'BillingAddress', displayName:'Occassions'},
 			{ name: 'Totl', displayName:'Wire Status Code'},
 			{ name: 'xp.CSRID', displayName:'CSR ID'},
-			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:row.entity.FromUserID,SearchType:grid.appScope.user,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
+			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({ID:row.entity.FromUserID,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
 		]
 	};
 	vm.saved = OrderList.saved;

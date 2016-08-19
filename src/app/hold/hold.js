@@ -7,7 +7,7 @@ function HoldConfig( $stateProvider ) {
 	$stateProvider
 		.state( 'hold', {
 			parent: 'base',
-			url: '/hold/:ID/:orderID',
+			url: '/hold/:orderID',
 			templateUrl: 'hold/templates/hold.tpl.html',
 			controller: 'HoldCtrl',
 			controllerAs: 'hold'

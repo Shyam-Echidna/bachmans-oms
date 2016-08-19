@@ -9,5 +9,37 @@
 		<div class="orderConfirm-Btn">
 			<button class="sendBtn" value="Send">Send</button>
 		</div> 
+		<div class="orderConfirm-Btn" ng-if="!orderConfirmation.ShowStorePrinters" ng-click="orderConfirmation.ShowStorePrinters= !orderConfirmation.ShowStorePrinters">
+			<a>Print Order Now?</a>
+		</div>
+		<div ng-if="orderConfirmation.ShowStorePrinters">
+			<p>Select a Store</p>
+			<div ng-init="orderConfirmation.Store='thisStore'">
+				<input type="radio" id="Store" name="Store" ng-model="orderConfirmation.Store" value="thisStore" ng-click="orderConfirmation.GetCSRStore()" /><label>This Store</label><br/>
+				<input type="radio" id="Store" name="Store" ng-model="orderConfirmation.Store" value="otherStore" ng-click="orderConfirmation.GetPMCStores()" /><label>Other Store</label>
+			</div>
+			<div ng-if="orderConfirmation.Store!='thisStore'">
+				<div uib-dropdown class="form-control" id="selectStore">
+					<div id="sort-dropdown" uib-dropdown-toggle>
+					<p class="sort-active-show" ng-init="orderConfirmation.SelectStore = 'Select'">{{orderConfirmation.SelectStore}}</p></div>
+					<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+						<li ng-repeat="store in orderConfirmation.StoresList" ng-click="orderConfirmation.SelectStore=store"><a href="">{{store}}</a></li>
+					</ul>
+				</div>
+			</div>
+			<div ng-if="(orderConfirmation.Store=='otherStore' && orderConfirmation.SelectStore!='Select') || orderConfirmation.Store=='thisStore'">
+				<div uib-dropdown class="form-control" id="selectPrinter">
+					<div id="sort-dropdown" uib-dropdown-toggle>
+					<p class="sort-active-show" ng-init="orderConfirmation.SelectPrinter = 'Select'">{{orderConfirmation.SelectPrinter}}</p></div>
+					<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+						<li ng-repeat="printer in ['Printer-ECH-001', 'Printer-ECH-002']" ng-click="orderConfirmation.SelectPrinter=printer"><a href="">{{printer}}</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="orderConfirm-Btn">
+				<!-- <button class="sendBtn" value="Print" ng-disabled="(orderConfirmation.SelectStore=='Select' && orderConfirmation.Store!='thisStore') || orderConfirmation.SelectPrinter=='Select'" ng-click="orderConfirmation.Print()">Print</button> -->
+				<button class="sendBtn" value="Print" ng-disabled="orderConfirmation.SelectStore=='Select' || orderConfirmation.SelectPrinter=='Select'" ng-click="orderConfirmation.Print()">Print</button>
+			</div>
+		</div>
 	</div>
 </div>

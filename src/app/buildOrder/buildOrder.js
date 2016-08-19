@@ -42,8 +42,12 @@ angular.module( 'orderCloud' )
 				$(element).on('hidden.bs.modal', function(){
 					scope.$apply(function(){
 						scope.$parent[attrs.visible] = false;
-						scope.$parent.buildOrder.guestUserModal = false;
-						scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
+						if(scope.$parent.buildOrder){
+							scope.$parent.buildOrder.guestUserModal = false;
+							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
+						}
+						scope.$parent.checkout.getShippingAddressModal = false;
+						scope.$parent.checkout.getBillingAddressModal = false;
 					});
 				});
 			}
@@ -283,7 +287,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			if($stateParams.SearchType == 'Products'){
 				vm.guestUserModal =! vm.guestUserModal;
 			}
-			//$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
 		}
 	};
 	$scope.selectVarients = function(txt,index){
@@ -1206,23 +1210,24 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	$scope.showAboveRecipientModal = false;
 	var storesData;
 	BuildOrderService.GetStores().then(function(res){
-		storesData = res.data.stores;
-		$scope.storeNames = _.pluck(res.data.stores, 'storeName');
+		storesData = res;
+		$scope.storeNames = _.pluck(res, 'CompanyName');
 	});
 	
 	$scope.storesDtls = function(item){
 		var store = this.$parent.$parent.$parent.lineitem;
 		var filt = _.filter(storesData, function(row){
-			return _.indexOf([item],row.storeName) > -1;
+			return _.indexOf([item],row.CompanyName) > -1;
 		});
 		if(store.ShippingAddress == null)
 			store.ShippingAddress = {};
-		store.ShippingAddress.Street1 = filt[0].storeAddress;
+		store.ShippingAddress = filt[0];
+		/*store.ShippingAddress.Street1 = filt[0].storeAddress;
 		store.ShippingAddress.City = filt[0].city;
 		store.ShippingAddress.State = filt[0].state;
 		store.ShippingAddress.Zip = parseInt(filt[0].zipCode);
-		store.ShippingAddress.Country = filt[0].Country;
-		BuildOrderService.GetPhoneNumber(filt[0].phoneNumber).then(function(res){
+		store.ShippingAddress.Country = filt[0].Country;*/
+		BuildOrderService.GetPhoneNumber(store.ShippingAddress.Phone).then(function(res){
 			store.ShippingAddress.Phone1 = res[0];
 			store.ShippingAddress.Phone2 = res[1];
 			store.ShippingAddress.Phone3 = res[2];
@@ -1837,8 +1842,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		PatchOrder: _PatchOrder,
 		GetProductImages: _getProductImages,
 		GetProductList:_getProductList,
-		GetSeqProd:_getSeqProd,
-		GetCardType: _getCardType
+		GetSeqProd:_getSeqProd
     }
 	function _getProductDetails(data) {
 		var deferred = $q.defer();
@@ -2033,7 +2037,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 	}
 	function _CompareDate(endDate){
 		var d = $q.defer();
-		/*$.ajax({
+		$.ajax({
 			method:"GET",
 			dataType:"json",
 			contentType: "application/json",
@@ -2045,7 +2049,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				d.resolve(res.date);
 		}).error(function(err){
 			console.log("err"+err);
-		});*/
+		});
 		d.resolve();
 		return d.promise;
 	}
@@ -2066,9 +2070,12 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 	}
 	function _GetStores(){
 		var d = $q.defer();
-		$http.get('https://api.myjson.com/bins/4wsk2').then(function(res){
-			d.resolve(res);
+		OrderCloud.Addresses.List(null, 1, 100, null, null, {"ID":"Store-*"}).then(function(res){
+			d.resolve(res.Items);
 		});
+		/*$http.get('https://api.myjson.com/bins/4wsk2').then(function(res){
+			d.resolve(res);
+		});*/
 		return d.promise;
 	}
 	function _OrderOnHoldRemove(data, ID){
@@ -2153,27 +2160,6 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
 				vs.listAllProducts();
 			})
-		}
-		return defferred.promise;
-	}
-	function _getCardType(CardNumber){
-		var cards = {
-			"Electron": /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
-			"Maestro": /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
-			"Dankort": /^(5019)\d+$/,
-			"Interpayment": /^(636)\d+$/,
-			"Unionpay": /^(62|88)\d+$/,
-			"Visa": /^4[0-9]{12}(?:[0-9]{3})?$/,
-			"MasterCard": /^5[1-5][0-9]{14}$/,
-			"AmericanExpress": /^3[47][0-9]{13}$/,
-			"Diners": /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
-			"Discover": /^6(?:011|5[0-9]{2})[0-9]{12}$/,
-			"Jcb": /^(?:2131|1800|35\d{3})\d{11}$/
-		}, defferred = $q.defer();
-		for(var key in cards) {
-			if(cards[key].test(CardNumber)) {
-				defferred.resolve(key);
-			}
 		}
 		return defferred.promise;
 	}

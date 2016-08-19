@@ -1,6 +1,7 @@
 angular.module( 'orderCloud' )
     .config( checkoutConfig )
     .controller( 'checkoutCtrl', checkoutController )
+	.factory('checkoutService', checkoutService)
 	.directive('modalr', function () {
 		return {
 			template: '<div class="modal fade">' + 
@@ -109,7 +110,7 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
@@ -162,8 +163,33 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
         }, 0);
     };
 
-    vm.submitOrder = function() {
-		var PaymentType, TempStoredArray = [], dat = new Date();
+    vm.submitOrder = function(card, billingAddress) {
+		if(vm.addCard){
+			checkoutService.AddCreditCard(card, billingAddress, vm).then(function(res1){
+				if(res1=="1"){
+					checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts).then(function(res2){
+						if(res2=="1"){
+							checkoutService.CreditCardPayment(vm).then(function(res3){
+								if(res3=="1"){
+									console.log("-========>");
+								}
+							});
+						}
+					});
+				}
+			});
+		}else{
+			checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts).then(function(res1){
+				if(res1=="1"){
+					checkoutService.CreditCardPayment(vm).then(function(res2){
+						if(res2=="1"){
+							console.log("-========>");
+						}
+					});
+				}
+			});
+		}
+		/*var PaymentType, TempStoredArray = [], dat = new Date();
 		angular.forEach(vm.orderDtls.SpendingAccounts, function(val, key){
 			PaymentType = {"Type":"SpendingAccount", "SpendingAccountID":val.ID, "Description": key, "Amount": val.Amount, "xp":null};
 			if(key == "Cheque" || key == "PaidCash"){
@@ -182,7 +208,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			$q.all(TempStoredArray).then(function(result2){
 				console.log("===========>>>"+result2);
 			});
-		});
+		});*/
         /*if(vm.selectedCard && vm.order.Total > 0) {
             CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
                 .then(function(res){
@@ -219,25 +245,73 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				});
         }*/
     };
-	
-	vm.addCreditCard = function(card){
-		card.ExpMonth = card.ExpMonth.substring(0, 2);
-		card.ExpYear = card.ExpYear.toString();
-		card.ExpYear = card.ExpYear.substring(2, 4);
-		BuildOrderService.GetCardType(card.CardNumber).then(function(cardtype){
-			card.CardType = cardtype;
-			CreditCardService.Create(card).then(function(res){
-				if(res.ResponseHttpStatusCode == 200){
-					OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
-						vm.creditCardsList = response.Items;
-					});
-				}else{
-					vm.ErrorMessage = res.messages;
-				}	
-			});
+	vm.deleteCreditCard = function(){
+		var card = {"ID":""};
+		CreditCardService.Delete(card).then(function(res){
+			console.log("deleted credit card....."+res);
 		});
 	};
-
+	vm.getBillingAddress = function(card){
+		OrderCloud.As().Me.GetAddress(card.xp.BillingAddressID).then(function(res) {
+			card.BillingAddress = res;
+		});
+	};
+	vm.EditBillingAddress = function(billingAddress, index){
+		billingAddress.Phone = "("+billingAddress.Phone1+") "+billingAddress.Phone2+"-"+billingAddress.Phone3;
+		AddressValidationService.Validate(billingAddress).then(function(res){
+			if(res.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = res.ResponseBody.Address;
+				var zip = validatedAddress.PostalCode.substring(0, 5);
+				billingAddress.Zip = parseInt(zip);
+				billingAddress.Street1 = validatedAddress.Line1;
+				billingAddress.Street2 = null;
+				billingAddress.City = validatedAddress.City;
+				billingAddress.State = validatedAddress.Region;
+				billingAddress.Country = validatedAddress.Country;
+				OrderCloud.As().Me.UpdateAddress(billingAddress.ID, billingAddress).then(function(res){
+					vm['EditBillAddress'+index] = !vm['EditBillAddress'+index];
+				});
+			}else{
+				alert("Address not found...");
+			}
+		});		
+	};
+	vm.ShowEditBillingAddress = function(billingAddress, index){
+		BuildOrderService.GetPhoneNumber(billingAddress.Phone).then(function(res){
+			billingAddress.Phone1 = res[0];
+			billingAddress.Phone2 = res[1];
+			billingAddress.Phone3 = res[2];
+		});
+		vm['EditBillAddress'+index] = !vm['EditBillAddress'+index];
+	};
+	vm.showAddressModal = function(modal, index){
+		vm[modal] = !vm[modal];
+	};
+	vm.assignBillingAddress = function(billingAddress, modal){
+		BuildOrderService.GetPhoneNumber(billingAddress.Phone).then(function(res) {
+			billingAddress.Phone1 = res[0];
+			billingAddress.Phone2 = res[1];
+			billingAddress.Phone3 = res[2];
+		});
+		vm.billingAddress = billingAddress;
+		vm[modal] = !vm[modal];
+	};
+	vm.ValidateAddress = function(billingAddress){
+		AddressValidationService.Validate(billingAddress).then(function(res){
+			if(res.ResponseBody.ResultCode == 'Success') {
+				var validatedAddress = res.ResponseBody.Address;
+				var zip = validatedAddress.PostalCode.substring(0, 5);
+				billingAddress.Zip = parseInt(zip);
+				billingAddress.Street1 = validatedAddress.Line1;
+				billingAddress.Street2 = null;
+				billingAddress.City = validatedAddress.City;
+				billingAddress.State = validatedAddress.Region;
+				billingAddress.Country = validatedAddress.Country;
+			}else{
+				alert("Address not found...");
+			}
+		});	
+	};
 	vm.Grouping = function(data){
 		var orderDtls = {"subTotal":0,"deliveryCharges":0};
 		vm.orderDtls = {};
@@ -496,8 +570,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.getStores = function(line){
 		if(!vm.storeNames){
 			BuildOrderService.GetStores().then(function(res){
-				storesData = res.data.stores;
-				vm.storeNames = Underscore.pluck(res.data.stores, 'storeName');
+				storesData = res;
+				vm.storeNames = Underscore.pluck(res, 'CompanyName');
 			});
 		}
 		if(line){
@@ -922,4 +996,141 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		});
 	}
 	vm.UserSpendingAccounts();
+}
+
+function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
+	var service = {
+		GetCardType: _getCardType,
+		AddCreditCard : _addCreditCard,
+		SpendingAccountsRedeemtion : _spendingAccountsRedeemtion,
+		CreditCardPayment : _creditCardPayment
+	};
+	function _getCardType(CardNumber){
+		var cards = {
+			"Electron": /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
+			"Maestro": /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
+			"Dankort": /^(5019)\d+$/,
+			"Interpayment": /^(636)\d+$/,
+			"Unionpay": /^(62|88)\d+$/,
+			"Visa": /^4[0-9]{12}(?:[0-9]{3})?$/,
+			"MasterCard": /^5[1-5][0-9]{14}$/,
+			"AmericanExpress": /^3[47][0-9]{13}$/,
+			"Diners": /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
+			"Discover": /^6(?:011|5[0-9]{2})[0-9]{12}$/,
+			"Jcb": /^(?:2131|1800|35\d{3})\d{11}$/
+		}, defferred = $q.defer();
+		for(var key in cards) {
+			if(cards[key].test(CardNumber)) {
+				defferred.resolve(key);
+			}
+		}
+		return defferred.promise;
+	}
+	function _addCreditCard(card, billingAddress, vm){
+		var d = $q.defer();
+		card = angular.copy(card);
+		card.ExpMonth = card.ExpMonth.substring(0, 2);
+		card.ExpYear = card.ExpYear.toString();
+		card.ExpYear = card.ExpYear.substring(2, 4);
+		billingAddress.Phone = "("+billingAddress.Phone1+") "+billingAddress.Phone2+"-"+billingAddress.Phone3;
+		billingAddress.Country = "US";
+		billingAddress.Billing = true;
+		delete billingAddress.ID;
+		_getCardType(card.CardNumber).then(function(cardtype){
+			card.CardType = cardtype;
+			CreditCardService.Create(card).then(function(res){
+				if(res.ResponseBody.ID){
+					OrderCloud.As().Me.CreateAddress(billingAddress).then(function(res1) {
+						OrderCloud.As().Me.PatchCreditCard(res.ResponseBody.ID, {"xp":{"BillingAddressID":res1.ID}}).then(function(res2) {
+							console.log(res2);
+						});
+					});
+					d.resolve("1");
+				}else{
+					vm.TransactionError = res.messages;
+					d.resolve("0");
+				}	
+			});
+		});
+		return d.promise;
+	}
+	function _spendingAccountsRedeemtion(SpendingAccounts){
+		var PaymentType, TempStoredArray = [], dat = new Date(), d = $q.defer();
+		angular.forEach(SpendingAccounts, function(val, key){
+			PaymentType = {"Type":"SpendingAccount", "SpendingAccountID":val.ID, "Description": key, "Amount": val.Amount, "xp":null};
+			if(key == "Cheque" || key == "PaidCash"){
+				PaymentType.Type = "PurchaseOrder";
+				delete PaymentType.ID;
+				if(key == "Cheque")
+					PaymentType.xp = {"ChequeNo": val.ChequeNo};
+			}
+			TempStoredArray.push(OrderCloud.Payments.Create(vm.order.ID, PaymentType));
+		}, true);
+		$q.all(TempStoredArray).then(function(result){
+			TempStoredArray = [];
+			angular.forEach(result, function(val, key){
+				TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, val.ID, {"Type": val.Type, "DateExecuted": (dat.getMonth()+1)+"/"+dat.getDate()+"/"+dat.getFullYear(), "Amount":val.Amount, "xp": null}));
+			}, true);
+			$q.all(TempStoredArray).then(function(result2){
+				console.log("===========>>>"+result2);
+				d.resolve("1");
+			});
+		});
+		return d.promise;
+	}
+	function _creditCardPayment(vm){
+		var d = $q.defer();
+		if(vm.selectedCard!="createcreditcard" && vm.order.Total > 0) {
+            CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
+                .then(function(res){
+					if(res.ResponseBody.messages.resultCode != "Error"){
+						OrderCloud.Orders.Submit(vm.orderID)
+							.then(function(){
+								TaxService.CollectTax(vm.orderID)
+									.then(function(){
+										d.resolve("1");
+										$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+									})
+							});
+					}else{
+						vm.TransactionError = res.ResponseBody.messages.message[0].text;
+						d.resolve("0");
+					}
+                });
+        } else if(vm.selectedCard=="createcreditcard" && vm.order.Total > 0) {
+			vm.card.ExpMonth = vm.card.ExpMonth.substring(0, 2);
+			vm.card.ExpYear = vm.card.ExpYear.toString();
+			vm.card.ExpYear = vm.card.ExpYear.substring(2, 4);
+			_getCardType(vm.card.CardNumber).then(function(cardtype){
+				vm.card.CardType = cardtype;
+			});
+			CreditCardService.SingleUseAuthCapture(vm.card, vm.order)
+                .then(function(res){
+					if(res.ResponseBody.messages.resultCode != "Error"){
+						OrderCloud.Orders.Submit(vm.orderID)
+							.then(function(){
+								TaxService.CollectTax(vm.orderID)
+									.then(function(){
+										d.resolve("1");
+										$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+									})
+							});
+					}else{
+						vm.TransactionError = res.ResponseBody.messages.message[0].text;
+						d.resolve("0");
+					}
+				});	
+        } else{
+			OrderCloud.Orders.Submit(vm.orderID)
+				.then(function(){
+					TaxService.CollectTax(vm.orderID)
+						.then(function(){
+							d.resolve("1");
+							$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+						})
+				});
+        }
+		return d.promise;
+	}
+	return service;
 }

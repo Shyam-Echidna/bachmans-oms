@@ -462,10 +462,10 @@
 						</div>
 						<!-- credit card -->
 						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-repeat="card in checkout.creditCardsList" ng-if="checkout.paymentOption == 'CreditCard'">
-                            <div>
+                            <div ng-init="checkout.getBillingAddress(card)">
                                 <div class="payment-container-header">
                                     <!-- <label>
-                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card"/>
+                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card" />
                                         <span><i class="fa fa-2x" ng-class="{' fa-cc-amex': card.CardType === 'AmericanExpress', ' fa-cc-mastercard': card.CardType === 'MasterCard', ' fa-cc-visa': card.CardType === 'Visa', ' fa-cc-discover': card.CardType === 'Discover'}"></i></span>
                                         <span>XXXX XXX XXX {{card.PartialAccountNumber}}</span>
                                         <span>{{card.ExpirationDate | date : 'MM/yy' : 'UTC'}}</span>
@@ -479,7 +479,6 @@
                                         <span>{{card.ExpirationDate | date : 'MM/yy' : 'UTC'}}</span>
                                         <span>{{card.CardholderName}}</span>	
 									</label>
-
                                 </div>
                                 <div class="payment-container row" ng-if="card === checkout.selectedCard">
                                     <div class="pay-m col-xs-12 col-sm-12 col-md-8 col-lg-8 col-lg-offset-2">
@@ -515,16 +514,61 @@
 										<div class="col-xs-4 bill-addr-title">
 										<p>Billing Address</p>
 										</div>
-										<div class="col-xs-8 bill-addr-value">
-										<p>3648 Blaisdell Ave S</p>
-										<p>Apt 2</p>
-										<p>Minneapolis, MN</p>
-										<p>55401</p>
-										<a href="javascript:void(0)" class="edit-link" ng-click="checkout.editbillingaddr=!checkout.editbillingaddr">Edit</a>
-										</div>
-										<div class="col-xs-8 col-xs-offset-4 email-value">
-										<p>john.snow@gmail.com</p>
-										</div> 
+										<form ng-show="!checkout.EditBillAddress{{$index}}">
+											<div class="col-xs-8 bill-addr-value">
+											<p>{{card.BillingAddress.Street1}}</p>
+											<p>{{card.BillingAddress.Street2}}</p>
+											<p>{{card.BillingAddress.City}}, {{card.BillingAddress.State}}</p>
+											<p>{{card.BillingAddress.Zip}}</p>
+											<a href="javascript:void(0)" class="edit-link" ng-click="checkout.ShowEditBillingAddress(card.BillingAddress, $index)">Edit</a>
+											</div>
+											<div class="col-xs-8 col-xs-offset-4 email-value">
+											<p>{{card.BillingAddress.xp.Email}}</p>
+											</div> 
+										</form>
+										<form ng-show="checkout.EditBillAddress{{$index}}" ng-submit="checkout.EditBillingAddress(card.BillingAddress, $index)">
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="firstName">First Name</label>
+	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="card.BillingAddress.FirstName" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="lastName">Last Name</label>
+	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="card.BillingAddress.LastName" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="street1">Address 1</label>
+	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="card.BillingAddress.Street1" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="street2">Address 2(Optional)</label>
+	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="card.BillingAddress.Street2" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="city">City</label>
+	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="card.BillingAddress.City" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="state">State</label>
+	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="card.BillingAddress.State" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="zip">Zip</label>
+	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="card.BillingAddress.Zip" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+												<label for="phone">Phone Number</label>
+												<input type="number" ng-model="card.BillingAddress.Phone1" placeholder="Area Code" max-length="3" />
+												<input type="number" ng-model="card.BillingAddress.Phone2" placeholder="Prefix" max-length="3" />
+												<input type="number" ng-model="card.BillingAddress.Phone3" placeholder="Number" max-length="4" />
+											</div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="email">Enter Your Email Address</label>
+	                                            <input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="card.BillingAddress.xp.Email" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <input type="submit" class="form-control" id="submitButton" value="SAVE" />
+	                                        </div>
+										</form>										
                                     </div>
                                 </div>
                             </div>
@@ -558,11 +602,10 @@
 	                                        </div>
 	                                        <div class="col-xs-12 form-group card-number p0">
 	                                            <label for="cardNumber">Card Number</label>
-	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" ng-model="checkout.card.CardNumber" />
+	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" max-length="16" ng-model="checkout.card.CardNumber" />
 	                                        </div>
 	                                        <div class="col-xs-6 form-group exp-date p0">
 	                                            <label for="expDate">Expiration Date</label>
-
 		                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		                                         	<div uib-dropdown class="form-control " id="expmonth">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
@@ -575,16 +618,14 @@
 		                                       	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		                                       		 <div uib-dropdown class="form-control " id="expyear">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
-								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YY'">{{checkout.card.ExpYear}}</p></div>
+								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YYYY'">{{checkout.card.ExpYear}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
 								                        <li ng-repeat="year in checkout.CardExpYears" ng-click="checkout.card.ExpYear=year"><a href="">{{year}}</a></li>
 								                     </ul>
 								                    </div>
 		                                       	</div>
 	                                          </div>
-	                                          
 	                                        <div class="col-xs-6 form-group cvv-number">
-
 	                                            <label for="cvvNumber">CVV</label>
 	                                            <input type="text" class="form-control" id="cvvNumber" ng-model="checkout.card.CVV" />
 	                                            <span class="cvv-help">
@@ -610,13 +651,59 @@
 											<div class="col-xs-12 p0 form-group card-remember">
 	                                           <span ng-if="checkout.ErrorMessage.resultCode=='Error'">{{checkout.ErrorMessage.message[0].text}}</span>
 	                                        </div>
+											<!-- Add new Billing address fields starts here  -->
+											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+												<a ng-click="checkout.showAddressModal('getBillingAddressModal', $index)">Billing Addresses</a>
+												<a ng-click="checkout.showAddressModal('getShippingAddressModal', $index)">Shipping Addresses</a>
+											</div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="firstName">First Name</label>
+	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="checkout.billingAddress.FirstName" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="lastName">Last Name</label>
+	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="checkout.billingAddress.LastName" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="street1">Address 1</label>
+	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="checkout.billingAddress.Street1" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="street2">Address 2(Optional)</label>
+	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="checkout.billingAddress.Street2" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="city">City</label>
+	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="checkout.billingAddress.City" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="state">State</label>
+	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="checkout.billingAddress.State" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="zip">Zip</label>
+	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="checkout.billingAddress.Zip" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+												<label for="phone">Phone Number</label>
+												<input type="number" ng-model="checkout.billingAddress.Phone1" placeholder="Area Code" max-length="3" />
+												<input type="number" ng-model="checkout.billingAddress.Phone2" placeholder="Prefix" max-length="3" />
+												<input type="number" ng-model="checkout.billingAddress.Phone3" placeholder="Number" max-length="4" />
+											</div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="email">Enter Your Email Address</label>
+	                                            <input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="checkout.billingAddress.xp.Email" />
+	                                        </div>
 	                                        <div class="col-xs-12 p0 form-group card-remember">
 	                                            <div class="check-common">
-	                                                <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card)">
+	                                               <!--  <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card, checkout.billingAddress)"> -->
+												    <input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" />
 	                                                <label for="save" class="check"></label>
 	                                            </div>
 	                                           <span>Save this card for future payments</span>
 	                                        </div>
+											
+											<!--Add new Billing address fields ends here  -->
 	                                    </form>
                                      </div>
                                 </div>
@@ -834,23 +921,30 @@
 							</svg>Payment <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
 							<ul class="shipping-info">
-								<li class="shipping-Date">
-									<p ng-if="checkout.selectedCard">{{checkout.selectedCard.CardholderName}}</p>
-									<p ng-if="checkout.selectedCard=='createcreditcard'">{{checkout.card.CardholderName}}</p>
-									<p>Street 1</p>
-									<p>Street 2</p>
-									<p>City</p>
-									<p>State, Country</p>
-									<p>Zip</p>
+								<li class="shipping-Date" ng-if="checkout.selectedCard!='createcreditcard'">
+									<p>{{checkout.selectedCard.CardholderName}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.Street1}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.Street2}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.City}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.State}}, {{checkout.selectedCard.BillingAddress.Country}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.Zip}}</p>
+								</li>
+								<li class="shipping-Date" ng-if="checkout.selectedCard=='createcreditcard'">
+									<p>{{checkout.card.CardholderName}}</p>
+									<p>{{checkout.billingAddress.Street1}}</p>
+									<p>{{checkout.billingAddress.Street2}}</p>
+									<p>{{checkout.billingAddress.City}}</p>
+									<p>{{checkout.billingAddress.State}}, {{checkout.billingAddress.Country}}</p>
+									<p>{{checkout.billingAddress.Zip}}</p>
 								</li>
 								<li class="shipping-DeliveryPref">
-									<p ng-if="checkout.selectedCard">
+									<p ng-if="checkout.selectedCard!='createcreditcard'">
 										Credit Card: xxxx xxxx xxxx {{checkout.selectedCard.PartialAccountNumber}}
 									</p>
+									<p ng-if="checkout.selectedCard!='createcreditcard'">Card Expires: {{checkout.selectedCard.ExpirationDate | date:'MM/yy'}}</p>
 									<p ng-if="checkout.selectedCard=='createcreditcard'">
 										Credit Card: xxxx xxxx xxxx {{checkout.card.CardNumber | limitTo: -4}}
 									</p>
-									<p ng-if="checkout.selectedCard">Card Expires: {{checkout.selectedCard.ExpirationDate | date:'MM/yy'}}</p>
 									<p ng-if="checkout.selectedCard=='createcreditcard'">Card Expires: {{checkout.card.ExpMonth | limitTo: 2}}/{{checkout.card.ExpYear | limitTo: -2}}</p>
 									<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerks">Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerks.Amount | currency}}</p>
 									<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges">Bachmans Charges Applied:{{checkout.orderDtls.SpendingAccounts.BachmansCharges.Amount | currency}}</p>
@@ -863,7 +957,10 @@
 						</uib-accordion-group>
 						<div class="row review-content">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<button class="place-order" ng-click="checkout.submitOrder()">Place Order</button>
+								<span style="color:red;">{{checkout.TransactionError}}</span>
+							</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<button class="place-order" ng-click="checkout.submitOrder(checkout.card, checkout.billingAddress)">Place Order</button>
 							</div>
 						</div>
 					</uib-accordion>
@@ -894,7 +991,7 @@
 					</uib-accordion-heading>
 					<div class="ordersummaryproductdata" ng-repeat="item in lineitems">
 						<div class="prod-img">
-							<img src="assets/images/flowers.jpg">
+							<img src="{{item.xp.ProductImageUrl}}">
 						</div>
 						<div class="prod-details">
 							<p>{{item.Product.Name}}</p>
@@ -988,4 +1085,48 @@
 		</div>
 	</div>
 </div>
+<modal title="Shipping Address Book" visible="checkout.getShippingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Phone</th>
+		</tr>
+		<tr ng-repeat="line in checkout.deliveryInfo track by line.ID" ng-click="checkout.assignBillingAddress(line.ShippingAddress, 'getShippingAddressModal')">
+			<td>
+				<p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p>
+			</td>
+			<td>
+				<p>{{line.ShippingAddress.Street1}}</p>
+				<p>{{line.ShippingAddress.Street2}}</p>
+				<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}} {{line.ShippingAddress.Country}} {{line.ShippingAddress.Zip}}</p>
+			</td>
+			<td>
+				<p>{{line.ShippingAddress.Phone}}</p>
+			</td>			
+		</tr>
+	</table>
+</modal>
+<modal title="Billing Address Book" visible="checkout.getBillingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Phone</th>
+		</tr>
+		<tr ng-repeat="line in checkout.creditCardsList" ng-click="checkout.assignBillingAddress(line.BillingAddress, 'getBillingAddressModal')" ng-if="line.BillingAddress">
+			<td>
+				<p>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</p>
+			</td>
+			<td>
+				<p>{{line.BillingAddress.Street1}}</p>
+				<p>{{line.BillingAddress.Street2}}</p>
+				<p>{{line.BillingAddress.City}} {{line.BillingAddress.State}} {{line.BillingAddress.Country}} {{line.BillingAddress.Zip}}</p>
+			</td>
+			<td>
+				<p>{{line.BillingAddress.Phone}}</p>
+			</td>			
+		</tr>
+	</table>
+</modal>
 <div id="CheckoutFooter" ui-view="checkoutbottom"></div>

@@ -1461,7 +1461,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			lineitems.hosSearch = lineitems.xp.SearchedName;		
 	}*/
 	vm.SaveAllLineItems = function(){
-		var LineItemLists = [], arr = [], arr2 = [], id, obj = {};
+		var LineItemLists = [], arr = [], arr2 = [], arr3 = [];
 		angular.forEach(vm.activeOrders, function(val, key){
 			LineItemLists = _.union(LineItemLists, val);
 		});
@@ -1471,7 +1471,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				val.$submitted = true;
 				arr.push(val.$valid);
 				arr2.push(val.$pristine);
-				if(!val.$valid){
+				arr3.push(val.invalidAddress);
+				if(!val.$valid || val.invalidAddress){
 					val.formError = true;
 					vm.HighLightErrors[key] = val;
 				}else{
@@ -1479,7 +1480,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				}
 			}
 		},true);
-		if(!_.contains(arr, false) && _.contains(arr2, false)){
+		if(!_.contains(arr, false) && _.contains(arr2, false) && !_.contains(arr3, true)){
 			vm.lineDtlsSubmit(LineItemLists, 0);
 		}
 		if(!_.contains(arr2, false) && !_.contains(arr, false)){

@@ -696,10 +696,11 @@
 	                                        <div class="col-xs-12 p0 form-group card-remember">
 	                                            <div class="check-common">
 	                                               <!--  <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card, checkout.billingAddress)"> -->
-												    <input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" />
+												    <input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" ng-disabled="checkout.creditCardsList.length >= 3" />
 	                                                <label for="save" class="check"></label>
 	                                            </div>
-	                                           <span>Save this card for future payments</span>
+	                                           <span ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</span>
+											   <span ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</span>
 	                                        </div>
 											
 											<!--Add new Billing address fields ends here  -->

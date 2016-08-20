@@ -287,8 +287,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		if($scope.showOrdersummary == true){
 			if($stateParams.SearchType == 'Products'){
 				vm.guestUserModal =! vm.guestUserModal;
-			}
-			else{
+			}else{
 				$state.go('checkout', {ID:$stateParams.ID}, {reload:true});	
 			}
 		}
@@ -1283,7 +1282,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(addressType != "Will Call" || line.willSearch){
 			vm.getDeliveryCharges(line);
 		}
-		if(addressType == "Hospital" && (vm.HospitalNames.length == 0 || !vm.HospitalNames)){
+		if(addressType == "Hospital" && !vm.HospitalNames){
 			vm.GetAllList("Hospitals");
 		}
 		if(addressType == "Funeral" && !vm.FuneralNames){
@@ -1333,7 +1332,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 		}	
 	}
-	vm.getDeliveryCharges = function(line){
+	vm.getDeliveryCharges = function(line, form){
 		vm.NoDeliveryFees = false;
 		angular.forEach(vm.AvoidMultipleDelryChrgs, function(val, key){
 			val.deliveryDate = new Date(val.deliveryDate);
@@ -1362,6 +1361,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 		AddressValidationService.Validate(line.ShippingAddress).then(function(res){
 			if(res.ResponseBody.ResultCode == 'Success') {
+				form.invalidAddress = false;
 				var validatedAddress = res.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				line.ShippingAddress.Zip = parseInt(zip);
@@ -1444,7 +1444,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					});
 				}
 			}else{
-				alert("Address not found...!");
+				form.invalidAddress = true;
+				//alert("Address not found...!");
 			}
 		});
 	};
@@ -1472,17 +1473,10 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				arr2.push(val.$pristine);
 				if(!val.$valid){
 					val.formError = true;
-					/*id = $('#lineItemForm_' + key).parent().parent().attr('id');
-					$('#'+id.replace('panel','tab')).css({'border':'1px solid red'});
-					obj[key] = id.replace('panel','tab');
-					vm.HighLightErrors[key] = id.replace('panel','tab');*/
 					vm.HighLightErrors[key] = val;
 				}else{
 					val.formError = false;
 				}
-				/*if(!val.$pristine){
-					LineItemLists.splice(arr2.length-1, 1);
-				}*/
 			}
 		},true);
 		if(!_.contains(arr, false) && _.contains(arr2, false)){

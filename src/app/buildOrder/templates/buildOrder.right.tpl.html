@@ -240,7 +240,7 @@
 								<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore" class="above-addr">Above Address</a>
 								<div class="qty">
 									<p>Quantity <span class="star">*</span></p>
-									<input type="number" name="qty" ng-model="lineitem.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" ng-min="1" ng-max="999" ng-required="true" />
+									<input type="number" name="qty" ng-model="lineitem.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-min="1" ng-max="999" ng-required="true" />
 									<p ng-if="buildOrderRight.lineItemForm[lineitem.ID].qty.$error.min"><span>Minimum 1 Quantity</span></p>
 									<p ng-if="buildOrderRight.lineItemForm[lineitem.ID].qty.$error.max"><span>Maximum 999 Quantity</span></p>
 								</div>
@@ -348,7 +348,7 @@
 											<div class="pick-up-date">
 												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
-												  <input type="text" name="pickupdate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].pickupdate.$invalid}" />
+												  <input type="text" name="pickupdate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].pickupdate.$invalid}" />
 												<span class="input-group-btn">
 												  <button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -375,13 +375,13 @@
 										<div class="col-md-6 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>{{buildOrderRight.lineItemForm[lineitem.ID]['Zip']}}
-												<input type="number" name="zip" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
+												<input type="number" name="zip" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
 											</div>
 											</div>
 											<div class="delivery-date col-md-6" ng-if="lineitem.xp.addressType!='Will Call'">
 												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
-												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitem)" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
+												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 													 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
@@ -404,9 +404,10 @@
 										</div>
 										<div class="location-addressL1">
 											<h1>Address <span class="star">*</span></h1>
-											<input type="text" name="street1" ng-model="lineitem.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street1" required max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].street1.$invalid}" />
-											<input type="text" ng-model="lineitem.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitem)" placeholder="Street2 (optional)" />
+											<input type="text" name="street1" ng-model="lineitem.ShippingAddress.Street1" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" placeholder="Street1" required max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].street1.$invalid}" />
+											<input type="text" ng-model="lineitem.ShippingAddress.Street2" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" placeholder="Street2 (optional)" />
 											<div class="location-addressL2">
+											<h6 style="color:red;" ng-if="buildOrderRight.lineItemForm[lineitem.ID].invalidAddress && lineitem.ShippingAddress.Street1 && lineitem.ShippingAddress.Zip">Invalid Address/Zip</h6>
 												<div class="location-state col-md-6">
 													<p>State <span class="star">*</span></p>
 													<!--<select ng-model="lineitem.ShippingAddress.State">

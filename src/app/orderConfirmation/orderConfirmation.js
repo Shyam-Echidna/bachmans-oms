@@ -12,23 +12,33 @@ function OrderConfirmationConfig( $stateProvider ) {
 		})
 }
 function OrderConfirmationController($stateParams, OrderCloud, $http, PMCStoresURL) {
-	var vm =this;
-	vm.order={};
-	vm.order.ID=$stateParams.ID;
+	var vm = this;
+	vm.order = {};
+	vm.order.ID = $stateParams.ID;
 	OrderCloud.Users.Get($stateParams.userID).then(function(user){
 		vm.order.email= user.Email;
 		vm.CSRStoreID = user.xp.CSRStoreID;
 		vm.SelectStore = vm.CSRStoreID;
+		vm.GetPMCStores();
 	});
 	vm.GetPMCStores = function(){
 		$http.get(PMCStoresURL).success(function(res){
 			vm.StoresList = res;
+			vm.GetPrinters(vm.CSRStoreID);
 		}).error(function(err){
 			console.log(err);
 		});
 	};
 	vm.GetCSRStore = function(){
 		vm.SelectStore = vm.CSRStoreID;
+		vm.GetPrinters(vm.CSRStoreID);
+	};
+	vm.GetPrinters = function(storeName){
+		vm.SelectStore = storeName
+		vm.SelectPrinter = "Select Printer";
+		vm.printers = _.filter(vm.StoresList, function(row){
+			return _.indexOf([storeName], row.storeName) > -1;
+		});
 	};
 	vm.Print = function(){
 		alert("Printed");

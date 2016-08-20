@@ -16,9 +16,9 @@
 							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime">
-						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="checkout.delInfoRecipient[$index]">
+						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]">
 							<uib-accordion-heading>
-								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}}  |  {{line.ShippingAddress.Zip}}</h2>
+								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}} | {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
 							<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6 delivery-address" ng-show="!checkout.isAddrShow{{$index}}">
 								<!-- <h3>Delivery Address</h3>
@@ -412,9 +412,8 @@
 								</div>
 							</div>
 							<div class="col-lg-12 col-md-12">
-								<input type="button" ng-value="checkout.deliveryInfo.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(line,$index)" />
+								<input type="button" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(lineitems,0)" />
 							</div>
-							
 						</uib-accordion-group>
 					</uib-accordion>
 				</uib-accordion-group>
@@ -985,7 +984,7 @@
 				<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup">
 					<uib-accordion-heading>
 						<div class="checkoutorderhead">
-							<p><span>Recipient:</span> {{recipient}}</p>
+							<p><span>Recipient:</span> {{lineitems[0].ShippingAddress.FirstName}} {{lineitems[0].ShippingAddress.LastName}}</p>
 							<p><span>Zip Code:</span> {{lineitems[0].ShippingAddress.Zip}}</p>
 						</div>
 					</uib-accordion-heading>

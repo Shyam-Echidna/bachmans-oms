@@ -269,48 +269,48 @@
 											</div>
 											<div ng-show="checkout.isDeliAddrShow{{$index}}">
 												<ng-form name="checkout.editaddress[$index]" novalidate>
-												<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p>First Name <span class="star">*</span></p>
-														<input type="text" name="firstname" ng-model="addr.FirstName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].firstname.$invalid}" />
-													</div>
-													<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p>Last Name <span class="star">*</span></p>
-														<input type="text" name="lastname" ng-model="addr.LastName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].lastname.$invalid}" />
-													</div>
-													<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-														<p class="check-top">Zip Code <span class="star">*</span></p>
-														<input type="number" name="zip" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" ng-minlength="5" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].zip.$invalid}" />
-													</div>
-													<p class="check-top">Address 1 <span class="star">*</span></p>
-													<input type="text" name="street1" ng-model="addr.Street1" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].street1.$invalid}" />
-													<p class="check-top">Address 2</p>
-													<input type="text" ng-model="addr.Street2" />
-													<h6 style="color:red;" ng-if="checkout.editaddress[$index].invalidAddress && addr.Street1 && addr.Zip">Invalid Address/Zip</h6>
-													<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-														<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
-															<p>City <span class="star">*</span></p>
-															<input type="text" name="city" ng-model="addr.City" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].city.$invalid}" />
+													<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
+														<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+															<p>First Name <span class="star">*</span></p>
+															<input type="text" name="firstname" ng-model="addr.FirstName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].firstname.$invalid}" />
 														</div>
-														<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
-															<p>State <span class="star">*</span></p>
-															<input type="text" name="state" ng-model="addr.State" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].state.$invalid}" />
+														<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+															<p>Last Name <span class="star">*</span></p>
+															<input type="text" name="lastname" ng-model="addr.LastName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].lastname.$invalid}" />
 														</div>
-													</div>
-													<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-															<p>Phone Number</p>
-															<div>
-																<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3" />
-																<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
-																<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
+														<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<p class="check-top">Zip Code <span class="star">*</span></p>
+															<input type="number" name="zip" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" ng-minlength="5" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].zip.$invalid}" />
+														</div>
+														<p class="check-top">Address 1 <span class="star">*</span></p>
+														<input type="text" name="street1" ng-model="addr.Street1" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].street1.$invalid}" />
+														<p class="check-top">Address 2</p>
+														<input type="text" ng-model="addr.Street2" />
+														<h6 style="color:red;" ng-if="checkout.editaddress[$index].invalidAddress && addr.Street1 && addr.Zip">Invalid Address/Zip</h6>
+														<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+																<p>City <span class="star">*</span></p>
+																<input type="text" name="city" ng-model="addr.City" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].city.$invalid}" />
+															</div>
+															<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+																<p>State <span class="star">*</span></p>
+																<input type="text" name="state" ng-model="addr.State" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].state.$invalid}" />
 															</div>
 														</div>
-														<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-															<button ng-click="checkout.UpdateAddress(addr,$index,checkout.editaddress[$index])">Save</button>
+														<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+																<p>Phone Number</p>
+																<div>
+																	<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3" />
+																	<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
+																	<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
+																</div>
+															</div>
+															<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+																<button ng-click="checkout.UpdateAddress(addr,$index,checkout.editaddress[$index])">Save</button>
+															</div>
 														</div>
 													</div>
-												</div>
 												</ng-form>
 											</div>
 										</uib-accordion-group>
@@ -896,23 +896,23 @@
 								</g>
 							</svg>Shipping Information <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
-							<ul ng-repeat="line in checkout.deliveryInfo track by line.ID" class="shipping-info">
-								<li class="shipping-FirstName"><p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p></li>
+							<ul ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" class="shipping-info">
+								<li class="shipping-FirstName"><p>{{lineitems[0].ShippingAddress.FirstName}} {{lineitems[0].ShippingAddress.LastName}}</p></li>
 								<li class="shipping-Addresses">
-									<p>{{line.ShippingAddress.Street1}}</p>
-									<p>{{line.ShippingAddress.Street2}}</p>
-									<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}}</p>
-									<p>{{line.ShippingAddress.Country}}</p>
-									<p>{{line.ShippingAddress.Zip}}</p>
-									<span class="shipping-Phone">{{line.ShippingAddress.Phone}}</span> 
+									<p>{{lineitems[0].ShippingAddress.Street1}}</p>
+									<p>{{lineitems[0].ShippingAddress.Street2}}</p>
+									<p>{{lineitems[0].ShippingAddress.City}} {{lineitems[0].ShippingAddress.State}}</p>
+									<p>{{lineitems[0].ShippingAddress.Country}}</p>
+									<p>{{lineitems[0].ShippingAddress.Zip}}</p>
+									<span class="shipping-Phone">{{lineitems[0].ShippingAddress.Phone}}</span> 
 								</li>
 								<li class="shipping-Date">
 									<p class="shipping-subTitle">Delivery Date</p>
-									<p>{{line.xp.deliveryDate | date}}</p>
+									<p>{{lineitems[0].xp.deliveryDate | date}}</p>
 								</li>
 								<li class="shipping-DeliveryPref">
 									<p class="shipping-subTitle">Delivery Preference</p>
-									<p>{{checkout.buyerDtls.xp.DeliveryRuns[0][line.xp.deliveryRun].TimeSlot}}</p>
+									<p>{{checkout.buyerDtls.xp.DeliveryRuns[0][lineitems[0].xp.deliveryRun].TimeSlot}}</p>
 								</li>
 							</ul>
 						</uib-accordion-group>

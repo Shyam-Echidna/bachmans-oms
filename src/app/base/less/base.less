@@ -552,6 +552,10 @@ input[type=number]::-webkit-outer-spin-button {
 			.ui-grid-render-container-body .ui-grid-header .ui-grid-top-panel .ui-grid-header-cell-wrapper .ui-grid-header-cell.ui-grid-coluiGrid-000E .sortable{
 				background-image:none;
 			}
+			 .ui-grid-cell{
+			 	max-width: 14.4% !important;
+    			padding: 11px 16px 8px 16px !important;
+			 }
 		}
 	}
 	.saved_order {
@@ -609,7 +613,7 @@ input[type=number]::-webkit-outer-spin-button {
 				background-color: @base-bg-purple-light;
 				padding: 5px 10px 5px 10px;
 				margin-right: 8px;
-				background:fade;
+				.background-fade;
 				&:hover{
 					background-color: @primary-dark-color;
 				}
@@ -793,10 +797,12 @@ input[type=number]::-webkit-outer-spin-button {
 			p{
 		       margin-left: 22px;
                display: inline;
+               float:left;
 			}
 			div{
-				text-align:right;
-				width:56%;
+				text-align: right;
+			    float: right;
+			    width: auto;
 			}
 		}
 	}

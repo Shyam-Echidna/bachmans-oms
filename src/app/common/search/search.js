@@ -272,7 +272,6 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 										$state.go('buildOrder',{SearchType:'Products'});
 									}
 								});
-								
 							}
 						});	
 					})

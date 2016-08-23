@@ -16,405 +16,409 @@
 							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime">
-						<uib-accordion-group ng-repeat="line in checkout.deliveryInfo track by line.ID" is-open="checkout.delInfoRecipient[$index]">
+						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]">
 							<uib-accordion-heading>
-								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LaststName}}  |  {{line.ShippingAddress.Zip}}</h2>
+								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}} | {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
-							<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6 delivery-address" ng-show="!checkout.isAddrShow{{$index}}">
-								<!-- <h3>Delivery Address</h3>
-								<p ng-click="checkout.viewAddrBook($index)" class="view-addr">View Address Book +</p> -->
-								<div class="address-header">
-									<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6  delivery-address-header">
-										Delivery Address
+							<form name="checkout.lineItemForm[line.ID]" novalidate>
+								<div class="col-sm-6 col-xs-6 col-lg-6 col-md-6 delivery-address" ng-show="!checkout.isAddrShow{{$index}}">
+									<!-- <h3>Delivery Address</h3>
+									<p ng-click="checkout.viewAddrBook($index)" class="view-addr">View Address Book +</p> -->
+									<div class="address-header">
+										<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6  delivery-address-header">
+											Delivery Address
+										</div>
+										<div ng-click="checkout.viewAddrBook($index, line)" class=" col-xs-6 col-sm-6 col-md-6 col-lg-6 view-address">
+											 View Address Book
+											 <span>
+												 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+													<g>
+														<rect x="10"  width="4" height="24" />
+														<rect y="10"  width="24" height="4" />
+													</g>
+												</svg>
+											</span>
+										</div>
 									</div>
-									<div ng-click="checkout.viewAddrBook($index, line)" class=" col-xs-6 col-sm-6 col-md-6 col-lg-6 view-address">
-										 View Address Book
-										 <span>
-											 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+									<div class="check-top inline-blk">
+										<p>First Name <span class="star">*</span></p>
+										<input type="text" name="firstname" ng-model="line.ShippingAddress.FirstName" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].firstname.$invalid}"></input>
+									</div>
+									<div class="check-top inline-blk">
+										<p>Last Name <span class="star">*</span></p>
+										<input type="text" name="lastname" ng-model="line.ShippingAddress.LastName" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].lastname.$invalid}"></input>
+									</div>
+									<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<label class="radio-inline radio-common">
+											<input type="radio" id="residence{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />
+											<label for="residence{{$index}}">Residence</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="hospital{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />
+											<label for="hospital{{$index}}">Hospital</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="funeral{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />
+											<label for="funeral{{$index}}">Funeral</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="church{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />
+											<label for="church{{$index}}">Church</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="cemetery{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Cemetery" />
+											<label for="cemetery{{$index}}">Cemetery</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="business{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Business" />
+											<label for="business{{$index}}">Business</label>
+											<div class="radio"></div>
+										</label>
+										<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
+										<label class="radio-inline radio-common">
+											<input type="radio" id="school{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />
+											<label for="school{{$index}}">School</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="store{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />
+											<label for="store{{$index}}">In-Store Pick Up</label>
+											<div class="radio"></div>
+										</label>
+									</div>
+									<p class="check-top">Zip Code <span class="star">*</span></p>
+									<input type="text" name="zip" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='Will Call' ? true : false" max-length="5" ng-minlength="5" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].zip.$invalid}"></input>
+									<p class="check-top">Address 1 <span class="star">*</span></p>
+									<input type="text" name="street1" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='Will Call' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].street1.$invalid}"></input>
+									<p class="check-top">Address 2</p>
+									<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
+									<h6 style="color:red;" ng-if="checkout.lineItemForm[line.ID].invalidAddress && line.ShippingAddress.Street1 && line.ShippingAddress.Zip">Invalid Address/Zip</h6>
+									<div class="check-top city-block">
+										<p>City <span class="star">*</span></p>
+										<input type="text" name="city" ng-model="line.ShippingAddress.City" ng-readonly="line.xp.addressType=='Will Call' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].city.$invalid}"></input>
+									</div>
+									<div class="check-top state-block">
+										<!-- <p class="check-top">State</p> -->
+										<p class="">State <span class="star">*</span></p>
+										<!--<select ng-model="line.ShippingAddress.State">
+											<option selected>K</option>
+											<option>RNR</option>
+										</select>-->
+										<input type="text" name="state" ng-model="line.ShippingAddress.State" ng-readonly="line.xp.addressType=='Will Call' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].state.$invalid}" />
+									</div>
+									<p class="check-top">Phone Number</p>
+									<div class="phone-block">
+										<input type="number" ng-model="line.ShippingAddress.Phone1" placeholder="Area Code" max-length="3" />
+										<input type="number" ng-model="line.ShippingAddress.Phone2" placeholder="Prefix" max-length="3" />
+										<input type="number" ng-model="line.ShippingAddress.Phone3" placeholder="Number" max-length="4" />
+									</div>
+									<div class="delivery-details">
+										<label class="radio-inline radio-common">
+											<input type="radio" id="delivery-dot" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='Will Call' ? line.xp.addressType : 'Residence'">
+											<label for="delivery-dot">Delivery</label>
+											<div class="radio"></div>
+										</label>
+										<label class="radio-inline radio-common">
+											<input type="radio" id="store-pickUp" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">
+											<label for="store-pickUp">In-Store Pick Up</label>
+											<div class="radio"></div>
+										</label>
+										<div ng-if="line.xp.addressType!='Will Call'">
+											<p class="check-top">Delivery Date <span class="star">*</span></p>
+											<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
+												<span>
+													<a tabindex="0" popover-trigger="none" popover-is-open="showDeliveryToolTip" ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="checkout.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
+												</span>
+											</p>
+												<script type="text/ng-template" id="modifyDeliveryTemplate.html">
+													<div class="modify-tooltip check-top" click-outside="checkout.closePopover()">
+														<div>
+															<p>Delivery Fees</p>
+															<!-- <input type="text" ng-model="line.xp.deliveryCharges" /> -->
+															<div ng-repeat="(key, val) in line.xp.deliveryFeesDtls" class="delivery-handling">
+																<h5>{{key}} <b ng-if="key=='ServiceFee' && line.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b></h5>
+																<input type="text" value="{{val}}" ng-model="line.xp.deliveryFeesDtls[key]" />
+															</div>
+															
+														</div>
+														<div>
+															<p>Reason For Adjustment</p>
+															<select ng-options="reason for reason in checkout.buyerDtls.xp.deliveryChargeAdjReasons" ng-model="line.xp.deliveryChargeAdjReason">
+															</select>
+														</div>
+													</div>
+												</script>
+											<ul class="delivery-days-info">
+											   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:checkout.data{{$index}} == 'dt{{$index}}'}" class="delivery-days1">
+													<p class="delivery-header">Deliver Today</p>
+													<p class="delivery-day">{{dt | date:'longDate'}}</p>
+													<span class="delivery-day">Available</span>
+											   </li>
+											   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:checkout.data{{$index}} == 'tom{{$index}}'}" class="delivery-days2">
+													<p class="delivery-header">Deliver Tomorrow</p>
+													<p class="delivery-day">{{tom | date:'longDate'}}</p>
+													<span class="delivery-day">Available</span>
+											   </li>
+											   <li ng-class="{active:checkout.data{{$index}} == 'selDate{{$index}}'}" class="select-date-info">
+													<p class="select-date">Select Date</p>
+													<div class="date">
+													<input type="text" ng-model="line.dateVal.Month" placeholder="MM" max-length="2" />/
+													<input type="text" ng-model="line.dateVal.Date" placeholder="DD" max-length="2" ng-change="checkout.dateSelect()" />/
+													<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" max-length="4" />
+													<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" show-weeks="false" show-button-bar="false" min-date="checkout.initDate" init-date="checkout.initDate">
+														<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+															 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
+
+														<g>
+															<path d="M0,10.2v20c0,2.7,2.2,4.9,4.9,4.9H28c2.7,0,4.9-2.2,4.9-4.9v-20c0-2.7-2.2-4.9-4.9-4.9h-1v-3
+																c0-0.8-0.7-1.5-1.5-1.5c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3h-2.6v-3c0-0.8-0.7-1.5-1.5-1.5
+																c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3h-2.6v-3c0-0.8-0.7-1.5-1.5-1.5
+																c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3C2.2,5.3,0,7.5,0,10.2z M29.4,29.6
+																c0,0.9-0.7,1.6-1.6,1.6H5.4c-0.9,0-1.6-0.7-1.6-1.6V16.7h25.6L29.4,29.6z"/>
+															<path d="M19.2,29h-7l2.8-3.7c0.3-0.4,0.6-0.8,0.8-1.1c0.2-0.3,0.4-0.6,0.5-0.9c0.2-0.5,0.4-1,0.4-1.5
+																c0-0.3-0.1-0.5-0.2-0.7c-0.1-0.2-0.3-0.2-0.5-0.2c-0.4,0-0.7,0.4-0.7,1.2c0,0,0,0.1,0,0.2c0,0.1,0,0.1,0,0.2h-2.7l0-0.4
+																c0-1,0.3-1.8,0.9-2.5c0.6-0.6,1.5-0.9,2.4-0.9c1,0,1.7,0.3,2.3,0.9c0.6,0.6,0.9,1.4,0.9,2.4c0,0.8-0.2,1.6-0.6,2.3
+																c-0.2,0.4-0.5,0.8-0.8,1.2c-0.3,0.4-0.7,0.8-1.2,1.3c0.4-0.1,0.8-0.2,1.2-0.2c0.4,0,0.8-0.1,1.3-0.1L19.2,29L19.2,29z"/>
+														</g>
+														</svg>
+													</button>
+													</div>
+												</li>
+											</ul>
+											<p class="delivery-date">Delivery Preference <span class="star">*</span></p>
+											<ul class="delivery-days-info">
+												<li ng-click="line.xp.deliveryRun='Run1'" ng-class="{active:line.xp.deliveryRun=='Run1'}" class="preference">
+													<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
+													<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
+												</li>
+												<li ng-click="line.xp.deliveryRun='Run2'" ng-class="{active:line.xp.deliveryRun=='Run2'}" class="preference">
+													<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
+													<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
+												</li>
+												<li ng-click="line.xp.deliveryRun='Run3'" ng-class="{active:line.xp.deliveryRun=='Run3'}" class="preference">
+													<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
+													<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
+												</li>
+												<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}" class="preference">
+													<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
+													<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
+													<p class="delivery-day">${{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
+												</li>
+											</ul>
+										</div>
+										
+										<div ng-if="line.xp.addressType=='Will Call'" class="select-store">
+											 <p>Select Store</p>
+												 <!--<select>
+													<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
+												 </select>-->
+												 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
+											 <p>
+											<fieldset id="group2">
+												<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label> -->
+												<label class="radio-inline radio-common">
+													<input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">
+													<span>Product is coming from my store</span>
+													<div class="radio"></div>
+												</label>
+												<label class="radio-inline radio-common">
+													<input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">
+													<span>Product is coming from somewhere else</span>
+													<div class="radio"></div>
+												</label>
+												<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">Product is coming from somewhere else</label> -->
+											</fieldset>
+											</p>
+										</div>
+									</div>
+								</div>
+								<div ng-click="checkout.back($index)" ng-show="checkout.isAddrShow{{$index}}">
+									<span>&#x3c; Back</span>
+								</div>
+								<div class="saved-addr col-sm-5 col-xs-5 col-lg-5 col-md-5vi" ng-show="checkout.isAddrShow{{$index}}">
+										<h3>Saved Delivery Address</h3>
+									<uib-accordion close-others="checkout.oneAtATime">
+										<uib-accordion-group ng-repeat="addr in addressesList | limitTo: line.limit" is-open="addr.isAddrOpen" ng-click="checkout.selectedAddr(line,addr)">
+											<uib-accordion-heading>
+												<!-- <input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span> -->
+												<div class="check-common">
+														<input type="checkbox" id="" ng-checked="addr.isAddrOpen" />
+														<label for="" class="check"></label>
+													</div>
+													<span>{{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}}</span><span ng-if="defualtAddressID==addr.ID">(Default)</span>
+											</uib-accordion-heading>
+											<div ng-show="!checkout.isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
+												<a ng-click="checkout.deliveryAddr($index)">Edit</a>
+												<!-- <p>{{addr.Street1}}</p>
+												<p>{{addr.Street2}}</p>
+												<p>{{addr.Zip}}</p>
+												<p>{{addr.Phone}}</p> -->
+												<div class="col-xs-8 bill-addr-value">
+												<p>{{addr.Street1}}</p>
+												<p>{{addr.Street2}}</p>
+												<p>{{addr.Zip}}</p>
+												</div>
+												<div class="col-xs-8 email-value">
+												<p>{{addr.Phone}}</p>
+												</div> 
+											</div>
+											<div ng-show="checkout.isDeliAddrShow{{$index}}">
+												<ng-form name="checkout.editaddress[$index]" novalidate>
+												<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<p>First Name <span class="star">*</span></p>
+														<input type="text" name="firstname" ng-model="addr.FirstName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].firstname.$invalid}" />
+													</div>
+													<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<p>Last Name <span class="star">*</span></p>
+														<input type="text" name="lastname" ng-model="addr.LastName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].lastname.$invalid}" />
+													</div>
+													<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+														<p class="check-top">Zip Code <span class="star">*</span></p>
+														<input type="number" name="zip" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" ng-minlength="5" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].zip.$invalid}" />
+													</div>
+													<p class="check-top">Address 1 <span class="star">*</span></p>
+													<input type="text" name="street1" ng-model="addr.Street1" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].street1.$invalid}" />
+													<p class="check-top">Address 2</p>
+													<input type="text" ng-model="addr.Street2" />
+													<h6 style="color:red;" ng-if="checkout.editaddress[$index].invalidAddress && addr.Street1 && addr.Zip">Invalid Address/Zip</h6>
+													<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+														<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+															<p>City <span class="star">*</span></p>
+															<input type="text" name="city" ng-model="addr.City" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].city.$invalid}" />
+														</div>
+														<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+															<p>State <span class="star">*</span></p>
+															<input type="text" name="state" ng-model="addr.State" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].state.$invalid}" />
+														</div>
+													</div>
+													<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<p>Phone Number</p>
+															<div>
+																<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3" />
+																<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
+																<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+															<button ng-click="checkout.UpdateAddress(addr,$index,checkout.editaddress[$index])">Save</button>
+														</div>
+													</div>
+												</div>
+												</ng-form>
+											</div>
+										</uib-accordion-group>
+									</uib-accordion>
+									<div class="more-link">
+										<p ng-click="checkout.viewMore(line)" ng-if="addressesList.length > 3">View <span ng-if="line.limit==3">More
+											<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
 												<g>
 													<rect x="10"  width="4" height="24" />
 													<rect y="10"  width="24" height="4" />
 												</g>
 											</svg>
 										</span>
-									</div>
-								</div>
-								<div class="check-top inline-blk">
-									<p>First Name</p>
-									<input type="text" ng-model="line.ShippingAddress.FirstName"></input>
-								</div>
-								<div class="check-top inline-blk">
-									<p>Last Name</p>
-									<input type="text" ng-model="line.ShippingAddress.LastName"></input>
-								</div>
-								<div class="radio-grp check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-									<label class="radio-inline radio-common">
-										<input type="radio" id="residence{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Residence" />
-										<label for="residence{{$index}}">Residence</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="hospital{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Hospital" />
-										<label for="hospital{{$index}}">Hospital</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="funeral{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Funeral" />
-										<label for="funeral{{$index}}">Funeral</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="church{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Church" />
-										<label for="church{{$index}}">Church</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="cemetery{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Cemetery" />
-										<label for="cemetery{{$index}}">Cemetery</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="business{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Business" />
-										<label for="business{{$index}}">Business</label>
-										<div class="radio"></div>
-									</label>
-									<!-- <label class="radio-inline"><input type="radio" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Shipping" />Standard Shipping</label> -->
-									<label class="radio-inline radio-common">
-										<input type="radio" id="school{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="School" />
-										<label for="school{{$index}}">School</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="store{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />
-										<label for="store{{$index}}">In-Store Pick Up</label>
-										<div class="radio"></div>
-									</label>
-								</div>
-								<p class="check-top">Zip Code</p>
-								<input type="text" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false" max-length="5" ></input>
-								<p class="check-top">Address 1</p>
-								<input type="text" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line)" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
-								<p class="check-top">Address 2(optional)</p>
-								<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
-								<div class="check-top city-block">
-									<p>City</p>
-									<input type="text" ng-model="line.ShippingAddress.City" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
-								</div>
-								<div class="check-top state-block">
-									<!-- <p class="check-top">State</p> -->
-									<p class="">State</p>
-									<!--<select ng-model="line.ShippingAddress.State">
-										<option selected>K</option>
-										<option>RNR</option>
-									</select>-->
-									<input type="text" ng-model="line.ShippingAddress.State" ng-readonly="line.xp.addressType=='Will Call' ? true : false" />
-								</div>
-								<p class="check-top">Phone Number</p>
-								<div class="phone-block">
-									<input type="number" ng-model="line.ShippingAddress.Phone1" placeholder="Area Code" max-length="3" />
-									<input type="number" ng-model="line.ShippingAddress.Phone2" placeholder="Prefix" max-length="3" />
-									<input type="number" ng-model="line.ShippingAddress.Phone3" placeholder="Number" max-length="4" />
-								</div>
-								<div class="delivery-details">
-									<label class="radio-inline radio-common">
-										<input type="radio" id="delivery-dot" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='Will Call' ? line.xp.addressType : 'Residence'">
-										<label for="delivery-dot">Delivery</label>
-										<div class="radio"></div>
-									</label>
-									<label class="radio-inline radio-common">
-										<input type="radio" id="store-pickUp" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">
-										<label for="store-pickUp">In-Store Pick Up</label>
-										<div class="radio"></div>
-									</label>
-									<div ng-if="line.xp.addressType!='Will Call'">
-										<p class="check-top">Delivery Date</p>
-										<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
-											<span>
-												<a tabindex="0" popover-trigger="none" popover-is-open="showDeliveryToolTip" ng-click="showDeliveryToolTip = !showDeliveryToolTip" uib-popover-template="checkout.modifyDeliveryPopover.templateUrl">Modify Delivery</a>
-											</span>
+										<span ng-if="line.limit!=3">Less
+											<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"><rect y="10" width="24" height="4"/></svg>
+										</span>
 										</p>
-										    <script type="text/ng-template" id="modifyDeliveryTemplate.html">
-												<div class="modify-tooltip check-top" click-outside="checkout.closePopover()">
+										<p ng-click="checkout.newAddress($index)">Add a New Address<span ng-show="!showNewAddress{{$index}}">
+											<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+												<g>
+													<rect x="10"  width="4" height="24" />
+													<rect y="10"  width="24" height="4" />
+												</g>
+											</svg>
+										</span>
+										<span ng-show="showNewAddress{{$index}}">
+											<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"><rect y="10" width="24" height="4"/></svg>
+										</span></p>
+									</div>
+									<!-- Add a new address -->
+									<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="showNewAddress{{$index}}">
+										<ng-form name="checkout.newaddress[$index]" novalidate>
+											<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+												<p>First Name <span class="star">*</span></p>
+												<input type="text" name="firstname" ng-model="addr.FirstName" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].firstname.$invalid}" />
+											</div>
+											<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+												<p>Last Name <span class="star">*</span></p>
+												<input type="text" name="lastname" ng-model="addr.LastName" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].lastname.$invalid}" />
+											</div>
+											<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<p>Zip Code <span class="star">*</span></p>
+												<input type="number" name="zip" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" ng-minlength="5" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].zip.$invalid}" />
+											</div>
+											<p class="check-top">Address 1 <span class="star">*</span></p>
+											<input type="text" name="street1" ng-model="addr.Street1" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].street1.$invalid}" />
+											<p class="check-top">Address 2</p>
+											<input type="text" ng-model="addr.Street2" />
+											<h6 style="color:red;" ng-if="checkout.newaddress[$index].invalidAddress && addr.Street1 && addr.Zip">Invalid Address/Zip</h6>
+											<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+													<p>City <span class="star">*</span></p>
+													<input type="text" name="city" ng-model="addr.City" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].city.$invalid}" />
+												</div>
+												<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+													<p>State <span class="star">*</span></p>
+													<input type="text" name="state" ng-model="addr.State" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].state.$invalid}" />
+												</div>
+											</div>
+											<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p>Phone Number</p>
 													<div>
-														<p>Delivery Fees</p>
-														<!-- <input type="text" ng-model="line.xp.deliveryCharges" /> -->
-														<div ng-repeat="(key, val) in line.xp.deliveryFeesDtls" class="delivery-handling">
-															<h5>{{key}} <b ng-if="key=='ServiceFee' && line.xp.DeliveryMethod=='Mixed'"> (50+ Items)</b></h5>
-															<input type="text" value="{{val}}" ng-model="line.xp.deliveryFeesDtls[key]" />
-														</div>
-														
-													</div>
-													<div>
-														<p>Reason For Adjustment</p>
-														<select ng-options="reason for reason in checkout.buyerDtls.xp.deliveryChargeAdjReasons" ng-model="line.xp.deliveryChargeAdjReason">
-														</select>
+														<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3"  />
+														<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
+														<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
 													</div>
 												</div>
-											</script>
-										<ul class="delivery-days-info">
-										   <li ng-click="checkout.dateSelect('dt',line,$index)" ng-class="{active:checkout.data{{$index}} == 'dt{{$index}}'}" class="delivery-days1">
-												<p class="delivery-header">Deliver Today</p>
-												<p class="delivery-day">{{dt | date:'longDate'}}</p>
-												<span class="delivery-day">Available</span>
-										   </li>
-										   <li ng-click="checkout.dateSelect('tom',line,$index)" ng-class="{active:checkout.data{{$index}} == 'tom{{$index}}'}" class="delivery-days2">
-												<p class="delivery-header">Deliver Tomorrow</p>
-												<p class="delivery-day">{{tom | date:'longDate'}}</p>
-												<span class="delivery-day">Available</span>
-										   </li>
-										   <li ng-class="{active:checkout.data{{$index}} == 'selDate{{$index}}'}" class="select-date-info">
-												<p class="select-date">Select Date</p>
-												<div class="date">
-												<input type="text" ng-model="line.dateVal.Month" placeholder="MM" max-length="2" />/
-												<input type="text" ng-model="line.dateVal.Date" placeholder="DD" max-length="2" ng-change="checkout.dateSelect()" />/
-												<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" max-length="4" />
-												<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" ng-required="true" show-weeks="false" show-button-bar="false" min-date="checkout.initDate" init-date="checkout.initDate">
-													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-														 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
-
-													<g>
-														<path d="M0,10.2v20c0,2.7,2.2,4.9,4.9,4.9H28c2.7,0,4.9-2.2,4.9-4.9v-20c0-2.7-2.2-4.9-4.9-4.9h-1v-3
-															c0-0.8-0.7-1.5-1.5-1.5c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3h-2.6v-3c0-0.8-0.7-1.5-1.5-1.5
-															c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3h-2.6v-3c0-0.8-0.7-1.5-1.5-1.5
-															c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.7-0.6,1.3-1.3,1.3c-0.7,0-1.3-0.6-1.3-1.3V5.3C2.2,5.3,0,7.5,0,10.2z M29.4,29.6
-															c0,0.9-0.7,1.6-1.6,1.6H5.4c-0.9,0-1.6-0.7-1.6-1.6V16.7h25.6L29.4,29.6z"/>
-														<path d="M19.2,29h-7l2.8-3.7c0.3-0.4,0.6-0.8,0.8-1.1c0.2-0.3,0.4-0.6,0.5-0.9c0.2-0.5,0.4-1,0.4-1.5
-															c0-0.3-0.1-0.5-0.2-0.7c-0.1-0.2-0.3-0.2-0.5-0.2c-0.4,0-0.7,0.4-0.7,1.2c0,0,0,0.1,0,0.2c0,0.1,0,0.1,0,0.2h-2.7l0-0.4
-															c0-1,0.3-1.8,0.9-2.5c0.6-0.6,1.5-0.9,2.4-0.9c1,0,1.7,0.3,2.3,0.9c0.6,0.6,0.9,1.4,0.9,2.4c0,0.8-0.2,1.6-0.6,2.3
-															c-0.2,0.4-0.5,0.8-0.8,1.2c-0.3,0.4-0.7,0.8-1.2,1.3c0.4-0.1,0.8-0.2,1.2-0.2c0.4,0,0.8-0.1,1.3-0.1L19.2,29L19.2,29z"/>
-													</g>
-													</svg>
-												</button>
-												</div>
-											</li>
-										</ul>
-										<p class="delivery-date">Delivery Preference</p>
-										<ul class="delivery-days-info">
-											<li ng-click="line.xp.deliveryRun='Run1'" ng-class="{active:line.xp.deliveryRun=='Run1'}" class="preference">
-												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.Name}}</p>
-												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run1.TimeSlot}}</p>
-											</li>
-											<li ng-click="line.xp.deliveryRun='Run2'" ng-class="{active:line.xp.deliveryRun=='Run2'}" class="preference">
-												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.Name}}</p>
-												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run2.TimeSlot}}</p>
-											</li>
-											<li ng-click="line.xp.deliveryRun='Run3'" ng-class="{active:line.xp.deliveryRun=='Run3'}" class="preference">
-												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
-												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
-											</li>
-											<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}" class="preference">
-												<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
-												<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
-												<p class="delivery-day">${{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
-											</li>
-										</ul>
-									</div>
-									
-									<div ng-if="line.xp.addressType=='Will Call'" class="select-store">
-										 <p>Select Store</p>
-											 <!--<select>
-												<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
-											 </select>-->
-											 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
-										 <p>
-										<fieldset id="group2">
-											<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label> -->
-											<label class="radio-inline radio-common">
-												<input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">
-												<span>Product is coming from my store</span>
-												<div class="radio"></div>
-											</label>
-											<label class="radio-inline radio-common">
-												<input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">
-												<span>Product is coming from somewhere else</span>
-												<div class="radio"></div>
-											</label>
-											<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="2">Product is coming from somewhere else</label> -->
-										</fieldset>
-										</p>
-									</div>
-								</div>
-							</div>
-							<div ng-click="checkout.back($index)" ng-show="checkout.isAddrShow{{$index}}">
-								<span>&#x3c; Back</span>
-							</div>
-							<div class="saved-addr col-sm-5 col-xs-5 col-lg-5 col-md-5vi" ng-show="checkout.isAddrShow{{$index}}">
-									<h3>Saved Delivery Address</h3>
-								<uib-accordion close-others="checkout.oneAtATime">
-									<uib-accordion-group ng-repeat="addr in addressesList | limitTo: line.limit" is-open="addr.isAddrOpen" ng-click="checkout.selectedAddr(line,addr)">
-										<uib-accordion-heading>
-											<!-- <input type="checkbox" ng-checked="addr.isAddrOpen" /> {{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}} <span ng-if="defualtAddressID==addr.ID">(Default)</span> -->
-											<div class="check-common">
-													<input type="checkbox" id="" ng-checked="addr.isAddrOpen" />
-													<label for="" class="check"></label>
-												</div>
-												<span>{{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}}</span><span ng-if="defualtAddressID==addr.ID">(Default)</span>
-										</uib-accordion-heading>
-										<div ng-show="!checkout.isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
-											<a ng-click="checkout.deliveryAddr($index)">Edit</a>
-											<!-- <p>{{addr.Street1}}</p>
-											<p>{{addr.Street2}}</p>
-											<p>{{addr.Zip}}</p>
-											<p>{{addr.Phone}}</p> -->
-											<div class="col-xs-8 bill-addr-value">
-											<p>{{addr.Street1}}</p>
-											<p>{{addr.Street2}}</p>
-											<p>{{addr.Zip}}</p>
-											</div>
-											<div class="col-xs-8 email-value">
-											<p>{{addr.Phone}}</p>
-											</div> 
-										</div>
-										<div ng-show="checkout.isDeliAddrShow{{$index}}">
-											<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
-													<p>First Name</p>
-													<input type="text" ng-model="addr.FirstName" />
-												</div>
-												<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
-													<p>Last Name</p>
-													<input type="text" ng-model="addr.LastName" />
-												</div>
-												<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<p class="check-top">Zip Code</p>
-													<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" />
-												</div>
-												<p class="check-top">Address1</p>
-												<input type="text" ng-model="addr.Street1" />
-												<p class="check-top">Address2</p>
-												<input type="text" ng-model="addr.Street2" />
-												<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p>City</p>
-														<input type="text" ng-model="addr.City" />
-													</div>
-													<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p>State</p>
-														<input type="text" ng-model="addr.State" />
-													</div>
-												</div>
-												<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-														<p>Phone Number</p>
-														<div>
-															<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3" />
-															<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
-															<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
-														</div>
-													</div>
-													<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<button ng-click="checkout.UpdateAddress(addr,$index)">Save</button>
-													</div>
+												<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+													<button ng-click="checkout.CreateAddress(addr,$index,checkout.newaddress[$index])">Save</button>
 												</div>
 											</div>
-										</div>
-									</uib-accordion-group>
-								</uib-accordion>
-								<div class="more-link">
-									<p ng-click="checkout.viewMore(line)">View <span ng-if="line.limit==3">More
-										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-											<g>
-												<rect x="10"  width="4" height="24" />
-												<rect y="10"  width="24" height="4" />
-											</g>
-										</svg>
-									</span>
-									<span ng-if="line.limit!=3">Less
-										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"><rect y="10" width="24" height="4"/></svg>
-									</span>
-									</p>
-									<p ng-click="checkout.newAddress($index)">Add a New Address<span ng-show="!showNewAddress{{$index}}">
-										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-											<g>
-												<rect x="10"  width="4" height="24" />
-												<rect y="10"  width="24" height="4" />
-											</g>
-										</svg>
-									</span>
-									<span ng-show="showNewAddress{{$index}}">
-										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"><rect y="10" width="24" height="4"/></svg>
-									</span></p>
+										</ng-form>
+									</div>
 								</div>
-								<!-- Add a new address -->
-								<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="showNewAddress{{$index}}">
-									<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
-										<p>First Name</p>
-										<input type="text" ng-model="addr.FirstName"/>
-									</div>
-									<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
-										<p>Last Name</p>
-										<input type="text" ng-model="addr.LastName"/>
-									</div>
-									<div class="zip-code check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<p>Zip Code</p>
-										<input type="number" ng-model="addr.Zip" ng-blur="GetCityState(addr)" max-length="5" />
-									</div>
-									<p class="check-top">Address 1</p>
-									<input type="text" ng-model="addr.Street1" />
-									<p class="check-top">Address 2</p>
-									<input type="text" ng-model="addr.Street2" />
-									<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
-											<p>City</p>
-											<input type="text" ng-model="addr.City" />
-										</div>
-										<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
-											<p>State</p>
-											<!--<select ng-model="addr.State">
-												<option selected>K</option>
-												<option>RNR</option>
-											</select>-->
-											<input type="text" ng-model="addr.State" />
-										</div>
-									</div>
-									<div class="phone-block check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<p>Phone Number</p>
-											<div>
-												<input type="number" ng-model="addr.Phone1" placeholder="Area Code" max-length="3"  />
-												<input type="number" ng-model="addr.Phone2" placeholder="Prefix" max-length="3" />
-												<input type="number" ng-model="addr.Phone3" placeholder="Number" max-length="4" />
+								<div class="delivery-instructions col-lg-6 col-md-6">
+									<h3>Delivery Instructions</h3>
+									<p>Delivery Instructions:</p>
+									<textarea rows="3" ng-model="line.xp.deliveryNote"></textarea>
+									<div ng-init="cardMsg=false">
+										<div class="no-msg">
+											<span>Card Message</span>
+											<!-- <input type="checkbox" name="cardmessage" ng-model="cardMsg"></input> -->
+											<div class="check-common msg">
+												<input type="checkbox" name="cardmessage" ng-model="cardMsg" id="noMessage{{$index}}">
+												<label for="noMessage{{$index}}" class="check"></label>
 											</div>
+											<span>No Message</span>
 										</div>
-										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-											<button ng-click="checkout.CreateAddress(addr,$index)">Save</button>
+										<div class="line-msgs" ng-class="{'hideItem': !cardMsg}">
+											<p>Line 1</p>
+											<input type="text" ng-model="line.xp.CardMessage.line1"></input>
+											<p>Line 2</p>
+											<input type="text" ng-model="line.xp.CardMessage.line2"></input>
+											<p>Line 3</p>
+											<input type="text" ng-model="line.xp.CardMessage.line3"></input>
+											<p>Line 4</p>
+											<input type="text" ng-model="line.xp.CardMessage.line4"></input>
 										</div>
 									</div>
-								</div>
-							</div>
-							<div class="delivery-instructions col-lg-6 col-md-6">
-								<h3>Delivery Instructions</h3>
-								<p>Delivery Instructions:</p>
-								<textarea rows="3" ng-model="line.xp.deliveryNote"></textarea>
-								<div ng-init="cardMsg=false">
-									<div class="no-msg">
-										<span>Card Message</span>
-										<!-- <input type="checkbox" name="cardmessage" ng-model="cardMsg"></input> -->
-										<div class="check-common msg">
-											<input type="checkbox" name="cardmessage" ng-model="cardMsg" id="noMessage{{$index}}">
-											<label for="noMessage{{$index}}" class="check"></label>
-										</div>
-										<span>No Message</span>
-									</div>
-									<div class="line-msgs" ng-class="{'hideItem': !cardMsg}">
-										<p>Line 1</p>
-										<input type="text" ng-model="line.xp.CardMessage.line1"></input>
-										<p>Line 2</p>
-										<input type="text" ng-model="line.xp.CardMessage.line2"></input>
-										<p>Line 3</p>
-										<input type="text" ng-model="line.xp.CardMessage.line3"></input>
-										<p>Line 4</p>
-										<input type="text" ng-model="line.xp.CardMessage.line4"></input>
+									<div class="instruction">
+										<b>instruction :</b>
 									</div>
 								</div>
-								<div class="instruction">
-									<b>instruction :</b>
+								<div class="col-lg-12 col-md-12">
+									<input type="button" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(lineitems, 0, checkout.lineItemForm[line.ID])" />
 								</div>
-							</div>
-							<div class="col-lg-12 col-md-12">
-								<input type="button" ng-value="checkout.deliveryInfo.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(line,$index)" />
-							</div>
-							
+							</form>
 						</uib-accordion-group>
 					</uib-accordion>
 				</uib-accordion-group>
@@ -462,10 +466,10 @@
 						</div>
 						<!-- credit card -->
 						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-repeat="card in checkout.creditCardsList" ng-if="checkout.paymentOption == 'CreditCard'">
-                            <div>
+                            <div ng-init="checkout.getBillingAddress(card)">
                                 <div class="payment-container-header">
                                     <!-- <label>
-                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card"/>
+                                        <input type="radio" ng-model="checkout.selectedCard" ng-value="card" />
                                         <span><i class="fa fa-2x" ng-class="{' fa-cc-amex': card.CardType === 'AmericanExpress', ' fa-cc-mastercard': card.CardType === 'MasterCard', ' fa-cc-visa': card.CardType === 'Visa', ' fa-cc-discover': card.CardType === 'Discover'}"></i></span>
                                         <span>XXXX XXX XXX {{card.PartialAccountNumber}}</span>
                                         <span>{{card.ExpirationDate | date : 'MM/yy' : 'UTC'}}</span>
@@ -479,7 +483,6 @@
                                         <span>{{card.ExpirationDate | date : 'MM/yy' : 'UTC'}}</span>
                                         <span>{{card.CardholderName}}</span>	
 									</label>
-
                                 </div>
                                 <div class="payment-container row" ng-if="card === checkout.selectedCard">
                                     <div class="pay-m col-xs-12 col-sm-12 col-md-8 col-lg-8 col-lg-offset-2">
@@ -515,16 +518,61 @@
 										<div class="col-xs-4 bill-addr-title">
 										<p>Billing Address</p>
 										</div>
-										<div class="col-xs-8 bill-addr-value">
-										<p>3648 Blaisdell Ave S</p>
-										<p>Apt 2</p>
-										<p>Minneapolis, MN</p>
-										<p>55401</p>
-										<a href="javascript:void(0)" class="edit-link" ng-click="checkout.editbillingaddr=!checkout.editbillingaddr">Edit</a>
-										</div>
-										<div class="col-xs-8 col-xs-offset-4 email-value">
-										<p>john.snow@gmail.com</p>
-										</div> 
+										<form ng-show="!checkout.EditBillAddress{{$index}}">
+											<div class="col-xs-8 bill-addr-value">
+											<p>{{card.BillingAddress.Street1}}</p>
+											<p>{{card.BillingAddress.Street2}}</p>
+											<p>{{card.BillingAddress.City}}, {{card.BillingAddress.State}}</p>
+											<p>{{card.BillingAddress.Zip}}</p>
+											<a href="javascript:void(0)" class="edit-link" ng-click="checkout.ShowEditBillingAddress(card.BillingAddress, $index)">Edit</a>
+											</div>
+											<div class="col-xs-8 col-xs-offset-4 email-value">
+											<p>{{card.BillingAddress.xp.Email}}</p>
+											</div> 
+										</form>
+										<form ng-show="checkout.EditBillAddress{{$index}}" ng-submit="checkout.EditBillingAddress(card.BillingAddress, $index)">
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="firstName">First Name</label>
+	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="card.BillingAddress.FirstName" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="lastName">Last Name</label>
+	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="card.BillingAddress.LastName" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="street1">Address 1</label>
+	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="card.BillingAddress.Street1" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="street2">Address 2</label>
+	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="card.BillingAddress.Street2" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="city">City</label>
+	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="card.BillingAddress.City" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="state">State</label>
+	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="card.BillingAddress.State" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="zip">Zip</label>
+	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="card.BillingAddress.Zip" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+												<label for="phone">Phone Number</label>
+												<input type="number" ng-model="card.BillingAddress.Phone1" placeholder="Area Code" max-length="3" />
+												<input type="number" ng-model="card.BillingAddress.Phone2" placeholder="Prefix" max-length="3" />
+												<input type="number" ng-model="card.BillingAddress.Phone3" placeholder="Number" max-length="4" />
+											</div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="email">Enter Your Email Address</label>
+	                                            <input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="card.BillingAddress.xp.Email" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <input type="submit" class="form-control" id="submitButton" value="SAVE" />
+	                                        </div>
+										</form>										
                                     </div>
                                 </div>
                             </div>
@@ -558,11 +606,10 @@
 	                                        </div>
 	                                        <div class="col-xs-12 form-group card-number p0">
 	                                            <label for="cardNumber">Card Number</label>
-	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" ng-model="checkout.card.CardNumber" />
+	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" max-length="16" ng-model="checkout.card.CardNumber" />
 	                                        </div>
 	                                        <div class="col-xs-6 form-group exp-date p0">
 	                                            <label for="expDate">Expiration Date</label>
-
 		                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		                                         	<div uib-dropdown class="form-control " id="expmonth">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
@@ -575,16 +622,14 @@
 		                                       	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 		                                       		 <div uib-dropdown class="form-control " id="expyear">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
-								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YY'">{{checkout.card.ExpYear}}</p></div>
+								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YYYY'">{{checkout.card.ExpYear}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
 								                        <li ng-repeat="year in checkout.CardExpYears" ng-click="checkout.card.ExpYear=year"><a href="">{{year}}</a></li>
 								                     </ul>
 								                    </div>
 		                                       	</div>
 	                                          </div>
-	                                          
 	                                        <div class="col-xs-6 form-group cvv-number">
-
 	                                            <label for="cvvNumber">CVV</label>
 	                                            <input type="text" class="form-control" id="cvvNumber" ng-model="checkout.card.CVV" />
 	                                            <span class="cvv-help">
@@ -610,13 +655,60 @@
 											<div class="col-xs-12 p0 form-group card-remember">
 	                                           <span ng-if="checkout.ErrorMessage.resultCode=='Error'">{{checkout.ErrorMessage.message[0].text}}</span>
 	                                        </div>
+											<!-- Add new Billing address fields starts here  -->
+											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+												<a ng-click="checkout.showAddressModal('getBillingAddressModal', $index)">Billing Addresses</a>
+												<a ng-click="checkout.showAddressModal('getShippingAddressModal', $index)">Shipping Addresses</a>
+											</div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="firstName">First Name</label>
+	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="checkout.billingAddress.FirstName" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="lastName">Last Name</label>
+	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="checkout.billingAddress.LastName" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="street1">Address 1</label>
+	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="checkout.billingAddress.Street1" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="street2">Address 2</label>
+	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="checkout.billingAddress.Street2" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="city">City</label>
+	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="checkout.billingAddress.City" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="state">State</label>
+	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="checkout.billingAddress.State" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="zip">Zip</label>
+	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="checkout.billingAddress.Zip" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+												<label for="phone">Phone Number</label>
+												<input type="number" ng-model="checkout.billingAddress.Phone1" placeholder="Area Code" max-length="3" />
+												<input type="number" ng-model="checkout.billingAddress.Phone2" placeholder="Prefix" max-length="3" />
+												<input type="number" ng-model="checkout.billingAddress.Phone3" placeholder="Number" max-length="4" />
+											</div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="email">Enter Your Email Address</label>
+	                                            <input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="checkout.billingAddress.xp.Email" />
+	                                        </div>
 	                                        <div class="col-xs-12 p0 form-group card-remember">
 	                                            <div class="check-common">
-	                                                <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card)">
+	                                               <!--  <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card, checkout.billingAddress)"> -->
+												    <input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" ng-disabled="checkout.creditCardsList.length >= 3" />
 	                                                <label for="save" class="check"></label>
 	                                            </div>
-	                                           <span>Save this card for future payments</span>
+	                                           <span ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</span>
+											   <span ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</span>
 	                                        </div>
+											
+											<!--Add new Billing address fields ends here  -->
 	                                    </form>
                                      </div>
                                 </div>
@@ -834,23 +926,30 @@
 							</svg>Payment <button class="review-edit">edit</button></h2>
 							</uib-accordion-heading>
 							<ul class="shipping-info">
-								<li class="shipping-Date">
-									<p ng-if="checkout.selectedCard">{{checkout.selectedCard.CardholderName}}</p>
-									<p ng-if="checkout.selectedCard=='createcreditcard'">{{checkout.card.CardholderName}}</p>
-									<p>Street 1</p>
-									<p>Street 2</p>
-									<p>City</p>
-									<p>State, Country</p>
-									<p>Zip</p>
+								<li class="shipping-Date" ng-if="checkout.selectedCard!='createcreditcard'">
+									<p>{{checkout.selectedCard.CardholderName}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.Street1}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.Street2}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.City}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.State}}, {{checkout.selectedCard.BillingAddress.Country}}</p>
+									<p>{{checkout.selectedCard.BillingAddress.Zip}}</p>
+								</li>
+								<li class="shipping-Date" ng-if="checkout.selectedCard=='createcreditcard'">
+									<p>{{checkout.card.CardholderName}}</p>
+									<p>{{checkout.billingAddress.Street1}}</p>
+									<p>{{checkout.billingAddress.Street2}}</p>
+									<p>{{checkout.billingAddress.City}}</p>
+									<p>{{checkout.billingAddress.State}}, {{checkout.billingAddress.Country}}</p>
+									<p>{{checkout.billingAddress.Zip}}</p>
 								</li>
 								<li class="shipping-DeliveryPref">
-									<p ng-if="checkout.selectedCard">
+									<p ng-if="checkout.selectedCard!='createcreditcard'">
 										Credit Card: xxxx xxxx xxxx {{checkout.selectedCard.PartialAccountNumber}}
 									</p>
+									<p ng-if="checkout.selectedCard!='createcreditcard'">Card Expires: {{checkout.selectedCard.ExpirationDate | date:'MM/yy'}}</p>
 									<p ng-if="checkout.selectedCard=='createcreditcard'">
 										Credit Card: xxxx xxxx xxxx {{checkout.card.CardNumber | limitTo: -4}}
 									</p>
-									<p ng-if="checkout.selectedCard">Card Expires: {{checkout.selectedCard.ExpirationDate | date:'MM/yy'}}</p>
 									<p ng-if="checkout.selectedCard=='createcreditcard'">Card Expires: {{checkout.card.ExpMonth | limitTo: 2}}/{{checkout.card.ExpYear | limitTo: -2}}</p>
 									<p ng-if="checkout.orderDtls.SpendingAccounts.PurplePerks">Purple Perks Points Applied:{{checkout.orderDtls.SpendingAccounts.PurplePerks.Amount | currency}}</p>
 									<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges">Bachmans Charges Applied:{{checkout.orderDtls.SpendingAccounts.BachmansCharges.Amount | currency}}</p>
@@ -863,7 +962,10 @@
 						</uib-accordion-group>
 						<div class="row review-content">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<button class="place-order" ng-click="checkout.submitOrder()">Place Order</button>
+								<span style="color:red;">{{checkout.TransactionError}}</span>
+							</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<button class="place-order" ng-click="checkout.submitOrder(checkout.card, checkout.billingAddress)">Place Order</button>
 							</div>
 						</div>
 					</uib-accordion>
@@ -888,13 +990,13 @@
 				<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup">
 					<uib-accordion-heading>
 						<div class="checkoutorderhead">
-							<p><span>Recipient:</span> {{recipient}}</p>
+							<p><span>Recipient:</span> {{lineitems[0].ShippingAddress.FirstName}} {{lineitems[0].ShippingAddress.LastName}}</p>
 							<p><span>Zip Code:</span> {{lineitems[0].ShippingAddress.Zip}}</p>
 						</div>
 					</uib-accordion-heading>
 					<div class="ordersummaryproductdata" ng-repeat="item in lineitems">
 						<div class="prod-img">
-							<img src="assets/images/flowers.jpg">
+							<img src="{{item.xp.ProductImageUrl}}">
 						</div>
 						<div class="prod-details">
 							<p>{{item.Product.Name}}</p>
@@ -988,4 +1090,48 @@
 		</div>
 	</div>
 </div>
+<modal title="Shipping Address Book" visible="checkout.getShippingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Phone</th>
+		</tr>
+		<tr ng-repeat="line in checkout.deliveryInfo track by line.ID" ng-click="checkout.assignBillingAddress(line.ShippingAddress, 'getShippingAddressModal')">
+			<td>
+				<p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p>
+			</td>
+			<td>
+				<p>{{line.ShippingAddress.Street1}}</p>
+				<p>{{line.ShippingAddress.Street2}}</p>
+				<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}} {{line.ShippingAddress.Country}} {{line.ShippingAddress.Zip}}</p>
+			</td>
+			<td>
+				<p>{{line.ShippingAddress.Phone}}</p>
+			</td>			
+		</tr>
+	</table>
+</modal>
+<modal title="Billing Address Book" visible="checkout.getBillingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>Phone</th>
+		</tr>
+		<tr ng-repeat="line in checkout.creditCardsList" ng-click="checkout.assignBillingAddress(line.BillingAddress, 'getBillingAddressModal')" ng-if="line.BillingAddress">
+			<td>
+				<p>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</p>
+			</td>
+			<td>
+				<p>{{line.BillingAddress.Street1}}</p>
+				<p>{{line.BillingAddress.Street2}}</p>
+				<p>{{line.BillingAddress.City}} {{line.BillingAddress.State}} {{line.BillingAddress.Country}} {{line.BillingAddress.Zip}}</p>
+			</td>
+			<td>
+				<p>{{line.BillingAddress.Phone}}</p>
+			</td>			
+		</tr>
+	</table>
+</modal>
 <div id="CheckoutFooter" ui-view="checkoutbottom"></div>

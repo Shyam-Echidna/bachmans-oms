@@ -6,5 +6,7 @@
   "environment": "prod",
   "alfrescoURL": "http://103.227.151.31:8080/alfresco/service/",
   "alfrescoOmsUrl": "http://103.227.151.31:8080/alfresco/service/slingshot/doclib/doclist/documents/site/bachmansstorefront/documentLibrary/",
-  "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime"
+  "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime",
+  "PMCStoresURL":"http://192.168.101.49:8080/Bachman/getStores",
+  "GetCstTime": "http://103.227.151.31:8080/Bachman/localdeliverytime"
 }

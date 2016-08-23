@@ -398,6 +398,38 @@ input.error {
 			.buildOrder-pdp-content {
 				background-color: @color0;
 				padding: 35px;
+				.pdp-left{
+					img{
+						max-width:100%;
+						max-height:100%;
+					}
+					.base-img{
+						text-align:center;
+						height:300px;
+					}	
+					.alternative-img{
+						position:relative;
+						margin-top:10px;
+						ul {
+							position:absolute;
+							white-space:nowrap;
+							width:100%;
+							left:0;
+							right:0;
+							overflow-y:hidden;
+							li{
+								margin-right:10px;
+								display:inline-block;
+								div{
+									text-align:center;
+									border:1px solid @color23;
+									width:80px;
+									height:80px;
+								}
+							}
+						}
+					}
+				}
 				.pdp-right {
 					h2 {
 						.helvetica-bold;
@@ -405,147 +437,9 @@ input.error {
 						color: @primary-dark-color;
 						margin: 0 0 15px;
 					}
-					div {
-						margin-bottom: 20px;
-						h3 {
-							margin: 0 0 10px;
-							.helvetica-bold;
-							font-size: 13px;
-						}
-						ul {
-							li {
-								margin-bottom: 10px;
-								>span {
-									.helvetica-regular;
-									font-size: 12.5px ;
-									line-height: 1;
-								}
-							}
-						}
-						p {
-							margin: 0 0 10px;
-							label {
-								margin-bottom: 0;
-								.helvetica-regular;
-								font-size: 13px ;
-								padding-left:0;
-							}
-						}
-					}
-					.pdp-type {
-						h3 {
-							.helvetica-bold;
-							font-size: 13px;
-							color: @color1;
-							margin: 0 0 5px;
-						}
-						ul {
-							margin-bottom: 15px;
-							li {
-								label {
-									.helvetica-regular;
-									font-size: 13px;
-									color: @color1;
-									width: 210px;
-									margin-bottom: 0px;
-									span {
-										.in-block;
-									}
-									span.price {
-										font-size: 13px;
-										.helvetica-medium;
-										float: right;
-									}
-									input {
-										vertical-align: sub;
-										margin-right: 5px;
-									}
-								}
-							}
-						}
-					}
-					.pdp-color {
-						input[type="checkbox"] {
-							display: none;
-						}
-						label {
-							margin-bottom: 0;
-						}
-						input[type="radio"] + label span {
-							display: inline-block;
-							border-radius: 4px;
-							width: 25px;
-							height: 25px;
-							margin: 0 10px 0 0;
-							vertical-align: middle;
-							cursor: pointer;
-						}
-						input[type="radio"]:checked + label span {
-							display: inline-block;
-							border-radius: 4px;
-							width: 25px;
-							height: 25px;
-							margin: 0 10px 0 0;
-							vertical-align: middle;
-							background: #fff;
-							cursor: pointer;
-						}
-					}
-					.pdp-quantity {
-						p {
-							.helvetica-bold;
-							font-size: 13px ;
-							color: @color1;
-							margin-bottom: 5px;
-						}
-						input {
-							width: 38px;
-							text-align: right;
-							height: 28px;
-						}
-					}
-					.pdp-delivery {
-						h4 {
-							.helvetica-bold;
-							font-size: 13px;
-							color: @color1;
-							margin: 15px 0 5px;
-						}
-						div {
-							width: 40%;
-							.in-block;
-							margin-right: 5px;
-							position: relative;
-							p {
-								font-size: 11px ;
-								.helvetica-medium;
-								color: @color3;
-								margin-bottom: 5px;
-							}
-							input {
-								width: @width0;
-								font-size: 11px ;
-								.helvetica-medium;
-								color: @color3;
-								height: 25px;
-								border: 1px solid @color21;
-								-webkit-appearance: none;
-								border: 1px solid @color11;
-							}
-							input[type="date"] {
-								padding-left: 16px;
-							}
-							input[type="date"]:focus {
-								border: 1px solid @color21;
-							}
-							img {
-								position: absolute;
-								width: 15px;
-								height: 15px;
-								top: 24px;
-								left: 3px;
-							}
-						}
+					>h5{
+						.helvetica-bold;
+						font-size: 13px;
 					}
 					button {
 						padding: 10px 45px;
@@ -559,6 +453,80 @@ input.error {
 						&:hover {
 							color: @color0;
 							background-color: @green-hover;
+						}
+					}
+					.dropdown-box{
+						h5{
+							margin-bottom: 15px;
+						}
+						>div .row{
+							.btn-holder{
+								padding: 0 10px 0 0;
+							}
+							div .dropdown ul{
+								z-index: 1;
+								height: 200px;
+								overflow-y: auto;
+							}
+						}
+						.btn-group, .btn-group-vertical{
+							position: relative;
+							display: inline-block;
+							vertical-align: middle;
+							>.btn{
+								position: relative;
+								float: left;
+							}
+						}
+						div div div div{
+							button{
+								text-align: left;
+								background-color: #f4f4f4;
+								padding: 0 10px;
+								border: 1px solid #e4e4e4;
+								border-radius: 2px;
+								margin-bottom: 7px;
+								background-image: url(../../assets/images/icons-svg/nav-arrow.svg);
+								background-repeat: no-repeat;
+								background-position: right center;
+								background-size: 35px 11px;
+								height: 45px;
+								line-height: 1.013em;
+								.category-name{
+									.helvetica-regular;
+									color: #333;
+									font-size: .85em;
+								}
+								p{
+									.helvetica-regular;
+									color: #000;
+									margin-top: 5px;
+								}
+							}
+							ul{
+								min-width: 100%;
+								border-radius: 0;
+								padding: 5px 10px;
+								margin: 0;
+								border: 1px solid #e4e4e4;
+								box-shadow: none;
+								&.pdp-extra-menu{
+									position: absolute;
+									top: 100%;
+									left: 0;
+									float: left;
+								}
+								li{
+									border-bottom: 1px solid #e5e5e5;
+									padding: 5px 0;
+									cursor: pointer;
+									.img-responsive{
+										display: block;
+										max-width: 100%;
+										height: auto;
+									}
+								}
+							}
 						}
 					}
 				}
@@ -2587,6 +2555,137 @@ input.error {
 
 	input[type=radio]:checked ~ label{
 		color: @primary-dark-color;
+	}
+}
+
+
+.radio-btn-container{
+	margin: 5px 0 20px;
+	.size-box{
+		text-align: center;
+		padding: 5px;
+		input[type=radio]{
+			opacity: 0;
+			display: none;
+		}
+		label{
+			display: inline-block;
+			cursor: pointer;
+			position: relative;
+			padding-left: 0;
+			width: 100%;
+			margin: 0;
+			font-weight: 400;
+			text-transform: capitalize;
+			text-align:left;
+		}
+		 .radioOutline{
+		    position: relative;
+		}
+		input[type=radio]:not(old)+label .radioOutline .radioInside{
+		    border: 1px solid #8c58b5;
+			border-radius: 50%;
+			background: 0 0;
+			display: inline-block;
+			width: 18px;
+			height: 18px;
+			text-align: center;
+		}
+		input[type=radio]:not(old):checked+label .radioOutline{
+			    border: 1px solid #8c58b5;
+			border-radius: 50%;
+			background: 0 0;
+			display: inline-block;
+			width: 18px;
+			height: 18px;
+			text-align: center;
+		}
+		input[type=radio]:not(old):checked+label .radioOutline .radioInside{
+		    width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			display: inline-block;
+			background-color: #8c58b5;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+		}
+		input[type=radio]:not(old)+label .radioOutline .radioInside{
+		    width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			display: inline-block;
+			background-color: transparent;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+		}
+		.hidden-sm{
+			display:inline-block !important;
+		}
+		input[type=radio][disabled]{
+		    cursor: not-allowed;
+		}
+		.visible-xs, .visible-sm{
+		    display: none!important;
+		}
+		&.disable-box{
+			cursor: no-drop!important;
+			opacity: .2;
+			border: 1px solid #f1f1f1;
+			label{
+				cursor: no-drop!important;
+			}
+		}
+	}
+}
+.color-circle li{
+	position: relative;
+    height: 22px;
+    width: 22px;
+    border: 1px solid #f1f1f1;
+    display: inline-block;
+    margin-right: 12px;
+	input{
+		display:none;
+	}
+	label{
+		display: block;
+		position: absolute;
+		right: 3px;
+		left: 3px;
+		top: 3px;
+		bottom: 3px;
+		cursor: pointer;
+		padding: 0px;
+		margin: 0px;
+		background-color: blue;
+		h5{
+			.helvetica-regular;
+			margin-left:10px;
+		}
+		p{
+			.helvetica-medium;
+			margin-left:25px;
+		}
+		h5, p{
+			margin:0;
+			font-size:13px;
+		}
+	}
+	&.disable-color{
+	    cursor: no-drop!important;
+		border: 1px solid #000!important;
+		label{
+			cursor: no-drop!important;
+			opacity: .3;
+		}
 	}
 }
 

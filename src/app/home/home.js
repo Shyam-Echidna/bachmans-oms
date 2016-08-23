@@ -56,7 +56,7 @@ function HomeConfig( $stateProvider ) {
 						arr["name"]=res.Name;
 						console.log("77777777", arr["name"]);
 					});
-					OrderCloud.Categories.ListProductAssignments('c10').then(function(assign){
+					OrderCloud.Categories.ListProductAssignments('c10', null, 1 ,100).then(function(assign){
 						angular.forEach(assign.Items, function(res, key1){
 							OrderCloud.Products.Get(res.ProductID).then(function(data){
 								events.push(data);

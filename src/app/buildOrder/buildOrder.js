@@ -253,7 +253,7 @@ function buildOrderConfig( $stateProvider ) {
 				});
 				return dfr.promise;
 			},
-			productList: function (OrderCloud, $stateParams, BuildOrderService, $q) {
+			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages) {
 					var dfr = $q.defer();
 					if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'){
 						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
@@ -262,20 +262,16 @@ function buildOrderConfig( $stateProvider ) {
 							if($stateParams.SearchType == 'plp'){
                                 return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
                                     var ticket = localStorage.getItem("alf_ticket");
-                                    BuildOrderService.GetProductImages(ticket).then(function(imgList){
-                                        var prodList=BuildOrderService.GetProductList(res.Items, imgList.items);
+                                        var prodList=BuildOrderService.GetProductList(res.Items, ProductImages);
                                         dfr.resolve(prodList);
-                                    });
                                 });
                             } else if($stateParams.SearchType == 'Products' && $stateParams.ID !=""){
                                 OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
                                     OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
                                         var ticket = localStorage.getItem("alf_ticket");
-                                        BuildOrderService.GetProductImages(ticket).then(function(imgList){
-                                            BuildOrderService.GetProductList(res.Items, imgList.items).then(function(prodList){
-                                                dfr.resolve(prodList);
-                                            });
-                                        });
+										BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+											dfr.resolve(prodList);
+										});
                                     });
                                 });
                             }
@@ -467,17 +463,17 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			});
 		}
 	};
-	if($stateParams.SearchType == 'Products'){
-		vm.disable=true;
-		if($stateParams.ID==""){
-			console.log("********************", $scope.$parent.base.list);
-			vm.searchList=$scope.$parent.base.list;
-			vm.searchTxt=$scope.$parent.base.searchval;
-		}
-		else{
-			vm.productdata($stateParams.ID);
-		}
-	}
+	// if($stateParams.SearchType == 'Products'){
+		// vm.disable=true;
+		// if($stateParams.ID==""){
+			// console.log("********************", $scope.$parent.base.list);
+			// vm.searchList=$scope.$parent.base.list;
+			// vm.searchTxt=$scope.$parent.base.searchval;
+		// }
+		// else{
+			// vm.productdata($stateParams.ID);
+		// }
+	// }
 	if($stateParams.SearchType == 'plp'){
 		vm.disable=true;
 	}
@@ -611,7 +607,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	/*----End of Upsell Data----*/
 	$scope.gotoplp = function(){
 		vm.showPDP = false;
-		vm.searchList=productList;
+		if($stateParams.SearchType == 'Products' && $stateParams.ID != ''){
+			vm.searchList=productList;
+		}
 	}
 	$scope.AddtoCart = function(prodID, specID, varientsOption){
 		/*if($stateParams.SearchType == 'Products'){
@@ -794,10 +792,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     }
     if($stateParams.SearchType == 'Products'){
         vm.disable=true;
+        vm.searchTxt=$scope.$parent.base.searchval;
         if($stateParams.ID==""){
             console.log("********************", $scope.$parent.base.list);
-            vm.searchList=$scope.$parent.base.list;
-            vm.searchTxt=$scope.$parent.base.searchval;
+            vm.searchList=$scope.$parent.base.searchList;
         }
         else{
             //vm.productdata($stateParams.ID);

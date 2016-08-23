@@ -266,8 +266,8 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 							else {
 								console.log("imagesList", imagesList);
 								BuildOrderService.GetProductList(res, imagesList.items).then(function(prodList){
-									$scope.controlleras.list=prodList;
-									console.log("$scope.controlleras.list", $scope.controlleras.list);
+									//$scope.controlleras.list=prodList;
+									$scope.controlleras.searchList=prodList;
 									if($scope.placeholder=="Search products"){
 										$state.go('buildOrder',{SearchType:'Products'});
 									}

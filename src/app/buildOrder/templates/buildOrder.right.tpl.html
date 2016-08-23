@@ -244,7 +244,7 @@
 									<p ng-if="buildOrderRight.lineItemForm[lineitem.ID].qty.$error.min"><span>Minimum 1 Quantity</span></p>
 									<p ng-if="buildOrderRight.lineItemForm[lineitem.ID].qty.$error.max"><span>Maximum 999 Quantity</span></p>
 								</div>
-								<div class="receipient-name" ng-init="buildOrderRight.GetAllList(lineitem.xp.addressType)">
+								<div class="receipient-name" ng-init="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)">
 									<div class="firstNm">
 										<p>First Name <span class="star">*</span></p>
 										<input type="text" ng-model="lineitem.ShippingAddress.FirstName" name="FirstName" ng-required="true" max-length="100" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].FirstName.$invalid}" />
@@ -316,21 +316,21 @@
 								<div class="location-selected">
 									<!-- <div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)"> -->
 									<div class="residence-address">
-										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Hospital'" >
-											<h1>Find Hospital <span class="star">*</span></h1>
-											<input type="search" name="hospital" uib-typeahead="hosp for hosp in buildOrderRight.HospitalNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.hosSearch" ng-required="lineitem.xp.addressType=='Hospital'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].hospital.$invalid}" />
+										<div class="hospital-search" ng-if="lineitem.xp.addressType!='Residence' && lineitem.xp.addressType!='Will Call'" >
+											<h1>Find {{lineitem.xp.addressType}} <span class="star">*</span></h1>
+											<input type="search" name="{{lineitem.xp.addressType}}" autocomplete="off" uib-typeahead="hosp for hosp in buildOrderRight[lineitem.xp.addressType+'Names'] | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.ShippingAddress.CompanyName" ng-required="lineitem.xp.addressType!='Residence' && lineitem.xp.addressType!='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID][lineitem.xp.addressType].$invalid}" />
 										</div>
-										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Funeral'">
+										<!-- <div class="hospital-search" ng-if="lineitem.xp.addressType=='Funeral'">
 											<h1>Find Funeral <span class="star">*</span></h1>
-											<input type="search" name="funeral" uib-typeahead="funeral for funeral in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.funeralSearch" ng-required="lineitem.xp.addressType=='Funeral'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].funeral.$invalid}" />
+											<input type="search" name="funeral" autocomplete="off" uib-typeahead="funeral for funeral in buildOrderRight.FuneralNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.funeralSearch" ng-required="lineitem.xp.addressType=='Funeral'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].funeral.$invalid}" />
 										</div>
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Cemetery'">
 											<h1>Find Cemetery <span class="star">*</span></h1>
-											<input type="search" name="cemetery" uib-typeahead="Cemetery for Cemetery in buildOrderRight.CemeteryNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.cemeterySearch" ng-required="lineitem.xp.addressType=='Cemetery'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].cemetery.$invalid}" />
+											<input type="search" name="cemetery" autocomplete="off" uib-typeahead="Cemetery for Cemetery in buildOrderRight.CemeteryNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.cemeterySearch" ng-required="lineitem.xp.addressType=='Cemetery'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].cemetery.$invalid}" />
 										</div>
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Church'">
 											<h1>Find Church <span class="star">*</span></h1>
-											<input type="search" name="church" uib-typeahead="Church for Church in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.churchSearch" ng-required="lineitem.xp.addressType=='Church'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].church.$invalid}"/>
+											<input type="search" name="church" autocomplete="off" uib-typeahead="Church for Church in buildOrderRight.ChurchNames | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.churchSearch" ng-required="lineitem.xp.addressType=='Church'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].church.$invalid}"/>
 										</div>
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='School'">
 											<h1>School Name<span class="star">*</span></h1>
@@ -339,11 +339,11 @@
 										<div class="hospital-search" ng-if="lineitem.xp.addressType=='Business'">
 											<h1>Business Name<span class="star">*</span></h1>
 											<input type="text" name="business" ng-model="lineitem.businessSearch" ng-required="lineitem.xp.addressType=='Business'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].business.$invalid}" />
-										</div>
+										</div> -->
 										<div class="willCall-address" ng-show="lineitem.xp.addressType=='Will Call'" ng-if="lineitem.xp.addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">
 												<h1>Find store <span class="star">*</span></h1>
-												<input type="search" name="store" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].store.$invalid}" />
+												<input type="search" name="store" autocomplete="off" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].store.$invalid}" />
 											</div>
 											<div class="pick-up-date">
 												<h1>Pick-up Date <span class="star">*</span></h1>
@@ -562,7 +562,7 @@
 						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>
 					</td>
 					<td>
-						<p>{{val.ShippingAddress.Phone}}</p>
+						<p>({{val.ShippingAddress.Phone1}})  {{val.ShippingAddress.Phone2}}-{{val.ShippingAddress.Phone3}}</p>
 					</td>			
 				</tr>
 			</table>

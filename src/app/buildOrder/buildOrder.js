@@ -247,36 +247,59 @@ function buildOrderConfig( $stateProvider ) {
 			},
 			productList: function (OrderCloud, $stateParams, BuildOrderService, $q) {
 					var dfr = $q.defer();
-					if($stateParams.SearchType == 'plp'){
+					if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'){
 						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
 						.then(function(data) {
 							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-							return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
-								var ticket = localStorage.getItem("alf_ticket");
-								BuildOrderService.GetProductImages(ticket).then(function(imgList){
-									var prodList=BuildOrderService.GetProductList(res.Items, imgList.items);
-									dfr.resolve(prodList);
-								})
-							})
-						})
+							if($stateParams.SearchType == 'plp'){
+                                return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
+                                    var ticket = localStorage.getItem("alf_ticket");
+                                    BuildOrderService.GetProductImages(ticket).then(function(imgList){
+                                        var prodList=BuildOrderService.GetProductList(res.Items, imgList.items);
+                                        dfr.resolve(prodList);
+                                    });
+                                });
+                            } else if($stateParams.SearchType == 'Products' && $stateParams.ID !=""){
+                                OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
+                                    OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
+                                        var ticket = localStorage.getItem("alf_ticket");
+                                        BuildOrderService.GetProductImages(ticket).then(function(imgList){
+                                            BuildOrderService.GetProductList(res.Items, imgList.items).then(function(prodList){
+                                                dfr.resolve(prodList);
+                                            });
+                                        });
+                                    });
+                                });
+                            }
+                            else{
+                                dfr.resolve();
+                            }
+						});
 					}
 					else{
 						dfr.resolve();
 					}
 					return dfr.promise;
-			 }
+			 },
+			CstDateTime: function ($q, BuildOrderService){
+				var dfr = $q.defer();
+				BuildOrderService.CompareDate().then(function(dt){
+					dfr.resolve(new Date(dt.datetime));
+				});
+				return dfr.promise;
+			}
 		}
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder) {
-	var vm = this;
+function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList) {
+	var vm = this, fullProductsData;
 	vm.selected = undefined;
 	$scope.search = {
         'query' : '',
         'hits' : []
     };
-    vm.ID1= $stateParams.ID;
+    //vm.ID1= $stateParams.ID;
 	vm.productSearchData = [];
 	vm.showPDP = false;
 	$scope.hideSearchBox=false;
@@ -294,7 +317,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	};
 	$scope.selectVarients = function(txt,index){
 		//vm.productDetails.varientsOption = vm.productDetails.sizeval+"_"+vm.productDetails.colorval;
-		var filt = _.filter(vm.fullProductsData, function(row){
+		/*var filt = _.filter(vm.fullProductsData, function(row){
 			if(_.indexOf([vm.productDetails.sizeval], row.xp.Specs_Options.Cont_Size) > -1 && _.indexOf([vm.productDetails.colorval], row.xp.Specs_Options.Color) > -1){
 				return row;
 			}
@@ -314,7 +337,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			});
 		});
 	
-		/*if(txt != "upsell"){
+		if(txt != "upsell"){
 			vm.productDetails.varientsOption = vm.productDetails.sizeval+"_"+vm.productDetails.colorval;
 			var filt = _.findWhere(vm.productDetails.listOptions, {ID: vm.productDetails.varientsOption});
 			vm.productDetails.prodPrice = filt.PriceMarkup;
@@ -324,6 +347,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.UpsellProdDtls.UpsellCarousel[index].data.prodPrice = filt.PriceMarkup;
 		}*/
 	};
+	function displayProduct(filt){
+		//vm.productDetails.individualProd = filt;
+		vm.productDetails.ID = filt[0].ID;
+		vm.productDetails.Name = filt[0].Name;
+		vm.productDetails.Description = filt[0].Description;
+		vm.productDetails.imgUrl=filt[0].imgUrl;
+		vm.productDetails.prodPrice=filt[0].StandardPriceSchedule.PriceBreaks[0].Price;
+	}
 	$scope.OrderSummary=function(){
 		angular.element(document.getElementById("oms-plp-right")).scope().buildOrderRight.OrderConfirmPopUp = false;
 		$scope.ordersumry();
@@ -426,8 +457,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 					}
 				});	
 			});
-		}	
-	}
+		}
+	};
 	if($stateParams.SearchType == 'Products'){
 		vm.disable=true;
 		if($stateParams.ID==""){
@@ -572,6 +603,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	/*----End of Upsell Data----*/
 	$scope.gotoplp = function(){
 		vm.showPDP = false;
+		vm.searchList=productList;
 	}
 	$scope.AddtoCart = function(prodID, specID, varientsOption){
 		/*if($stateParams.SearchType == 'Products'){
@@ -639,7 +671,245 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		});		
 	}
 	vm.searchType=$stateParams.SearchType;
-	vm.id=$stateParams.ID;
+	console.log("productList", productList);
+    if($stateParams.SearchType=='plp'){
+        vm.catList=productList;
+        console.log("vm.catList", vm.catList);
+    }
+    // Function to get colors for selected size
+    vm.selectVarients = function (selectedSize, $index) {
+        DisplaySelectedColor(selectedSize, $index);
+    };
+    // function to retrieve images for selected size and color
+    vm.selectColor = function ($index, color) {
+        DisplaySelectedSize(color, $index);
+    }
+    function DisplayColors(prodcuts, IsObjectRequired) {
+        console.log("All Product", prodcuts);
+        var unique = {};
+        var distinct = [];
+        var distinctObj = [];
+        for (var i in prodcuts) {
+            if (typeof (prodcuts[i].xp) !== 'undefined') {
+                if (typeof (unique[prodcuts[i].xp.SpecsOptions.Color]) == "undefined") {
+                    distinct.push(prodcuts[i].xp.SpecsOptions.Color);
+                    distinctObj.push(prodcuts[i]);
+                }
+                unique[prodcuts[i].xp.SpecsOptions.Color] = 0;
+            }
+        }
+        if (IsObjectRequired)
+            return distinctObj;
+        else
+            return distinct;
+ 
+    }
+ 
+    // FUnction to display all available sizes
+    function DisplaySizes(prodcuts, IsObjectRequired) {
+        console.log("All Product", prodcuts);
+        var unique = {};
+        var distinct = [];
+        var distinctObj = [];
+        for (var i in prodcuts) {
+            if (typeof (prodcuts[i].xp) !== 'undefined') {
+                if (typeof (unique[prodcuts[i].xp.SpecsOptions.Size]) == "undefined") {
+                    distinct.push(prodcuts[i].xp.SpecsOptions.Size);
+                    distinctObj.push(prodcuts[i]);
+                }
+                unique[prodcuts[i].xp.SpecsOptions.Size] = 0;
+            }
+        }
+        if (IsObjectRequired)
+            return distinctObj;
+        else
+            return distinct;
+    }
+    var availableColors, availableSizes = [];
+    var activeProduct = null;
+    $scope.radio = { selectedSize: -1, selectedColor: -1 };
+    vm.isopen = false;
+    vm.SelectExtra = function(selectedExtra, $event){
+      $('.dropdown.open button p').text(selectedExtra);
+    }
+    // Function to get selected product
+    vm.showProduct=function(e){
+        vm.productExtras=extraProducts();
+        console.log("vm.productExtras", vm.productExtras)
+        $scope.radio.selectedColor = e.xp.SpecsOptions.Color;
+        $scope.radio.selectedSize = e.xp.SpecsOptions.Size;
+        vm.productTitle = e.Name;
+        vm.prodDesription = e.Description;
+        if(vm.catList && vm.catList.length>0){
+            vm.fullProductsData=_.filter(vm.catList, function(obj) {
+                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
+            });
+        }
+        else if(vm.searchList && vm.searchList.length>0){
+            vm.fullProductsData=_.filter(vm.searchList, function(obj) {
+                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
+            });
+        }
+        else if($stateParams.SearchType == 'Products' && $stateParams.ID != null){
+            vm.fullProductsData=_.filter(productList, function(obj) {
+                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
+            });
+        }
+        else{
+            vm.fullProductsData=_.filter($scope.buildOrder.list, function(obj) {
+                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
+            });
+        }
+        availableSizes = DisplaySizes(vm.fullProductsData, true);
+        vm.allSizes = availableSizes;
+        availableColors = DisplayColors(vm.fullProductsData, true);
+        vm.allColors = availableColors;
+        var selectedSizeHold = angular.copy(availableSizes);
+        var selectedColorHold = angular.copy(availableColors);
+        DisplaySelectedColor(e.xp.SpecsOptions.Size, _.findIndex(selectedSizeHold, function (item) { 
+            if(e.xp.SpecsOptions.Size === null || e.xp.SpecsOptions.Size === null){
+              return item.xp.SpecsOptions.Size == e.xp.SpecsOptions.Size 
+            }else{
+             return item.xp.SpecsOptions.Size.toLowerCase() == e.xp.SpecsOptions.Size.toLowerCase() 
+            }
+           })
+           );
+           DisplaySelectedSize(e.xp.SpecsOptions.Color, _.findIndex(selectedColorHold, function (item) { 
+            if(e.xp.SpecsOptions.Color === null || e.xp.SpecsOptions.Color === null){
+              return item.xp.SpecsOptions.Color == e.xp.SpecsOptions.Color 
+            }else{
+             return item.xp.SpecsOptions.Color.toLowerCase() == e.xp.SpecsOptions.Color.toLowerCase() 
+            }
+           })
+           );
+        vm.showPDP = true;
+    }
+    if($stateParams.SearchType == 'Products'){
+        vm.disable=true;
+        if($stateParams.ID==""){
+            console.log("********************", $scope.$parent.base.list);
+            vm.searchList=$scope.$parent.base.list;
+            vm.searchTxt=$scope.$parent.base.searchval;
+        }
+        else{
+            //vm.productdata($stateParams.ID);
+            var selectedProd=_.where(productList, {"ID":$stateParams.ID});
+            vm.showProduct(selectedProd[0]);
+        }
+    }
+    function DisplaySelectedColor(selectedSize, $index) {
+        vm.selectedSizeIndex = $index;
+        // vm.selectedProductIndex = -1;
+        var prodFiltered = _.filter(vm.fullProductsData, function (_obj) {
+            if(_obj.xp.SpecsOptions.Size === null || selectedSize === null){
+                return (_obj.xp.SpecsOptions.Size == selectedSize)
+            }else{
+                return (_obj.xp.SpecsOptions.Size == selectedSize || _obj.xp.SpecsOptions.Size.toLowerCase() == selectedSize)
+            }
+        });
+        var imAvailableColors = angular.copy(availableColors);
+        prodFiltered = DisplayColors(prodFiltered, false);
+        prodFiltered = _.filter(imAvailableColors, function (color) {
+            if (_.contains(prodFiltered, color.xp.SpecsOptions.Color)) {
+                color.isNotAvailable = false;
+                return color;
+            }
+            else {
+                color.isNotAvailable = true;
+                return color;
+            }
+        });
+        vm.allColors = prodFiltered;
+        if ($scope.radio.selectedSize != -1 && $scope.radio.selectedColor != -1) {
+            var selectedSku = _.filter(vm.fullProductsData, function (_obj) {
+                return ((_obj.xp.SpecsOptions.Size == $scope.radio.selectedSize || _obj.xp.SpecsOptions.Size.toLowerCase() == $scope.radio.selectedSize) && (_obj.xp.SpecsOptions.Color == $scope.radio.selectedColor || _obj.xp.SpecsOptions.Color.toLowerCase() == $scope.radio.selectedColor))
+            });
+            if (selectedSku.length == 1) {
+                activeProduct = selectedSku[0];
+                // if (activeProduct) {
+                    // GetDeliveryMethods(activeProduct.ID);
+                // }
+ 
+                DisplayProduct(selectedSku[0]);
+            } else {
+ 
+                console.log('PDP PRODUCT ERROR :: ', selectedSku);
+            }
+        }
+    }
+    function DisplayProduct(selectedSku) {
+        vm.productTitle = selectedSku.Name;
+        vm.prodDesription = selectedSku.Description;
+        vm.selectedProductId = selectedSku.ID;
+        vm.selectedProductImg=selectedSku.baseImage;
+        vm.changeImg=angular.copy(selectedSku.baseImage);
+        vm.selectedalternativeImg=selectedSku.alternativeImg;
+        vm.selectedDesc=selectedSku.Description;
+        vm.selectedSpecification=selectedSku.xp.Attributes;
+        vm.selectedKey=selectedSku.xp.KeyAttributes;
+        vm.selectedWarranty=selectedSku.xp.Warranty;
+    }
+    vm.changeImage=function(img){
+        vm.changeImg=img;
+    }
+    function DisplaySelectedSize(color, $index) {
+        var colorFiltered = _.filter(vm.fullProductsData, function (_obj) { // filters SKU with  selected color
+            if(_obj.xp.SpecsOptions.Color === null || color === null){
+                return (_obj.xp.SpecsOptions.Color == color)
+            }else{
+                return (_obj.xp.SpecsOptions.Color.toLowerCase() == color.toLowerCase())
+            }
+        });
+        colorFiltered = DisplaySizes(colorFiltered, false); // sizes availavle for seelcted color 
+        var imAvailableSizes = angular.copy(availableSizes); //copy for all available sizes
+        colorFiltered = _.filter(imAvailableSizes, function (size) { // Adds isNotAvailable attribute for Sizes based on selected dolor
+            if (_.contains(colorFiltered, size.xp.SpecsOptions.Size)) {
+                size.isNotAvailable = false;
+                return size;
+            }
+            else {
+                size.isNotAvailable = true;
+                return size;
+            }
+        });
+        vm.allSizes = colorFiltered; // bind the sizes to DOM
+        vm.selectedProductIndex = $index; // Active state for selected color
+        if ($scope.radio.selectedSize != -1 && $scope.radio.selectedColor != -1) { // change prodcut if size and color is selected
+            var selectedSku = _.filter(vm.fullProductsData, function (_obj) {
+                return ((_obj.xp.SpecsOptions.Size == $scope.radio.selectedSize || _obj.xp.SpecsOptions.Size.toLowerCase() == $scope.radio.selectedSize) && (_obj.xp.SpecsOptions.Color == $scope.radio.selectedColor || _obj.xp.SpecsOptions.Color.toLowerCase() == $scope.radio.selectedColor))
+            });
+            console.log("selectedSku", selectedSku);
+            if (selectedSku.length == 1) {
+                //console.log(selectedSku[0]);
+                activeProduct = selectedSku[0];
+                // if (activeProduct) {
+                    // GetDeliveryMethods(activeProduct.ID);
+                // }
+                DisplayProduct(selectedSku[0]); // displays selected product info
+            } else {
+ 
+                console.log('PDP PRODUCT ERROR ::', selectedSku);
+            }
+        }
+    }
+    function extraProducts() {
+        var ticket = localStorage.getItem("alf_ticket");
+        console.log("ProductImages", ProductImages);
+        var imageData = BuildOrderService.GetExtras();
+        var res = Object.keys(imageData).map(function (key) { return imageData[key] });
+        var imgcontentArray = [];
+        for (var i = 0; i < res.length; i++) {
+            for (var j = 0; j < res[i].length; j++) {
+                angular.forEach(Underscore.where(ProductImages, { title: res[i][j].Skuid }), function (node) {
+                    node.contentUrl = alfrescoURL + node.contentUrl + "?alf_ticket=" + ticket;
+                    imgcontentArray.push(node);
+                });
+                res[i][j].imgContent = imgcontentArray;
+                imgcontentArray = [];
+            }
+        }
+        return res;
+    }
 	vm.gotoSearchPlp=function(prodCode){
 		var ticket = localStorage.getItem("alf_ticket");
 		BuildOrderService.GetProductImages(ticket).then(function(imagesList){
@@ -735,7 +1005,7 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 	};
 }
 
-function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService, $cookieStore) {
+function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService, $cookieStore, CstDateTime) {
 	var vm = this;
 	vm.order = Order;
 	$scope.showDeliveryMethods = {
@@ -918,7 +1188,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								val.cemeterySearch = val.ShippingAddress.CompanyName;	
 								
 							if(val.xp.deliveryDate){
-								var dat = new Date();
+								var dat = angular.copy(CstDateTime);
 								dat.setHours(0, 0, 0, 0);
 								if(new Date(val.xp.deliveryDate) < dat)
 									delete val.xp.deliveryDate;
@@ -927,21 +1197,27 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 							}
 							if(val.xp.MinDate){
 								angular.forEach(val.xp.MinDate, function(val1, key1){
-									dt = new Date();
-									dt.setHours(0, 0, 0, 0);
+									dt = angular.copy(CstDateTime);
 									dt = dt.setDate(dt.getDate() + val1);
 									val.xp.MinDays[key1] = new Date(dt);
 								}, true);
-								val.xp.MinDays['MinToday'] = new Date();
+								val.xp.MinDays['MinToday'] = new Date(angular.copy(CstDateTime));
 								if(val.xp.MinDate.LocalDelivery){
-									dt = new Date();
-									dt.setHours(0, 0, 0, 0);
-									dt = dt.setDate(dt.getDate() + val.xp.MinDate.LocalDelivery);
+									dt = angular.copy(CstDateTime);
+									//dt.setHours(0, 0, 0, 0);
+									if(dt.getHours() >= 12)
+										dt = dt.setDate(dt.getDate() + val.xp.MinDate.LocalDelivery + 1);
+									else
+										dt = dt.setDate(dt.getDate() + val.xp.MinDate.LocalDelivery);
 									val.xp.MinDays['MinToday'] = new Date(dt);
 								}	
 							}else{
+								dt = angular.copy(CstDateTime);
 								val.xp.MinDate = {};
-								val.xp.MinDays['MinToday'] = new Date();
+								if(dt.getHours() >= 12)
+										val.xp.MinDays['MinToday'] = dt.setDate(dt.getDate() + 1);
+								else
+									val.xp.MinDays['MinToday'] = dt;
 							}
 							val.varientsOptions = {};
 							if(val.Product.xp != null && val.Product.xp.Specs_Options){
@@ -1491,11 +1767,11 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 
 function buildOrderPLPController(productList, $stateParams) {
 	var vm = this;
-	console.log("productList", productList);
+	/*console.log("productList", productList);
 	if($stateParams.SearchType=='plp'){
 		vm.catList=productList;
 		console.log("vm.catList", vm.catList);
-	}
+	}*/
 }
 
 function buildOrderPDPController() {
@@ -1846,7 +2122,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 	//}
 }
 
-function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore) {
+function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore, GetCstTime) {
     var upselldata = [];
     var crossdata = [];
     var productdetail = [];
@@ -2068,16 +2344,15 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 			method:"GET",
 			dataType:"json",
 			contentType: "application/json",
-			url:"http://103.227.151.31:8080/Bachman/localdeliverytime"
+			url:GetCstTime
 		}).success(function(res){
 			if(endDate == res.date)
 				d.resolve("1");
 			else
-				d.resolve(res.date);
+				d.resolve(res);
 		}).error(function(err){
 			console.log("err"+err);
 		});
-		d.resolve();
 		return d.promise;
 	}
 	function _GetPreceedingZeroDate(dt){

@@ -554,11 +554,9 @@
 				</tr>
 				<tr ng-repeat="val in buildOrderRight.activeOrders[line] track by val.ID" ng-click="getBookAddress(val.ShippingAddress, 'TempAddr')" ng-if="val.ShippingAddress.Zip && val.ShippingAddress.Street1 && val.ShippingAddress.FirstName">
 					<td>
-						
 						<p>{{val.ShippingAddress.FirstName}} {{val.ShippingAddress.LastName}}</p>
 					</td>
-					<td>	
-						
+					<td>
 						<p>{{val.ShippingAddress.Street1}}</p>
 						<p>{{val.ShippingAddress.Street2}}</p>
 						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>

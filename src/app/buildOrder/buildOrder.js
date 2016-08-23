@@ -301,7 +301,7 @@ function buildOrderConfig( $stateProvider ) {
 }
 
 function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList) {
-	var vm = this, fullProductsData;
+	var vm = this;
 	vm.selected = undefined;
 	$scope.search = {
         'query' : '',
@@ -918,24 +918,24 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         }
         return res;
     }
-	vm.gotoSearchPlp=function(prodCode){
-		var ticket = localStorage.getItem("alf_ticket");
-		BuildOrderService.GetProductImages(ticket).then(function(imagesList){
-			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
-			.then(function(data) {
-				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-					OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":prodCode}).then(function(res){
-						BuildOrderService.GetProductList(res.Items, imagesList.items).then(function(prodList){
-						vm.searchTxt=$scope.$parent.base.searchval;
-						vm.searchList=prodList;
-						vm.showPDP = false;
-						console.log("vm.searchList", vm.searchList);
-					});
-				})
-			})
-		})
-		console.log("prodCodeprodCode", prodCode);
-	}
+	// vm.gotoSearchPlp=function(prodCode){
+		// var ticket = localStorage.getItem("alf_ticket");
+		// BuildOrderService.GetProductImages(ticket).then(function(imagesList){
+			// OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
+			// .then(function(data) {
+				// OrderCloud.Auth.SetImpersonationToken(data['access_token']);
+					// OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":prodCode}).then(function(res){
+						// BuildOrderService.GetProductList(res.Items, imagesList.items).then(function(prodList){
+						// vm.searchTxt=$scope.$parent.base.searchval;
+						// vm.searchList=prodList;
+						// vm.showPDP = false;
+						// console.log("vm.searchList", vm.searchList);
+					// });
+				// })
+			// })
+		// })
+		// console.log("prodCodeprodCode", prodCode);
+	// }
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -2153,7 +2153,8 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		PatchOrder: _PatchOrder,
 		GetProductImages: _getProductImages,
 		GetProductList:_getProductList,
-		GetSeqProd:_getSeqProd
+		GetSeqProd:_getSeqProd,
+		GetExtras:_getExtras
     }
 	function _getProductDetails(data) {
 		var deferred = $q.defer();
@@ -2436,12 +2437,27 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		var defferred = $q.defer();
 		var ticket = localStorage.getItem("alf_ticket");      
 		 var data = Underscore.filter(res, function(row){
-			var imgUrl = Underscore.where(productImages, {title: row.ID});
-			if(imgUrl.length > 0)
-				return row.imgUrl=alfrescoURL + imgUrl[0].contentUrl + "?alf_ticket=" + ticket;
+			var imgUrl = Underscore.filter(productImages, function(row1){
+				return row1.title.indexOf(row.ID) != -1;
+			});
+			// console.log("alternative", alternative);
+			if(imgUrl.length > 0){
+				var baseImage = Underscore.where(imgUrl, {title: row.ID});
+				if(baseImage.length>0){
+					row.baseImage=alfrescoURL + baseImage[0].contentUrl + "?alf_ticket=" + ticket;
+				}
+				console.log("row.baseImage", row.baseImage);
+				row.alternativeImg=[];
+				angular.forEach(imgUrl, function(value, key) {
+					row.alternativeImg.push(alfrescoURL + value.contentUrl + "?alf_ticket=" + ticket);
+					console.log("row.alternativeImg", row.alternativeImg);
+				});
+				return row.alternativeImg;
+				//return row.alternativeImg=alfrescoURL + imgUrl[0].contentUrl + "?alf_ticket=" + ticket;
+			}
 			else
 				return row;
-		  });
+		   });
 		   defferred.resolve(data);
 		   return defferred.promise;
 	}
@@ -2472,6 +2488,89 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 			})
 		}
 		return defferred.promise;
+	}
+	function _getExtras() {
+		var data = {
+			"Balloons": [
+				{
+					"Skuid": "bal_1",
+					"Title": "Balloon Orange",
+					"Price": "$4.99",
+					"CategoryName": "Balloons"
+				},
+				{
+					"Skuid": "bal_2",
+					"Title": "Balloon Red",
+					"Price": "$5.99",
+					"CategoryName": "Balloons"
+				},
+				{
+					"Skuid": "bal_3",
+					"Title": "Balloon Blue",
+					"Price": "$6.99",
+					"CategoryName": "Balloons"
+				},
+				{
+					"Skuid": "bal_4",
+					"Title": "Balloon Pink",
+					"Price": "$7.99",
+					"CategoryName": "Balloons"
+				}
+			],
+			"Plush": [
+				{
+					"Skuid": "plush_1",
+					"Title": "Flora Frog 12'",
+					"Price": "$5.99",
+					"CategoryName": "Plush"
+				},
+				{
+					"Skuid": "plush_2",
+					"Title": " Stuffed Animal- FTD",
+					"Price": "$5.99",
+					"CategoryName": "Plush"
+				},
+				{
+					"Skuid": "plush_3",
+					"Title": " Baabsy Lamb",
+					"Price": "$5.99",
+					"CategoryName": "Plush"
+				},
+				{
+					"Skuid": "plush_4",
+					"Title": " Lin Lin Panda",
+					"Price": "$5.99",
+					"CategoryName": "Plush"
+				}
+			],
+			"Sweets": [
+				{
+					"Skuid": "sweet_1",
+					"Title": " Chocolate Stars",
+					"Price": "$4.99",
+					"CategoryName": "Sweets"
+				},
+				{
+					"Skuid": "sweet_2",
+					"Title": "Bittersweet chocolate",
+					"Price": "$4.99",
+					"CategoryName": "Sweets"
+				},
+				{
+					"Skuid": "sweet_3",
+					"Title": "Milk chocolate",
+					"Price": "$4.99",
+					"CategoryName": "Sweets"
+				},
+				{
+					"Skuid": "sweet_4",
+					"Title": "Chocolate Daisies",
+					"Price": "$4.99",
+					"CategoryName": "Sweets"
+				}
+			]
+		}
+		return data;
 	}
     return service;
 }

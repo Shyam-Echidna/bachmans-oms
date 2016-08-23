@@ -42,7 +42,7 @@
 									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
 									<ul class="menu_level_3" ng-if="subcategories.ChildCount">
 										<li ng-repeat="subchildcategories in subcategories.children">
-											<a  ui-sref="plp({ID:subchildcategories.ID,childCount:subchildcategories.ChildCount})">{{subchildcategories.Name}}</a>	 
+											<a ui-sref="plp({ID:subchildcategories.ID,childCount:subchildcategories.ChildCount})">{{subchildcategories.Name}}</a>	 
 										</li>
 									</ul> 
 								</li>

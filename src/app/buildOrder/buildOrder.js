@@ -245,6 +245,14 @@ function buildOrderConfig( $stateProvider ) {
 				return dfd.promise;
 				}
 			},
+			ProductImages: function (BuildOrderService, $q) {
+				var ticket = localStorage.getItem("alf_ticket");
+				var dfr = $q.defer();
+				BuildOrderService.GetProductImages(ticket).then(function(imgList){
+					dfr.resolve(imgList.items);
+				});
+				return dfr.promise;
+			},
 			productList: function (OrderCloud, $stateParams, BuildOrderService, $q) {
 					var dfr = $q.defer();
 					if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'){

@@ -19,18 +19,18 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": null,
-            "transactionType": "createCreditCard",
-            "amount": null,
-            "cardDetails": {
-                "paymentID": null,
-                "creditCardID": null,
-                "cardholderName": card.CardholderName,
-                "cardType": card.CardType,
-                "cardNumber": card.CardNumber,
-                "expirationDate": card.ExpMonth + card.ExpYear,
-                "cardCode": card.CVV
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": null,
+            "TransactionType": "createCreditCard",
+            "Amount": null,
+            "CardDetails": {
+                "PaymentID": null,
+                "CreditCardID": null,
+                "CardholderName": card.CardholderName,
+                "CardType": card.CardType,
+                "CardNumber": card.CardNumber,
+                "ExpirationDate": card.ExpMonth + card.ExpYear,
+                "CardCode": card.CVV
             }
         };
         $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
@@ -56,17 +56,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": null,
-            "transactionType": "updateCreditCard",
-            "amount": null,
-            "cardDetails": {
-                "paymentID": null,
-                "cardNumber": 'XXXX' + card.PartialAccountNumber,
-                "cardholderName": card.CardholderName,
-                "creditCardID": card.ID,
-                "cardType": card.CardType,
-                "expirationDate": card.ExpMonth + card.ExpYear
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": null,
+            "TransactionType": "updateCreditCard",
+            "Amount": null,
+            "CardDetails": {
+                "PaymentID": null,
+                "CardNumber": 'XXXX' + card.PartialAccountNumber,
+                "CardholderName": card.CardholderName,
+                "CreditCardID": card.ID,
+                "CardType": card.CardType,
+                "ExpirationDate": card.ExpMonth + card.ExpYear
             }
         };
         $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
@@ -94,17 +94,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": null,
-            "transactionType": "deleteCreditCard",
-            "amount": null,
-            "cardDetails": {
-                "paymentID": null,
-                "creditCardID": card.ID,
-                "cardType": null,
-                "cardNumber": null,
-                "expirationDate": null,
-                "cardCode": null
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": null,
+            "TransactionType": "deleteCreditCard",
+            "Amount": null,
+            "CardDetails": {
+                "PaymentID": null,
+                "CreditCardID": card.ID,
+                "CardType": null,
+                "CardNumber": null,
+                "ExpirationDate": null,
+                "CardCode": null
             }
         };
         var deleteCard = confirm('Are you sure you want to delete this card?');
@@ -136,17 +136,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": order.ID,
-            "transactionType": "authCaptureTransaction",
-            "amount": order.Total,
-            "cardDetails": {
-                "paymentID": null,
-                "creditCardID": card.ID,
-                "cardType": null,
-                "cardNumber": null,
-                "expirationDate": null,
-                "cardCode": card.CVV
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": order.ID,
+            "TransactionType": "authCaptureTransaction",
+            "Amount": order.Total,
+            "CardDetails": {
+                "PaymentID": null,
+                "CreditCardID": card.ID,
+                "CardType": null,
+                "CardNumber": null,
+                "ExpirationDate": null,
+                "CardCode": card.CVV
             }
         };
         //authorize and capture payment
@@ -170,17 +170,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": order.ID,
-            "transactionType": "authOnlyTransaction",
-            "amount": order.Total,
-            "cardDetails": {
-                "paymentID": null,
-                "creditCardID": null,
-                "cardType": card.CardType,
-                "cardNumber": card.CardNumber,
-                "expirationDate": card.ExpMonth + card.ExpYear,
-                "cardCode": card.CVV
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": order.ID,
+            "TransactionType": "authOnlyTransaction",
+            "Amount": order.Total,
+            "CardDetails": {
+                "PaymentID": null,
+                "CreditCardID": null,
+                "CardType": card.CardType,
+                "CardNumber": card.CardNumber,
+                "ExpirationDate": card.ExpMonth + card.ExpYear,
+                "CardCode": card.CVV
             }
         };
         //authorize payment
@@ -192,17 +192,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
                     toastr.info('Sorry, something went wrong. Please try again');
                 } else {
                     cc = {
-                        "buyerID": OrderCloud.BuyerID.Get(),
-                        "orderID": order.ID,
-                        "transactionType": "priorAuthCaptureTransaction",
-                        "amount": order.Total,
-                        "cardDetails": {
-                            "paymentID": response.PaymentID,
-                            "creditCardID": null,
-                            "cardType": null,
-                            "cardNumber": null,
-                            "expirationDate": null,
-                            "cardCode": null
+                        "BuyerID": OrderCloud.BuyerID.Get(),
+                        "OrderID": order.ID,
+                        "TransactionType": "priorAuthCaptureTransaction",
+                        "Amount": order.Total,
+                        "CardDetails": {
+                            "PaymentID": response.PaymentID,
+                            "CreditCardID": null,
+                            "CardType": null,
+                            "CardNumber": null,
+                            "ExpirationDate": null,
+                            "CardCode": null
                         }
                     };
                     //capture payment
@@ -231,17 +231,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": order.ID,
-            "transactionType": "refundTransaction",
-            "amount": amount,
-            "cardDetails": {
-                "paymentID": card.paymentID,
-                "creditCardID": card.ID != null ? card.ID : null,
-                "cardType": null,
-                "cardNumber": card.cardNumber != null ? card.cardNumber : null,
-                "expirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
-                "cardCode": null
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": order.ID,
+            "TransactionType": "refundTransaction",
+            "Amount": amount,
+            "CardDetails": {
+                "PaymentID": card.paymentID,
+                "CreditCardID": card.ID != null ? card.ID : null,
+                "CardType": null,
+                "CardNumber": card.cardNumber != null ? card.cardNumber : null,
+                "ExpirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
+                "CardCode": null
             }
         };
         //refund partial payment
@@ -264,17 +264,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         var dfd = $q.defer();
         var token = OrderCloud.As().Auth.ReadToken();
         var cc = {
-            "buyerID": OrderCloud.BuyerID.Get(),
-            "orderID": order.ID,
-            "transactionType": "refundTransaction",
-            "amount": amount,
-            "cardDetails": {
-                "paymentID": card.paymentID,
-                "creditCardID": card.ID != null ? card.ID : null,
-                "cardType": null,
-                "cardNumber": card.cardNumber != null ? card.cardNumber : null,
-                "expirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
-                "cardCode": null
+            "BuyerID": OrderCloud.BuyerID.Get(),
+            "OrderID": order.ID,
+            "TransactionType": "refundTransaction",
+            "Amount": amount,
+            "CardDetails": {
+                "PaymentID": card.paymentID,
+                "CreditCardID": card.ID != null ? card.ID : null,
+                "CardType": null,
+                "CardNumber": card.cardNumber != null ? card.cardNumber : null,
+                "ExpirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
+                "CardCode": null
             }
         };
         //refund full payment

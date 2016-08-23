@@ -85,6 +85,7 @@ function getConstants() {
         case 'local':
             result.authurl = 'http://core.four51.com:11629/oauth/token';
             result.apiurl = 'http://core.four51.com:9002';
+            result.apiurl = 'http://core.four51.com:9002/v1/integrationproxy/authorizenet';
             break;
         case 'test':
             result.authurl = 'https://testauth.ordercloud.io/oauth/token';
@@ -96,6 +97,7 @@ function getConstants() {
         case 'qa':
             result.authurl = 'https://qaauth.ordercloud.io/oauth/token';
             result.apiurl = 'https://qaapi.ordercloud.io';
+            result.authorizeneturl = 'https://qaapi.ordercloud.io/v1/integrationproxy/authorizenet';
             break;
         default:
             result.authurl = 'https://auth.ordercloud.io/oauth/token';

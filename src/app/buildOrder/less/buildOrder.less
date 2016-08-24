@@ -435,11 +435,14 @@ input.error {
 						.helvetica-bold;
 						font-size: 20px;
 						color: @primary-dark-color;
-						margin: 0 0 15px;
+						margin: 0 0 24px;
+						text-transform: capitalize;
 					}
 					>h5{
 						.helvetica-bold;
 						font-size: 13px;
+						color: #54565d;
+						margin:0px;
 					}
 					button {
 						padding: 10px 45px;
@@ -462,6 +465,11 @@ input.error {
 						>div .row{
 							.btn-holder{
 								padding: 0 10px 0 0;
+								.open{
+									button{
+										background-image:url(/assets/images/button-up.svg);
+									}
+								}
 							}
 							div .dropdown ul{
 								z-index: 1;
@@ -482,18 +490,20 @@ input.error {
 							button{
 								text-align: left;
 								background-color: #f4f4f4;
-								padding: 0 10px;
+								padding:5px  10px;
 								border: 1px solid #e4e4e4;
 								border-radius: 2px;
 								margin-bottom: 7px;
-								background-image: url(../../assets/images/icons-svg/nav-arrow.svg);
+								background-image: url(/assets/images/button-down.svg);
 								background-repeat: no-repeat;
 								background-position: right center;
 								background-size: 35px 11px;
 								height: 45px;
 								line-height: 1.013em;
+								box-shadow:none;
+								margin: 12px 0 0 0;
 								.category-name{
-									.helvetica-regular;
+									.helvetica-bold;
 									color: #333;
 									font-size: .85em;
 								}
@@ -501,6 +511,7 @@ input.error {
 									.helvetica-regular;
 									color: #000;
 									margin-top: 5px;
+									font-size:14px;
 								}
 							}
 							ul{
@@ -520,15 +531,46 @@ input.error {
 									border-bottom: 1px solid #e5e5e5;
 									padding: 5px 0;
 									cursor: pointer;
-									.img-responsive{
-										display: block;
-										max-width: 100%;
-										height: auto;
+									 &:last-child{
+									 	border-bottom:none;
+									 }
+									 .pro-del{
+									 	margin:0;
+									 	 div{
+									 	 	padding:0px;
+									 	 }
+									 }
+									
+									h5,p{
+										 font-size:14px;
+										 color:#464646;
+										 .helvetica-regular;
+										  margin-left:10px;
 									}
+									p{
+									     margin: 11px 0 0 10px;
+									}
+
 								}
 							}
 						}
 					}
+					 .color-selection,.dropdown-box{
+					 	width:100%;
+					 	float:left;
+					 	margin-bottom:20px;
+					 	h5{
+					 		font-size:13px;
+					 		color:#54565d;
+					 		.helvetica-bold;
+					 		margin:0;
+					 	}
+					 }
+					 .color-selection{
+					 	.color-circle{
+					 		margin: 12px 0 0 6px;
+					 	}
+					 }	
 				}
 				.key-product {
 					background-color:@color11;
@@ -602,6 +644,9 @@ input.error {
 					.panel-body {
 						border-top:none;
 						padding: 0 0px 15px 25px;
+						.footer_cat{
+							padding:0px;
+						}
 						a{
 							.helvetica-bold;
 							font-size: 12.5px;
@@ -2505,10 +2550,12 @@ input.error {
 
 
 .radio-btn-container{
-	margin: 5px 0 20px;
+	    margin: 12px 0 20px 0;
+    width: 100%;
+    float: left;
 	.size-box{
 		text-align: center;
-		padding: 5px;
+		padding:5px 0 0 0;
 		input[type=radio]{
 			opacity: 0;
 			display: none;
@@ -2535,15 +2582,16 @@ input.error {
 			width: 18px;
 			height: 18px;
 			text-align: center;
-		}
-		input[type=radio]:not(old):checked+label .radioOutline{
-			    border: 1px solid #8c58b5;
+		 }
+	   input[type=radio]:not(old):checked+label .radioOutline{
+	 		    border: 1px solid #8c58b5;
 			border-radius: 50%;
 			background: 0 0;
 			display: inline-block;
 			width: 18px;
 			height: 18px;
 			text-align: center;
+			top:4px;
 		}
 		input[type=radio]:not(old):checked+label .radioOutline .radioInside{
 		    width: 10px;
@@ -2557,10 +2605,10 @@ input.error {
 			right: 0;
 			bottom: 0;
 			margin: auto;
-		}
-		input[type=radio]:not(old)+label .radioOutline .radioInside{
-		    width: 10px;
-			height: 10px;
+		   }
+			input[type=radio]:not(old)+label .radioOutline .radioInside{
+		    width: 16px;
+			height: 16px;
 			border-radius: 50%;
 			display: inline-block;
 			background-color: transparent;
@@ -2570,7 +2618,21 @@ input.error {
 			right: 0;
 			bottom: 0;
 			margin: auto;
-		}
+		  }
+		  input[type=radio]:not(old)+label{
+		  	 h5{
+		  	 		padding-left: 30px;
+		  	 }
+
+		  }
+		  input[type=radio]:not(old):checked+label{
+			   h5{
+			   	 	padding-left: 10px;
+			   }
+			   h5, .price{
+			   		color:#54565d;
+			   }
+		  }
 		.hidden-sm{
 			display:inline-block !important;
 		}
@@ -2588,12 +2650,24 @@ input.error {
 				cursor: no-drop!important;
 			}
 		}
+		
+		h5, .price{
+			font-size:13px;
+			.helvetica-regular;
+			color:#8b8e96;
+			margin:0 0 10px 0;
+
+		}
+		.price{
+			margin-left:20px;
+			.helvetica-bold;
+		}
 	}
 }
 .color-circle li{
 	position: relative;
-    height: 22px;
-    width: 22px;
+    height: 28px;
+    width: 28px;
     border: 1px solid #f1f1f1;
     display: inline-block;
     margin-right: 12px;

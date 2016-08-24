@@ -5,7 +5,7 @@ angular.module('ordercloud-lineitems', [])
 
 ;
 
-function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderCloud, CurrentOrder) {
+function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderCloud, CurrentOrder, $stateParams) {
     return {
         SpecConvert: SpecConvert,
         RemoveItem: RemoveItem,
@@ -71,11 +71,22 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 
     function GetProductInfo(LineItems) {
         var li = LineItems.Items || LineItems;
+        console.log($state);
         var productIDs = Underscore.uniq(Underscore.pluck(li, 'ProductID'));
         var dfd = $q.defer();
         var queue = [];
         angular.forEach(productIDs, function (productid) {
-            queue.push(OrderCloud.As().Me.GetProduct(productid));//As added by khasim
+            /*if($stateParams.SearchType=="Products"){
+                queue.push(OrderCloud.Me.GetProduct(productid)); //As added by sukhchand
+            }
+            else{
+                OrderCloud.As().Me.Get().then(function(res){
+                    console.log(res);
+                })
+                queue.push(OrderCloud.Me.GetProduct(productid));//As added by khasim
+            }*/
+            console.log(productid);
+            queue.push(OrderCloud.Products.Get(productid));
         });
         $q.all(queue)
             .then(function (results) {

@@ -15,7 +15,7 @@
 							</svg>
 							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
 					</uib-accordion-heading>
-					<uib-accordion close-others="checkout.oneAtATime">
+					<uib-accordion close-others="checkout.oneAtATime" ng-init="checkout.delInfoRecipient[0]=true">
 						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]">
 							<uib-accordion-heading>
 								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}} | {{line.ShippingAddress.Zip}}</h2>
@@ -217,7 +217,7 @@
 												 <!--<select>
 													<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
 												 </select>-->
-												 <input type="search" ng-model="line.xp.storeName" ng-value="line.xp.addressType=='Will Call' ? line.xp.storeName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
+												 <input type="search" ng-model="line.ShippingAddress.CompanyName" autocomplete="off" ng-value="line.xp.addressType=='Will Call' ? line.ShippingAddress.CompanyName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
 											 <p>
 											<fieldset id="group2">
 												<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label> -->
@@ -416,7 +416,7 @@
 									</div>
 								</div>
 								<div class="col-lg-12 col-md-12">
-									<input type="button" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(lineitems, 0, checkout.lineItemForm[line.ID])" />
+									<input type="button" ng-disabled="!line.xp.deliveryRun" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(lineitems, 0, checkout.lineItemForm[line.ID])" />
 								</div>
 							</form>
 						</uib-accordion-group>

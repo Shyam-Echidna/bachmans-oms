@@ -1,4 +1,4 @@
-<div class="onholdscreen">
+<!-- <div class="onholdscreen">
 	<div class="hold_header">
 		<span ui-sref="home">&lt; Back</span>
 		<h1>Order Details</h1>
@@ -12,4 +12,118 @@
 			<div ui-grid="gridOptions" class="hold-order-grid col-md-12 col-sm-12"></div>
 		</div>
 	</div>
+</div> -->
+<!-- Sweta -->
+<div class="hold-screen-main">
+	<h1>Order Details</h1>
+	<div class="hold-screen">
+		<div>
+			<h2>Items</h2>
+		</div>
+		<div class="item-action">
+			<button>REMOVE ITEM</button>
+			<button ng-click="hold.addItem()">ADD ITEM</button>
+		</div>
+		<div ui-grid="gridOptions" class="order-grid" external-scopes="gridScope"></div>
+	</div>
+	<div class="hold-screen row" style="display: none">
+		<div class="col-md-12 col-lg-12">
+			<h2>Delivery Information</h2>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Delivery Date</p>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.deliveryinfo.xp.deliveryDate" ng-disabled="true"/>
+			<!-- <p>{{hold.deliveryinfo.xp.deliveryDate | date : 'MMM dd,yyyy'}}</p> -->
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Delivery Time</p>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.deliveryinfo.xp.deliveryRun"  ng-disabled="true"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Delivery Instructions</p>
+			<input type="text" class="col-md-6 col-lg-6" class="message" ng-model="hold.deliveryinfo.xp.deliveryNote" ng-disabled="true"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Wired Service</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+			<select ng-model="hold.wireserviceopt">
+				<option value="FTD">FTD</option>
+				<option value="Teleflora">Teleflora</option>
+			</select>
+		</div>
+	</div>
+	<div class="hold-screen row" style="display: none">
+		<div class="col-md-12 col-lg-12">
+			<h2>Wired Service</h2>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Wired Service</p>
+			<a class="col-md-2 col-lg-2" ng-click="selectFlorist()">Select Florist</a>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Florist Name</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Florist Zip Code</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Florist Network</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Florist Code</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Wire Occasion Code</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Wire Order Number</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Transmission Status</p>
+			<input type="text" class="col-md-2 col-lg-2"/>
+		</div>
+	</div>
+	<div class="hold-screen row" style="display: none">
+		<div class="col-md-12 col-lg-12">
+			<h2>Card Message</h2>
+		</div>
+		<div class="hold-btm col-md-12 col-lg-12">
+			<p class="col-md-2 col-lg-2">Delivery Date</p>
+			<div class="col-md-6 col-lg-6">
+				<input type="text" class="message"/>
+				<input type="text" class="message"/>
+				<input type="text" class="message"/> 
+				<input type="text" class="message"/>
+			</div>
+		</div>
+	</div>
+	<div>
+		<button class="unhold">Unhold</button>
+		<button>CANCEL</button>
+	</div>
 </div>
+<modal title="Select a SKU" visible="hold.selectSKU" id="selectSKU" class="create-user-pop-up modal-pop-up">
+	<div>
+		<h1>Select a SKU</h1>
+		<span>X</span>	
+	</div>
+	<div>
+		<div class="searchfield">
+		</div>
+	</div>
+	<div ui-grid="gridskuopt" ui-grid-selection class="order-grid"></div>
+
+	<div>
+		<button ng-click="vm.selectSKU =! vm.selectSKU">CANCEL</button>
+		<button ng-click="hold.adddummy()">OKAY</button>
+	</div>
+</modal>
+<modal title="Select a SKU" visible="hold.selectFlorist" id="selectFlorist" class="create-user-pop-up modal-pop-up">
+	<p>kkkkkkkkkkkkkkkk</p>
+</modal>

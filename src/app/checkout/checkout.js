@@ -634,7 +634,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 		if(line){
-			if(line.xp.addressType == "Will Call" && line.willSearch){
+			if(line.xp.addressType == "Will Call"){
 				vm.getDeliveryCharges(line);
 			}
 		}
@@ -906,7 +906,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			line.deliveryOrStore = 1;*/
 		
 		var filt = _.filter(vm.storeNames, function(row,index){
-			return _.indexOf([line.xp.storeName],row.storeName) > -1;
+			return _.indexOf([line.ShippingAddress.CompanyName],row.CompanyName) > -1;
 		});
 		if(filt.length!=0)
 			line.selected = vm.storeNames[parseInt(filt[0].id)];

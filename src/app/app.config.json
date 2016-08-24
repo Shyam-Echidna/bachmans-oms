@@ -8,5 +8,8 @@
   "alfrescoOmsUrl": "http://103.227.151.31:8080/alfresco/service/slingshot/doclib/doclist/documents/site/bachmansstorefront/documentLibrary/",
   "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime",
   "PMCStoresURL":"http://192.168.101.49:8080/Bachman/getStores",
-  "GetCstTime": "http://103.227.151.31:8080/Bachman/localdeliverytime"
+  "GetCstTime": "http://103.227.151.31:8080/Bachman/localdeliverytime",
+  "PurplePerkEagle": "http://192.168.101.49:8080/Bachman/getPurplePerksRedemptionLatestValue",
+  "GiftCardEagle": "http://192.168.101.49:8080/Bachman/getGiftCardRedemption",
+  "OrderPrintURL": "http://192.168.101.49:8080/Bachman/omsprint/"
 }

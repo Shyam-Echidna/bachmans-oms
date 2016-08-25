@@ -137,6 +137,24 @@ function buildOrderConfig( $stateProvider ) {
 			}
 		},
 		resolve: {
+			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
+					var d = $q.defer();
+					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
+						.then(function(data) {
+							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
+							OrderCloud.As().Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
+								if(res.Items.length != 0){
+									CurrentOrder.Set(res.Items[0].ID);
+									d.resolve(res.Items[0]);
+								}else{
+									d.resolve();
+								}
+							});
+						});
+						return d.promise;
+					}
+			},
 			SearchData: function($q,$stateParams, $state, OrderCloud) {
 				var arr={};
 				console.log("params",$stateParams);
@@ -148,101 +166,45 @@ function buildOrderConfig( $stateProvider ) {
 						arr["user"] = data.Username;
 						arr["ID"] =data.ID;
 						arr["Notes"] = data.xp.Notes;
-						OrderCloud.Addresses.ListAssignments(null,$stateParams.ID).then(function(addrList){
-							if((addrList.Items).length > 0){
-								angular.forEach(addrList.Items, function(value, key) {
-									OrderCloud.Addresses.Get(value.AddressID).then(function(address){
-										if(address.xp != null){
-											if(address.xp.IsDefault)
-												arr["address"]=address;
-										}
-										d.resolve(arr);
-									});
-								});
-							}else{
-								d.resolve(arr);
-							}
+						OrderCloud.As().Me.ListAddresses().then(function(res){
+							angular.forEach(res.Items, function(val, key) {
+								if(val.xp != null){
+									if(val.xp.IsDefault)
+										arr["address"] = val;
+								}
+							}, true);
+							d.resolve(arr);
 						});
 					});  
-				}
-				else{
+				}else{
 					arr["productID"]=$stateParams.ID;
 					d.resolve(arr);
 				}
 				return d.promise;
-			},
-			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
-					var d = $q.defer();
-					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
-						.then(function(data) {
-							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-								//console.log("params", $stateParams);
-								//console.log("ssssssssssss", $stateParams.orderID);
-								//if($stateParams.orderID == ""){         search, page, pageSize, searchOn, sortBy, filters, from, to
-									OrderCloud.As().Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
-										//var data = [];
-										//data = _.where(assignOrders.Items, {"FromUserID":$stateParams.ID});
-										if(res.Items.length != 0){
-											//var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
-											//OrderCloud.As().Orders.Create(orderParams).then(function(res){
-											CurrentOrder.Set(res.Items[0].ID);
-											d.resolve(res.Items[0]);
-											//});
-										}else{
-											d.resolve();
-										}/*else{
-											var createOrder = true;
-											angular.forEach(data, function(row, index){
-												if(row.Status == "Unsubmitted"){
-													createOrder = false;
-													CurrentOrder.Set(row.ID);
-													d.resolve(row);
-												} 
-											},true);
-											if(createOrder == true){
-												var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
-												OrderCloud.As().Orders.Create(orderParams).then(function(res){
-													CurrentOrder.Set(res.ID);
-													d.resolve(res);
-												});
-											}
-										}*/
-									});
-								/*}else{
-									OrderCloud.As().Orders.Get($stateParams.orderID).then(function(res){
-										CurrentOrder.Set(res.ID);
-										d.resolve(res);
-									});
-									console.log("oooooooo", $stateParams.orderID);
-								}*/
-						});
-						return d.promise;
-					}
 			},
 			spendingAccounts:function($q, $state, $stateParams, OrderCloud){
 				var arr = [];
 				var spendingAcc={};
 				var filterPurple;
 				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
-				var dfd = $q.defer();
-				OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
-					angular.forEach(assign.Items, function(value, key) {
-						OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
-							arr.push(spendingacc);
-                            filterPurple = _.filter(arr, function(row){
-                                return _.indexOf(["Purple Perks"],row.Name) > -1;
-                            });
-							if((filterPurple.length) > 0){
-								dfd.resolve(filterPurple);
-							}
-						});
-					}, true);
-				if((assign.Items.length)==0){		
-						dfd.resolve();		
-				}
-				})
-				return dfd.promise;
+					var dfd = $q.defer();
+					OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
+						angular.forEach(assign.Items, function(value, key) {
+							OrderCloud.SpendingAccounts.Get(value.SpendingAccountID).then(function(spendingacc){
+								arr.push(spendingacc);
+								filterPurple = _.filter(arr, function(row){
+									return _.indexOf(["Purple Perks"],row.Name) > -1;
+								});
+								if((filterPurple.length) > 0){
+									dfd.resolve(filterPurple);
+								}
+							});
+						}, true);
+						if((assign.Items.length)==0){		
+							dfd.resolve();		
+						}
+					});
+					return dfd.promise;
 				}
 			},
 			ProductImages: function (BuildOrderService, $q) {
@@ -477,50 +439,78 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	if($stateParams.SearchType == 'plp'){
 		vm.disable=true;
 	}
-	if($stateParams.prodID!=""){
+	/*if($stateParams.prodID!=""){
 		vm.productdata($stateParams.prodID);
-	}
+	}*/
 	/*----Upsell Data----*/
-	$scope.upsell = true;
-	$scope.similar = true;
-	$scope.upsellToggle = function(upsell) {
-		$scope.upsell = $scope.upsell === false ? true: false;
-		$scope.similar = true;
-		if(!$scope.Categories){
+	vm.upsell = true;
+	vm.similar = true;
+	vm.upsellToggle = function(upsell) {
+		var tempArr = [];
+		vm.upsell = vm.upsell === false ? true: false;
+		vm.similar = true;
+		if(!vm.Categories){
 			OrderCloud.Products.Get("cat2_cat12_prod2").then(function(data) {
 				var cats = [];
-				$scope.Categories = [];
-				$scope.UpsellDtls = data;
-				_.filter($scope.UpsellDtls.xp.Upsell, function (row) {
+				vm.Categories = [];
+				vm.UpsellDtls = data;
+				_.filter(vm.UpsellDtls.xp.Upsell, function (row) {
 					_.each(row, function( val, key ) {
 						cats.push(key);
 					});
 				});
 				angular.forEach(cats, function(line, index){
-					OrderCloud.Categories.Get(line).then(function(data) {
-						$scope.Categories.push({"ID":data.ID, "Name":data.Name});
-						if(index == 0)
-							$scope.getCategoriesItems(data.ID);
-					});
+					//tempArr.push(OrderCloud.Categories.Get(line));
+					tempArr.push(OrderCloud.Categories.Get("c1_c9_c1"));
 				},true);
+				$q.all(tempArr).then(function(res){
+					angular.forEach(res, function(r){
+						vm.Categories.push({"ID":r.ID, "Name":r.Name});
+					},true);
+					vm.getCategoriesItems(vm.Categories[0].ID, 0);
+				});
 			});
 		}
 	};
-	$scope.getCategoriesItems = function(catID) {
-		$scope.CategoryItemsUpsell = [];
-		var upsel;
-		var catData = _.find($scope.UpsellDtls.xp.Upsell, function (row) {
+	vm.getCategoriesItems = function(catID, index) {
+		catID = "c1_c1";// dummy
+		vm.CategoryItemsUpsell = [];
+		var upsel, tempArr = [];
+		var catData = _.find(vm.UpsellDtls.xp.Upsell, function (row) {
 			if(row[catID]){
 				upsel = row[catID];
 				return true;
 			}
 		});
-		angular.forEach(upsel, function(row, index){
+		angular.forEach(upsel, function(row){
+			tempArr.push(OrderCloud.Products.Get(row));
+		}, true);	
+		$q.all(tempArr).then(function(res1){
+			angular.forEach(res1, function(r){
+				vm.CategoryItemsUpsell.push({"ID":r.ID,"Name":r.Name,"Price":25,"Description":r.Description});
+			}, true);
+			$('#owl-carousel-upsell').trigger('destroy.owl.carousel');
+			$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
+			setTimeout(function(){
+				$("#owl-carousel-upsell"+index).owlCarousel({
+					items:4,
+					center:false,
+					loop: false,
+					nav:true,
+					navText: ['<span class="events-arrow-prev" aria-hidden="true"></span>','<span class="events-arrow-next" aria-hidden="true"></span>'],
+					onInitialized: function(data){
+						console.log("====",data);
+					}
+				});
+			},600);
+		});
+			
+		/*angular.forEach(upsel, function(row, index){
 			OrderCloud.Products.Get(row).then(function(res1) {
-				OrderCloud.Products.ListAssignments(res1.ID).then(function(res2) {
-					OrderCloud.PriceSchedules.Get(res2.Items[0].StandardPriceScheduleID).then(function(data) {
-						$scope.CategoryItemsUpsell.push({"ID":res1.ID,"Name":res1.Name,"Price":data.PriceBreaks[0].Price,"Description":res1.Description});
-						if((index+1) == 2){
+				//OrderCloud.Products.ListAssignments(res1.ID).then(function(res2) {
+					//OrderCloud.PriceSchedules.Get(res2.Items[0].StandardPriceScheduleID).then(function(data) {
+						vm.CategoryItemsUpsell.push({"ID":res1.ID,"Name":res1.Name,"Price":25,"Description":res1.Description});
+						//if((index+1) == 2){
 							$('#owl-carousel-upsell').trigger('destroy.owl.carousel');
 							$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
 							setTimeout(function(){
@@ -535,50 +525,48 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 									}
 								});
 							},600);
-						}	
-					});
-				});	
+						//}	
+					//});
+				//});	
 			});
-		},true);
+		},true);*/
 	};
 	
-	$scope.similarToggle = function(similar) {
-		$scope.similar = $scope.similar === false ? true: false;
-		$scope.upsell = true;
-		if(!$scope.CategoryItemsSimilar){
-			$scope.CategoryItemsSimilar = [];
+	vm.similarToggle = function(similar) {
+		vm.similar = vm.similar === false ? true: false;
+		vm.upsell = true;
+		var tempArr = [];
+		if(!vm.CategoryItemsSimilar){
+			vm.CategoryItemsSimilar = [];
 			OrderCloud.Products.Get("cat2_cat12_prod2").then(function(data) {
 				angular.forEach(data.xp.Cross, function(row, index){
-					OrderCloud.Products.Get(row).then(function(res1) {
-						OrderCloud.Products.ListAssignments(res1.ID).then(function(res2) {
-							OrderCloud.PriceSchedules.Get(res2.Items[0].StandardPriceScheduleID).then(function(data1) {
-								$scope.CategoryItemsSimilar.push({"ID":res1.ID,"Name":res1.Name,"Price":data1.PriceBreaks[0].Price,"Description":res1.Description});
-								if((index+1) == 2){
-									$('#owl-carousel-similar').trigger('destroy.owl.carousel');
-									$('#owl-carousel-similar').find('.owl-stage-outer').children().unwrap();
-									setTimeout(function(){
-										$("#owl-carousel-similar").owlCarousel({
-											items:4,
-											center:false,
-											loop: false,
-											nav:true,
-											navText: ['<span class="events-arrow-prev" aria-hidden="true"></span>','<span class="events-arrow-next" aria-hidden="true"></span>']
-										});
-									},600);
-								}	
-							});
-						});	
-					});
+					tempArr.push(OrderCloud.Products.Get(row));
 				},true);
+				$q.all(tempArr).then(function(res){
+					angular.forEach(res, function(r){
+						vm.CategoryItemsSimilar.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description});
+					},true);
+					$('#owl-carousel-similar').trigger('destroy.owl.carousel');
+					$('#owl-carousel-similar').find('.owl-stage-outer').children().unwrap();
+					setTimeout(function(){
+						$("#owl-carousel-similar").owlCarousel({
+							items:4,
+							center:false,
+							loop: false,
+							nav:true,
+							navText: ['<span class="events-arrow-prev" aria-hidden="true"></span>','<span class="events-arrow-next" aria-hidden="true"></span>']
+						});
+					},600);
+				});
 			});
 		}	
 	};
 	
-	$scope.UpsellSimilar = false;
+	vm.UpsellSimilar = false;
 	vm.UpsellProductItem = function(prodID, arr){
 		vm.UpsellProdDtls = {};
 		vm.UpsellProdDtls.UpsellCarousel = [];
-		$scope.UpsellSimilar = true;
+		vm.UpsellSimilar = true;
 		angular.forEach(arr, function(row,index){
 			BuildOrderService.GetProductDetails("30_30A_30BARB_575").then(function(result){
 				var result = {"data":result};
@@ -602,7 +590,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}
 	
 	vm.gotopdp = function(){
-		$scope.UpsellSimilar = false;
+		vm.UpsellSimilar = false;
 	}
 	/*----End of Upsell Data----*/
 	$scope.gotoplp = function(){
@@ -1169,11 +1157,11 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					BuildOrderService.OrderOnHoldRemove(res.Items, vm.order.ID).then(function(dt){
 						console.log("Order OnHold Removed....");
 					});
-					$scope.lineItemProducts = [];
+					vm.lineItemProducts = [];
 					vm.activeOrders = data;
 					$scope.prodQty = {};
 					angular.forEach(data,function(val1, key1){
-						$scope.lineItemProducts.push(key1);
+						vm.lineItemProducts.push(key1);
 						$scope.prodQty[key1] = _.reduce(_.pluck(data[key1], 'Quantity'), function(memo, num){ return memo + num; }, 0);
 						angular.forEach(vm.activeOrders[key1],function(val, key){
 							if(val.ShippingAddress && val.xp.deliveryFeesDtls){
@@ -1457,44 +1445,50 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			d.resolve("1");
 		});
 	}
-	$scope.updateProdNote = function(index,note,prodID,line){
+	vm.updateProdNote = function(index,note,prodID,line){
 		this.$parent.activeOrders[line][0].Product.xp.productNote = note;
 		this.$parent['readOnly'+index] = false;
 		OrderCloud.Products.Patch(prodID,{"xp":{"productNote":note}}).then(function(data){
 			
 		});
 	};
-	$scope.showNoteField = function(index){
-		$scope['prodNoteShow'+index] = true;
-		$scope['readOnly'+index] = true;
+	vm.showNoteField = function(index){
+		vm['prodNoteShow'+index] = true;
+		vm['readOnly'+index] = true;
 	};
-	$scope.viewAddrBook = function(line){
-		$scope.recipFields = line;
+	vm.viewAddrBook = function(line){
+		vm.recipFields = line;
 		$scope.showModal = !$scope.showModal;
-		$scope.addressesList = [];
-		OrderCloud.Addresses.ListAssignments(null,$stateParams.ID).then(function(data){
-			angular.forEach(data.Items, function(val, key){
-				OrderCloud.Addresses.Get(val.AddressID).then(function(res){
-					$scope.addressesList.push(res);
-				});
-			});
+		OrderCloud.As().Me.ListAddresses().then(function(res){
+			vm.addressesList = res.Items;
 		});
 	};
 	vm.GetAboveAddresses = function(line){
-		$scope.recipFields = line;
+		vm.TempAddressBook = [];
+		angular.forEach(angular.copy(vm.activeOrders), function(val, key){
+			angular.forEach(val, function(val1, key1){
+				vm.TempAddressBook.push(val1.ShippingAddress);
+			}, true);
+		}, true);
+		vm.TempAddressBook = _.uniq(vm.TempAddressBook, function(item, key, a){
+			if(item!=null)
+				return item.Zip+item.Street1+item.Street2+item.FirstName+item.LastName;
+		});
+		vm.recipFields = line;
 		$scope.showAboveRecipientModal = !$scope.showAboveRecipientModal;
 	}
-	$scope.getBookAddress = function(addressData, TempAddr){
-		if($scope.recipFields.ShippingAddress==null)
-			$scope.recipFields.ShippingAddress = {};
-		/*$scope.recipFields.ShippingAddress.FirstName = addressData.FirstName;
-		$scope.recipFields.ShippingAddress.LastName = addressData.LastName;
-		$scope.recipFields.ShippingAddress.City = addressData.City;
-		$scope.recipFields.ShippingAddress.State = addressData.State;
-		$scope.recipFields.ShippingAddress.Zip = parseInt(addressData.Zip);
-		$scope.recipFields.ShippingAddress.Street1 = addressData.Street1;
-		$scope.recipFields.ShippingAddress.Street2 = addressData.Street2;*/
-		$scope.recipFields.ShippingAddress = addressData;
+	vm.getBookAddress = function(addressData, TempAddr){
+		if(vm.recipFields.ShippingAddress==null)
+			vm.recipFields.ShippingAddress = {};
+		/*vm.recipFields.ShippingAddress.FirstName = addressData.FirstName;
+		vm.recipFields.ShippingAddress.LastName = addressData.LastName;
+		vm.recipFields.ShippingAddress.City = addressData.City;
+		vm.recipFields.ShippingAddress.State = addressData.State;
+		vm.recipFields.ShippingAddress.Zip = parseInt(addressData.Zip);
+		vm.recipFields.ShippingAddress.Street1 = addressData.Street1;
+		vm.recipFields.ShippingAddress.Street2 = addressData.Street2;*/
+		vm.recipFields.ShippingAddress = addressData;
+		vm.recipFields.ShippingAddress.Zip = parseInt(addressData.Zip);
 		//$scope.addressType = "Residence";
 		if(TempAddr=="TempAddr")
 			$scope.showAboveRecipientModal = !$scope.showAboveRecipientModal;
@@ -1502,12 +1496,12 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			$scope.showModal = !$scope.showModal;
 		if(addressData.Phone){
 			BuildOrderService.GetPhoneNumber(addressData.Phone).then(function(res){
-				$scope.recipFields.ShippingAddress.Phone1 = res[0];
-				$scope.recipFields.ShippingAddress.Phone2 = res[1];
-				$scope.recipFields.ShippingAddress.Phone3 = res[2];
+				vm.recipFields.ShippingAddress.Phone1 = res[0];
+				vm.recipFields.ShippingAddress.Phone2 = res[1];
+				vm.recipFields.ShippingAddress.Phone3 = res[2];
 			});
 		}
-		vm.getDeliveryCharges($scope.recipFields);
+		vm.getDeliveryCharges(vm.recipFields);
 	};
 	$scope.showModal = false;
 	$scope.showAboveRecipientModal = false;
@@ -1730,9 +1724,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								line.xp.TotalCost = line.xp.TotalCost+line.xp.Tax;
 						}
 						vm.AvoidMultipleDelryChrgs = [];
-						$scope.lineItemProducts = [];
+						vm.lineItemProducts = [];
 						angular.forEach(vm.activeOrders,function(val1, key1){
-							$scope.lineItemProducts.push(key1);
+							vm.lineItemProducts.push(key1);
 							angular.forEach(vm.activeOrders[key1],function(val, key){
 								if(val.ShippingAddress && val.xp.deliveryFeesDtls){
 									val.ShippingAddress.deliveryDate = val.xp.deliveryDate;

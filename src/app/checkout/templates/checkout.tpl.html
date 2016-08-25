@@ -465,7 +465,7 @@
 							</div>
 						</div>
 						<!-- credit card -->
-						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-repeat="card in checkout.creditCardsList" ng-if="checkout.paymentOption == 'CreditCard'">
+						<div class="payment-method-container col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-repeat="card in checkout.creditCardsList track by card.ID" ng-if="checkout.paymentOption == 'CreditCard'">
                             <div ng-init="checkout.getBillingAddress(card)">
                                 <div class="payment-container-header">
                                     <!-- <label>
@@ -492,7 +492,7 @@
 										<div class="col-xs-8 cvv-value">
 										<form class="cvv-from" role="form" novalidate>
 											<div class="form-group">
-												<input type="text" class="form-control" id="cvvNumber" />
+												<input type="text" class="form-control" id="cvvNumber" ng-model="card.CVV"/>
 												<span class="cvv-help-icon">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-652.2 494.3 18.7 18.7" style="enable-background:new -652.2 494.3 18.7 18.7;" xml:space="preserve">
 													<g>
@@ -873,7 +873,7 @@
 							</div>
 						</div>
 						<div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
-						<input type="button" ng-disabled="(checkout.order.Total > 0 && !checkout.selectedCard) ? true : false" value="Review Order" ng-click="checkout.ProceedToReview()" />
+						<input type="button" ng-disabled="(checkout.order.Total > 0 && !checkout.selectedCard && (checkout.selectedCard.CVV.length == 3 || checkout.selectedCard.CVV.length == 4)) ? true : false" value="Review Order" ng-click="checkout.ProceedToReview()" />
 						</div>
 					</div>
 				</uib-accordion-group>

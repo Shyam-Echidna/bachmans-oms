@@ -1,6 +1,6 @@
 <ui-view>
 	<div class="oms_main_container buildOrder-pdp-container" id="buildOrder-pdp-container">
-		<div class="buildOrder-pdp" ng-if="UpsellSimilar!=true">
+		<div class="buildOrder-pdp" ng-if="buildOrder.UpsellSimilar!=true">
 			<h1>
 				<a ng-click="gotoplp()" ng-if="buildOrder.searchType!='Products'">
 					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -332,7 +332,7 @@
 			</div>
 		</div>
 		
-		<div class="buildOrder-pdp" ng-if="UpsellSimilar==true">
+		<div class="buildOrder-pdp" ng-if="buildOrder.UpsellSimilar==true">
 			<h1>
 			<a ng-click="buildOrder.gotopdp()">
 				<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -388,8 +388,8 @@
 		</div>
 		<div class="pdp-tabs">
 			<ul class="nav nav-pills nav-stacked">
-				<li ng-class="{active:upsell == false}">
-					<a ng-click="upsellToggle('upsell');">UPSELL ITEMS
+				<li ng-class="{active:buildOrder.upsell == false}">
+					<a ng-click="buildOrder.upsellToggle('upsell');">UPSELL ITEMS
 							  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 10" style="enable-background:new 0 0 21 10;" xml:space="preserve">
 								<g>
 								  <path d="M20.5,0l-10,10L0.5,0H20.5z" />
@@ -397,8 +397,8 @@
 							  </svg>
 							</a>
 				</li>
-				<li ng-class="{active:similar == false}">
-					<a ng-click="similarToggle('similar');">SIMILAR ITEMS
+				<li ng-class="{active:buildOrder.similar == false}">
+					<a ng-click="buildOrder.similarToggle('similar');">SIMILAR ITEMS
 							  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 10" style="enable-background:new 0 0 21 10;" xml:space="preserve">
 									<g>
 									  <path d="M20.5,0l-10,10L0.5,0H20.5z" />
@@ -409,16 +409,16 @@
 			</ul>
 			<div class="pdp-tabs-content row">
 			<!-- upsell items starts -->
-				<div ng-hide='upsell' class="pdp-upsell col-md-12" ng-class="{upsellAnimation:upsell == false}" >
+				<div ng-hide='buildOrder.upsell' class="pdp-upsell col-md-12" ng-class="{upsellAnimation:buildOrder.upsell == false}" >
 					<div class="items-list">
 						<span>Upsell Items</span>
 						<ul>
-							<li ng-repeat="cat in Categories"><a href="javascript:void(0)" ng-click="getCategoriesItems(cat.ID)">{{cat.Name}}</a></li>
+							<li ng-repeat="cat in buildOrder.Categories"><a href="javascript:void(0)" ng-click="buildOrder.getCategoriesItems(cat.ID, $index)">{{cat.Name}}</a></li>
 						</ul>
 					</div>
-					<ul class="pdp-upsell-container" id="owl-carousel-upsell">
-						<li class="item" ng-repeat="upsell in CategoryItemsUpsell">
-							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, CategoryItemsUpsell)">
+					<ul class="pdp-upsell-container" id="owl-carousel-upsell{{$index}}" ng-repeat="cat in buildOrder.Categories">
+						<li class="item" ng-repeat="upsell in buildOrder.CategoryItemsUpsell">
+							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, buildOrder.CategoryItemsUpsell)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
 								<h2>{{upsell.Name}}</h2>
 								<h3>Option Deluxe</h3>
@@ -431,9 +431,9 @@
 					</ul>
 				</div>
 				<!-- similar items starts -->
-				<div ng-hide='similar' class="pdp-similarItems col-md-12" ng-class="{upsellAnimation:similar == false}">
+				<div ng-hide='buildOrder.similar' class="pdp-similarItems col-md-12" ng-class="{upsellAnimation:buildOrder.similar == false}">
 					<ul class="pdp-upsell-container" id="owl-carousel-similar">
-						<li class="item" ng-repeat="cross in CategoryItemsSimilar">
+						<li class="item" ng-repeat="cross in buildOrder.CategoryItemsSimilar">
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(cross.ID, CategoryItemsSimilar)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
 								<h2>{{cross.Name}}</h2>

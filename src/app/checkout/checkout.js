@@ -377,35 +377,20 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
     vm.Grouping(ProductInfo);
 	vm.ProceedToPayment = function(lineitems,index, form) {
-        /*AddressValidationService.Validate(line.ShippingAddress).then(function(response){
-			if(response.ResponseBody.ResultCode == 'Success') {
-				var validatedAddress = response.ResponseBody.Address;
-				var zip = validatedAddress.PostalCode.substring(0, 5);
-				line.ShippingAddress.Zip = parseInt(zip);
-				line.ShippingAddress.Street1 = validatedAddress.Line1;
-				line.ShippingAddress.Street2 = null;
-				line.ShippingAddress.City = validatedAddress.City;
-				line.ShippingAddress.State = validatedAddress.Region;
-				line.ShippingAddress.Country = validatedAddress.Country;*/
-				form.$submitted = true;
-				if(form.$valid && !form.invalidAddress){
-					if (vm.delInfoRecipient[index + 1] != null) {
-						vm.delInfoRecipient[index + 1] = true;
-					} else{
-						vm.status.delInfoOpen = false;
-						vm.status.paymentOpen = true;
-						vm.status.isFirstDisabled = true;
-						vm.status.isSecondDisabled = false;
-						vm.deliveryInfoDone = true;
-					}
-					vm.delInfoTab[index+1]=false;
-					vm.lineDtlsSubmit(lineitems,0);
-				}
-				//vm.Grouping(vm.deliveryInfo);
-			/*}else{
-				alert("Address not found...");
+		form.$submitted = true;
+		if(form.$valid && !form.invalidAddress){
+			if (vm.delInfoRecipient[index + 1] != null) {
+				vm.delInfoRecipient[index + 1] = true;
+			} else{
+				vm.status.delInfoOpen = false;
+				vm.status.paymentOpen = true;
+				vm.status.isFirstDisabled = true;
+				vm.status.isSecondDisabled = false;
+				vm.deliveryInfoDone = true;
 			}
-        });*/
+			vm.delInfoTab[index+1]=false;
+			vm.lineDtlsSubmit(lineitems,0);
+		}
 	};
 	vm.ProceedToReview = function(){
 		vm.paymentDone = true;
@@ -418,12 +403,9 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.lineDtlsSubmit = function(lineitems, index){
 		var line = lineitems[index];
 		line.ShippingAddress = lineitems[0].ShippingAddress;
-		var common = {}, deliverySum = 0;
-		if(this.cardMsg != true && line.xp.CardMessage){
-			common = {"CardMessage":{
-				"line1":line.xp.CardMessage.line1,"line2":line.xp.CardMessage.line2,"line3":line.xp.CardMessage.line3,"line4":line.xp.CardMessage.line4
-				}
-			};
+		var deliverySum = 0;
+		if(line.cardMsg != true){
+			delete line.xp.CardMessage;
 		}
 		if(line.xp.deliveryRun=='Run4'){
 			if(!line.xp.deliveryFeesDtls)
@@ -450,7 +432,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 							vm.Grouping(res2);
 						});
 					});
-					alert("Data submitted successfully");
 				}
 			});
 		}else{
@@ -461,17 +442,11 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": line.xp.Status}}).then(function(res){
 							if((lineitems.length)-1 > index){
 								vm.lineDtlsSubmit(lineitems, index+1);
-							}else{
-								//vm.Grouping(vm.recipientsGroup);
-								//alert("Data submitted successfully");
 							}
 						});
 					}else{
 						if((lineitems.length)-1 > index){
-								vm.lineDtlsSubmit(lineitems, index+1);
-						}else{
-							//vm.Grouping(vm.recipientsGroup);
-							//alert("Data submitted successfully");
+							vm.lineDtlsSubmit(lineitems, index+1);
 						}
 					}
 				});
@@ -482,25 +457,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		vm['isAddrShow'+Index] = true;
 		line.limit = 3;
 		$scope.addressesList = [];
-		/*OrderCloud.Addresses.ListAssignments(null,vm.order.FromUserID).then(function(data){
-			OrderCloud.Users.Get(vm.order.FromUserID).then(function(defAddress){
-				$scope.defualtAddressID = defAddress.xp.DefaultAddress;
-				angular.forEach(data.Items, function(val, key){
-					OrderCloud.Addresses.Get(val.AddressID).then(function(res){
-						res.Zip = parseInt(res.Zip);
-						BuildOrderService.GetPhoneNumber(res.Phone).then(function(res){
-							res.Phone1 = res[0];
-							res.Phone2 = res[1];
-							res.Phone3 = res[2];
-						});
-						if($scope.defualtAddressID == res.ID)
-							$scope.addressesList.unshift(res);
-						else
-							$scope.addressesList.push(res);
-					});
-				});
-			});
-		});*/
 		OrderCloud.As().Me.ListAddresses().then(function(data){
 			OrderCloud.Me.Get().then(function(defAddress){
 				angular.forEach(data.Items, function(val, key){
@@ -551,12 +507,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						OrderCloud.Addresses.SaveAssignment(params).then(function(data){
 							$scope.addressesList = _.map($scope.addressesList, function(obj){
 								if(obj.ID == addr.ID) {
-									/*obj.FirstName = res.FirstName;
-									obj.LastName = res.LastName;
-									obj.Street1 = res.Street1;
-									obj.Street2 = res.Street2;
-									obj.City = res.City;
-									obj.State = res.State;*/
 									obj = res;
 									obj.Zip = parseInt(obj.Zip);
 									BuildOrderService.GetPhoneNumber(res.Phone).then(function(res){
@@ -573,7 +523,6 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				}	
 			}else{
 				form.invalidAddress = true;
-				//alert("Address Not Found........");
 			}
 		});
 	};
@@ -602,16 +551,11 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						});
 						$scope.addressesList.push(data);
 						line.limit = $scope.addressesList.length;
-						/*params = {"AddressID": data.ID, "UserID": vm.order.FromUserID, "IsBilling": false, "IsShipping": true};
-						OrderCloud.Addresses.SaveAssignment(params).then(function(res){
-							
-						});*/
 						vm.newAddress(index);
 					});
 				}	
 			}else{
 				form.invalidAddress = true;
-				//alert("Address Not Found........");
 			}
 		});
 	};

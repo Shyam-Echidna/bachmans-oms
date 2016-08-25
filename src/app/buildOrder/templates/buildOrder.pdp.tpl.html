@@ -181,7 +181,7 @@
 						</div>
 					</div>
 					<!-- started -->
-					<div class=" color-selection" ng-if="buildOrder.allColors.length>0">
+					<div class="row color-selection">
 						<h5>Select Color</h5>
 						<div class="color-circle">
 							<ul class="list-inline">
@@ -206,7 +206,7 @@
 							<li>Comes with seat cushions</li>
 						</ul>
 					</div>
-					<div class="dropdown-box" ng-if="buildOrder.productExtras.length>0">
+					<div class="dropdown-box">
 						<h5>Add Something Extra</h5>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="row" >
@@ -272,7 +272,7 @@
 
 							</ul>
 						</uib-accordion-group>
-						<uib-accordion-group is-open="status.open2" class="specification" ng-if="buildOrder.selectedSpecification.length>0">
+						<uib-accordion-group is-open="status.open2" class="specification">
 							<uib-accordion-heading>
 								<p ng-class="{'footer-minus': status.open2, 'footer-plus': !status.open2}">Specifications:
 									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
@@ -298,7 +298,7 @@
 							</table>
 						</uib-accordion-group>
 
-						<uib-accordion-group is-open="status.open3" ng-if="buildOrder.selectedWarranty.length>0">
+						<uib-accordion-group is-open="status.open3">
 							<uib-accordion-heading>
 								<p ng-class="{'footer-minus': status.open3, 'footer-plus': !status.open3}">Return/Warranty/Exchange:
 									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">

@@ -11,7 +11,7 @@ function OrderConfirmationConfig( $stateProvider ) {
 			controllerAs: 'orderConfirmation'
 		})
 }
-function OrderConfirmationController($stateParams, OrderCloud, $http, PMCStoresURL) {
+function OrderConfirmationController($stateParams, OrderCloud, $http, PMCStoresURL, OrderPrintURL) {
 	var vm = this;
 	vm.order = {};
 	vm.order.ID = $stateParams.ID;
@@ -41,6 +41,14 @@ function OrderConfirmationController($stateParams, OrderCloud, $http, PMCStoresU
 		});
 	};
 	vm.Print = function(){
-		alert("Printed");
+		var params = [
+			{
+				"orderId": $stateParams.ID,
+				"lineItem": ""
+			}
+		];
+		$http.post(OrderPrintURL+vm.SelectStore, params).success(function(res){
+			console.log("Print sent to printer.."+res);
+		});
 	};
 }

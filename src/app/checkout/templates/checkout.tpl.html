@@ -5,7 +5,7 @@
 			<uib-accordion close-others="checkout.oneAtATime">
 				<uib-accordion-group is-open="checkout.status.delInfoOpen" is-disabled="checkout.status.isFirstDisabled">
 					<uib-accordion-heading>
-						<h1>1.<span ng-if="checkout.status.isFirstDisabled">
+						<h1>1.<span ng-if="checkout.deliveryInfoDone && !checkout.status.delInfoOpen">
 							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 								 viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
 								<g>
@@ -13,11 +13,11 @@
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"/>
 								</g>
 							</svg>
-							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.status.isFirstDisabled">Edit</button></h1>
+							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.deliveryInfoDone && !checkout.status.delInfoOpen">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime" ng-init="checkout.delInfoRecipient[0]=true">
-						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]">
-							<uib-accordion-heading>
+						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]" is-disabled="$index > 0 ? checkout.delInfoTab[$index] : false">
+							<uib-accordion-heading ng-init="$index > 0 ? checkout.delInfoTab[$index]=true : checkout.delInfoTab[$index]=false">
 								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}} | {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
 							<form name="checkout.lineItemForm[line.ID]" novalidate>
@@ -416,15 +416,15 @@
 									</div>
 								</div>
 								<div class="col-lg-12 col-md-12">
-									<input type="button" ng-disabled="!line.xp.deliveryRun" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.payment(lineitems, 0, checkout.lineItemForm[line.ID])" />
+									<input type="button" ng-disabled="!line.xp.deliveryRun && line.xp.addressType!='Will Call'" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.ProceedToPayment(lineitems, $index, checkout.lineItemForm[line.ID])" />
 								</div>
 							</form>
 						</uib-accordion-group>
 					</uib-accordion>
 				</uib-accordion-group>
-				<uib-accordion-group is-open="checkout.status.paymentOpen" is-disabled="checkout.status.isSecondDisabled">
+				<uib-accordion-group is-open="checkout.status.paymentOpen" ng-init="checkout.status.isSecondDisabled=true" is-disabled="checkout.status.isSecondDisabled">
 					<uib-accordion-heading>
-						<h1>2.<span ng-if="checkout.status.isSecondDisabled">
+						<h1>2.<span ng-if="checkout.paymentDone && !checkout.status.paymentOpen">
 							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 								 viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
 								<g>
@@ -432,7 +432,7 @@
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"/>
 								</g>
 							</svg>
-							</span> Payment <button ng-click="checkout.paymentInfoEdit($event)" ng-if="checkout.status.isSecondDisabled">Edit</button></h1>
+							</span> Payment <button ng-click="checkout.paymentInfoEdit($event)" ng-if="checkout.paymentDone && !checkout.status.paymentOpen">Edit</button></h1>
 					</uib-accordion-heading>
 					<!-- <input type="button" value="Review Order" ng-click="review()" /> -->
 					<div class="payment-method">
@@ -764,6 +764,7 @@
 													</div>
 													<input ng-model="GiftCardNo" type="text" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 												</div>
+												<span style="color:red;" ng-if="checkout.InvalidGiftCard">Invalid Gift Card...!</span>
 												<button ng-click="checkout.RedeemGiftCard(GiftCardNo, checkout.orderDtls)">Apply</button>
 											</div>
 										<!-- </div> -->
@@ -872,11 +873,11 @@
 							</div>
 						</div>
 						<div class="col-xs-12  col-sm-12 col-md-12 col-lg-12">
-						<input type="button" value="Review Order" ng-click="checkout.review()" />
+						<input type="button" ng-disabled="(checkout.order.Total > 0 && !checkout.selectedCard) ? true : false" value="Review Order" ng-click="checkout.ProceedToReview()" />
 						</div>
 					</div>
 				</uib-accordion-group>
-				<uib-accordion-group is-open="checkout.status.reviewOpen" class="review-container">
+				<uib-accordion-group is-open="checkout.status.reviewOpen" class="review-container" ng-init="checkout.status.isThirdDisabled=true" is-disabled="checkout.status.isThirdDisabled">
 					<uib-accordion-heading>
 						<h1>3. Review & Confirm Order</h1>
 					</uib-accordion-heading>
@@ -906,11 +907,15 @@
 									<p>{{lineitems[0].ShippingAddress.Zip}}</p>
 									<span class="shipping-Phone">{{lineitems[0].ShippingAddress.Phone}}</span> 
 								</li>
-								<li class="shipping-Date">
+								<li class="shipping-Date" ng-if="lineitems[0].xp.addressType!='Will Call'">
 									<p class="shipping-subTitle">Delivery Date</p>
 									<p>{{lineitems[0].xp.deliveryDate | date}}</p>
 								</li>
-								<li class="shipping-DeliveryPref">
+								<li class="shipping-Date" ng-if="lineitems[0].xp.addressType=='Will Call'">
+									<p class="shipping-subTitle">Pick-Up Date</p>
+									<p>{{lineitems[0].xp.pickupDate | date}}</p>
+								</li>
+								<li class="shipping-DeliveryPref" ng-if="lineitems[0].xp.addressType!='Will Call'">
 									<p class="shipping-subTitle">Delivery Preference</p>
 									<p>{{checkout.buyerDtls.xp.DeliveryRuns[0][lineitems[0].xp.deliveryRun].TimeSlot}}</p>
 								</li>

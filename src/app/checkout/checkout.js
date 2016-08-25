@@ -110,7 +110,7 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService, LineItemHelpers) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService, LineItemHelpers, PurplePerkEagle, GiftCardEagle) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
@@ -373,7 +373,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}
 	};
     vm.Grouping(ProductInfo);
-	vm.payment = function(lineitems,index, form) {
+	vm.ProceedToPayment = function(lineitems,index, form) {
         /*AddressValidationService.Validate(line.ShippingAddress).then(function(response){
 			if(response.ResponseBody.ResultCode == 'Success') {
 				var validatedAddress = response.ResponseBody.Address;
@@ -393,20 +393,24 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						vm.status.paymentOpen = true;
 						vm.status.isFirstDisabled = true;
 						vm.status.isSecondDisabled = false;
+						vm.deliveryInfoDone = true;
 					}
-					vm.lineDtlsSubmit(lineitems,index);
-				}	
+					vm.delInfoTab[index+1]=false;
+					vm.lineDtlsSubmit(lineitems,0);
+				}
 				//vm.Grouping(vm.deliveryInfo);
 			/*}else{
 				alert("Address not found...");
 			}
         });*/
 	};
-	vm.review = function(){
+	vm.ProceedToReview = function(){
+		vm.paymentDone = true;
 		vm.status.delInfoOpen = false;
 		vm.status.paymentOpen = false;
 		vm.status.reviewOpen = true;
 		vm.status.isSecondDisabled = true;
+		vm.status.isThirdDisabled = false;
 	};
 	vm.lineDtlsSubmit = function(lineitems, index){
 		var line = lineitems[index];
@@ -885,13 +889,13 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.deliveryInfoEdit = function(e){
 		e.preventDefault();
 		e.stopPropagation();
-		vm.status.isFirstDisabled = false;
+		//vm.status.isFirstDisabled = false;
 		vm.status.delInfoOpen = true;
 	};
 	vm.paymentInfoEdit = function(e){
 		e.preventDefault();
 		e.stopPropagation();
-		vm.status.isSecondDisabled = false;
+		//vm.status.isSecondDisabled = false;
 		vm.status.paymentOpen = true;
 	};
 	vm.deliveryAdj = function(line){
@@ -975,23 +979,23 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		if(type=="Purple Perks")
 			vm.orderDtls.SpendingAccounts.PurplePerks = {"ID":obj.ID, "Amount":dat};
 		vm.SumSpendingAccChrgs(orderDtls);	
-	}
+	};
 	vm.SumSpendingAccChrgs = function(orderDtls){
 		var sum=0;
 		angular.forEach(vm.orderDtls.SpendingAccounts, function(val, key){
 			//if(key!="Cheque")
-			sum = sum + val.Amount;
+			sum = sum + parseInt(val.Amount);
 		}, true);
 		if(_.isEmpty(vm.orderDtls.SpendingAccounts)){
 			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost + vm.order.TaxCost;
 		}else{
 			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum + vm.order.TaxCost;
 		}
-	}
+	};
 	vm.deleteSpendingAcc = function(orderDtls, ChargesType){
 		delete vm.orderDtls.SpendingAccounts[ChargesType];
 		vm.SumSpendingAccChrgs(orderDtls);
-	}
+	};
 	vm.PayByChequeOrCash = function(orderDtls){
 		if(vm.PayCashCheque=='PayCash'){
 			vm.orderDtls.SpendingAccounts.PaidCash = {"Amount":vm.txtPayCash};
@@ -1001,22 +1005,34 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			delete vm.orderDtls.SpendingAccounts.PaidCash;
 		}
 		vm.SumSpendingAccChrgs(orderDtls);		
-	}
+	};
 	vm.RedeemGiftCard = function(CardNo, orderDtls){
-		OrderCloud.UserGroups.ListUserAssignments(null, $stateParams.ID).then(function(res){
-			OrderCloud.SpendingAccounts.ListAssignments(CardNo, null, res.Items[0].UserGroupID).then(function(res1){
-				if(res1.Items.length > 0){
-					OrderCloud.SpendingAccounts.Get(res1.Items[0].SpendingAccountID).then(function(data){
-						vm.UserSpendingAcc[data.Name] = data;
-						vm.orderDtls.SpendingAccounts.GiftCard = {"ID":data.ID, "Amount":data.Balance};
-						vm.SumSpendingAccChrgs(orderDtls);
-					});
-				}else{
-					alert("Gift Card Not Found...!");
-				}	
+		var params = {
+			"transactionDate":"",
+			"customerNumber":$stateParams.ID,
+			"cardNumber":"2147443647",
+			"transactionAmountFromF51":"",
+			"four51TimeStamp":""
+		};
+		OrderCloud.SpendingAccounts.Get(CardNo).then(function(data){
+			vm.InvalidGiftCard = false;
+			if(data.xp.RedeemDate)
+				data.xp.RedeemDate = new Date(data.xp.RedeemDate);
+			else
+				data.xp.RedeemDate = new Date();
+			params.four51TimeStamp = data.xp.RedeemDate.getFullYear()+"-"+(data.xp.RedeemDate.getMonth()+1)+"-"+data.xp.RedeemDate.getDate()+" "+data.xp.RedeemDate.getHours()+":"+data.xp.RedeemDate.getMinutes()+":"+data.xp.RedeemDate.getSeconds();
+			params.transactionAmountFromF51 = data.Balance;
+			$http.post(GiftCardEagle, params).success(function(res2){
+				if(res2.LatestValue != data.Balance)
+					data.Balance = res2.LatestValue;
+				vm.UserSpendingAcc[data.Name] = data;
+				vm.orderDtls.SpendingAccounts.GiftCard = {"ID":data.ID, "Amount":data.Balance};
+				vm.SumSpendingAccChrgs(orderDtls);
 			});
+		}).catch(function(err){
+			vm.InvalidGiftCard = true;
 		});
-	}
+	};
 	vm.UserSpendingAccounts = function(){
 		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(res){
 			vm.UserSpendingAcc = {};
@@ -1029,7 +1045,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			}, TempStoredArray = [];
 			angular.forEach(res.Items, function(val, key){
 				TempStoredArray.push(OrderCloud.SpendingAccounts.Get(val.SpendingAccountID));
-			},true);
+			}, true);
 			$q.all(TempStoredArray).then(function(result1){
 				TempStoredArray = [];
 				angular.forEach(result1, function(val, key){
@@ -1037,25 +1053,24 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 						val.xp.RedeemDate = new Date(val.xp.RedeemDate);
 					else
 						val.xp.RedeemDate = new Date();
-					params.four51TimeStamp = val.xp.RedeemDate.getFullYear()+"-"+(val.xp.RedeemDate.getMonth()+1)+"-"+val.xp.RedeemDate.getDate()+" "+val.xp.RedeemDate.getHours()+":"+val.xp.RedeemDate.getMinutes()+":"+val.xp.RedeemDate.getSeconds()
+					params.four51TimeStamp = val.xp.RedeemDate.getFullYear()+"-"+(val.xp.RedeemDate.getMonth()+1)+"-"+val.xp.RedeemDate.getDate()+" "+val.xp.RedeemDate.getHours()+":"+val.xp.RedeemDate.getMinutes()+":"+val.xp.RedeemDate.getSeconds();
 					params.transactionAmountFromF51 = val.Balance;
 					if(val.Name == "Purple Perks")
-						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getPurplePerksRedemptionLatestValue', params));
-					if(val.Name == "Gift Card")
-						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getGiftCardRedemption'));
+						TempStoredArray.push($http.post(PurplePerkEagle, params));
 					if(val.Name == "Bachman Charges")
-						TempStoredArray.push($http.post('http://192.168.101.49:8080/Bachman/getGiftCardRedemption'));
-				},true);
+						vm.UserSpendingAcc[val.Name] = val;
+				}, true);
 				$q.all(TempStoredArray).then(function(result2){
 					angular.forEach(result2, function(val, key){
-						if(val.LatestValue != result1[key].Balance)
-							result1[key].Balance = val.LatestValue;
-						vm.UserSpendingAcc[val.Name] = result1[key];
-					},true);
+						var row = _.findWhere(result1, {ID: val.config.data.cardNumber});
+						if(val.data.LatestValue != row.Balance)
+							row.Balance = val.data.LatestValue;
+						vm.UserSpendingAcc[row.Name] = row;
+					}, true);
 				});
 			});
 		});
-	}
+	};
 	vm.UserSpendingAccounts();
 }
 

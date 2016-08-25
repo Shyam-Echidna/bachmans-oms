@@ -411,10 +411,10 @@
 					<div class="items-list">
 						<span>Upsell Items</span>
 						<ul>
-							<li ng-repeat="cat in buildOrder.Categories"><a href="javascript:void(0)" ng-click="buildOrder.getCategoriesItems(cat.ID, $index)">{{cat.Name}}</a></li>
+							<li ng-repeat="cat in buildOrder.Categories"><a href="javascript:void(0)" ng-click="buildOrder.getCategoriesItems(cat.ID)">{{cat.Name}}</a></li>
 						</ul>
 					</div>
-					<ul class="pdp-upsell-container" id="owl-carousel-upsell{{$index}}" ng-repeat="cat in buildOrder.Categories">
+					<ul class="pdp-upsell-container" id="owl-carousel-upsell">
 						<li class="item" ng-repeat="upsell in buildOrder.CategoryItemsUpsell">
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, buildOrder.CategoryItemsUpsell)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>

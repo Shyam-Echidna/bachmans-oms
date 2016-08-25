@@ -483,7 +483,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			});
 		}
 	};
-	vm.getCategoriesItems = function(catID, index) {
+	vm.getCategoriesItems = function(catID) {
 		catID = "c1_c1";// dummy
 		vm.CategoryItemsUpsell = [];
 		var upsel, tempArr = [];
@@ -503,7 +503,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			$('#owl-carousel-upsell').trigger('destroy.owl.carousel');
 			$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
 			setTimeout(function(){
-				$("#owl-carousel-upsell"+index).owlCarousel({
+				$("#owl-carousel-upsell").owlCarousel({
 					items:4,
 					center:false,
 					loop: false,
@@ -513,7 +513,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 						console.log("====",data);
 					}
 				});
-			},600);
+			},0);
 		});
 			
 		/*angular.forEach(upsel, function(row, index){
@@ -567,7 +567,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 							nav:true,
 							navText: ['<span class="events-arrow-prev" aria-hidden="true"></span>','<span class="events-arrow-next" aria-hidden="true"></span>']
 						});
-					},600);
+					},0);
 				});
 			});
 		}	

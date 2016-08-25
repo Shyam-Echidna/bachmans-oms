@@ -76,6 +76,11 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 		console.log(florist);
 		if(florist=="Teleflora"){
 			alert("Teleflora");
+			vm.wireservice=florist;
+			OrderCloud.Buyers.Get().then(function(res){
+				console.log(res);
+				vm.floristdata=res.xp.Floristdetails;
+			})
 		}
 		else if(florist=="FTD"){
 			alert("FTD");
@@ -95,8 +100,10 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 			//dd.resolve(data);
 		})
 	})*/
-	$scope.selectFlorist=function(){
-		vm.selectFlorist =! vm.selectFlorist;
+	vm.selectFlorist=function(){
+		alert("hi");
+		console.log(vm.selectFloristshow);
+		vm.selectFloristshow =! vm.selectFloristshow;
 	}
 	$scope.gridOptions = {
 		data: 'hold.onholdlineitems',
@@ -128,13 +135,42 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 	$scope.gridskuopt = {
 		data: 'hold.wiredproducts.Items',
 		enableSorting: true,
+		enableRowSelection:true,
 		columnDefs: [
 			{ name: 'checkbox', displayName:'', cellTemplate: '<div class="data_cell"><input type="radio" name="dummyprod" ng-click="grid.appScope.dummyprod(row.entity)" /></div>'},
-			{ name: 'ID', displayName:'SKU Code'},
-			{ name: 'Name', displayName:'Product Name'},
-			{ name: 'ProductID', displayName:'List Price'}
+			{ name: 'ID', displayName:'SKU Code',enableCellEdit:true},
+			{ name: 'Name', displayName:'Product Name',enableCellEdit:true},
+			{ name: 'ProductID', displayName:'List Price',enableCellEdit:true}
 		]
 	};
+	/*$scope.gridskuopt.onRegisterApi = function(gridApi){
+	 	console.log("gridskuopt",gridApi);
+          //set gridApi on scope
+          $scope.gridApi = gridApi;
+          gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
+            //$scope.msg.lastCellEdited = 'edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue ;
+            alert('Column: ' + colDef.name + ' ID: ' + rowEntity.id + ' Name: ' + rowEntity.name + ' Age: ' + rowEntity.age)
+            $scope.$apply();
+          });
+        };*/
+        console.log("floristdata",vm.floristdata);
+	$scope.gridfloristopt = {
+		data: 'hold.floristdata',
+		columnDefs: [
+			{ name: 'checkbox', cellTemplate: '<div class="data_cell"><input type="radio" name="dummyprod" ng-click="grid.appScope.addflorist(row.entity)" /></div>'},
+			{ name: 'floristStatus', displayName:'Florist Status', },
+			{ name: 'floristCode', displayName:'Florist Code'},
+			{ name: 'floristName', displayName:'Florist Name'},
+			{ name: 'Address', displayName:'Address'},
+			{ name: 'zipCode', displayName:'Zip code'},
+			{ name: 'Notes', displayName:'Notes'}
+		]
+	};
+
+	$scope.addflorist=function(data){
+		console.log(data);
+		vm.selectedflorist=data;
+	}
 
 	$scope.showlineitem=function(lineitem){
 		console.log("lineitem", lineitem);
@@ -158,5 +194,18 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 		else{
 			alert("enter");
 		}
+	}
+	vm.unhold=function(){
+		alert("unhold");
+		OrderCloud.LineItems.Get($stateParams.orderID,vm.onholdlineitems[0].ID).then(function(res){
+			console.log(res);
+			var oldxp=res.xp;
+			var newxp={"florist":vm.selectedflorist,"wireservice":vm.wireservice};
+			var finalxp=angular.extend({},oldxp,newxp);
+			console.log(finalxp);
+			OrderCloud.LineItems.Patch($stateParams.orderID,res.ID,{"xp":finalxp}).then(function(res1){
+				console.log(res1);
+			})
+		})
 	}
 }

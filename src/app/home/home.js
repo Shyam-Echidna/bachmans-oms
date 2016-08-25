@@ -48,7 +48,7 @@ function HomeConfig( $stateProvider ) {
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();
                 },*/
-				EventList:function(OrderCloud, $q){
+				EventList:function(OrderCloud, $q, Underscore){
 					var arr={};
 					var events=[];
 					var dfr = $q.defer();
@@ -59,7 +59,11 @@ function HomeConfig( $stateProvider ) {
 					OrderCloud.Categories.ListProductAssignments('c10', null, 1 ,100).then(function(assign){
 						angular.forEach(assign.Items, function(res, key1){
 							OrderCloud.Products.Get(res.ProductID).then(function(data){
-								events.push(data);
+								if(!_.isEmpty(data.xp)){
+									if(data.xp.IsBaseProduct==true && data.xp && data.xp.IsBaseProduct){
+										events.push(data);
+									}
+								}
 								console.log("9999999", arr["events"]);
 							})
 						})

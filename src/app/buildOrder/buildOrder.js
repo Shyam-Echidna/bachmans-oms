@@ -172,7 +172,7 @@ function buildOrderConfig( $stateProvider ) {
 				return d.promise;
 			},
 			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 					var d = $q.defer();
 					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
 						.then(function(data) {
@@ -224,7 +224,7 @@ function buildOrderConfig( $stateProvider ) {
 				var arr = [];
 				var spendingAcc={};
 				var filterPurple;
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 				var dfd = $q.defer();
 				OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 					angular.forEach(assign.Items, function(value, key) {
@@ -255,7 +255,7 @@ function buildOrderConfig( $stateProvider ) {
 			},
 			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages) {
 					var dfr = $q.defer();
-					if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'){
+					if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'|| $stateParams.SearchType =='Workshop'){
 						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
 						.then(function(data) {
 							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
@@ -275,6 +275,17 @@ function buildOrderConfig( $stateProvider ) {
                                     });
                                 });
                             }
+							else if($stateParams.SearchType =='Workshop'){
+								 OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
+                                    OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
+                                        var ticket = localStorage.getItem("alf_ticket");
+										BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+											dfr.resolve(prodList);
+											console.log(prodList);
+										});
+                                    });
+                                });
+							}
                             else{
                                 dfr.resolve();
                             }
@@ -444,7 +455,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		//vm.isFaster = false;
 		vm.Faster = false;
 		vm.GiftCard = false;
-		if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
+		if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 			OrderCloud.Categories.ListProductAssignments(null, prodID).then(function(res){
 				OrderCloud.Categories.Get(res.Items[0].CategoryID).then(function(res2){
 					if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip){
@@ -740,12 +751,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     }
     // Function to get selected product
     vm.showProduct=function(e){
-        vm.productExtras=extraProducts();
-        console.log("vm.productExtras", vm.productExtras)
-        $scope.radio.selectedColor = e.xp.SpecsOptions.Color;
-        $scope.radio.selectedSize = e.xp.SpecsOptions.Size;
-        vm.productTitle = e.Name;
-        vm.prodDesription = e.Description;
         if(vm.catList && vm.catList.length>0){
             vm.fullProductsData=_.filter(vm.catList, function(obj) {
                 return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
@@ -761,30 +766,40 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
             });
         }
+		else if($stateParams.SearchType =='Workshop'){
+			vm.fullProductsData=productList;
+		}
         else{
             vm.fullProductsData=_.filter($scope.buildOrder.list, function(obj) {
                 return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
             });
         }
+		if($stateParams.SearchType !='Workshop'){
+			vm.productExtras=extraProducts();
+			$scope.radio.selectedColor = e.xp.SpecsOptions.Color;
+			availableColors = DisplayColors(vm.fullProductsData, true);
+			vm.allColors = availableColors;
+			var selectedColorHold = angular.copy(availableColors);
+			DisplaySelectedSize(e.xp.SpecsOptions.Color, _.findIndex(selectedColorHold, function (item) { 
+				if(e.xp.SpecsOptions.Color === null || e.xp.SpecsOptions.Color === null){
+					return item.xp.SpecsOptions.Color == e.xp.SpecsOptions.Color 
+				}else{
+					return item.xp.SpecsOptions.Color.toLowerCase() == e.xp.SpecsOptions.Color.toLowerCase() 
+				}
+           })
+           );
+		}
+        $scope.radio.selectedSize = e.xp.SpecsOptions.Size;
+        vm.productTitle = e.Name;
+        vm.prodDesription = e.Description;
         availableSizes = DisplaySizes(vm.fullProductsData, true);
         vm.allSizes = availableSizes;
-        availableColors = DisplayColors(vm.fullProductsData, true);
-        vm.allColors = availableColors;
         var selectedSizeHold = angular.copy(availableSizes);
-        var selectedColorHold = angular.copy(availableColors);
         DisplaySelectedColor(e.xp.SpecsOptions.Size, _.findIndex(selectedSizeHold, function (item) { 
             if(e.xp.SpecsOptions.Size === null || e.xp.SpecsOptions.Size === null){
               return item.xp.SpecsOptions.Size == e.xp.SpecsOptions.Size 
             }else{
              return item.xp.SpecsOptions.Size.toLowerCase() == e.xp.SpecsOptions.Size.toLowerCase() 
-            }
-           })
-           );
-           DisplaySelectedSize(e.xp.SpecsOptions.Color, _.findIndex(selectedColorHold, function (item) { 
-            if(e.xp.SpecsOptions.Color === null || e.xp.SpecsOptions.Color === null){
-              return item.xp.SpecsOptions.Color == e.xp.SpecsOptions.Color 
-            }else{
-             return item.xp.SpecsOptions.Color.toLowerCase() == e.xp.SpecsOptions.Color.toLowerCase() 
             }
            })
            );
@@ -835,13 +850,18 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 // if (activeProduct) {
                     // GetDeliveryMethods(activeProduct.ID);
                 // }
- 
                 DisplayProduct(selectedSku[0]);
             } else {
- 
                 console.log('PDP PRODUCT ERROR :: ', selectedSku);
             }
         }
+		else if($stateParams.SearchType == 'Workshop' && $scope.radio.selectedSize != -1){
+            var selectedSku = _.filter(vm.fullProductsData, function (_obj) {
+                return ((_obj.xp.SpecsOptions.Size == $scope.radio.selectedSize))
+            });
+				activeProduct = selectedSku[0];
+				DisplayProduct(selectedSku[0]);
+		}
     }
     function DisplayProduct(selectedSku) {
         vm.productTitle = selectedSku.Name;
@@ -850,7 +870,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         vm.selectedProductImg=selectedSku.baseImage;
         vm.changeImg=angular.copy(selectedSku.baseImage);
         vm.selectedalternativeImg=selectedSku.alternativeImg;
-        vm.selectedDesc=selectedSku.Description;
         vm.selectedSpecification=selectedSku.xp.Attributes;
         vm.selectedKey=selectedSku.xp.KeyAttributes;
         vm.selectedWarranty=selectedSku.xp.Warranty;
@@ -934,6 +953,11 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		// })
 		// console.log("prodCodeprodCode", prodCode);
 	// }
+	if($stateParams.SearchType =='Workshop'){
+		vm.showPDP = true;
+		var selectedProd=_.where(productList, {"ID":$stateParams.ID});
+        vm.showProduct(selectedProd[0]);
+	}
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -1805,7 +1829,7 @@ function buildOrderPDPController() {
   
 function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q, SearchData) {
     var vm = this;
-    if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp'){
+    if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 		vm.order = Order;
 	}
 	vm.selectUser = function(user){	
@@ -2494,7 +2518,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				})
 			})
 		}
-		if($stateParams.SearchType != 'Products' && $stateParams.SearchType!=undefined){
+		if($stateParams.SearchType != 'Products' && $stateParams.SearchType!=undefined && $stateParams.SearchType!='Workshop'){
 				vs.listAllProducts();
 		}
 		else{

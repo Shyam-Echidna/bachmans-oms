@@ -19,10 +19,10 @@
 
 <!-- algolia search starts -->
 <div class="oms_main_container" ng-show='showplp'>
-    <h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.list.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.list.length}} products)</span></h1>
+    <h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.list.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.buildorderSearch.length}} products)</span></h1>
     <h1 ng-if="buildOrder.list.length == 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>
     <ul class="plp-container">
-        <li class="col-md-3" ng-repeat="products in buildOrder.list track by $index" ng-if="buildOrder.searchval.length > 0" >
+        <li class="col-md-3" ng-repeat="products in buildOrder.buildorderSearch track by $index" ng-if="buildOrder.searchval.length > 0" >
             <div class="plp-block" ng-click="buildOrder.showProduct(products)">
                 <div class="product_img">
 					<img ng-model="prodImage" ng-src= "{{products.baseImage}}"/>

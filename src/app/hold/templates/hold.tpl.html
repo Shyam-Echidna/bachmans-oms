@@ -21,12 +21,12 @@
 			<h2>Items</h2>
 		</div>
 		<div class="item-action">
-			<button>REMOVE ITEM</button>
+			<button ng-click="hold.removeItem()">REMOVE ITEM</button>
 			<button ng-click="hold.addItem()">ADD ITEM</button>
 		</div>
-		<div ui-grid="gridOptions" class="order-grid" external-scopes="gridScope"></div>
+		<div ui-grid="gridOptions" class="order-grid" ui-grid-edit></div>
 	</div>
-	<div class="hold-screen row" style="display: none">
+	<div class="hold-screen row">
 		<div class="col-md-12 col-lg-12">
 			<h2>Delivery Information</h2>
 		</div>
@@ -51,6 +51,8 @@
 				<option value="Teleflora">Teleflora</option>
 			</select>
 		</div>
+		<button ng-click="hold.florist(hold.wireserviceopt)">Select florist</button>
+
 	</div>
 	<div class="hold-screen row" style="display: none">
 		<div class="col-md-12 col-lg-12">
@@ -125,5 +127,18 @@
 	</div>
 </modal>
 <modal title="Select a SKU" visible="hold.selectFlorist" id="selectFlorist" class="create-user-pop-up modal-pop-up">
-	<p>kkkkkkkkkkkkkkkk</p>
+	<div>
+		<h1>Select a Florist</h1>
+		<span>X</span>	
+	</div>
+	<div>
+		<div class="searchfield">
+		</div>
+	</div>
+	<div ui-grid="gridfloristopt" ui-grid-selection class="order-grid"></div>
+
+	<div>
+		<button ng-click="vm.selectflorist =! vm.selectflorist">CANCEL</button>
+		<button ng-click="hold.addflorist()">OKAY</button>
+	</div>
 </modal>

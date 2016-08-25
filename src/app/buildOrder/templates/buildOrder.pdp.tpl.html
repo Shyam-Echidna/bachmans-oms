@@ -176,7 +176,7 @@
 						</div>
 					</div>
 					<!-- started -->
-					<div class="row color-selection" >
+					<div class="row color-selection" ng-if="buildOrder.allColors.length>0">
 						<h5>Select Color</h5>
 						<div class="color-circle">
 							<ul class="list-inline">
@@ -201,7 +201,7 @@
 							<li>Comes with seat cushions</li>
 						</ul>
 					</div>
-					<div class="row dropdown-box" >
+					<div class="row dropdown-box" ng-if="buildOrder.productExtras.length>0">
 						<h5>Add Something Extra</h5>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="row" >
@@ -232,15 +232,13 @@
 				</div>
 				<button class="addCart" ng-click="AddtoCart(buildOrder.selectedProductId)">ADD TO CART</button>
 				</div>
-				<div class="key-product col-xs-12 p0">
+				<div class="key-product col-xs-12 p0" ng-if="buildOrder.selectedKey.length>0">
 					<h3>Key Product Info:</h3>
 					<p class="row">
-						<span class="col-xs-1"></span>
-						<label for="" class="col-xs-2">Zone 3</label>
-						<span class="col-xs-1"></span>
-						<label for="" class="col-xs-2">Full Sun</label>
-						<span class="col-xs-1"></span>
-						<label for="" class="col-xs-2">Low Water</label>
+						<div ng-repeat="(key, value) in buildOrder.selectedKey">
+							<span class="col-xs-1"></span>
+							<label for="" class="col-xs-2">{{value}}</label>
+						</div>
 					</p>
 				</div>
 				<div class="pdp-description col-xs-12 col-md-12 col-lg-12 p0">
@@ -264,12 +262,12 @@
 							</uib-accordion-heading>
 							<ul class="footer_cat col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<li>
-									<p>{{buildOrder.selectedDesc}}</p>
+									<p>{{buildOrder.prodDesription}}</p>
 								</li>
 
 							</ul>
 						</uib-accordion-group>
-						<uib-accordion-group is-open="status.open2" class="specification">
+						<uib-accordion-group is-open="status.open2" class="specification" ng-if="buildOrder.selectedSpecification.length>0">
 							<uib-accordion-heading>
 								<p ng-class="{'footer-minus': status.open2, 'footer-plus': !status.open2}">Specifications:
 									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
@@ -295,7 +293,7 @@
 							</table>
 						</uib-accordion-group>
 
-						<uib-accordion-group is-open="status.open3">
+						<uib-accordion-group is-open="status.open3" ng-if="buildOrder.selectedWarranty.length>0">
 							<uib-accordion-heading>
 								<p ng-class="{'footer-minus': status.open3, 'footer-plus': !status.open3}">Return/Warranty/Exchange:
 									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">

@@ -205,6 +205,7 @@ function ordercloudSearch () {
         scope: {
             placeholder: '@',
             servicename: "@",
+			attribute:'@',
             controlleras: "="
         },
         restrict: 'E',
@@ -268,6 +269,9 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 								BuildOrderService.GetProductList(res, imagesList.items).then(function(prodList){
 									//$scope.controlleras.list=prodList;
 									$scope.controlleras.searchList=prodList;
+									if($scope.attribute=='buildorder-search'){
+										$scope.controlleras.buildorderSearch=prodList;
+									}
 									if($scope.placeholder=="Search products"){
 										$state.go('buildOrder',{SearchType:'Products'});
 									}
@@ -276,7 +280,7 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 						});	
 					})
 				}
-				if($scope.controlleras.searchType){
+				if($scope.servicename=='products' && $scope.attribute=='buildorder-search'){
 					var seqId=[];
 					var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
 					seqId=_.union(seqId, searchedProdId);

@@ -11,12 +11,12 @@
 <!-- 		<h1 class="heading">Promotions & Information</h1>
 		<div ng-repeat="PromoInfo in home.PromoInformation" ng-include="PromoInfo"></div>	 -->
 		<h1 class="heading">{{home.eventList.name}}</h1>
-		<div ng-repeat="eventInfo in home.eventList.events | orderBy: 'created_at':true |limitTo : 5">
-			<div class="promotion_box ng-scope">
+		<div ng-repeat="eventInfo in home.eventList.events ">
+			<div class="promotion_box ng-scope" ui-sref="buildOrder({ID:eventInfo.ID,SearchType:'Workshop'})">
 				<h1>{{eventInfo.Name}}</h1>
 				<p>{{eventInfo.Description}}</p>
 				<div class="col-sm-12 promotion_date"><img src="../../assets/images/icons-svg/calendar.svg" alt="">
-				<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p>
+					<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p>
 				</div>
 			</div>
 		</div>

@@ -21,10 +21,10 @@
 			<h2>Items</h2>
 		</div>
 		<div class="item-action">
-			<button>REMOVE ITEM</button>
+			<button ng-click="hold.removeItem()">REMOVE ITEM</button>
 			<button ng-click="hold.addItem()">ADD ITEM</button>
 		</div>
-		<div ui-grid="gridOptions" class="order-grid" external-scopes="gridScope"></div>
+		<div ui-grid="gridOptions" class="order-grid" ui-grid-edit></div>
 	</div>
 	<div class="hold-screen row" style="display: none">
 		<div class="col-md-12 col-lg-12">
@@ -51,6 +51,8 @@
 				<option value="Teleflora">Teleflora</option>
 			</select>
 		</div>
+		<button ng-click="hold.florist(hold.wireserviceopt)">Select florist</button>
+
 	</div>
 	<div class="hold-screen row" style="display: none">
 		<div class="col-md-12 col-lg-12">
@@ -58,35 +60,35 @@
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Wired Service</p>
-			<a class="col-md-2 col-lg-2" ng-click="selectFlorist()">Select Florist</a>
+			<a class="col-md-2 col-lg-2" ng-click="hold.selectFlorist()">Select Florist</a>
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Florist Name</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.floristName"/>
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Florist Zip Code</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.zipCode"/>
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
-			<p class="col-md-2 col-lg-2">Florist Network</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<p class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.zipCode">Florist Network</p>
+
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Florist Code</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.zipCode"/>
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Wire Occasion Code</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.zipCode"/>
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Wire Order Number</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.zipCode"/>
 		</div>
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Transmission Status</p>
-			<input type="text" class="col-md-2 col-lg-2"/>
+			<input type="text" class="col-md-2 col-lg-2" ng-model="hold.selectedflorist.zipCode"/>
 		</div>
 	</div>
 	<div class="hold-screen row" style="display: none">
@@ -96,16 +98,16 @@
 		<div class="hold-btm col-md-12 col-lg-12">
 			<p class="col-md-2 col-lg-2">Delivery Date</p>
 			<div class="col-md-6 col-lg-6">
-				<input type="text" class="message"/>
-				<input type="text" class="message"/>
-				<input type="text" class="message"/> 
-				<input type="text" class="message"/>
+				<input type="text" class="message" ng-model="hold.onholdlineitems.xp.CardMessage.line1"/>
+				<input type="text" class="message" ng-model="hold.onholdlineitems.xp.CardMessage.line2"/>
+				<input type="text" class="message" ng-model="hold.onholdlineitems.xp.CardMessage.line3"/> 
+				<input type="text" class="message" ng-model="hold.onholdlineitems.xp.CardMessage.line4"/>
 			</div>
 		</div>
 	</div>
 	<div>
-		<button class="unhold">Unhold</button>
-		<button>CANCEL</button>
+		<button class="unhold" ng-click="hold.selectedflorist==null || hold.unhold()" ng-disabled="hold.selectedflorist==null">Unhold</button>
+		<button ui-sref="home">CANCEL</button>
 	</div>
 </div>
 <modal title="Select a SKU" visible="hold.selectSKU" id="selectSKU" class="create-user-pop-up modal-pop-up">
@@ -120,10 +122,23 @@
 	<div ui-grid="gridskuopt" ui-grid-selection class="order-grid"></div>
 
 	<div>
-		<button ng-click="vm.selectSKU =! vm.selectSKU">CANCEL</button>
+		<button ng-click="hold.selectSKU =! hold.selectSKU">CANCEL</button>
 		<button ng-click="hold.adddummy()">OKAY</button>
 	</div>
 </modal>
-<modal title="Select a SKU" visible="hold.selectFlorist" id="selectFlorist" class="create-user-pop-up modal-pop-up">
-	<p>kkkkkkkkkkkkkkkk</p>
+<modal title="Select a SKU" visible="hold.selectFloristshow" id="selectFlorist" class="create-user-pop-up modal-pop-up">
+	<div>
+		<h1>Select a Florist</h1>
+		<span>X</span>	
+	</div>
+	<div>
+		<div class="searchfield">
+		</div>
+	</div>
+	<div ui-grid="gridfloristopt" ui-grid-selection class="order-grid"></div>
+
+	<div>
+		<button ng-click="hold.selectFloristshow =! hold.selectFloristshow">CANCEL</button>
+		<button ng-click="hold.selectFloristshow =! hold.selectFloristshow">OKAY</button>
+	</div>
 </modal>

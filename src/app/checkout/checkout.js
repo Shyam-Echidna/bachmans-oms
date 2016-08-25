@@ -97,7 +97,10 @@ function checkoutConfig( $stateProvider ) {
                     },
                     GetTax: function(TaxService, Order) {
                         return TaxService.GetTax(Order.ID);
-                    }
+                    },
+					GetCstDateTime: function(BuildOrderService){
+						return BuildOrderService.CompareDate();
+					}
                 }
 			},
 			'checkouttop@checkout': {
@@ -110,7 +113,7 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService, LineItemHelpers, PurplePerkEagle, GiftCardEagle) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService, LineItemHelpers, PurplePerkEagle, GiftCardEagle, GetCstDateTime) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
@@ -127,16 +130,16 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
     vm.AvoidMultipleDelryChrgs = [];
 	vm.oneAtATime = true;
 	vm.opened = false;
-	var dt = new Date();
-	$scope.dt = new Date();//today
+	var dt = new Date(angular.copy(GetCstDateTime.datetime));
+	$scope.dt = new Date(angular.copy(GetCstDateTime.datetime));//today
 	vm.CardExpYears = [];
 	for(var i=0; i<11; i++){
 		vm.CardExpYears.push(dt.getFullYear()+i);
 	}
 	var today = dt.getMonth()+1+"/"+dt.getDate()+"/"+dt.getFullYear();
-	dt = new Date();
+	dt = new Date(angular.copy(GetCstDateTime.datetime));
 	$scope.tom = new Date(dt.setDate(dt.getDate() + 1));//tomorrow
-	vm.initDate = new Date();//day after tomorrow
+	vm.initDate = new Date(angular.copy(GetCstDateTime.datetime));//day after tomorrow
 	var tomorrow = $scope.tom;
 	tomorrow = tomorrow.getMonth()+1+"/"+tomorrow.getDate()+"/"+tomorrow.getFullYear();
 	vm.status = {
@@ -460,7 +463,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 								vm.lineDtlsSubmit(lineitems, index+1);
 							}else{
 								//vm.Grouping(vm.recipientsGroup);
-								alert("Data submitted successfully");
+								//alert("Data submitted successfully");
 							}
 						});
 					}else{
@@ -468,7 +471,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 								vm.lineDtlsSubmit(lineitems, index+1);
 						}else{
 							//vm.Grouping(vm.recipientsGroup);
-							alert("Data submitted successfully");
+							//alert("Data submitted successfully");
 						}
 					}
 				});
@@ -1019,7 +1022,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			if(data.xp.RedeemDate)
 				data.xp.RedeemDate = new Date(data.xp.RedeemDate);
 			else
-				data.xp.RedeemDate = new Date();
+				data.xp.RedeemDate = new Date(angular.copy(GetCstDateTime.datetime));
 			params.four51TimeStamp = data.xp.RedeemDate.getFullYear()+"-"+(data.xp.RedeemDate.getMonth()+1)+"-"+data.xp.RedeemDate.getDate()+" "+data.xp.RedeemDate.getHours()+":"+data.xp.RedeemDate.getMinutes()+":"+data.xp.RedeemDate.getSeconds();
 			params.transactionAmountFromF51 = data.Balance;
 			$http.post(GiftCardEagle, params).success(function(res2){
@@ -1052,7 +1055,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 					if(val.xp.RedeemDate)
 						val.xp.RedeemDate = new Date(val.xp.RedeemDate);
 					else
-						val.xp.RedeemDate = new Date();
+						val.xp.RedeemDate = new Date(angular.copy(GetCstDateTime.datetime));
 					params.four51TimeStamp = val.xp.RedeemDate.getFullYear()+"-"+(val.xp.RedeemDate.getMonth()+1)+"-"+val.xp.RedeemDate.getDate()+" "+val.xp.RedeemDate.getHours()+":"+val.xp.RedeemDate.getMinutes()+":"+val.xp.RedeemDate.getSeconds();
 					params.transactionAmountFromF51 = val.Balance;
 					if(val.Name == "Purple Perks")
@@ -1131,7 +1134,7 @@ function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
 		return d.promise;
 	}
 	function _spendingAccountsRedeemtion(SpendingAccounts){
-		var PaymentType, TempStoredArray = [], dat = new Date(), d = $q.defer();
+		var PaymentType, TempStoredArray = [], dat = new Date(angular.copy(GetCstDateTime.datetime)), d = $q.defer();
 		angular.forEach(SpendingAccounts, function(val, key){
 			PaymentType = {"Type":"SpendingAccount", "SpendingAccountID":val.ID, "Description": key, "Amount": val.Amount, "xp":null};
 			if(key == "Cheque" || key == "PaidCash"){

@@ -1,6 +1,6 @@
 		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="buildOrderRight.myPromise">
             <h1>ACTIVE ORDER</h1>
-			<div ng-repeat="line in lineItemProducts track by line">
+			<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
 				<div class="pdt_name">
 					<h2>{{buildOrderRight.activeOrders[line][0].Product.Name}}</h2>
 					<!--<button class="edit" ng-click="editProduct(buildOrderRight.activeOrders[line])">
@@ -92,11 +92,11 @@
 					<p ng-repeat="(key, val) in buildOrderRight.activeOrders[line][0].varientsOptions">{{key}}: {{val}}</p>
 					<p>Quantity: {{prodQty[line]}}</p>
 					<div class="note-edit">
-						<button class="notes" ng-hide="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="showNoteField($index)">Notes</button>
-						<form ng-submit="updateProdNote($index,prodNotes,buildOrderRight.activeOrders[line][0].ProductID,line)">
-							<input type="text" ng-model="prodNotes" ng-init="prodNotes=buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-show="buildOrderRight.activeOrders[line][0].Product.xp.productNote || prodNoteShow{{$index}}" placeholder="Product Note" ng-readonly="!readOnly{{$index}}" />
+						<button class="notes" ng-hide="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="buildOrderRight.showNoteField($index)">Notes</button>
+						<form ng-submit="buildOrderRight.updateProdNote($index,prodNotes,buildOrderRight.activeOrders[line][0].ProductID,line)">
+							<input type="text" ng-model="prodNotes" ng-init="prodNotes=buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-show="buildOrderRight.activeOrders[line][0].Product.xp.productNote || buildOrderRight.prodNoteShow{{$index}}" placeholder="Product Note" ng-readonly="!buildOrderRight.readOnly{{$index}}" />
 						</form>
-						<button ng-show="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="showNoteField($index, 'readOnly{{$index}}')">
+						<button ng-show="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="buildOrderRight.showNoteField($index, 'buildOrderRight.readOnly{{$index}}')">
 							<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 								 viewBox="0 0 140.5 140" style="enable-background:new 0 0 140.5 140;" xml:space="preserve" fill="#fff">
 							<g>
@@ -236,7 +236,7 @@
 								<img src="/src/assets/images/dialog_warning.png" ng-if="buildOrderRight.lineItemForm[lineitem.ID].formError" />
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
-								<a ng-click="viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
+								<a ng-click="buildOrderRight.viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
 								<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore" class="above-addr">Above Address</a>
 								<div class="qty">
 									<p>Quantity <span class="star">*</span></p>
@@ -528,10 +528,10 @@
 					<th>Address</th>
 					<th>Phone</th>
 				</tr>
-				<tr ng-repeat="addr in addressesList" ng-click="getBookAddress(addr)">
+				<tr ng-repeat="addr in buildOrderRight.addressesList" ng-click="buildOrderRight.getBookAddress(addr)">
 					<td>
-						
-						<p>{{addr.FirstName}} {{addr.LastName}}</p>
+						<p ng-if="!addr.CompanyName">{{addr.FirstName}} {{addr.LastName}}</p>
+						<p ng-if="addr.CompanyName">{{addr.CompanyName}}</p>
 					</td>
 					<td>	
 						
@@ -546,30 +546,31 @@
 			</table>
 		</modal>
 		<modal title="Address Book" visible="showAboveRecipientModal" id="mymodal" class="view-addr-book modal-pop-up">
-			<table ng-repeat="line in lineItemProducts track by line">
+			<table>
 				<tr>
 					<th>Name</th>
 					<th>Address</th>
 					<th>Phone</th>
 				</tr>
-				<tr ng-repeat="val in buildOrderRight.activeOrders[line] track by val.ID" ng-click="getBookAddress(val.ShippingAddress, 'TempAddr')" ng-if="val.ShippingAddress.Zip && val.ShippingAddress.Street1 && val.ShippingAddress.FirstName">
+				<tr ng-repeat="val in buildOrderRight.TempAddressBook" ng-click="buildOrderRight.getBookAddress(val, 'TempAddr')" ng-if="val.Zip && val.Street1 && val.FirstName">
 					<td>
-						<p>{{val.ShippingAddress.FirstName}} {{val.ShippingAddress.LastName}}</p>
+						<p ng-if="!val.CompanyName">{{val.FirstName}} {{val.LastName}}</p>
+						<p ng-if="val.CompanyName">{{val.CompanyName}}</p>
 					</td>
 					<td>
-						<p>{{val.ShippingAddress.Street1}}</p>
-						<p>{{val.ShippingAddress.Street2}}</p>
-						<p>{{val.ShippingAddress.City}} {{val.ShippingAddress.State}} {{val.ShippingAddress.Country}} {{val.ShippingAddress.Zip}}</p>
+						<p>{{val.Street1}}</p>
+						<p>{{val.Street2}}</p>
+						<p>{{val.City}} {{val.State}} {{val.Country}} {{val.Zip}}</p>
 					</td>
 					<td>
-						<p>({{val.ShippingAddress.Phone1}})  {{val.ShippingAddress.Phone2}}-{{val.ShippingAddress.Phone3}}</p>
+						<p>({{val.Phone1}})  {{val.Phone2}}-{{val.Phone3}}</p>
 					</td>			
 				</tr>
 			</table>
 		</modal>
 		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up">
 			<div class="recipient-details">
-				<div ng-repeat="line in lineItemProducts track by line">
+				<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
 					<div ng-repeat="row in buildOrderRight.activeOrders[line]">
 						<div class="recipient-header">
 							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">

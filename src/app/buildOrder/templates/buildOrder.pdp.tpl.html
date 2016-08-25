@@ -1,6 +1,6 @@
 <ui-view>
 	<div class="oms_main_container buildOrder-pdp-container" id="buildOrder-pdp-container">
-		<div class="buildOrder-pdp" ng-if="UpsellSimilar!=true">
+		<div class="buildOrder-pdp" ng-if="buildOrder.UpsellSimilar!=true">
 			<h1>
 				<a ng-click="gotoplp()" ng-if="buildOrder.searchType!='Products'">
 					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -181,7 +181,7 @@
 						</div>
 					</div>
 					<!-- started -->
-					<div class=" color-selection" >
+					<div class="row color-selection">
 						<h5>Select Color</h5>
 						<div class="color-circle">
 							<ul class="list-inline">
@@ -206,7 +206,7 @@
 							<li>Comes with seat cushions</li>
 						</ul>
 					</div>
-					<div class="dropdown-box" >
+					<div class="dropdown-box">
 						<h5>Add Something Extra</h5>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="row" >
@@ -237,15 +237,13 @@
 				</div>
 				<button class="addCart" ng-click="AddtoCart(buildOrder.selectedProductId)">ADD TO CART</button>
 				</div>
-				<div class="key-product col-xs-12 p0">
+				<div class="key-product col-xs-12 p0" ng-if="buildOrder.selectedKey.length>0">
 					<h3>Key Product Info:</h3>
 					<p class="row">
-						<span class="col-xs-1"></span>
-						<label for="" class="col-xs-2">Zone 3</label>
-						<span class="col-xs-1"></span>
-						<label for="" class="col-xs-2">Full Sun</label>
-						<span class="col-xs-1"></span>
-						<label for="" class="col-xs-2">Low Water</label>
+						<div ng-repeat="(key, value) in buildOrder.selectedKey">
+							<span class="col-xs-1"></span>
+							<label for="" class="col-xs-2">{{value}}</label>
+						</div>
 					</p>
 				</div>
 				<div class="pdp-description col-xs-12 col-md-12 col-lg-12 p0">
@@ -269,7 +267,7 @@
 							</uib-accordion-heading>
 							<ul class="footer_cat col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<li>
-									<p>{{buildOrder.selectedDesc}}</p>
+									<p>{{buildOrder.prodDesription}}</p>
 								</li>
 
 							</ul>
@@ -332,7 +330,7 @@
 			</div>
 		</div>
 		
-		<div class="buildOrder-pdp" ng-if="UpsellSimilar==true">
+		<div class="buildOrder-pdp" ng-if="buildOrder.UpsellSimilar==true">
 			<h1>
 			<a ng-click="buildOrder.gotopdp()">
 				<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -388,8 +386,8 @@
 		</div>
 		<div class="pdp-tabs">
 			<ul class="nav nav-pills nav-stacked">
-				<li ng-class="{active:upsell == false}">
-					<a ng-click="upsellToggle('upsell');">UPSELL ITEMS
+				<li ng-class="{active:buildOrder.upsell == false}">
+					<a ng-click="buildOrder.upsellToggle('upsell');">UPSELL ITEMS
 							  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 10" style="enable-background:new 0 0 21 10;" xml:space="preserve">
 								<g>
 								  <path d="M20.5,0l-10,10L0.5,0H20.5z" />
@@ -397,8 +395,8 @@
 							  </svg>
 							</a>
 				</li>
-				<li ng-class="{active:similar == false}">
-					<a ng-click="similarToggle('similar');">SIMILAR ITEMS
+				<li ng-class="{active:buildOrder.similar == false}">
+					<a ng-click="buildOrder.similarToggle('similar');">SIMILAR ITEMS
 							  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 10" style="enable-background:new 0 0 21 10;" xml:space="preserve">
 									<g>
 									  <path d="M20.5,0l-10,10L0.5,0H20.5z" />
@@ -409,16 +407,16 @@
 			</ul>
 			<div class="pdp-tabs-content row">
 			<!-- upsell items starts -->
-				<div ng-hide='upsell' class="pdp-upsell col-md-12" ng-class="{upsellAnimation:upsell == false}" >
+				<div ng-hide='buildOrder.upsell' class="pdp-upsell col-md-12" ng-class="{upsellAnimation:buildOrder.upsell == false}" >
 					<div class="items-list">
 						<span>Upsell Items</span>
 						<ul>
-							<li ng-repeat="cat in Categories"><a href="javascript:void(0)" ng-click="getCategoriesItems(cat.ID)">{{cat.Name}}</a></li>
+							<li ng-repeat="cat in buildOrder.Categories"><a href="javascript:void(0)" ng-click="buildOrder.getCategoriesItems(cat.ID)">{{cat.Name}}</a></li>
 						</ul>
 					</div>
 					<ul class="pdp-upsell-container" id="owl-carousel-upsell">
-						<li class="item" ng-repeat="upsell in CategoryItemsUpsell">
-							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, CategoryItemsUpsell)">
+						<li class="item" ng-repeat="upsell in buildOrder.CategoryItemsUpsell">
+							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, buildOrder.CategoryItemsUpsell)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
 								<h2>{{upsell.Name}}</h2>
 								<h3>Option Deluxe</h3>
@@ -431,9 +429,9 @@
 					</ul>
 				</div>
 				<!-- similar items starts -->
-				<div ng-hide='similar' class="pdp-similarItems col-md-12" ng-class="{upsellAnimation:similar == false}">
+				<div ng-hide='buildOrder.similar' class="pdp-similarItems col-md-12" ng-class="{upsellAnimation:buildOrder.similar == false}">
 					<ul class="pdp-upsell-container" id="owl-carousel-similar">
-						<li class="item" ng-repeat="cross in CategoryItemsSimilar">
+						<li class="item" ng-repeat="cross in buildOrder.CategoryItemsSimilar">
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(cross.ID, CategoryItemsSimilar)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
 								<h2>{{cross.Name}}</h2>

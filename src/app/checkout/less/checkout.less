@@ -296,7 +296,7 @@ input.error {
                                     width: 15px;
 								    height: 11px;
 								    fill: #8b5bb3;
-								    margin: 8px 0 0 10px;
+								    margin: 6px 0 0 10px;
 								    float: right;
                                 }
                             }
@@ -305,10 +305,11 @@ input.error {
 				 	 .radio-grp{
 				 	 	padding:0px;
 				 	 	margin:10px 0;
-				 	 	.radio-inline{
+				 	 	.radio-common{
 				 	 		width: 32%;
 				 	 		padding-left: 23px;
 				 	 		 margin:0px;
+
 				 	 		 label{
 				 	 		 	top:-5px;
 				 	 		 	color:#666666;
@@ -960,8 +961,9 @@ input.error {
 			
 		}
 		.payment-method{
-			padding-left:30px;
+			
 			.payment-method-header{
+
 				h1{
 					.helvetica-bold;
 					font-size: 15px;
@@ -974,6 +976,7 @@ input.error {
 					border:1px solid @color6;
 					margin-right: 10px;
 					position: relative;
+					margin-top:10px;
 					.selected{
 						display: none;
 					}
@@ -1058,7 +1061,42 @@ input.error {
 				 }
 				.pay-m{
 					padding:20px 0 0 0;
+					.billing-form{
+					  div{
+					  	padding:0px;
+					  }
+					  .holder-name{
+					  	padding-right:15px;
+					  }
+					  .phone-book{
+					     input{
+					     	width:32%;
+					     	margin-bottom:20px;
+					     }
+					     label{
+					     	padding:0;
+					     }
+
+					  }
+					   .form-group{
+					     	margin-bottom:10px;
+					     	input{
+					     		margin-bottom:10px;
+					     	}
+					     	
+					     }
+					     .save-button{
+					     	  input{
+					     	   width:30%;
+					     	  color:#fff;
+					     	  background:#8c58b5;
+					     	  padding:0;
+					     	  font-size:15px;
+					     	  }
+					     }
+					}
 					.cvv-title {
+					         padding:0px;
 							p {
 								font-size:16px;
 							   .helvetica-regular;
@@ -1066,6 +1104,7 @@ input.error {
 							}
 							}
 						 .cvv-value {
+						 	padding:0 0 0 11px;
 							input#cvvNumber {
 								color: #000;
 								background: #f6f6f6;
@@ -1088,13 +1127,14 @@ input.error {
 							}
 							label {
 								color: #464646;
-								font-size:12px;
+								font-size:11px;
 								 .helvetica-regular;
 								display: block;
 								font-weight:normal;
 							}
 						}
 						 .bill-addr-title {
+						   padding:0;
 							p {
 								font-size:16px;
 								.helvetica-regular;
@@ -1422,6 +1462,106 @@ input.error {
   }
  }
 }
+.billing-address{
+	h1{
+		.helvetica-bold;
+		font-size: 15px;
+		margin:30px 0 20px;
+	}
+
+	  div{
+	  	padding:0px;
+	  }
+	  .holder-name{
+	  	padding-right:15px;
+	  }
+	  .phone-book{
+	     input{
+	     	width:32%;
+	     	margin-bottom:20px;
+	     }
+	     label{
+	     	padding:0;
+	     }
+		}
+	   .form-group{
+	     	margin-bottom:10px;
+	     	input{
+	     		margin-bottom:10px;
+	     	}
+	     }
+	     .billing-options{
+	     	padding:0;
+	     	margin: 10px 0 20px 30px;
+	     	.radio-common{
+	     		.radio{
+	     			top:2px;	
+	     		}
+	     	}
+	     }
+	     .client-list{
+	     	.client-del{
+		  		 background: #f9f9f9;
+			    float: left;
+			    border-radius: 4px;
+			    font-size: 11px;
+			    padding: 10px 5px;
+			    width: 100%;
+			    margin-bottom:5px;
+			    span{
+			    	padding:0 2px;
+			    	.helvetica-bold;
+			    }
+			   .radio-common .radio{
+			   		top:-6px;
+			    }
+	     	}
+	     		.view-more{
+	     			border-bottom: 1px solid #ccc;
+				    margin-bottom: 20px;
+				    padding-bottom: 10px;
+				    width: 100%;
+				    float: left;
+				    margin-top: 10px;
+	     		  a{
+	     		        color: #666666;
+					    font-size: 14px;
+					    font-family: "Helvetica-regular";
+					    border-bottom: 1px solid #e3e3e3;
+					    line-height: 12px;
+					    text-decoration: none;
+					    float:right;
+					    text-align:right;
+			   		  &:hover{
+			           color: #8b5bb3 !important;
+			         }
+	     		  }
+				}
+			}
+	}
+	
+	.review-button{
+	 .total-amt{
+	float: right;
+    text-align: center;
+    width: 20%;
+    margin-top: 28px;
+    .helvetica-regular;
+    padding:0;
+     .price{
+     	font-size:20px;
+     	.helvetica-bold;
+     }
+     p{
+       margin:0px;
+     }
+	}
+	input{
+		margin-top:0px !important;
+		width:19%;
+		padding:5px !important;
+	}
+}
 
 		/*For Checkout Place order button starts*/
 		.review-content{
@@ -1470,13 +1610,13 @@ input.error {
 			}
 			.checkoutorderhead{
 				background-color:@color20;
-				padding: 5px 25px;
+				padding: 5px 10px;
 				p{
 					margin-bottom:0;
 					.helvetica-bold;
-					font-size: 15px;
+					font-size: 13px;
 					.in-block;
-					width:49.3%;
+					width:49%;
 					span{
 						.helvetica-bold;
 						font-size: 13px;
@@ -1488,7 +1628,7 @@ input.error {
 				}
 			}
 			.order-total{
-				padding: 8px 27px;
+				padding: 8px 10px;
 				background-color:@base-bg-purple-light;
 				margin-bottom: 10px;
 				h1{
@@ -1547,7 +1687,7 @@ input.error {
 			.charges-total{
 				border-top:1px solid @color20;
 				border-bottom:1px solid @color20;
-				padding: 5px 24px;
+				padding: 5px 10px;
 				p{
 					.helvetica-bold;
 					font-size:13px;
@@ -1579,7 +1719,7 @@ input.error {
 			}
 			.promo-code{
 				margin-top:15px;
-				padding: 5px 24px 10px;
+				padding: 5px 10px 10px;
 				border-top:1px solid @color20;
 				p{
 					.helvetica-bold;

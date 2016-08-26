@@ -544,7 +544,7 @@
 													<input type="text" class="form-control" name="lastname" id="lastName" placeholder="Last Name" ng-model="card.BillingAddress.LastName" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.lastname.$invalid}" />
 												</div>
 	                                        </div>
-											<div class="col-xs-12 form-group holder-name p0">
+											<div class="col-xs-12 form-group p0">
 	                                            <label for="street1">Address 1 <span class="star">*</span></label>
 	                                            <input type="text" class="form-control" name="street1" id="street1" placeholder="Street 1" ng-model="card.BillingAddress.Street1" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.street1.$invalid}" />
 											</div>	
@@ -673,7 +673,7 @@
 									<span class="total">{{checkout.UserSpendingAcc['Bachman Charges'].Balance | currency}}</span>
 								</div>
 								<div class="payment-container row">
-									<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 payment-options">
+									<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 payment-options">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<!-- <label><input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Full" />use {{checkout.UserSpendingAcc['Bachman Charges'].Balance | currency}} Bachman's Charge</label> -->
 										<label class="radio-inline radio-common">
@@ -682,7 +682,7 @@
 										</label>	
 										</div>
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+											<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 											<!-- <label><input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Custom" /><span>Enter Custom Charge</span></label> -->
 											<label class="radio-inline radio-common">
 											<input type="radio" ng-model="BachmansCharges" name="BachmansCharge" value="Custom" /><span>Enter Custom Charge</span>
@@ -708,9 +708,9 @@
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> -->
 											<!-- <p><label><input type="radio" ng-model="GiftCharges" name="GiftCharge" value="Full" />use {{checkout.UserSpendingAcc['Gift Card'].Balance | currency}} Gift Card balance</label></p> -->
-											<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 payment-options">
+											<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 payment-options">
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+													<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 gift-card">
 														<span>Enter 14 or 16 Digit Gift Card Number</span>
 													</div>
 													<input ng-model="GiftCardNo" type="text" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
@@ -729,7 +729,7 @@
 						<div class="payment-method-container cheque col-xs-10 col-sm-10 col-md-10 col-lg-10" ng-if="checkout.paymentOption == 'CashCheque'">
 							<div>
 								<div class="payment-container row">
-									<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 payment-options1">
+									<div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 payment-options1">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<div>
 											<!-- <p class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -853,38 +853,42 @@
 											</div>
 											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'addressbook'" ng-init="checkout.billingAddress.billingLimit=3">
 												<div class="client-del" ng-repeat="line in checkout.creditCardsList track by line.BillingAddress.ID | limitTo: checkout.billingAddress.billingLimit">
-													<div class="col-xs-6">
-													<label class="radio-inline radio-common">
-													<input type="radio" id="clientname" value="line.BillingAddress" ng-click="checkout.billingAddress = line.BillingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
-													<label for="clientname"></label>
-													<div class="radio"></div>
-												    </label>
-												     <span>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</span>|
+													<div class="col-xs-12">
+													<label class="radio-inline radio-common col-xs-12">
+													<input type="radio" id="client-addr{{$index}}" value="line.BillingAddress" ng-click="checkout.billingAddress = line.BillingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
+													<label for="client-addr{{$index}}" class="col-xs-12"> 
+													<span>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</span>|
 												     <span>{{line.BillingAddress.Zip}}</span>
 												     <!-- <span> (Default)</span> -->
-													</div>
-													<div class="col-xs-6 client-addr">
-													{{line.BillingAddress.Street1}} {{line.BillingAddress.Street2}}, {{line.BillingAddress.City}}, {{line.BillingAddress.State}}
-													</div>
+												     <span class="client-addr">
+												     		{{line.BillingAddress.Street1}} {{line.BillingAddress.Street2}}, {{line.BillingAddress.City}}, {{line.BillingAddress.State}}
+												     </span>
+												     </label>
+													<div class="radio"></div>
+												    </label>
+												    </div>
 												</div>
 												<div class="view-more" ng-if="checkout.billingAddress.billingLimit > 3" ng-click="checkout.billingAddress.billingLimit = checkout.creditCardsList.length"><a>View More+</a></div>
 												<div class="view-more" ng-if="checkout.billingAddress.billingLimit == checkout.creditCardsList.length" ng-click="checkout.billingAddress.billingLimit = 3"><a>View Less-</a></div>
 											</div>
 											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'currentrecipients'" ng-init="checkout.billingAddress.shippingLimit=3">
 												<div class="client-del" ng-repeat="line in checkout.deliveryInfo track by line.ShippingAddress.Zip+line.ShippingAddress.Street1 | limitTo: checkout.billingAddress.shippingLimit">
-													<div class="col-xs-6">
-													<label class="radio-inline radio-common">
-													<input type="radio" id="clientname" value="{{line.ShippingAddress}}" ng-click="checkout.billingAddress = line.ShippingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
-													<label for="clientname"></label>
-													<div class="radio"></div>
-												    </label>
-												     <span>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</span>|
+													<div class="col-xs-12">
+													<label class="radio-inline radio-common col-xs-12">
+													<input type="radio" id="client-recp{{$index}}" value="{{line.ShippingAddress}}" ng-click="checkout.billingAddress = line.ShippingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
+													<label for="client-recp{{$index}}" col-xs-12>
+														<span>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</span>|
 												     <span>{{line.ShippingAddress.Zip}}</span>
 												    <!--  <span> (Default)</span> -->
+												    <span class="client-addr">
+												    	{{line.ShippingAddress.Street1}} {{line.ShippingAddress.Street2}}, {{line.ShippingAddress.City}}, {{line.ShippingAddress.State}}
+												    </span>
+													</label>
+													<div class="radio"></div>
+												    </label>
+												     
 													</div>
-													<div class="col-xs-6 client-addr">
-													{{line.ShippingAddress.Street1}} {{line.ShippingAddress.Street2}}, {{line.ShippingAddress.City}}, {{line.ShippingAddress.State}}
-													</div>
+													
 												</div>
 												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
 												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit == checkout.deliveryInfo.length" ng-click="checkout.billingAddress.shippingLimit = 3"><a>View Less-</a></div>
@@ -898,7 +902,7 @@
 													<label for="lastName">Last Name <span class="star">*</span></label>
 													<input type="text" class="form-control" name="lastname" id="lastName" placeholder="Last Name" ng-model="checkout.billingAddress.LastName" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.lastname.$invalid}" ng-required="checkout.selectedCard=='createcreditcard'" />
 												</div>
-												<div class="col-xs-12 form-group holder-name p0">
+												<div class="col-xs-12 form-group  p0">
 													<label for="street1">Address 1 <span class="star">*</span></label>
 													<input type="text" class="form-control" name="street1" id="street1" placeholder="Street 1" ng-model="checkout.billingAddress.Street1" ng-blur="checkout.ValidateAddress(checkout.billingAddress, checkout.BillingFormSubmitted)" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.street1.$invalid}" ng-required="checkout.selectedCard=='createcreditcard'" />
 												</div>

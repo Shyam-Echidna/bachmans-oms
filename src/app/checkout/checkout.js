@@ -151,9 +151,9 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	};
 
     vm.getRecipientSubTotal = function(lineitems) {
-            return Underscore.pluck(lineitems, 'LineTotal').reduce(function(prev, current) {
-                return prev + current;
-            }, 0);
+		return Underscore.pluck(lineitems, 'LineTotal').reduce(function(prev, current) {
+			return prev + current;
+		}, 0);
     };
 
     vm.getRecipientTax = function(lineitems) {
@@ -259,10 +259,12 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			card.BillingAddress = res;
 		});
 	};
-	vm.EditBillingAddress = function(billingAddress, index){
+	vm.EditBillingAddress = function(billingAddress, index, form){
+		form.$submitted = true;
 		billingAddress.Phone = "("+billingAddress.Phone1+") "+billingAddress.Phone2+"-"+billingAddress.Phone3;
 		AddressValidationService.Validate(billingAddress).then(function(res){
 			if(res.ResponseBody.ResultCode == 'Success') {
+				form.invalidAddress = false;
 				var validatedAddress = res.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				billingAddress.Zip = parseInt(zip);
@@ -275,7 +277,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 					vm['EditBillAddress'+index] = !vm['EditBillAddress'+index];
 				});
 			}else{
-				alert("Address not found...");
+				form.invalidAddress = true;
+				//alert("Address not found...");
 			}
 		});		
 	};
@@ -290,7 +293,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.showAddressModal = function(modal, index){
 		vm[modal] = !vm[modal];
 	};
-	vm.assignBillingAddress = function(billingAddress, modal){
+	/*vm.assignBillingAddress = function(billingAddress, modal){
 		BuildOrderService.GetPhoneNumber(billingAddress.Phone).then(function(res) {
 			billingAddress.Phone1 = res[0];
 			billingAddress.Phone2 = res[1];
@@ -298,10 +301,11 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		});
 		vm.billingAddress = billingAddress;
 		vm[modal] = !vm[modal];
-	};
-	vm.ValidateAddress = function(billingAddress){
+	};*/
+	vm.ValidateAddress = function(billingAddress, form){
 		AddressValidationService.Validate(billingAddress).then(function(res){
 			if(res.ResponseBody.ResultCode == 'Success') {
+				form.invalidAddress = false;
 				var validatedAddress = res.ResponseBody.Address;
 				var zip = validatedAddress.PostalCode.substring(0, 5);
 				billingAddress.Zip = parseInt(zip);
@@ -311,7 +315,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				billingAddress.State = validatedAddress.Region;
 				billingAddress.Country = validatedAddress.Country;
 			}else{
-				alert("Address not found...");
+				form.invalidAddress = true;
+				//alert("Address not found...");
 			}
 		});	
 	};
@@ -392,13 +397,19 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			vm.lineDtlsSubmit(lineitems,0);
 		}
 	};
-	vm.ProceedToReview = function(){
-		vm.paymentDone = true;
-		vm.status.delInfoOpen = false;
-		vm.status.paymentOpen = false;
-		vm.status.reviewOpen = true;
-		vm.status.isSecondDisabled = true;
-		vm.status.isThirdDisabled = false;
+	vm.ProceedToReview = function(billingform, creditcardform){
+		if(vm.selectedCard=="createcreditcard" && !billingform.$valid && !creditcardform.$valid ){
+			billingform.$submitted = true;
+			creditcardform.$submitted = true;
+		}
+		if(billingform.$valid && !billingform.invalidAddress){
+			vm.paymentDone = true;
+			vm.status.delInfoOpen = false;
+			vm.status.paymentOpen = false;
+			vm.status.reviewOpen = true;
+			vm.status.isSecondDisabled = true;
+			vm.status.isThirdDisabled = false;
+		}
 	};
 	vm.lineDtlsSubmit = function(lineitems, index){
 		var line = lineitems[index];

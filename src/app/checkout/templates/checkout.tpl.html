@@ -250,7 +250,9 @@
 														<input type="checkbox" id="" ng-checked="addr.isAddrOpen" />
 														<label for="" class="check"></label>
 													</div>
-													<span>{{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}}</span><span ng-if="defualtAddressID==addr.ID">(Default)</span>
+													<span ng-if="!addr.CompanyName">{{addr.FirstName}} {{addr.LastName}} | {{addr.Zip}}</span>
+													<span ng-if="addr.CompanyName">{{addr.CompanyName}} | {{addr.Zip}}</span>
+													<span ng-if="defualtAddressID==addr.ID">(Default)</span>
 											</uib-accordion-heading>
 											<div ng-show="!checkout.isDeliAddrShow{{$index}}" class="saved-delivery-addr">	
 												<a ng-click="checkout.deliveryAddr($index)">Edit</a>
@@ -488,10 +490,10 @@
                                 <div class="payment-container row" ng-if="card === checkout.selectedCard">
                                     <div class="pay-m col-xs-12 col-sm-12 col-md-8 col-lg-8 col-lg-offset-2">
                                        <div class="col-xs-4 cvv-title">
-										<p>Enter CVV Code</p>
+										<p>Enter CVV Code <span class="star">*</span></p>
 										</div>
 										<div class="col-xs-8 cvv-value">
-										<form class="cvv-from" role="form" novalidate>
+										<form class="cvv-from" novalidate>
 											<div class="form-group">
 												<input type="text" class="form-control" id="cvvNumber" />
 												<span class="cvv-help-icon">
@@ -519,7 +521,7 @@
 										<div class="col-xs-4 bill-addr-title">
 										<p>Billing Address</p>
 										</div>
-										<form ng-show="!checkout.EditBillAddress{{$index}}">
+										<form ng-show="!checkout.EditBillAddress{{$index}}" novalidate>
 											<div class="col-xs-8 bill-addr-value">
 											<p>{{card.BillingAddress.Street1}}</p>
 											<p>{{card.BillingAddress.Street2}}</p>
@@ -531,36 +533,37 @@
 											<p>{{card.BillingAddress.xp.Email}}</p>
 											</div> 
 										</form>
-										<form ng-show="checkout.EditBillAddress{{$index}}" ng-submit="checkout.EditBillingAddress(card.BillingAddress, $index)" class="billing-form">
-										<div class="col-xs-12">
-											<div class="col-xs-6 form-group holder-name p0">
-	                                            <label for="firstName">First Name</label>
-	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="card.BillingAddress.FirstName" />
+										<form ng-show="checkout.EditBillAddress{{$index}}" name="checkout.EditBillingForm" ng-submit="checkout.EditBillingAddress(card.BillingAddress, $index, checkout.EditBillingForm)" class="billing-form" novalidate>
+											<div class="col-xs-12">
+												<div class="col-xs-6 form-group holder-name p0">
+													<label for="firstName">First Name <span class="star">*</span></label>
+													<input type="text" class="form-control" name="firstname" id="firstName" placeholder="First Name" ng-model="card.BillingAddress.FirstName" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.firstname.$invalid}" />
+												</div>
+												<div class="col-xs-6 form-group card-number p0">
+													<label for="lastName">Last Name <span class="star">*</span></label>
+													<input type="text" class="form-control" name="lastname" id="lastName" placeholder="Last Name" ng-model="card.BillingAddress.LastName" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.lastname.$invalid}" />
+												</div>
 	                                        </div>
-	                                        <div class="col-xs-6 form-group card-number p0">
-	                                            <label for="lastName">Last Name</label>
-	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="card.BillingAddress.LastName" />
-	                                        </div>
-	                                        </div>
-											<div class="col-xs-12 form-group holder-name addr p0">
-	                                            <label for="street1">Address 1</label>
-	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="card.BillingAddress.Street1" />
-	                                        </div>
+											<div class="col-xs-12 form-group holder-name p0">
+	                                            <label for="street1">Address 1 <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="street1" id="street1" placeholder="Street 1" ng-model="card.BillingAddress.Street1" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.street1.$invalid}" />
+											</div>	
 	                                        <div class="col-xs-12 form-group card-number p0">
 	                                            <label for="street2">Address 2</label>
 	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="card.BillingAddress.Street2" />
 	                                        </div>
 											<div class="col-xs-8 form-group holder-name p0">
-	                                            <label for="city">City</label>
-	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="card.BillingAddress.City" />
+	                                            <label for="city">City <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="city" id="city" placeholder="City" ng-model="card.BillingAddress.City" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.city.$invalid}"  />
 	                                        </div>
 	                                        <div class="col-xs-4 form-group card-number p0">
-	                                            <label for="state">State</label>
-	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="card.BillingAddress.State" />
+	                                            <label for="state">State <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="state" id="state" placeholder="State" ng-model="card.BillingAddress.State" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.state.$invalid}" />
 	                                        </div>
 											<div class="col-xs-12 form-group card-number p0">
-	                                            <label for="zip">Zip</label>
-	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="card.BillingAddress.Zip" />
+	                                            <label for="zip">Zip <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="zip" max-length="5" id="zip" placeholder="Zip" ng-model="card.BillingAddress.Zip" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.zip.$invalid}" />
+												<h6 style="color:red;" ng-if="checkout.EditBillingForm.invalidAddress && checkout.BillingAddress.Street1 && checkout.BillingAddress.Zip">Invalid Address/Zip</h6>
 	                                        </div>
 											<div class="col-xs-12 form-group card-number p0 phone-book">
 												<label for="phone" class="col-xs-12">Phone Number</label>
@@ -590,7 +593,6 @@
                                     </label> -->
                                     <label class="radio-inline radio-common">
 									<input type="radio" ng-model="checkout.selectedCard" value="createcreditcard">
-									
 									<div class="radio"></div>
 									<span><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
 												<g>
@@ -602,19 +604,19 @@
                                 </div>
                                 <div class="add-card-method-container row" ng-if="checkout.selectedCard === 'createcreditcard'">
                                     <div class="col-xs-12 card-info-cont">
-	                                    <form class="input-card-form" role="form" novalidate>
+	                                    <form class="input-card-form" name="checkout.CreditCardDetailForm" novalidate>
 	                                        <div class="col-xs-12 form-group holder-name p0">
-	                                            <label for="cardholderName">Cardholder's Name</label>
-	                                            <input type="text" class="form-control" id="cardholderName" placeholder="Name" ng-model="checkout.card.CardholderName" />
+	                                            <label for="cardholderName">Cardholder's Name <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="cardholderName" id="cardholderName" placeholder="Name" ng-model="checkout.card.CardholderName" ng-required="checkout.selectedCard=='createcreditcard'" ng-class="{error: checkout.CreditCardDetailForm.$submitted && checkout.CreditCardDetailForm.cardholderName.$invalid}" />
 	                                        </div>
 	                                        <div class="col-xs-12 form-group card-number p0">
-	                                            <label for="cardNumber">Card Number</label>
-	                                            <input type="text" class="form-control" id="cardNumber" placeholder="Number" max-length="16" ng-model="checkout.card.CardNumber" />
+	                                            <label for="cardNumber">Card Number <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="cardnumber" id="cardNumber" placeholder="Number" max-length="16" ng-model="checkout.card.CardNumber" ng-required="checkout.selectedCard=='createcreditcard'" ng-class="{error: checkout.CreditCardDetailForm.$submitted && checkout.CreditCardDetailForm.cardnumber.$invalid}" />
 	                                        </div>
 	                                        <div class="col-xs-6 form-group exp-date p0">
-	                                            <label for="expDate">Expiration Date</label>
+	                                            <label for="expDate">Expiration Date <span class="star">*</span></label>
 		                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-		                                         	<div uib-dropdown class="form-control " id="expmonth">
+		                                         	<div uib-dropdown class="form-control " id="expmonth" ng-class="{errorMMyy: checkout.CreditCardDetailForm.$submitted && checkout.card.ExpMonth=='MM' && checkout.selectedCard=='createcreditcard'}">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
 								                     <p class="sort-active-show" ng-init="checkout.card.ExpMonth = 'MM'">{{checkout.card.ExpMonth}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
@@ -623,7 +625,7 @@
 								                    </div>
 		                                         </div>
 		                                       	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-		                                       		 <div uib-dropdown class="form-control " id="expyear">
+		                                       		 <div uib-dropdown class="form-control " id="expyear" ng-class="{errorMMyy: checkout.CreditCardDetailForm.$submitted && checkout.card.ExpYear=='MM' && checkout.selectedCard=='createcreditcard'}">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
 								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YYYY'">{{checkout.card.ExpYear}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
@@ -633,8 +635,8 @@
 		                                       	</div>
 	                                          </div>
 	                                        <div class="col-xs-6 form-group cvv-number">
-	                                            <label for="cvvNumber">CVV</label>
-	                                            <input type="text" class="form-control" id="cvvNumber" ng-model="checkout.card.CVV" />
+	                                            <label for="cvvNumber">CVV <span class="star">*</span></label>
+	                                            <input type="text" class="form-control" name="cvv" id="cvvNumber" ng-model="checkout.card.CVV" ng-required="checkout.selectedCard=='createcreditcard'" ng-class="{error: checkout.CreditCardDetailForm.$submitted && checkout.CreditCardDetailForm.cvv.$invalid}" />
 	                                            <span class="cvv-help">
 	                                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	                                                 viewBox="-652.2 494.3 18.7 18.7" style="enable-background:new -652.2 494.3 18.7 18.7;" xml:space="preserve">
@@ -823,7 +825,7 @@
 						</div>
 					
 					</div>
-					<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 billing-address">
+					<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 billing-address" ng-if="checkout.selectedCard=='createcreditcard'">
 										<!--<div class="col-xs-12 p0 form-group card-remember">
 	                                           <span ng-if="checkout.ErrorMessage.resultCode=='Error'">{{checkout.ErrorMessage.message[0].text}}</span>
 	                                        </div>
@@ -836,109 +838,116 @@
 											<div class="billing-options col-xs-12">
 											<div class="col-xs-6">
 											<label class="radio-inline radio-common">
-											<input type="radio" id="addressbook" value="Hospital" />
-											<label for="addressbook">Addressbook</label>
+											<input type="radio" id="addressbook" ng-model="checkout.BillingAddresses" value="addressbook" name="address" />
+											<label for="addressbook">Address Book</label>
 											<div class="radio"></div>
 										    </label>
 											</div>
 											<div class="col-xs-6">
 											<label class="radio-inline radio-common">
-											<input type="radio" id="current-recp" value="Hospital" />
+											<input type="radio" id="current-recp" ng-model="checkout.BillingAddresses" value="currentrecipients" name="address" />
 											<label for="current-recp">Current Recipients</label>
 											<div class="radio"></div>
 										    </label>
 											</div>
 											</div>
-											<div class="client-list col-xs-12">
-												<div class="client-del">
+											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'addressbook'" ng-init="checkout.billingAddress.billingLimit=3">
+												<div class="client-del" ng-repeat="line in checkout.creditCardsList track by line.BillingAddress.ID | limitTo: checkout.billingAddress.billingLimit">
 													<div class="col-xs-6">
 													<label class="radio-inline radio-common">
-													<input type="radio" id="clientname" value="Hospital" />
+													<input type="radio" id="clientname" value="line.BillingAddress" ng-click="checkout.billingAddress = line.BillingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
 													<label for="clientname"></label>
 													<div class="radio"></div>
 												    </label>
-												     <span>John Snow</span>|
-												     <span>55401</span>
-												     <span> (Default)</span>
+												     <span>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</span>|
+												     <span>{{line.BillingAddress.Zip}}</span>
+												     <!-- <span> (Default)</span> -->
 													</div>
 													<div class="col-xs-6 client-addr">
-													132/ Church Street, Minnapolis, MN
+													{{line.BillingAddress.Street1}} {{line.BillingAddress.Street2}}, {{line.BillingAddress.City}}, {{line.BillingAddress.State}}
 													</div>
 												</div>
-												<div class="client-del">
+												<div class="view-more" ng-if="checkout.billingAddress.billingLimit > 3" ng-click="checkout.billingAddress.billingLimit = checkout.creditCardsList.length"><a>View More+</a></div>
+												<div class="view-more" ng-if="checkout.billingAddress.billingLimit == checkout.creditCardsList.length" ng-click="checkout.billingAddress.billingLimit = 3"><a>View Less-</a></div>
+											</div>
+											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'currentrecipients'" ng-init="checkout.billingAddress.shippingLimit=3">
+												<div class="client-del" ng-repeat="line in checkout.deliveryInfo track by line.ShippingAddress.Zip+line.ShippingAddress.Street1 | limitTo: checkout.billingAddress.shippingLimit">
 													<div class="col-xs-6">
 													<label class="radio-inline radio-common">
-													<input type="radio" id="clientname" value="Hospital" />
+													<input type="radio" id="clientname" value="{{line.ShippingAddress}}" ng-click="checkout.billingAddress = line.ShippingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
 													<label for="clientname"></label>
 													<div class="radio"></div>
 												    </label>
-												     <span>John Snow</span>|
-												     <span>55401</span>
-												    
+												     <span>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</span>|
+												     <span>{{line.ShippingAddress.Zip}}</span>
+												    <!--  <span> (Default)</span> -->
 													</div>
 													<div class="col-xs-6 client-addr">
-													132/ Church Street, Minnapolis, MN
+													{{line.ShippingAddress.Street1}} {{line.ShippingAddress.Street2}}, {{line.ShippingAddress.City}}, {{line.ShippingAddress.State}}
 													</div>
 												</div>
-												<div class="view-more"><a href="#">View all</a></div>
+												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
+												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit == checkout.deliveryInfo.length" ng-click="checkout.billingAddress.shippingLimit = 3"><a>View Less-</a></div>
 											</div>
-											<div class="col-xs-6 form-group holder-name p0">
-	                                            <label for="firstName">First Name</label>
-	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="checkout.billingAddress.FirstName" />
-	                                        </div>
-	                                        <div class="col-xs-6 form-group card-number p0">
-	                                            <label for="lastName">Last Name</label>
-	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="checkout.billingAddress.LastName" />
-	                                        </div>
-											<div class="col-xs-12 form-group holder-name addr p0">
-	                                            <label for="street1">Address 1</label>
-	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="checkout.billingAddress.Street1" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
-	                                        </div>
-	                                        <div class="col-xs-12 form-group card-number p0">
-	                                            <label for="street2">Address 2</label>
-	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="checkout.billingAddress.Street2" />
-	                                        </div>
-											<div class="col-xs-8 form-group holder-name p0">
-	                                            <label for="city">City</label>
-	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="checkout.billingAddress.City" />
-	                                        </div>
-	                                        <div class="col-xs-4 form-group card-number p0">
-	                                            <label for="state">State</label>
-	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="checkout.billingAddress.State" />
-	                                        </div>
-											<div class="col-xs-12 form-group card-number p0">
-	                                            <label for="zip">Zip</label>
-	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="checkout.billingAddress.Zip" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
-	                                        </div>
-											<div class="col-xs-12 form-group card-number p0 phone-book">
-												<label for="phone" class="col-xs-12">Phone Number</label>
-												<input type="number" ng-model="checkout.billingAddress.Phone1" placeholder="Area Code" max-length="3" />
-												<input type="number" ng-model="checkout.billingAddress.Phone2" placeholder="Prefix" max-length="3" />
-												<input type="number" ng-model="checkout.billingAddress.Phone3" placeholder="Number" max-length="4" />
-											</div>
-											<div class="col-xs-12 form-group card-number p0">
-	                                            <label for="email">Enter Your Email Address</label>
-	                                            <input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="checkout.billingAddress.xp.Email" />
-	                                        </div>
-	                                        <div class="col-xs-12 p0 form-group card-remember">
-	                                            <div class="check-common">
-	                                               <!--  <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card, checkout.billingAddress)"> -->
-												    <input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" ng-disabled="checkout.creditCardsList.length >= 3" />
-	                                                <label for="save" class="check"></label>
-	                                            </div>
-	                                           <span ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</span>
-											   <span ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</span>
-	                                        </div>
-	                                         
+											<form name="checkout.BillingFormSubmitted" novalidate>
+												<div class="col-xs-6 form-group holder-name p0">
+													<label for="firstName">First Name <span class="star">*</span></label>
+													<input type="text" class="form-control" name="firstname" id="firstName" placeholder="First Name" ng-model="checkout.billingAddress.FirstName" ng-required="checkout.selectedCard=='createcreditcard'" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.firstname.$invalid}" />
+												</div>
+												<div class="col-xs-6 form-group card-number p0">
+													<label for="lastName">Last Name <span class="star">*</span></label>
+													<input type="text" class="form-control" name="lastname" id="lastName" placeholder="Last Name" ng-model="checkout.billingAddress.LastName" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.lastname.$invalid}" ng-required="checkout.selectedCard=='createcreditcard'" />
+												</div>
+												<div class="col-xs-12 form-group holder-name p0">
+													<label for="street1">Address 1 <span class="star">*</span></label>
+													<input type="text" class="form-control" name="street1" id="street1" placeholder="Street 1" ng-model="checkout.billingAddress.Street1" ng-blur="checkout.ValidateAddress(checkout.billingAddress, checkout.BillingFormSubmitted)" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.street1.$invalid}" ng-required="checkout.selectedCard=='createcreditcard'" />
+												</div>
+												<div class="col-xs-12 form-group card-number p0">
+													<label for="street2">Address 2</label>
+													<input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="checkout.billingAddress.Street2" />
+												</div>
+												<h6 style="color:red;" ng-if="checkout.BillingFormSubmitted.invalidAddress && checkout.billingAddress.Street1 && checkout.billingAddress.Zip">Invalid Address/Zip</h6>
+												<div class="col-xs-8 form-group holder-name p0">
+													<label for="city">City <span class="star">*</span></label>
+													<input type="text" class="form-control" name="city" id="city" placeholder="City" ng-model="checkout.billingAddress.City" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.city.$invalid}" ng-required="checkout.selectedCard=='createcreditcard'" />
+												</div>
+												<div class="col-xs-4 form-group card-number p0">
+													<label for="state">State <span class="star">*</span></label>
+													<input type="text" class="form-control" name="state" id="state" placeholder="State" ng-model="checkout.billingAddress.State"  ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.state.$invalid}" ng-required="checkout.selectedCard=='createcreditcard'" />
+												</div>
+												<div class="col-xs-12 form-group card-number p0">
+													<label for="zip">Zip <span class="star">*</span></label>
+													<input type="text" class="form-control" max-length="5" name="zip" id="zip" placeholder="Zip" ng-model="checkout.billingAddress.Zip" ng-blur="checkout.ValidateAddress(checkout.billingAddress, checkout.BillingFormSubmitted)" ng-required="checkout.selectedCard=='createcreditcard'" ng-class="{error: checkout.BillingFormSubmitted.$submitted && checkout.BillingFormSubmitted.zip.$invalid}" />
+												</div>
+												<div class="col-xs-12 form-group card-number p0 phone-book">
+													<label for="phone" class="col-xs-12">Phone Number</label>
+													<input type="number" ng-model="checkout.billingAddress.Phone1" placeholder="Area Code" max-length="3" />
+													<input type="number" ng-model="checkout.billingAddress.Phone2" placeholder="Prefix" max-length="3" />
+													<input type="number" ng-model="checkout.billingAddress.Phone3" placeholder="Number" max-length="4" />
+												</div>
+												<div class="col-xs-12 form-group card-number p0">
+													<label for="email">Enter Your Email Address</label>
+													<input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="checkout.billingAddress.xp.Email" />
+												</div>
+												<div class="col-xs-12 p0 form-group card-remember">
+													<div class="check-common">
+													   <!--  <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card, checkout.billingAddress)"> -->
+														<input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" ng-disabled="checkout.creditCardsList.length >= 3" />
+														<label for="save" class="check"></label>
+													</div>
+												   <span ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</span>
+												   <span ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</span>
+												</div>
+	                                        </form>
 					                   </div>
 			                   	
 								<div class="col-xs-12  col-sm-12 col-md-12 col-lg-12 review-button">
 								<div class="total-amt col-xs-12">
 					             	<p>Total Amount Payable </p>
-					             	<p class="price">$ 525.00 </p>
+					             	<p class="price">{{checkout.order.Total | currency}}</p>
 						         </div>
 						         <div class="col-xs-12">
-								<input type="button" ng-disabled="(checkout.order.Total > 0 && !checkout.selectedCard) ? true : false" value="Review Order" ng-click="checkout.ProceedToReview()"/>
+								<input type="button" ng-disabled="(checkout.order.Total > 0 && !checkout.selectedCard) ? true : false" value="Review Order" ng-click="checkout.ProceedToReview(checkout.BillingFormSubmitted, checkout.CreditCardDetailForm)"/>
 								</div>
 								</div>
 					</div>
@@ -1160,8 +1169,7 @@
 			</uib-accordion>
 		</div>
 	</div>
-</div>
-<modal title="Shipping Address Book" visible="checkout.getShippingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
+<!-- <modal title="Shipping Address Book" visible="checkout.getShippingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
 	<table>
 		<tr>
 			<th>Name</th>
@@ -1204,5 +1212,5 @@
 			</td>			
 		</tr>
 	</table>
-</modal>
+</modal> -->
 <div id="CheckoutFooter" ui-view="checkoutbottom"></div>

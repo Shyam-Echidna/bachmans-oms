@@ -155,7 +155,7 @@ function buildOrderConfig( $stateProvider ) {
 						return d.promise;
 					}
 			},
-			SearchData: function($q,$stateParams, $state, OrderCloud) {
+			SearchData: function($q, $stateParams, $state, OrderCloud, Order) {
 				var arr={};
 				console.log("params",$stateParams);
 				var d = $q.defer();
@@ -1496,7 +1496,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}, true);
 		vm.TempAddressBook = _.uniq(vm.TempAddressBook, function(item, key, a){
 			if(item!=null)
-				return item.Zip+item.Street1+item.Street2+item.FirstName+item.LastName;
+				return item.Street1;
 		});
 		vm.recipFields = line;
 		$scope.showAboveRecipientModal = !$scope.showAboveRecipientModal;

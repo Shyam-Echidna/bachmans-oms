@@ -237,8 +237,8 @@
 										</div>
 									</div>
 								</div>
-								<div ng-click="checkout.back($index)" ng-show="checkout.isAddrShow{{$index}}">
-									<span>&#x3c; Back</span>
+								<div ng-click="checkout.back($index)" ng-show="checkout.isAddrShow{{$index}}" class="page_header_back">
+									<a type="button" href="">Back</a>
 								</div>
 								<div class="saved-addr col-sm-5 col-xs-5 col-lg-5 col-md-5vi" ng-show="checkout.isAddrShow{{$index}}">
 										<h3>Saved Delivery Address</h3>
@@ -270,7 +270,7 @@
 											<div ng-show="checkout.isDeliAddrShow{{$index}}">
 												<ng-form name="checkout.editaddress[$index]" novalidate>
 													<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
-														<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6 del-addr">
 															<p>First Name <span class="star">*</span></p>
 															<input type="text" name="firstname" ng-model="addr.FirstName" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].firstname.$invalid}" />
 														</div>
@@ -287,12 +287,12 @@
 														<p class="check-top">Address 2</p>
 														<input type="text" ng-model="addr.Street2" />
 														<h6 style="color:red;" ng-if="checkout.editaddress[$index].invalidAddress && addr.Street1 && addr.Zip">Invalid Address/Zip</h6>
-														<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-															<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+														<div class="city check-top del-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<div class="location col-xs-8 col-sm-8 col-md-8 col-lg-8">
 																<p>City <span class="star">*</span></p>
 																<input type="text" name="city" ng-model="addr.City" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].city.$invalid}" />
 															</div>
-															<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+															<div class="location col-xs-4 col-sm-4 col-md-4 col-lg-4">
 																<p>State <span class="star">*</span></p>
 																<input type="text" name="state" ng-model="addr.State" ng-required="checkout.isDeliAddrShow{{$index}} ? true : false" ng-class="{error: checkout.editaddress[$index].$submitted && checkout.editaddress[$index].state.$invalid}" />
 															</div>
@@ -343,7 +343,7 @@
 									<!-- Add a new address -->
 									<div class="add-new-addr col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="showNewAddress{{$index}}">
 										<ng-form name="checkout.newaddress[$index]" novalidate>
-											<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<div class="name check-top col-xs-6 col-sm-6 col-md-6 col-lg-6 del-addr">
 												<p>First Name <span class="star">*</span></p>
 												<input type="text" name="firstname" ng-model="addr.FirstName" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].firstname.$invalid}" />
 											</div>
@@ -360,12 +360,12 @@
 											<p class="check-top">Address 2</p>
 											<input type="text" ng-model="addr.Street2" />
 											<h6 style="color:red;" ng-if="checkout.newaddress[$index].invalidAddress && addr.Street1 && addr.Zip">Invalid Address/Zip</h6>
-											<div class="city check-top col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<div class="city check-top del-addr col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<div class="location col-xs-8 col-sm-8 col-md-8 col-lg-8">
 													<p>City <span class="star">*</span></p>
 													<input type="text" name="city" ng-model="addr.City" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].city.$invalid}" />
 												</div>
-												<div class="location col-xs-6 col-sm-6 col-md-6 col-lg-6">
+												<div class="location col-xs-4 col-sm-4 col-md-4 col-lg-4">
 													<p>State <span class="star">*</span></p>
 													<input type="text" name="state" ng-model="addr.State" ng-required="showNewAddress{{$index}} ? true : false" ng-class="{error: checkout.newaddress[$index].$submitted && checkout.newaddress[$index].state.$invalid}" />
 												</div>

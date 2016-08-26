@@ -422,7 +422,7 @@ input.error {
 						width: 70%;
 						input{
 							.in-block;
-							width:30%;
+							width:30% !important;
 						}
 					}
 					.delivery-instructions{
@@ -790,9 +790,34 @@ input.error {
 						}
 				}
 			}
+			.page_header_back{
+					margin-left: 15px;
+					a{
+						position: relative;
+					    background: #a576ca;
+					    border-radius: 0;
+					    border-color: #a576ca;
+					    margin-top: 20px;
+					    margin-left: 13px;
+					    color: #fff;
+					    border: none;
+				        transition: all 0.4s ease-out;
+				        padding: 8px 25px;
+				        text-decoration:none;
+					     &:before{
+					     	content: "";
+						    border: 16px solid #fff;
+						    background: inherit;
+						    position: absolute;
+						    top: 0px;
+						    left: -30px;
+						    border-right-color: #a576ca;
+					     }
+				}
+			}
 			.saved-addr{
 				padding:0 0 10px 16px;
-				margin-right:50px;
+				margin:20px 50px 0 0;
 				h3{
 					
 					font-family: "Helvetica-Bold";
@@ -889,10 +914,13 @@ input.error {
 				.add-new-addr{
 					background-color:#fafafb;
 					padding:30px 35px 15px 20px;
-					input[type="text"]{
-						   
-						margin-right: 2%;
-						width: 95%;
+					.del-addr{
+						input{
+						   width:95% !important;
+						}
+					}
+					input{
+					   width:100% !important;
 						border: 1px solid #e4e6ea;
 						font-family: "Helvetica-regular";
 						font-size: 16px;
@@ -902,7 +930,7 @@ input.error {
 						-webkit-appearance: none;
 						background: #F4F4F4;
 						border-radius: 2px;
-						margin-bottom: 25px;
+						margin-bottom: 15px  !important;
 					}
 					.radio-grp label{
 						.in-block;

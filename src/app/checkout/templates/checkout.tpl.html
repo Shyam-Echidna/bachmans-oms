@@ -547,7 +547,6 @@
 											<div class="col-xs-12 form-group holder-name p0">
 	                                            <label for="street1">Address 1 <span class="star">*</span></label>
 	                                            <input type="text" class="form-control" name="street1" id="street1" placeholder="Street 1" ng-model="card.BillingAddress.Street1" ng-required="checkout.EditBillAddress{{$index}}" ng-class="{error: checkout.EditBillingForm.$submitted && checkout.EditBillingForm.street1.$invalid}" />
-	                                        </div>
 	                                        <div class="col-xs-12 form-group card-number p0">
 	                                            <label for="street2">Address 2</label>
 	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="card.BillingAddress.Street2" />
@@ -888,6 +887,41 @@
 												</div>
 												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
 												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit == checkout.deliveryInfo.length" ng-click="checkout.billingAddress.shippingLimit = 3"><a>View Less-</a></div>
+											</div>
+											<div class="col-xs-6 form-group holder-name p0">
+	                                            <label for="firstName">First Name</label>
+	                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" ng-model="checkout.billingAddress.FirstName" />
+	                                        </div>
+	                                        <div class="col-xs-6 form-group card-number p0">
+	                                            <label for="lastName">Last Name</label>
+	                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" ng-model="checkout.billingAddress.LastName" />
+	                                        </div>
+											<div class="col-xs-12 form-group holder-name addr p0">
+	                                            <label for="street1">Address 1</label>
+	                                            <input type="text" class="form-control" id="street1" placeholder="Street 1" ng-model="checkout.billingAddress.Street1" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
+	                                        </div>
+	                                        <div class="col-xs-12 form-group card-number p0">
+	                                            <label for="street2">Address 2</label>
+	                                            <input type="text" class="form-control" id="street2" placeholder="Street 2" ng-model="checkout.billingAddress.Street2" />
+	                                        </div>
+											<div class="col-xs-8 form-group holder-name p0">
+	                                            <label for="city">City</label>
+	                                            <input type="text" class="form-control" id="city" placeholder="City" ng-model="checkout.billingAddress.City" />
+	                                        </div>
+	                                        <div class="col-xs-4 form-group card-number p0">
+	                                            <label for="state">State</label>
+	                                            <input type="text" class="form-control" id="state" placeholder="State" ng-model="checkout.billingAddress.State" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0">
+	                                            <label for="zip">Zip</label>
+	                                            <input type="text" class="form-control" max-length="5" id="zip" placeholder="Zip" ng-model="checkout.billingAddress.Zip" ng-blur="checkout.ValidateAddress(checkout.billingAddress)" />
+	                                        </div>
+											<div class="col-xs-12 form-group card-number p0 phone-book">
+												<label for="phone" class="col-xs-12">Phone Number</label>
+												<input type="number" ng-model="checkout.billingAddress.Phone1" placeholder="Area Code" max-length="3" />
+												<input type="number" ng-model="checkout.billingAddress.Phone2" placeholder="Prefix" max-length="3" />
+												<input type="number" ng-model="checkout.billingAddress.Phone3" placeholder="Number" max-length="4" />
+>>>>>>> 6bc6593757309b5802da1ccc818d31b72c1cec4b
 											</div>
 											<form name="checkout.BillingFormSubmitted" novalidate>
 												<div class="col-xs-6 form-group holder-name p0">

@@ -390,17 +390,17 @@
 									<h3>Delivery Instructions</h3>
 									<p>Delivery Instructions:</p>
 									<textarea rows="3" ng-model="line.xp.deliveryNote"></textarea>
-									<div ng-init="cardMsg=false">
+									<div ng-init="line.cardMsg=false">
 										<div class="no-msg">
 											<span>Card Message</span>
 											<!-- <input type="checkbox" name="cardmessage" ng-model="cardMsg"></input> -->
 											<div class="check-common msg">
-												<input type="checkbox" name="cardmessage" ng-model="cardMsg" id="noMessage{{$index}}">
+												<input type="checkbox" name="cardmessage" ng-model="line.cardMsg" id="noMessage{{$index}}">
 												<label for="noMessage{{$index}}" class="check"></label>
 											</div>
 											<span>No Message</span>
 										</div>
-										<div class="line-msgs" ng-class="{'hideItem': !cardMsg}">
+										<div class="line-msgs" ng-class="{'hideItem': !line.cardMsg}">
 											<p>Line 1</p>
 											<input type="text" ng-model="line.xp.CardMessage.line1"></input>
 											<p>Line 2</p>

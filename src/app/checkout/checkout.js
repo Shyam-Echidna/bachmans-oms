@@ -398,17 +398,29 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}
 	};
 	vm.ProceedToReview = function(billingform, creditcardform){
-		if(vm.selectedCard=="createcreditcard" && !billingform.$valid && !creditcardform.$valid ){
+		if(creditcardform){
 			billingform.$submitted = true;
 			creditcardform.$submitted = true;
+			if(billingform.$valid && creditcardform.$valid && vm.card.ExpMonth!="MM" && vm.card.ExpYear!="YYYY"){
+				vm.paymentDone = true;
+				vm.status.delInfoOpen = false;
+				vm.status.paymentOpen = false;
+				vm.status.reviewOpen = true;
+				vm.status.isSecondDisabled = true;
+				vm.status.isThirdDisabled = false;
+			}
 		}
-		if(billingform.$valid && !billingform.invalidAddress){
-			vm.paymentDone = true;
-			vm.status.delInfoOpen = false;
-			vm.status.paymentOpen = false;
-			vm.status.reviewOpen = true;
-			vm.status.isSecondDisabled = true;
-			vm.status.isThirdDisabled = false;
+		if(vm.selectedCard.cvvform){
+			if(vm.selectedCard.cvvform.$invalid){
+				vm.selectedCard.cvvform.$submitted = true;
+			}else{
+				vm.paymentDone = true;
+				vm.status.delInfoOpen = false;
+				vm.status.paymentOpen = false;
+				vm.status.reviewOpen = true;
+				vm.status.isSecondDisabled = true;
+				vm.status.isThirdDisabled = false;
+			}
 		}
 	};
 	vm.lineDtlsSubmit = function(lineitems, index){

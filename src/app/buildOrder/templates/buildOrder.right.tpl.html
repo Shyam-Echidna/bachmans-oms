@@ -374,14 +374,14 @@
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 										<div class="col-md-6 zipcont">
 											<div class="zipCode">
-												<p>Zip Code <span class="star">*</span></p>{{buildOrderRight.lineItemForm[lineitem.ID]['Zip']}}
+												<p>Zip Code <span class="star">*</span></p>
 												<input type="number" name="zip" ng-minlength="5" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
 											</div>
 											</div>
 											<div class="delivery-date col-md-6" ng-if="lineitem.xp.addressType!='Will Call'">
 												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
-												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" required ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
+												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" ng-required="lineitem.xp.addressT" ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 													 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
@@ -530,8 +530,8 @@
 				</tr>
 				<tr ng-repeat="addr in buildOrderRight.addressesList" ng-click="buildOrderRight.getBookAddress(addr)">
 					<td>
-						<p ng-if="!addr.CompanyName">{{addr.FirstName}} {{addr.LastName}}</p>
-						<p ng-if="addr.CompanyName">{{addr.CompanyName}}</p>
+						<p ng-if="addr.FirstName">{{addr.FirstName}} {{addr.LastName}}</p>
+						<p ng-if="!addr.FirstName">{{addr.CompanyName}}</p>
 					</td>
 					<td>	
 						
@@ -554,8 +554,8 @@
 				</tr>
 				<tr ng-repeat="val in buildOrderRight.TempAddressBook" ng-click="buildOrderRight.getBookAddress(val, 'TempAddr')" ng-if="val.Zip && val.Street1 && val.FirstName">
 					<td>
-						<p ng-if="!val.CompanyName">{{val.FirstName}} {{val.LastName}}</p>
-						<p ng-if="val.CompanyName">{{val.CompanyName}}</p>
+						<p ng-if="val.FirstName">{{val.FirstName}} {{val.LastName}}</p>
+						<p ng-if="!val.FirstName">{{val.CompanyName}}</p>
 					</td>
 					<td>
 						<p>{{val.Street1}}</p>

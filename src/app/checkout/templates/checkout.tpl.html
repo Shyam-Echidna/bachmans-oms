@@ -493,9 +493,9 @@
 										<p>Enter CVV Code <span class="star">*</span></p>
 										</div>
 										<div class="col-xs-8 cvv-value">
-										<form class="cvv-from" novalidate>
+										<form class="cvv-from" novalidate name="card.cvvform">
 											<div class="form-group">
-												<input type="text" class="form-control" id="cvvNumber" />
+												<input type="text" class="form-control" name="cvv" id="cvvNumber" ng-model="card.CVV" ng-required="card == checkout.selectedCard" ng-class="{error: card.cvvform.$submitted && card.cvvform.cvv.$invalid}" />
 												<span class="cvv-help-icon">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-652.2 494.3 18.7 18.7" style="enable-background:new -652.2 494.3 18.7 18.7;" xml:space="preserve">
 													<g>
@@ -625,7 +625,7 @@
 								                    </div>
 		                                         </div>
 		                                       	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-		                                       		 <div uib-dropdown class="form-control " id="expyear" ng-class="{errorMMyy: checkout.CreditCardDetailForm.$submitted && checkout.card.ExpYear=='MM' && checkout.selectedCard=='createcreditcard'}">
+		                                       		 <div uib-dropdown class="form-control " id="expyear" ng-class="{errorMMyy: checkout.CreditCardDetailForm.$submitted && checkout.card.ExpYear=='YYYY' && checkout.selectedCard=='createcreditcard'}">
 								                     <div id="sort-dropdown" uib-dropdown-toggle>
 								                     <p class="sort-active-show" ng-init="checkout.card.ExpYear = 'YYYY'">{{checkout.card.ExpYear}}</p></div>
 								                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
@@ -1169,48 +1169,4 @@
 			</uib-accordion>
 		</div>
 	</div>
-<!-- <modal title="Shipping Address Book" visible="checkout.getShippingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Address</th>
-			<th>Phone</th>
-		</tr>
-		<tr ng-repeat="line in checkout.deliveryInfo track by line.ID" ng-click="checkout.assignBillingAddress(line.ShippingAddress, 'getShippingAddressModal')">
-			<td>
-				<p>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</p>
-			</td>
-			<td>
-				<p>{{line.ShippingAddress.Street1}}</p>
-				<p>{{line.ShippingAddress.Street2}}</p>
-				<p>{{line.ShippingAddress.City}} {{line.ShippingAddress.State}} {{line.ShippingAddress.Country}} {{line.ShippingAddress.Zip}}</p>
-			</td>
-			<td>
-				<p>{{line.ShippingAddress.Phone}}</p>
-			</td>			
-		</tr>
-	</table>
-</modal>
-<modal title="Billing Address Book" visible="checkout.getBillingAddressModal" id="mymodal" class="view-addr-book modal-pop-up">
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Address</th>
-			<th>Phone</th>
-		</tr>
-		<tr ng-repeat="line in checkout.creditCardsList" ng-click="checkout.assignBillingAddress(line.BillingAddress, 'getBillingAddressModal')" ng-if="line.BillingAddress">
-			<td>
-				<p>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</p>
-			</td>
-			<td>
-				<p>{{line.BillingAddress.Street1}}</p>
-				<p>{{line.BillingAddress.Street2}}</p>
-				<p>{{line.BillingAddress.City}} {{line.BillingAddress.State}} {{line.BillingAddress.Country}} {{line.BillingAddress.Zip}}</p>
-			</td>
-			<td>
-				<p>{{line.BillingAddress.Phone}}</p>
-			</td>			
-		</tr>
-	</table>
-</modal> -->
 <div id="CheckoutFooter" ui-view="checkoutbottom"></div>

@@ -219,11 +219,18 @@ function BaseTopController($scope, $state, Tree, UserList, OrderCloud) {
     vm.userlist = UserList;
 	vm.numRecords = 10;
     vm.page = 1;
+	vm.page2 = 1;
 	vm.next = function(){
         vm.page = vm.page + 1;
     };
     vm.back = function(){
         vm.page = vm.page - 1;
+    };
+	vm.next2 = function(){
+        vm.page2 = vm.page2 + 1;
+    };
+    vm.back2 = function(){
+        vm.page2 = vm.page2 - 1;
     };
 	vm.searchGoTo= function(userId, orderId){
 		OrderCloud.Orders.Get(orderId).then(function(res){

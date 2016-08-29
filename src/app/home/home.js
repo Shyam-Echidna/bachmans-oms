@@ -52,11 +52,11 @@ function HomeConfig( $stateProvider ) {
 					var arr={};
 					var events=[];
 					var dfr = $q.defer();
-					OrderCloud.Categories.Get('c10').then(function(res){
+					OrderCloud.Categories.Get('WorkshopsEvents_Information').then(function(res){
 						arr["name"]=res.Name;
 						console.log("77777777", arr["name"]);
 					});
-					OrderCloud.Categories.ListProductAssignments('c10', null, 1 ,100).then(function(assign){
+					OrderCloud.Categories.ListProductAssignments('WorkshopsEvents_Information', null, 1 ,100).then(function(assign){
 						angular.forEach(assign.Items, function(res, key1){
 							OrderCloud.Products.Get(res.ProductID).then(function(data){
 								if(!_.isEmpty(data.xp)){

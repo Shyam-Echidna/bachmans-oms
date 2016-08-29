@@ -48,7 +48,7 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 	vm.list=AddressBook.Items;
 	vm.searchedAddr;
 	var prevIndex;
-	$scope.defaultEdit=false;
+	vm.defaultEdit=false;
 	vm.defaultAddr=_.filter(vm.list, function(obj) {
 		return _.indexOf([obj.xp.IsDefault], true) > -1
 	});
@@ -131,9 +131,9 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 		})
 	}
 	vm.editAddress = function(editAddr, index){
-		$scope.defaultEdit=true;
+		vm.defaultEdit=true;
 		if(index != null){
-			$scope.defaultEdit=false;
+			vm.defaultEdit=false;
 		}
 		vm['showedit' + vm.prevIndex] = false;
 		vm.prevIndex=angular.copy(index);

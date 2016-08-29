@@ -2043,7 +2043,7 @@ input.error {
 			line-height:50px;
 			color: @primary-dark-color;
 			background-color: @color15;
-			width: 68.6%;
+			width: 67%;
 			text-align: center;
 			.background-fade;
 			&:hover {
@@ -2053,11 +2053,12 @@ input.error {
 		}
 		.order-total {
 			.in-block;
-			width: 31.4%;
+			width: 33%;
 			height: 50px;
 			background-color: @base-bg-purple-light;
 			.background-fade;
 			text-align: center;
+			float:right;
 			&:hover {
 				background-color: #7a43a3;
 			}
@@ -2200,7 +2201,21 @@ input.error {
 				width:100%;
 				.user-top{
 					padding-top:5px;
-				}
+					 	p{
+						    color: #464646;
+						    font-family: "Helvetica-regular";
+						    font-size: 16px;
+						    margin-bottom: 10px;
+						}
+					}
+					.addr-dropdown{
+						margin-bottom:10px;
+					}
+					.user-addr {
+						input{
+							width:97%;
+						}
+					}
 				h1{
 					font-size: 16px;
 					.helvetica-bold;
@@ -2267,6 +2282,9 @@ input.error {
 							.in-block;
 							width: 47%;
 							margin-right: 2%;
+							.state-code{
+							  width:27%;
+							}
 						}
 					}
 					label{
@@ -2414,10 +2432,10 @@ input.error {
 					.recipient-header{
 						    border: 2px solid #F5F5F4;
 						    float: left;
-						    width:97%;
+						    width:100%;
 						    padding: 5px 0px;
 						    font-size:16px;
-						    margin:10px 11px 0px;
+						   
 						    background:#f2f5f7;
 						    .recipient-name{
 						    .helvetica-bold;

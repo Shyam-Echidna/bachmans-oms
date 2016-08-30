@@ -307,11 +307,15 @@
 							</div>
 								<div ng-if="lineitem.xp.addressType=='Hospital' || lineitem.xp.addressType=='Funeral' || lineitem.xp.addressType=='Church'" class="outgoing-wire">
 									<!-- <label><input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire">Outgoing Wire</label> -->
-									<div class="check-common">
+									<!-- <div class="check-common">
 										<input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire" id="outgoingwire">
 										<label for="outgoingwire" class="check"></label>
 									</div>
-									<span>Outgoing Wire</span>
+									<span>Outgoing Wire</span> -->
+									<div>
+            							<input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire" id="outgoingwire" class="checkbox-custom" >
+            							<label for="outgoingwire" class="checkbox-custom-label">Outgoing Wire</label>
+        						  </div>
 								</div>
 								<div class="location-selected">
 									<!-- <div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)"> -->
@@ -487,12 +491,17 @@
 									</uib-accordion>
 									<div ng-init="lineitem.visible=false">
 										<div class="no-message" ng-show="lineitem.xp.addressType && lineitem.xp.addressType!='Shipping'">
-												<div class="check-common">
+												<!-- <div class="check-common">
 													<input type="checkbox" ng-model="lineitem.visible" id="noMessage{{$index}}">
 													<label for="noMessage{{$index}}" class="check"></label>
 												</div>
-												<span>No Card Message</span>
+												<span>No Card Message</span> -->
+												<div>
+ 												<input type="checkbox" ng-model="lineitem.visible" id="noMessage{{$index}}" class="checkbox-custom" >
+ 												<label for="noMessage{{$index}}" class="checkbox-custom-label"> No Card Message</label>
+											 	</div>
 										</div>
+
 										<div class="message-lines" ng-class="{'hideItem': !lineitem.visible}" ng-show="lineitem.xp.addressType && lineitem.xp.addressType!='Shipping'">
 											<p>Line 1</p>
 											<input type="text" ng-model="lineitem.xp.CardMessage.line1" />

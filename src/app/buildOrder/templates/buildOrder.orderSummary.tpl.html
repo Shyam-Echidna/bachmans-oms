@@ -1350,21 +1350,33 @@
 				</div>
 				<div class="user-top addr-dropdown">
 					<!-- <label><input type="checkbox" ng-model="createaddr.IsShipping">Shipping Address</label> -->
-					<div class="check-common">
+					<!-- <div class="check-common">
 						<input type="checkbox" id="shippingaddr" ng-model="createaddr.IsShipping"/>
 						<label for="shippingaddr" class="check"></label>
 					</div>
-					<span>Shipping Address</span>
-					<div class="check-common">
+					<span>Shipping Address</span> -->
+					<div>
+					 <input type="checkbox" id="shippingaddr" ng-model="createaddr.IsShipping" class="checkbox-custom">
+					 <label  for="shippingaddr" class="checkbox-custom-label">Shipping Address</label>
+					</div>
+					<!-- <div class="check-common">
 						<input type="checkbox" id="Billingaddr" ng-model="createaddr.IsBilling"/>
 						<label for="Billingaddr" class="check"></label>
 					</div>
-					<span>Billing Address</span>
-					<div class="check-common">
+					<span>Billing Address</span> -->
+					<div>
+						 <input  type="checkbox" id="Billingaddr" ng-model="createaddr.IsBilling" class="checkbox-custom">
+						 <label  for="Billingaddr" class="checkbox-custom-label">Billing Address</label>
+					</div>
+					<div>
+						 <input  type="checkbox" id="Defaultaddr" ng-model="createaddr.IsDefault" class="checkbox-custom">
+						 <label  for="Defaultaddr" class="checkbox-custom-label">Default Address</label>
+					</div>
+					<!-- <div class="check-common">
 						<input type="checkbox" id="Defaultaddr" ng-model="createaddr.IsDefault"/>
 						<label for="Defaultaddr" class="check"></label>
 					</div>
-					<span>Default Address</span>
+					<span>Default Address</span> -->
 					<!-- <label><input type="checkbox" ng-model="createaddr.IsBilling">Billing Address</label>
 					<label><input type="checkbox" ng-model="createaddr.IsDefault">Default Address</label> -->
 				</div>

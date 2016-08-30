@@ -272,6 +272,10 @@ function buildOrderConfig( $stateProvider ) {
 function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList) {
 	var vm = this;
 	vm.selected = undefined;
+	vm.hidePdpblock=false;
+	if($stateParams.SearchType == 'Workshop'){
+			vm.hidePdpblock=true;
+	}
 	$scope.search = {
         'query' : '',
         'hits' : []
@@ -609,6 +613,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		if($stateParams.SearchType == 'Products' && $stateParams.ID != ''){
 			vm.searchList=productList;
 		}
+		if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true){
+			vm.hidePdpblock=false;
+		}
 	}
 	$scope.AddtoCart = function(prodID, specID, varientsOption){
 		/*if($stateParams.SearchType == 'Products'){
@@ -754,7 +761,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
             });
         }
-		else if($stateParams.SearchType =='Workshop'){
+		else if(vm.hidePdpblock==true){
 			vm.fullProductsData=productList;
 		}
         else{
@@ -762,8 +769,31 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
             });
         }
-		if($stateParams.SearchType !='Workshop'){
-			vm.productExtras=extraProducts();
+		if(vm.hidePdpblock==false){
+		vm.DeliveryType = false;
+		//vm.isCourier = false;
+		vm.Courier = false;
+		vm.DirectShip = false;
+		//vm.isFaster = false;
+		vm.Faster = false;
+		vm.GiftCard = false;
+		OrderCloud.Categories.ListProductAssignments(null, e.ID).then(function(res){
+			OrderCloud.Categories.Get(res.Items[0].CategoryID).then(function(res2){
+				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip){
+					vm.DirectShip = true;
+				}
+				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Mixed){
+					vm.Faster = true;
+				}
+				if(res2.Name == "Gift Cards"){
+					vm.GiftCard = true;
+				}
+				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Courier == true){
+					vm.Courier = true;
+				}
+			});	
+		});
+		vm.productExtras=extraProducts();
 			$scope.radio.selectedColor = e.xp.SpecsOptions.Color;
 			availableColors = DisplayColors(vm.fullProductsData, true);
 			vm.allColors = availableColors;
@@ -843,7 +873,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 console.log('PDP PRODUCT ERROR :: ', selectedSku);
             }
         }
-		else if($stateParams.SearchType == 'Workshop' && $scope.radio.selectedSize != -1){
+		else if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true && $scope.radio.selectedSize != -1){
             var selectedSku = _.filter(vm.fullProductsData, function (_obj) {
                 return ((_obj.xp.SpecsOptions.Size == $scope.radio.selectedSize))
             });

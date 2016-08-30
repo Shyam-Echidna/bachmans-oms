@@ -53,7 +53,7 @@ function HomeConfig( $stateProvider ) {
                     console.log(res1);
         OrderCloud.Orders.Get(res1.OrderID).then(function(data){
          console.log(data);
-         onholdordersobj={"ID":data.ID,"DeliveryDate":data.DateCreated,"SenderName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSR ID":data.xp.CSRID};
+         onholdordersobj={"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID};
          onholdorders.push(onholdordersobj);
         })
        })
@@ -138,7 +138,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 			{ name: 'FromUserFirstName', displayName:'Sender Name'},
 			{ name: 'BillingAddress', displayName:'Occassions'},
 			{ name: 'Totl', displayName:'Wire Status Code'},
-			{ name: 'xp.CSRID', displayName:'CSR ID'},
+			{ name: 'CSRID', displayName:'CSR ID'},
 			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
 		]
 	};

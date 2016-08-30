@@ -586,7 +586,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.searchList=productList;
 		}
 	}
-	$scope.AddtoCart = function(prodID, specID, varientsOption){
+	$scope.AddtoCart = function(prodID, baseImg, varientsOption){
 		/*if($stateParams.SearchType == 'Products'){
 			vm.guestUserModal =! vm.guestUserModal;
 		}*/
@@ -610,7 +610,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			DeliveryMethod = "USPS";
 		if(vm.DeliveryType=="Courier")
 			DeliveryMethod = "Courier";
-		angular.element(document.getElementById("oms-plp-right")).scope().beforeAddToCart(prodID, DeliveryMethod);
+		angular.element(document.getElementById("oms-plp-right")).scope().beforeAddToCart(prodID, DeliveryMethod, baseImg);
 	};
 	$scope.show = false;
 	$scope.showmenu = false;
@@ -1055,7 +1055,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		});	
 	}
 	var lineItemParams = {"ProductID": "","Quantity": 1};
-	$scope.buildOrderItems = function(prodID, DeliveryMethod){
+	$scope.buildOrderItems = function(prodID, DeliveryMethod, baseImg){
 		var buildorderPdp = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.productDetails;
 		console.log(buildorderPdp);
 		if($stateParams.prodID != null || $stateParams.orderID != ""){
@@ -1079,18 +1079,17 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					},true);
 				}
 			}else{
-				$scope.createListItem(prodID, DeliveryMethod);
+				$scope.createListItem(prodID, DeliveryMethod, baseImg);
 			}
 		}
 	};
-	$scope.beforeAddToCart = function(prodID, DeliveryMethod){
-		console.log(vm.order);
+	$scope.beforeAddToCart = function(prodID, DeliveryMethod, baseImg){
 		if(!vm.order){
 			OrderCloud.Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
 				if(res.Items.length != 0){
 					CurrentOrder.Set(res.Items[0].ID);
 					vm.order = res.Items[0];
-					$scope.buildOrderItems(prodID, DeliveryMethod);
+					$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
 				}else{
 					var orderParams = {"Type":"Standard","xp":{"OrderSource":"OMS","CSRID":$cookieStore.get('OMS.CSRID')}};
 					if($stateParams.SearchType == 'Products'){
@@ -1104,23 +1103,23 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								if($stateParams.SearchType == 'Products'){
 									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order = res1;	
 								}
-								$scope.buildOrderItems(prodID, DeliveryMethod);
+								$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
 							});
 						});
 					}else{
 						OrderCloud.As().Orders.Create(orderParams).then(function(res){
 							CurrentOrder.Set(res.ID);
 							vm.order = res;
-							$scope.buildOrderItems(prodID, DeliveryMethod);
+							$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
 						});
 					}
 				}
 			});
 		}else{
-			$scope.buildOrderItems(prodID, DeliveryMethod);
+			$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
 		}
 	};
-	$scope.createListItem = function(prodID, DeliveryMethod){
+	$scope.createListItem = function(prodID, DeliveryMethod, baseImg){
 		lineItemParams.ProductID = prodID;
 		lineItemParams.xp = {};
 		lineItemParams.xp.TotalCost = 0;
@@ -1132,6 +1131,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
 				}
 				lineItemParams.xp.MinDate = res.MinDate;
+				lineItemParams.xp.ProductImageUrl = baseImg;
 				OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
 					OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
@@ -2495,7 +2495,6 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		return d.promise;
 	}
 	function _getSeqProd(sequence) {
-		var start = new Date().getTime();
 		var vs = this, d = $q.defer(), arr = [];
 		vs.listAllProducts = function(){
 			angular.forEach(sequence, function(seqId, key){
@@ -2506,8 +2505,6 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				angular.forEach(result, function(res){
 					arr = _.union(arr, res.Items);
 				},true);
-				var end = new Date().getTime();
-				console.log("----------->"+end - start);
 				d.resolve(arr);
 			});
 		};

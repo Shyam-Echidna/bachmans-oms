@@ -156,12 +156,8 @@ function buildOrderConfig( $stateProvider ) {
 					}
 			},
 			SearchData: function($q, $stateParams, $state, OrderCloud, Order) {
-				var arr={};
-				console.log("params",$stateParams);
-				var d = $q.defer();
+				var arr = {}, d = $q.defer();
 				if($stateParams.SearchType == "User"){
-					console.log("vvvvvvvvv", $stateParams.orderID);
-					var d = $q.defer();
 					OrderCloud.Users.Get($stateParams.ID).then(function(data){
 						arr["user"] = data.Username;
 						arr["ID"] =data.ID;
@@ -183,10 +179,8 @@ function buildOrderConfig( $stateProvider ) {
 				return d.promise;
 			},
 			spendingAccounts:function($q, $state, $stateParams, OrderCloud){
-				var arr = [];
-				var spendingAcc={};
-				var filterPurple;
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
+				var arr = [], spendingAcc = {}, filterPurple;
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop'){
 					var dfd = $q.defer();
 					OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 						angular.forEach(assign.Items, function(value, key) {
@@ -208,55 +202,37 @@ function buildOrderConfig( $stateProvider ) {
 				}
 			},
 			ProductImages: function (BuildOrderService, $q) {
-				var ticket = localStorage.getItem("alf_ticket");
-				var dfr = $q.defer();
+				var ticket = localStorage.getItem("alf_ticket"), dfr = $q.defer();
 				BuildOrderService.GetProductImages(ticket).then(function(imgList){
 					dfr.resolve(imgList.items);
 				});
 				return dfr.promise;
 			},
 			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages) {
+				if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'|| $stateParams.SearchType =='Workshop'){
 					var dfr = $q.defer();
-					if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'|| $stateParams.SearchType =='Workshop'){
-						OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
-						.then(function(data) {
-							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-							if($stateParams.SearchType == 'plp'){
-                                return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
-                                    var ticket = localStorage.getItem("alf_ticket");
-                                        var prodList=BuildOrderService.GetProductList(res.Items, ProductImages);
-                                        dfr.resolve(prodList);
-                                });
-                            } else if($stateParams.SearchType == 'Products' && $stateParams.ID !=""){
-                                OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
-                                    OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
-                                        var ticket = localStorage.getItem("alf_ticket");
-										BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
-											dfr.resolve(prodList);
-										});
-                                    });
-                                });
-                            }
-							else if($stateParams.SearchType =='Workshop'){
-								 OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
-                                    OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
-                                        var ticket = localStorage.getItem("alf_ticket");
-										BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
-											dfr.resolve(prodList);
-											console.log(prodList);
-										});
-                                    });
-                                });
-							}
-                            else{
-                                dfr.resolve();
-                            }
-						});
-					}
-					else{
-						dfr.resolve();
-					}
+					OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(data) {
+						OrderCloud.Auth.SetImpersonationToken(data['access_token']);
+						if($stateParams.SearchType == 'plp'){
+							return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
+								var ticket = localStorage.getItem("alf_ticket"), prodList = BuildOrderService.GetProductList(res.Items, ProductImages);
+									dfr.resolve(prodList);
+							});
+						} else if(($stateParams.SearchType == 'Products' && $stateParams.ID !="") || $stateParams.SearchType =='Workshop'){
+							OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
+								OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
+									var ticket = localStorage.getItem("alf_ticket");
+									BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+										dfr.resolve(prodList);
+									});
+								});
+							});
+						}else{
+							dfr.resolve();
+						}
+					});
 					return dfr.promise;
+				}
 			 },
 			CstDateTime: function ($q, BuildOrderService){
 				var dfr = $q.defer();
@@ -561,8 +537,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 					angular.forEach(res, function(r){
 						vm.CategoryItemsSimilar.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description});
 					},true);
-					$('#owl-carousel-similar').trigger('destroy.owl.carousel');
-					$('#owl-carousel-similar').find('.owl-stage-outer').children().unwrap();
+					$('#owl-carousel-upsell').trigger('destroy.owl.carousel').removeClass('owl-carousel');
+					$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
 					setTimeout(function(){
 						$("#owl-carousel-similar").owlCarousel({
 							items:4,
@@ -999,7 +975,16 @@ function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) 
 
 function buildOrderDownController($scope, $stateParams) {
 	var vm = this;
-	$scope.cancelOrder = function () {
+	vm.ToolTip = {
+		templateUrl: 'CancelOrderToolTip.html'
+	};
+	vm.closePopover = function () {
+		vm.ShowCancelOrderToolTip = false;
+	};
+	vm.CancelToolTip = function(){
+		vm.ShowCancelOrderToolTip = true;
+	};
+	vm.cancelOrder = function () {
 		angular.element(document.getElementById("oms-plp-right")).scope().cancelOrder();
 	};
 	$scope.saveLaterPopup = function () {
@@ -1011,7 +996,7 @@ function buildOrderDownController($scope, $stateParams) {
 	};
 	vm.SaveAllLineItems = function(){
 		angular.element(document.getElementById("oms-plp-right")).scope().buildOrderRight.SaveAllLineItems();
-	}
+	};
 	$scope.showModal = false;
 }
 
@@ -1166,33 +1151,28 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 	};
 	$scope.createListItem = function(prodID, DeliveryMethod){
-		if(vm.activeOrders){
-			if(vm.activeOrders[prodID] != undefined){
-				var len = vm.activeOrders[prodID].length;
-				this.isOpen = parseInt(len)+1;
-			}
-		}
 		lineItemParams.ProductID = prodID;
 		lineItemParams.xp = {};
-			lineItemParams.xp.TotalCost = 0;
-			if(DeliveryMethod)
-				lineItemParams.xp.DeliveryMethod = DeliveryMethod;
-			BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
-				BuildOrderService.CompareDate().then(function(dat){
-					if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
-						lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
-					}
-					lineItemParams.xp.MinDate = res.MinDate;
-					OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
-						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
-						OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res){
-							vm.getLineItems();
-						});
+		lineItemParams.xp.TotalCost = 0;
+		if(DeliveryMethod)
+			lineItemParams.xp.DeliveryMethod = DeliveryMethod;
+		BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
+			BuildOrderService.CompareDate().then(function(dat){
+				if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
+					lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
+				}
+				lineItemParams.xp.MinDate = res.MinDate;
+				OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
+					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
+					OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
+						vm.getLineItems();
+						vm.isOpen[res.ID] = true;
 					});
 				});
 			});
+		});
 	};
-	$scope.deleteListItem = function(e, listItemID){
+	vm.deleteListItem = function(e, listItemID){
 		e.preventDefault();
 		e.stopPropagation();
 		OrderCloud.As().LineItems.Delete(vm.order.ID, listItemID).then(function(res){
@@ -1354,6 +1334,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		});
 	};
 	vm.lineDtlsSubmit = function(LineItemLists, index){
+		angular.forEach(vm.isOpen, function(val, key){
+			vm.isOpen[key] = false;
+		}, true);
 		var deliverySum, tempArr = [], OrderOnHold;
 		angular.forEach(LineItemLists, function(row, key){
 			deliverySum = 0;
@@ -1394,7 +1377,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			row.ShipFromAddressID = "testShipFrom";
 			tempArr.push(OrderCloud.As().LineItems.Update(vm.order.ID, row.ID, row));
 		}, true);
-		$q.all(tempArr).then(function(res1){
+		vm.ShowLoader = $q.all(tempArr).then(function(res1){
 			tempArr = [];
 			angular.forEach(res1, function(val, key){
 				var row1 = _.findWhere(LineItemLists, {ID: val.ID});
@@ -1406,8 +1389,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			if(OrderOnHold){
 				OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": "OnHold","CSRID":$cookieStore.get('OMS.CSRID')}});
 			}	
-			$q.all(tempArr).then(function(res2){
-				TaxService.GetTax(vm.order.ID).then(function(res3){
+			vm.ShowLoader = $q.all(tempArr).then(function(res2){
+				vm.ShowLoader = TaxService.GetTax(vm.order.ID).then(function(res3){
 					tempArr = [];
 					angular.forEach(res3.ResponseBody.TaxLines, function(val, key){
 						var row = _.findWhere(res1, {ID: val.LineNo});
@@ -1418,7 +1401,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						row.TotalCost = _.reduce(_.pluck(row, 'deliveryFeesDtls'), function(memo, num){ return memo + num; }, 0);
 						tempArr.push(OrderCloud.As().LineItems.Patch(vm.order.ID, val.LineNo, {"xp":{"Tax":val.Tax, "TotalCost":row.xp.deliveryCharges+row.LineTotal+val.Tax, "deliveryCharges": row.xp.deliveryCharges}}));
 					}, true);
-					$q.all(tempArr).then(function(res4){
+					vm.ShowLoader = $q.all(tempArr).then(function(res4){
 						vm.getLineItems();
 						vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 					});
@@ -1835,7 +1818,25 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(!_.contains(arr2, false) && !_.contains(arr, false)){
 			vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 		}
-	}
+	};
+	vm.DeleteToolTip = {
+		templateUrl: 'DeleteToolTip.html'
+	};
+	vm.closeDeletePopover = function (e, index) {
+		e.preventDefault();
+		e.stopPropagation();
+		vm['CancelDeleteToolTip'+index] = false;
+	};
+	vm.closeOusideClick = function () {
+		vm['CancelDeleteToolTip'+vm.OutsideClickToolTipIndex] = false;
+	};
+	vm.DeleteToolTipPopOver = function(e, index){
+		e.preventDefault();
+		e.stopPropagation();
+		vm.closeOusideClick();
+		vm['CancelDeleteToolTip'+index] = true;
+		vm.OutsideClickToolTipIndex = index;
+	};
 }
 
 function buildOrderPLPController(productList, $stateParams) {
@@ -2479,80 +2480,77 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 		return d.promise;
 	}
 	function _getProductImages(ticket) {
-        var defferred = $q.defer();
-		console.log("ticket" + ticket + "alfrescoOmsUrl:" + alfrescoOmsUrl );
+        var d = $q.defer();
+		//console.log("ticket" + ticket + "alfrescoOmsUrl:" + alfrescoOmsUrl );
         $http({
             method: 'GET',
             dataType: "json",
             url: alfrescoOmsUrl + "Media/Products?alf_ticket=" + ticket,
-
             headers: {
                 'Content-Type': 'application/json'
             }
         }).success(function (data, status, headers, config) {
-            defferred.resolve(data);
-			console.log("alfresco successssss");
+            d.resolve(data);
+			//console.log("alfresco successssss");
         }).error(function (data, status, headers, config) {
-		console.log("alfresco error");
-            defferred.reject(data);
+			//console.log("alfresco error");
+            d.reject(data);
         });
-        return defferred.promise;
+        return d.promise;
     }
 	function _getProductList(res, productImages){
-		var defferred = $q.defer();
-		var ticket = localStorage.getItem("alf_ticket");      
-		 var data = Underscore.filter(res, function(row){
-			var imgUrl = Underscore.filter(productImages, function(row1){
+		var d = $q.defer(), ticket = localStorage.getItem("alf_ticket"), data, imgUrl;      
+		data = Underscore.filter(res, function(row){
+			imgUrl = Underscore.filter(productImages, function(row1){
 				return row1.title.indexOf(row.ID) != -1;
 			});
 			// console.log("alternative", alternative);
 			if(imgUrl.length > 0){
 				var baseImage = Underscore.where(imgUrl, {title: row.ID});
-				if(baseImage.length>0){
-					row.baseImage=alfrescoURL + baseImage[0].contentUrl + "?alf_ticket=" + ticket;
+				if(baseImage.length > 0){
+					row.baseImage = alfrescoURL + baseImage[0].contentUrl + "?alf_ticket=" + ticket;
 				}
-				console.log("row.baseImage", row.baseImage);
-				row.alternativeImg=[];
+				//console.log("row.baseImage", row.baseImage);
+				row.alternativeImg = [];
 				angular.forEach(imgUrl, function(value, key) {
 					row.alternativeImg.push(alfrescoURL + value.contentUrl + "?alf_ticket=" + ticket);
-					console.log("row.alternativeImg", row.alternativeImg);
+					//console.log("row.alternativeImg", row.alternativeImg);
 				});
 				return row.alternativeImg;
 				//return row.alternativeImg=alfrescoURL + imgUrl[0].contentUrl + "?alf_ticket=" + ticket;
-			}
-			else
+			}else
 				return row;
-		   });
-		   defferred.resolve(data);
-		   return defferred.promise;
+		});
+		d.resolve(data);
+		return d.promise;
 	}
 	function _getSeqProd(sequence) {
-		var vs=this;
-		var defferred = $q.defer();
-		var arr=[];	
-		var count=0;
-		vs.listAllProducts= function(){
+		var start = new Date().getTime();
+		var vs = this, d = $q.defer(), arr = [];
+		vs.listAllProducts = function(){
 			angular.forEach(sequence, function(seqId, key){
-				OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":seqId}).then(function(res){
-					count++;
+				arr.push(OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":seqId}));
+			},true);
+			$q.all(arr).then(function(result){
+				arr = [];
+				angular.forEach(result, function(res){
 					arr = _.union(arr, res.Items);
-					console.log("arrarr--->", arr);
-					if(sequence.length == count)
-					defferred.resolve(arr);
-				})
-			})
-		}
+				},true);
+				var end = new Date().getTime();
+				console.log("----------->"+end - start);
+				d.resolve(arr);
+			});
+		};
 		if($stateParams.SearchType != 'Products' && $stateParams.SearchType!=undefined && $stateParams.SearchType!='Workshop'){
 				vs.listAllProducts();
-		}
-		else{
+		}else{
 			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
 			.then(function(data) {
 				OrderCloud.Auth.SetImpersonationToken(data['access_token']);
 				vs.listAllProducts();
-			})
+			});
 		}
-		return defferred.promise;
+		return d.promise;
 	}
 	function _getExtras() {
 		var data = {

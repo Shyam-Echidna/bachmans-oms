@@ -8,7 +8,7 @@
 			<span>{{orderTotal | currency}}</span>
 		</div>
 	</div>
-	<div class="cancel-order">
+	<div class="cancel-order" ng-click="buildOrderDown.CancelToolTip()" popover-trigger="none" popover-placement="right-top" popover-is-open="buildOrderDown.ShowCancelOrderToolTip" uib-popover-template="buildOrderDown.ToolTip.templateUrl">
 		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 			viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve" class="footer-svg">
 			<g transform="translate(0,-952.36218)">
@@ -20,7 +20,14 @@
 					c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
 			</g>
 		</svg>
-		<h5 ng-click="cancelOrder()">Cancel Order</h5>
+		<h5>Cancel Order</h5>
+		<script type="text/ng-template" id="CancelOrderToolTip.html">
+			<div click-outside="buildOrderDown.closePopover()">
+				<h6>Are you sure to want cancel?</h6>
+				<button type="button" ng-click="buildOrderDown.cancelOrder()">OK</button>
+				<button type="button" ng-click="buildOrderDown.closePopover()">Cancel</button>
+			</div>
+		</script>
 	</div>
 	<div class="save-later" ng-click="saveLaterPopup()">
 		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

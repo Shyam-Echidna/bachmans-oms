@@ -217,15 +217,14 @@ function ordercloudSearch () {
 }
 
 function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud, algolia, Underscore, BuildOrderService) {
-    var searching;	
-	var vm=this;
+    var searching, vm = this;
 	$scope.clearData=function(){
 		$scope.search.query="";
 		if($scope.servicename=='Addresses'){
 			$scope.controlleras.searchedAddr.Items="";
 		}
 		else
-		$scope.controlleras.list="";
+			$scope.controlleras.list="";
 	}
 	if($scope.servicename!='address'){
 		var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');
@@ -260,7 +259,7 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 					BuildOrderService.GetProductImages(ticket).then(function(imagesList){
 						BuildOrderService.GetSeqProd(seqId).then(function(res){
 							// seqList = _.union(seqList, res);
-							if(res.length==0){		
+							if(res.length==0){
 								$scope.controlleras.list="";
 								$state.go('buildOrder',{SearchType:'Products'});
 							}

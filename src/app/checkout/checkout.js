@@ -376,9 +376,18 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}
 		vm.recipientsGroup = groups;
 		vm.recipients = [];
+		vm.ShipmentsPromise = [];
 		for(var n in groups){
+			var items = [], Status = null;
 			vm.recipients.push(n);
+			angular.forEach(groups[n], function(val, key){
+				items.push({"OrderID": vm.order.ID, "LineItemID": val.ID, "QuantityShipped": val.Quantity});
+				if(val.xp.Status == "OnHold")
+					Status = {"Status":"OnHold"};
+			}, true);
+			vm.ShipmentsPromise.push(OrderCloud.Shipments.Create({"Items":items, "xp":Status}));
 		}
+		
 	};
     vm.Grouping(ProductInfo);
 	vm.ProceedToPayment = function(lineitems,index, form) {
@@ -1134,9 +1143,11 @@ function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
 							.then(function(){
 								TaxService.CollectTax(vm.orderID)
 									.then(function(){
-										d.resolve("1");
-										$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
-									})
+										$q.all(vm.ShipmentsPromise).then(function(results){
+											d.resolve("1");
+											$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+										});
+									});
 							});
 					}else{
 						vm.TransactionError = res.ResponseBody.messages.message[0].text;

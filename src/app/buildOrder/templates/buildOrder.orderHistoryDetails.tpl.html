@@ -786,7 +786,7 @@
 							</tbody>
 							<tfoot>
 								<tr>
-									<td colspan="4" class="delivery">
+									<!-- <td colspan="4" class="delivery">
 										<div class="delivery-content">
 											<h5>Delivery</h5>
 											<span>Subtotal</span>
@@ -797,7 +797,26 @@
 											<h5>{{line[0].xp.deliveryCharges | currency}}</h5>
 											<span>{{line[0].xp.TotalCost | currency}}</span>
 										</div>
-
+									</td> -->
+									<td class="delivery-content" colspan="5">
+									<div class="delivery">
+									 <div ng-if="!line[0].EditCharges" ng-repeat="(key, val) in line[0].xp.deliveryFeesDtls">
+										<h5>{{key}}  </h5><span>{{val | currency}}</span>
+									 </div>
+									 <div>
+										<h5>Total Tax  </h5><span>{{line[0].TotalTax | currency}}</span>
+									 </div>
+									 <div ng-if="line[0].EditCharges" ng-repeat="(key, val) in line[0].xp.deliveryFeesDtls">
+										<h5>{{key}}  </h5>
+										<div class="edit-input"><input type="text" value="{{val}}" ng-model="line[0].xp.deliveryFeesDtls[key]" /></div>
+									 </div>
+									 <div>
+										<h5>Delivery </h5><span>{{line[0].xp.deliveryCharges | currency}}</span>
+									 </div>
+									  <div>
+										<h5>Subtotal</h5><span>{{line[0].TotalCost | currency}}</span>
+									 </div>
+									 </div>
 									</td>
 								</tr>
 							</tfoot>

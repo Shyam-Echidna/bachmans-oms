@@ -334,7 +334,7 @@
 					</td>
 					<td>
 						<!-- EDIT ADDRESS STARTS -->
-						<form ng-if="defaultEdit" class="edit-address-main" name="deafaultAddress">
+						<form ng-if="addressBook.defaultEdit" class="edit-address-main" name="deafaultAddress">
 							<div class="edit-address-container" id="top">
 								<h2>Edit Address</h2>
 								<div class="inline-div addr-top">
@@ -412,7 +412,7 @@
 							</div>
 							<div class="button-list addr-top">
 								<button type="button" class="save" ng-disabled="deafaultAddress.$invalid" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact)">SAVE</button>
-								<button type="button" ng-click="defaultEdit=!defaultEdit">CANCEL</button>
+								<button type="button" ng-click="addressBook.defaultEdit=!addressBook.defaultEdit">CANCEL</button>
 							</div>
 						</form> 
 					</td>

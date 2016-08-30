@@ -14,11 +14,11 @@
 						<li ng-repeat="categories in baseTop.tree" class="sub-nav">
 							<a class="maincat_link" ng-class="{'category-arw': categories.ChildCount}" ng-mouseover="baseTop.page = 1">{{categories.Name}}</a>
 							<ul class="menu_level_2" ng-if="categories.ChildCount">
-								<li ng-repeat="subcategories in categories.children track by $index" ng-if="((categories.ID =='c1') && ((subcategories.xp.StartDate| date:'MM/dd') < (application.cstTime| date:'MM/dd')) && ((subcategories.xp.EndDate| date:'MM/dd') > (application.cstTime| date:'MM/dd')))">
-									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
+								<li ng-repeat="subcategories in categories.children track by $index" ng-if="((categories.ID =='c1') && ((subcategories.xp.StartDate| date:'MM/dd') < (application.cstTime| date:'MM/dd')) && ((subcategories.xp.EndDate| date:'MM/dd') > (application.cstTime| date:'MM/dd')) && ($index < (baseTop.page * baseTop.numRecords)) && ($index >= ((baseTop.page - 1) * baseTop.numRecords)))">
+									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-mouseover="baseTop.page2 = 1" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
 									<ul class="menu_level_3" ng-if="subcategories.ChildCount">
-										<li ng-repeat="subchildcategories in subcategories.children">
-											<a ui-sref="buildOrder({ID:subchildcategories.ID,SearchType:'plp'})" ng-click="base.isopen=false">{{subchildcategories.Name}}</a>	 
+										<li ng-repeat="subchildcategories in subcategories.children track by $index" ng-if="($index < (baseTop.page2 * baseTop.numRecords)) && ($index >= ((baseTop.page2 - 1) * baseTop.numRecords)) ">
+											<a ui-sref="buildOrder({ID:subchildcategories.ID,SearchType:'plp'})" ng-click="base.isopen=false">{{baseTop.page2}}{{baseTop.numRecords}}{{subchildcategories.Name}}</a>	 
 										</li>
 									</ul> 
 								</li>
@@ -39,11 +39,27 @@
 									</svg>
 								</button>
 								<li ng-repeat="subcategories in categories.children track by $index" ng-if="(($index < (baseTop.page * baseTop.numRecords)) && ($index >= ((baseTop.page - 1) * baseTop.numRecords)) && categories.ID !='c1')">
-									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
+									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-mouseover="baseTop.page2 = 1" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
 									<ul class="menu_level_3" ng-if="subcategories.ChildCount">
-										<li ng-repeat="subchildcategories in subcategories.children">
-											<a ui-sref="plp({ID:subchildcategories.ID,childCount:subchildcategories.ChildCount})">{{subchildcategories.Name}}</a>	 
+										<button class="up-arrow" ng-click="baseTop.back2()" ng-show="baseTop.numRecords < (baseTop.page2 * baseTop.numRecords)">
+											<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+												<g>
+													<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+												</g>
+											</svg>
+										</button>
+										<li ng-repeat="subchildcategories in subcategories.children" ng-if="($index < (baseTop.page2 * baseTop.numRecords)) && ($index >= ((baseTop.page2 - 1) * baseTop.numRecords))">
+											<a ui-sref="buildOrder({ID:subchildcategories.ID,SearchType:'plp'})" ng-click="base.isopen=false">{{subchildcategories.Name}}</a>	 
 										</li>
+										<button class="down-arrow" ng-click="baseTop.next2()" ng-show="subcategories.children.length > (baseTop.page2 * baseTop.numRecords)">
+											<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+												viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+												<g>
+													<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+												</g>
+											</svg>
+										</button>
 									</ul> 
 								</li>
 							</ul>

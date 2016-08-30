@@ -61,10 +61,10 @@
 							<input type="text" ng-model="addr.State" readonly required/>
 						</div>
 					</div>
-					<div class="addr-top">
+					<div class="addr-top addr-cont">
 						<!--  <label><input type="checkbox" ng-model="addr.Shipping">Shipping Address</label>
 						<label><input type="checkbox" ng-model="addr.Billing">Billing Address</label> --> 
-						
+						<!-- 
 						<div class="check-common">
 						<input type="checkbox" name="shippingaddress" id="shippingaddress"ng-model="addr.Shipping">
 						<label for="shippingaddress" class="check"></label>
@@ -75,7 +75,15 @@
 						<label for="billingaddress" class="check"></label>
 						</div>
 						<span>Billing Address</span>
-						
+						 -->
+						 <div>
+						 <input type="checkbox" name="shippingaddress" id="shippingaddress" ng-model="addr.Shipping"  class="checkbox-custom">
+						 <label  for="shippingaddress"  class="checkbox-custom-label">Shipping Address</label>
+						</div>
+						<div>
+						 <input type="checkbox" name="billingaddress" ng-model="addr.Billing" id="billingaddress" class="checkbox-custom">
+						 <label  for="billingaddress"  class="checkbox-custom-label">Billing Address</label>
+						</div>
 					</div>
 					<div class="contact-num addr-top">
 						<p>Phone Number</p>
@@ -269,22 +277,28 @@
 									<input type="number" ng-model="addressBook.contact.Phone2"/>
 									<input type="number" ng-model="addressBook.contact.Phone3"/>
 								</div>
-								<div class="addr-top">
+								<div class="addr-top addr-cont">
 									<!-- <label><input type="checkbox" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">Shipping Address</label>
 									<label><input type="checkbox" ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing">Billing Address</label> -->
-								<div class="check-common">
+								<!-- <div class="check-common">
 								<input type="checkbox" name="shippingaddress1" id="shippingaddress1" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">
 								<label for="shippingaddress1" class="check"></label>
 								</div>
-								<span>Shipping Address</span>
-
-								<div class="check-common billing">
+								<span>Shipping Address</span> -->
+								<div>
+								 <input type="checkbox" name="shippingaddress1" id="shippingaddress1" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping" class="checkbox-custom">
+								 <label  for="shippingaddress1" class="checkbox-custom-label">Shipping Address</label>
+								</div>
+								<div>
+								 <input type="checkbox" name="billingaddress1" id="billingaddress1" ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing" class="checkbox-custom">
+								 <label  for="billingaddress1" class="checkbox-custom-label">Billing Address</label>
+								</div>
+								<!-- <div class="check-common billing">
 								<input type="checkbox" name="billingaddress1" id="billingaddress1" ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing">
 								<label for="billingaddress1" class="check"></label>
 								</div>
-								<span>Billing Address</span>
-
-								</div>
+								<span>Billing Address</span> -->
+							</div>
 							</div>
 							<div class="button-list addr-top">
 								<button type="button" class="save" ng-disabled="searchedAddress.$invalid" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact)">SAVE</button>
@@ -393,20 +407,28 @@
 									<input type="number" ng-model="addressBook.contact.Phone2"/>
 									<input type="number" ng-model="addressBook.contact.Phone3"/>
 								</div>
-								<div class="addr-top">
+								<div class="addr-top addr-cont">
 									<!-- <label><input type="checkbox" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">Shipping Address</label>
 									<label><input type="checkbox" ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing">Billing Address</label> -->
-									<div class="check-common">
+									<!-- <div class="check-common">
 									<input type="checkbox" name="shippingaddress2" id="shippingaddress2" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">
 									<label for="shippingaddress2" class="check"></label>
 									</div>
-									<span>Shipping Address</span>
-
+									<span>Shipping Address</span> -->
+									<div>
+									 <input type="checkbox" name="shippingaddress2" id="shippingaddress2" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping" class="checkbox-custom">
+									 <label  for="shippingaddress2" class="checkbox-custom-label">Shipping Address</label>
+									</div>
+									<div>
+									 <input type="checkbox" name="billingaddress2" id="billingaddress2"  ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing" class="checkbox-custom">
+									 <label  for="billingaddress2" class="checkbox-custom-label">Billing Address</label>
+									</div>
+									<!-- 
 									<div class="check-common billing">
 									<input type="checkbox" name="billingaddress2" id="billingaddress2"  ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing">
 									<label for="billingaddress2" class="check"></label>
 									</div>
-									<span>Billing Address</span>
+									<span>Billing Address</span> -->
 
 								</div>
 							</div>
@@ -510,20 +532,28 @@
 										</div> -->
 									</div>
 								</div>
-								<div class="addr-top">
+								<div class="addr-top addr-cont">
 									<!-- <label><input type="checkbox" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">Shipping Address</label>
 									<label><input type="checkbox" ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing">Billing Address</label> -->
-									<div class="check-common">
+									<!-- <div class="check-common">
 									<input type="checkbox" name="shippingaddress3" id="shippingaddress3" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">
 									<label for="shippingaddress3" class="check"></label>
 									</div>
-									<span>Shipping Address</span>
-
+									<span>Shipping Address</span> -->
+									 <div>
+									 <input type="checkbox" name="shippingaddress3" id="shippingaddress3" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping" class="checkbox-custom">
+									 <label  for="shippingaddress3" class="checkbox-custom-label">Shipping Address</label>
+									 </div>
+									 <div>
+									 <input type="checkbox" name="billingaddress3" id="billingaddress3"  ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing" class="checkbox-custom">
+									 <label  for="billingaddress3" class="checkbox-custom-label">Billing Address</label>
+									</div>
+									<!-- 
 									<div class="check-common billing">
 									<input type="checkbox" name="billingaddress3" id="billingaddress3"  ng-model="addressBook.editAddr.Billing" ng-checked="addressBook.editAddr.Billing">
 									<label for="billingaddress3" class="check"></label>
 									</div>
-									<span>Billing Address</span>
+									<span>Billing Address</span> -->
 								</div>
 								<div class="contact-num addr-top">
 									<p>Phone Number</p>

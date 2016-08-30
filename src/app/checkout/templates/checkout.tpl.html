@@ -396,11 +396,15 @@
 										<div class="no-msg">
 											<span>Card Message</span>
 											<!-- <input type="checkbox" name="cardmessage" ng-model="cardMsg"></input> -->
-											<div class="check-common msg">
+											<!-- <div class="check-common msg">
 												<input type="checkbox" name="cardmessage" ng-model="line.cardMsg" id="noMessage{{$index}}">
 												<label for="noMessage{{$index}}" class="check"></label>
 											</div>
-											<span>No Message</span>
+											<span>No Message</span> -->
+											<div class="no-msg-cont">
+ 												<input type="checkbox" ng-model="line.cardMsg" id="noMessage{{$index}}" class="checkbox-custom" name="cardmessage">
+ 												<label  for="noMessage{{$index}}" class="checkbox-custom-label">No Message</label>
+											</div>
 										</div>
 										<div class="line-msgs" ng-class="{'hideItem': !line.cardMsg}">
 											<p>Line 1</p>
@@ -934,13 +938,18 @@
 													<input type="text" class="form-control" id="email" placeholder="Email Address" ng-model="checkout.billingAddress.xp.Email" />
 												</div>
 												<div class="col-xs-12 p0 form-group card-remember">
-													<div class="check-common">
-													   <!--  <input type="checkbox" id="save" ng-click="checkout.addCreditCard(checkout.card, checkout.billingAddress)"> -->
+													<!-- <div class="check-common">
+													
 														<input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" ng-disabled="checkout.creditCardsList.length >= 3" />
 														<label for="save" class="check"></label>
+													</div> -->
+												  <!--  <span ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</span>
+												   <span ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</span> -->
+												   <div>
+													 <input type="checkbox" id="save" ng-init="checkout.addCard=false" ng-model="checkout.addCard" ng-click="checkout.ValidateAddress(checkout.billingAddress)" ng-disabled="checkout.creditCardsList.length >= 3"  class="checkbox-custom" name="cardmessage">
+													 <label  for="save" class="checkbox-custom-label" ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</label>
+													  <label  for="save" class="checkbox-custom-label" ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</label>
 													</div>
-												   <span ng-if="checkout.creditCardsList.length < 3">Save this card for future payments</span>
-												   <span ng-if="checkout.creditCardsList.length >= 3">Cannot add more than 3 cards</span>
 												</div>
 	                                        </form>
 					                   </div>

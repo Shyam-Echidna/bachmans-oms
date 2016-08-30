@@ -33,17 +33,34 @@ function HomeConfig( $stateProvider ) {
 						// });
 					OrderCloud.Orders.ListOutgoing(null, null, null, null, null, null, null, {"xp.SavedOrder.Flag":true}).then(function(data){
 						arr.saved=data.Items;
+						dd.resolve(arr);
 						console.log("ppppppppppppppppp",data);
 						 
-					})
-					OrderCloud.Orders.ListOutgoing(null, null, null, null, null, null, null, {"xp.Status":'OnHold'}).then(function(response){
-							arr.onHold=response.Items;
-							console.log("responsepp",response);
-						 dd.resolve(arr);
 					})
 					
 					//console.log("aaaaaa", arr);
                     return dd.promise;
+                },
+				OrdersOnHold: function(OrderCloud, $q){
+                 var dd=$q.defer();
+                 var onholdorders = [];
+                 var onholdordersobj = {};
+                 OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
+                  console.log(res);
+                  angular.forEach(res.Items, function(res, key){
+                   console.log(res);
+                   angular.forEach(res.Items, function(res1, key1){
+                    console.log(res1);
+        OrderCloud.Orders.Get(res1.OrderID).then(function(data){
+         console.log(data);
+         onholdordersobj={"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID};
+         onholdorders.push(onholdordersobj);
+        })
+       })
+      })
+      dd.resolve(onholdorders);
+                 })
+                 return dd.promise;
                 },
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();
@@ -82,7 +99,7 @@ function HomeConfig( $stateProvider ) {
 }
 
 
-function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList) {
+function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList, OrdersOnHold) {
 	var vm = this;
 	OrderCloud.Auth.RemoveImpersonationToken();
 	vm.eventList=EventList;
@@ -111,7 +128,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
         console.log(lineitem);
     });*/
 	console.log("OrderList", OrderList);
-    vm.onHold = OrderList.onHold;
+    vm.onHold = OrdersOnHold;
 	$scope.gridOptions = {
 		data: 'home.onHold',
 		enableSorting: true,
@@ -121,7 +138,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 			{ name: 'FromUserFirstName', displayName:'Sender Name'},
 			{ name: 'BillingAddress', displayName:'Occassions'},
 			{ name: 'Totl', displayName:'Wire Status Code'},
-			{ name: 'xp.CSRID', displayName:'CSR ID'},
+			{ name: 'CSRID', displayName:'CSR ID'},
 			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
 		]
 	};

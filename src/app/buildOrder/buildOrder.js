@@ -557,8 +557,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 					angular.forEach(res, function(r){
 						vm.CategoryItemsSimilar.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description});
 					},true);
-					$('#owl-carousel-similar').trigger('destroy.owl.carousel');
-					$('#owl-carousel-similar').find('.owl-stage-outer').children().unwrap();
+					$('#owl-carousel-upsell').trigger('destroy.owl.carousel').removeClass('owl-carousel');
+					$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
 					setTimeout(function(){
 						$("#owl-carousel-similar").owlCarousel({
 							items:4,
@@ -969,7 +969,16 @@ function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) 
 
 function buildOrderDownController($scope, $stateParams) {
 	var vm = this;
-	$scope.cancelOrder = function () {
+	vm.ToolTip = {
+		templateUrl: 'CancelOrderToolTip.html'
+	};
+	vm.closePopover = function () {
+		vm.ShowCancelOrderToolTip = false;
+	};
+	vm.CancelToolTip = function(){
+		vm.ShowCancelOrderToolTip = true;
+	};
+	vm.cancelOrder = function () {
 		angular.element(document.getElementById("oms-plp-right")).scope().cancelOrder();
 	};
 	$scope.saveLaterPopup = function () {
@@ -981,7 +990,7 @@ function buildOrderDownController($scope, $stateParams) {
 	};
 	vm.SaveAllLineItems = function(){
 		angular.element(document.getElementById("oms-plp-right")).scope().buildOrderRight.SaveAllLineItems();
-	}
+	};
 	$scope.showModal = false;
 }
 
@@ -1136,33 +1145,28 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 	};
 	$scope.createListItem = function(prodID, DeliveryMethod){
-		if(vm.activeOrders){
-			if(vm.activeOrders[prodID] != undefined){
-				var len = vm.activeOrders[prodID].length;
-				this.isOpen = parseInt(len)+1;
-			}
-		}
 		lineItemParams.ProductID = prodID;
 		lineItemParams.xp = {};
-			lineItemParams.xp.TotalCost = 0;
-			if(DeliveryMethod)
-				lineItemParams.xp.DeliveryMethod = DeliveryMethod;
-			BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
-				BuildOrderService.CompareDate().then(function(dat){
-					if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
-						lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
-					}
-					lineItemParams.xp.MinDate = res.MinDate;
-					OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
-						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
-						OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res){
-							vm.getLineItems();
-						});
+		lineItemParams.xp.TotalCost = 0;
+		if(DeliveryMethod)
+			lineItemParams.xp.DeliveryMethod = DeliveryMethod;
+		BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
+			BuildOrderService.CompareDate().then(function(dat){
+				if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
+					lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
+				}
+				lineItemParams.xp.MinDate = res.MinDate;
+				OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
+					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
+					OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
+						vm.getLineItems();
+						vm.isOpen[res.ID] = true;
 					});
 				});
 			});
+		});
 	};
-	$scope.deleteListItem = function(e, listItemID){
+	vm.deleteListItem = function(e, listItemID){
 		e.preventDefault();
 		e.stopPropagation();
 		OrderCloud.As().LineItems.Delete(vm.order.ID, listItemID).then(function(res){
@@ -1324,6 +1328,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		});
 	};
 	vm.lineDtlsSubmit = function(LineItemLists, index){
+		angular.forEach(vm.isOpen, function(val, key){
+			vm.isOpen[key] = false;
+		}, true);
 		var deliverySum, tempArr = [], OrderOnHold;
 		angular.forEach(LineItemLists, function(row, key){
 			deliverySum = 0;
@@ -1364,7 +1371,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			row.ShipFromAddressID = "testShipFrom";
 			tempArr.push(OrderCloud.As().LineItems.Update(vm.order.ID, row.ID, row));
 		}, true);
-		$q.all(tempArr).then(function(res1){
+		vm.ShowLoader = $q.all(tempArr).then(function(res1){
 			tempArr = [];
 			angular.forEach(res1, function(val, key){
 				var row1 = _.findWhere(LineItemLists, {ID: val.ID});
@@ -1376,8 +1383,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			if(OrderOnHold){
 				OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": "OnHold","CSRID":$cookieStore.get('OMS.CSRID')}});
 			}	
-			$q.all(tempArr).then(function(res2){
-				TaxService.GetTax(vm.order.ID).then(function(res3){
+			vm.ShowLoader = $q.all(tempArr).then(function(res2){
+				vm.ShowLoader = TaxService.GetTax(vm.order.ID).then(function(res3){
 					tempArr = [];
 					angular.forEach(res3.ResponseBody.TaxLines, function(val, key){
 						var row = _.findWhere(res1, {ID: val.LineNo});
@@ -1388,7 +1395,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						row.TotalCost = _.reduce(_.pluck(row, 'deliveryFeesDtls'), function(memo, num){ return memo + num; }, 0);
 						tempArr.push(OrderCloud.As().LineItems.Patch(vm.order.ID, val.LineNo, {"xp":{"Tax":val.Tax, "TotalCost":row.xp.deliveryCharges+row.LineTotal+val.Tax, "deliveryCharges": row.xp.deliveryCharges}}));
 					}, true);
-					$q.all(tempArr).then(function(res4){
+					vm.ShowLoader = $q.all(tempArr).then(function(res4){
 						vm.getLineItems();
 						vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 					});
@@ -1805,7 +1812,25 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		if(!_.contains(arr2, false) && !_.contains(arr, false)){
 			vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 		}
-	}
+	};
+	vm.DeleteToolTip = {
+		templateUrl: 'DeleteToolTip.html'
+	};
+	vm.closeDeletePopover = function (e, index) {
+		e.preventDefault();
+		e.stopPropagation();
+		vm['CancelDeleteToolTip'+index] = false;
+	};
+	vm.closeOusideClick = function () {
+		vm['CancelDeleteToolTip'+vm.OutsideClickToolTipIndex] = false;
+	};
+	vm.DeleteToolTipPopOver = function(e, index){
+		e.preventDefault();
+		e.stopPropagation();
+		vm.closeOusideClick();
+		vm['CancelDeleteToolTip'+index] = true;
+		vm.OutsideClickToolTipIndex = index;
+	};
 }
 
 function buildOrderPLPController(productList, $stateParams) {

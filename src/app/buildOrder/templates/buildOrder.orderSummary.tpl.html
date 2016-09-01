@@ -1,5 +1,6 @@
 <ui-view>
-	<div id="order-summary" class="oms_main_container buildOrder-order-summary" ng-show="showOrdersummary">
+	<div id="order-summary" class="oms_main_container buildOrder-order-summary" ng-show="showOrdersummary" cg-busy="{promise:buildordersummary.OrderSummaryLoader,message:'Please wait',templateUrl:'
+common/loading-indicators/templates/view.loading.tpl.html'}">
 		<div class="buildOrder-order-summary-content">
 			<div class="order-info">
 				<h1>Active Order Summary</h1>

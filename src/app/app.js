@@ -28,7 +28,8 @@ angular.module( 'orderCloud', [
         'ui.grid',
         'ui.grid.infiniteScroll',
         'ui.grid.edit',
-		'algoliasearch'
+		'algoliasearch',
+		'ui.calendar'
     ])
 
     .run( SetBuyerID )

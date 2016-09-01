@@ -594,20 +594,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}
 	}
 	$scope.AddtoCart = function(prodID, baseImg, varientsOption){
-		/*if($stateParams.SearchType == 'Products'){
-			vm.guestUserModal =! vm.guestUserModal;
-		}*/
-		/*if($stateParams.SearchType == 'Products'){
-			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(res){
-				console.log(res);
-				OrderCloud.Auth.SetImpersonationToken(res.access_token);
-				var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
-				OrderCloud.As().Orders.Create(orderParams).then(function(res1){
-					console.log(res1);
-					OrderCloud.As().LineItems.Create(res1.ID, {"ProductID": prodID,"Quantity": 1});
-				})
-			})
-		}*/
 		var DeliveryMethod;
 		if(vm.DirectShip)
 			DeliveryMethod = "DirectShip";
@@ -1040,6 +1026,8 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 
 function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService, $cookieStore, CstDateTime) {
 	var vm = this;
+	vm.isOpen = {};
+	vm.CancelDeleteToolTip = {};
 	vm.order = Order;
 	$scope.showDeliveryMethods = {
 		templateUrl: 'AddRecipientDelMethods.html'
@@ -1064,8 +1052,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		vm.Courier = false;
 		vm.GiftCard = false;
 		vm.DirectShip = false;
-		OrderCloud.Categories.ListProductAssignments(null, prodID).then(function(res1){
-			OrderCloud.Categories.Get(res1.Items[0].CategoryID).then(function(res2){
+		vm.ActiveOrderCartLoader = OrderCloud.Categories.ListProductAssignments(null, prodID).then(function(res1){
+			vm.ActiveOrderCartLoader = OrderCloud.Categories.Get(res1.Items[0].CategoryID).then(function(res2){
 				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Mixed){
 					vm.Faster = true;
 					vm['showDeliveryToolTip'+index] = true;
@@ -1083,9 +1071,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				}	
 			});
 		});	
-	}
-	var lineItemParams = {"ProductID": "","Quantity": 1};
-	$scope.buildOrderItems = function(prodID, DeliveryMethod, baseImg){
+	};
+	/*$scope.buildOrderItems = function(prodID, DeliveryMethod, baseImg){
 		var buildorderPdp = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.productDetails;
 		console.log(buildorderPdp);
 		if($stateParams.prodID != null || $stateParams.orderID != ""){
@@ -1112,14 +1099,15 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				$scope.createListItem(prodID, DeliveryMethod, baseImg);
 			}
 		}
-	};
+		$scope.createListItem(prodID, DeliveryMethod, baseImg);
+	};*/
 	$scope.beforeAddToCart = function(prodID, DeliveryMethod, baseImg){
 		if(!vm.order){
 			OrderCloud.Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
 				if(res.Items.length != 0){
 					CurrentOrder.Set(res.Items[0].ID);
 					vm.order = res.Items[0];
-					$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
+					$scope.createListItem(prodID, DeliveryMethod, baseImg);
 				}else{
 					var orderParams = {"Type":"Standard","xp":{"OrderSource":"OMS","CSRID":$cookieStore.get('OMS.CSRID')}};
 					if($stateParams.SearchType == 'Products'){
@@ -1133,58 +1121,57 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								if($stateParams.SearchType == 'Products'){
 									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order = res1;	
 								}
-								$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
+								$scope.createListItem(prodID, DeliveryMethod, baseImg);
 							});
 						});
 					}else{
 						OrderCloud.As().Orders.Create(orderParams).then(function(res){
 							CurrentOrder.Set(res.ID);
 							vm.order = res;
-							$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
+							$scope.createListItem(prodID, DeliveryMethod, baseImg);
 						});
 					}
 				}
 			});
 		}else{
-			$scope.buildOrderItems(prodID, DeliveryMethod, baseImg);
+			$scope.createListItem(prodID, DeliveryMethod, baseImg);
 		}
 	};
 	$scope.createListItem = function(prodID, DeliveryMethod, baseImg){
-		lineItemParams.ProductID = prodID;
-		lineItemParams.xp = {};
-		lineItemParams.xp.TotalCost = 0;
+		var lineItemParams = {"ProductID": prodID,"Quantity": 1,"xp":{"TotalCost":0}};
 		if(DeliveryMethod)
 			lineItemParams.xp.DeliveryMethod = DeliveryMethod;
-		BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
-			BuildOrderService.CompareDate().then(function(dat){
-				if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
-					lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
-				}
-				lineItemParams.xp.MinDate = res.MinDate;
-				lineItemParams.xp.ProductImageUrl = baseImg;
-				OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
-					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
-					OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
-						vm.getLineItems();
-						vm.isOpen[res.ID] = true;
-					});
+		vm.ActiveOrderCartLoader = BuildOrderService.GetDeliveryOptions(lineItemParams, DeliveryMethod).then(function(res){
+			//BuildOrderService.CompareDate().then(function(dat){
+			if(!res['UPS'] && !res['LocalDelivery'] && !res['Mixed'] && res['InStorePickUp'] && !res['USPS'] && !res['DirectShip'] && !res['Courier']){
+				lineItemParams.xp.deliveryFeesDtls = res['InStorePickUp'];
+			}
+			lineItemParams.xp.MinDate = res.MinDate;
+			lineItemParams.xp.ProductImageUrl = baseImg;
+			vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
+				lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
+				vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
+					vm.getLineItems();
+					vm.isOpen[res.ID] = true;
 				});
 			});
+			//});
 		});
 	};
 	vm.deleteListItem = function(e, listItemID){
 		e.preventDefault();
 		e.stopPropagation();
-		OrderCloud.As().LineItems.Delete(vm.order.ID, listItemID).then(function(res){
+		vm.CancelDeleteToolTip[listItemID] = false;
+		vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Delete(vm.order.ID, listItemID).then(function(res){
 			vm.getLineItems();
 			vm.lineItemForm[listItemID].$setPristine();
 		});
 	};
 	vm.getLineItems = function(){
 		if(vm.order.Status == "Unsubmitted" && vm.order != undefined){
-			OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
+			vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
 				vm.AvoidMultipleDelryChrgs = [];	
-				LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
+				vm.ActiveOrderCartLoader = LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
 					data = _.groupBy(data, function(obj){
 						return obj.ProductID;
 					});
@@ -1271,7 +1258,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						});
 					});
 				});
-			    BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
+			    vm.ActiveOrderCartLoader = BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
 					angular.element(document.getElementById("order-checkout")).scope().orderTotal = data.Total;
 					vm.orderTotal = data.Total;
 					vm.order = data;
@@ -1377,7 +1364,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			row.ShipFromAddressID = "testShipFrom";
 			tempArr.push(OrderCloud.As().LineItems.Update(vm.order.ID, row.ID, row));
 		}, true);
-		vm.ShowLoader = $q.all(tempArr).then(function(res1){
+		vm.ActiveOrderCartLoader = $q.all(tempArr).then(function(res1){
 			tempArr = [];
 			angular.forEach(res1, function(val, key){
 				var row1 = _.findWhere(LineItemLists, {ID: val.ID});
@@ -1389,8 +1376,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			if(OrderOnHold){
 				OrderCloud.As().Orders.Patch(vm.order.ID, {"xp": {"Status": "OnHold","CSRID":$cookieStore.get('OMS.CSRID')}});
 			}	
-			vm.ShowLoader = $q.all(tempArr).then(function(res2){
-				vm.ShowLoader = TaxService.GetTax(vm.order.ID).then(function(res3){
+			vm.ActiveOrderCartLoader = $q.all(tempArr).then(function(res2){
+				vm.ActiveOrderCartLoader = TaxService.GetTax(vm.order.ID).then(function(res3){
 					tempArr = [];
 					angular.forEach(res3.ResponseBody.TaxLines, function(val, key){
 						var row = _.findWhere(res1, {ID: val.LineNo});
@@ -1401,7 +1388,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						row.TotalCost = _.reduce(_.pluck(row, 'deliveryFeesDtls'), function(memo, num){ return memo + num; }, 0);
 						tempArr.push(OrderCloud.As().LineItems.Patch(vm.order.ID, val.LineNo, {"xp":{"Tax":val.Tax, "TotalCost":row.xp.deliveryCharges+row.LineTotal+val.Tax, "deliveryCharges": row.xp.deliveryCharges}}));
 					}, true);
-					vm.ShowLoader = $q.all(tempArr).then(function(res4){
+					vm.ActiveOrderCartLoader = $q.all(tempArr).then(function(res4){
 						vm.getLineItems();
 						vm.OrderConfirmPopUp = !vm.OrderConfirmPopUp;
 					});
@@ -1822,20 +1809,20 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	vm.DeleteToolTip = {
 		templateUrl: 'DeleteToolTip.html'
 	};
-	vm.closeDeletePopover = function (e, index) {
+	vm.closeDeletePopover = function (e, lineID) {
 		e.preventDefault();
 		e.stopPropagation();
-		vm['CancelDeleteToolTip'+index] = false;
+		vm.CancelDeleteToolTip[lineID] = false;
 	};
 	vm.closeOusideClick = function () {
-		vm['CancelDeleteToolTip'+vm.OutsideClickToolTipIndex] = false;
+		vm.CancelDeleteToolTip[vm.OutsideClickToolTipIndex] = false;
 	};
-	vm.DeleteToolTipPopOver = function(e, index){
+	vm.DeleteToolTipPopOver = function(e, lineID){
 		e.preventDefault();
 		e.stopPropagation();
 		vm.closeOusideClick();
-		vm['CancelDeleteToolTip'+index] = true;
-		vm.OutsideClickToolTipIndex = index;
+		vm.CancelDeleteToolTip[lineID] = true;
+		vm.OutsideClickToolTipIndex = lineID;
 	};
 }
 
@@ -1852,7 +1839,7 @@ function buildOrderPDPController() {
 	var vm = this;
 }
   
-function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q, SearchData) {
+function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q, SearchData, $sce) {
     var vm = this;
     if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 		vm.order = Order;
@@ -1907,6 +1894,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 				value.ShippingAddress.deliveryDate = value.xp.deliveryDate;
 				value.ShippingAddress.lineID = value.ID;
 				value.ShippingAddress.DeliveryMethod = value.xp.DeliveryMethod;
+				value.xp.ProductImageUrl = $sce.trustAsResourceUrl(value.xp.ProductImageUrl);
 				if(value.xp.deliveryFeesDtls)
 					value.ShippingAddress.deliveryPresent = true;
 				vm.AvoidMultipleDelryChrgs.push(value.ShippingAddress);
@@ -1941,8 +1929,8 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 	vm.orderSummaryShow = function(order){
 		if(vm.order){
 			console.log(vm.order);
-			OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
-				LineItemHelpers.GetProductInfo(res.Items).then(function(data){
+			vm.OrderSummaryLoader = OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
+				vm.OrderSummaryLoader = LineItemHelpers.GetProductInfo(res.Items).then(function(data){
 					vm.grouping(data);
 				});
 				BuildOrderService.PatchOrder(vm.order.ID, res).then(function(data){
@@ -1953,7 +1941,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 	};
 	vm.orderSummaryShow();
     vm.deleteProduct = function(lineitem) {
-		OrderCloud.As().LineItems.Delete(vm.order.ID, lineitem.ID).then(function() {
+		vm.OrderSummaryLoader = OrderCloud.As().LineItems.Delete(vm.order.ID, lineitem.ID).then(function() {
 			vm.orderSummaryShow();
 		}).catch(function(ex) {
 			$exceptionHandler(ex);
@@ -2001,7 +1989,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 			line.xp.storeName = line.willSearch;
 		}*/
 		line.ShipFromAddressID = "testShipFrom";
-        AddressValidationService.Validate(line.ShippingAddress)
+        vm.OrderSummaryLoader = AddressValidationService.Validate(line.ShippingAddress)
             .then(function(response){
                 if(response.ResponseBody.ResultCode == 'Success') {
                     var validatedAddress = response.ResponseBody.Address;
@@ -2018,15 +2006,14 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
                     line.ShippingAddress.State = validatedAddress.Region;
 					line.ShippingAddress.Country = validatedAddress.Country;
                 }
-                OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line)
+                vm.OrderSummaryLoader = OrderCloud.As().LineItems.Update(vm.order.ID, line.ID, line)
                     .then(function(){
-                        OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress)
+                        vm.OrderSummaryLoader = OrderCloud.As().LineItems.SetShippingAddress(vm.order.ID, line.ID, line.ShippingAddress)
                             .then(function(){
                                 if((recipient.length)-1 > index){
                                     vm.lineDtlsSubmit(recipient, index+1);
                                 }else{
                                     vm.orderSummaryShow();
-                                    alert("Data submitted successfully");
                                 }
                         });
                 });

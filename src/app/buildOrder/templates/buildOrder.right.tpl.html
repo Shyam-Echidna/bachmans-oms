@@ -1,4 +1,5 @@
-		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="buildOrderRight.ShowLoader">
+		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="{promise:buildOrderRight.ActiveOrderCartLoader,message:'Please wait',templateUrl:'
+common/loading-indicators/templates/view.loading.tpl.html'}">
             <h1>ACTIVE ORDER</h1>
 			<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
 				<div class="pdt_name">
@@ -219,7 +220,7 @@
 									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 10 15 L 10 17 L 22 17 L 22 15 L 10 15 Z" />
 								</svg>
 								Item {{$index+1}} of {{buildOrderRight.activeOrders[line].length}} - Recipient <i>{{lineitem.LineTotal | currency}}</i>
-								<span ng-click="buildOrderRight.DeleteToolTipPopOver($event, $index)" popover-trigger="none" popover-placement="top-left" popover-is-open="buildOrderRight.CancelDeleteToolTip{{$index}}" uib-popover-template="buildOrderRight.DeleteToolTip.templateUrl">
+								<span ng-click="buildOrderRight.DeleteToolTipPopOver($event, lineitem.ID)" popover-trigger="none" popover-placement="top-left" popover-is-open="buildOrderRight.CancelDeleteToolTip[lineitem.ID]" uib-popover-template="buildOrderRight.DeleteToolTip.templateUrl">
 									<svg version="1.1" class="delete" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 											 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
 										<style type="text/css">
@@ -238,11 +239,11 @@
 										<div click-outside="buildOrderRight.closeOusideClick()">
 											<h5>Are you sure you want to delete?</h5>
 											<button type="button" ng-click="buildOrderRight.deleteListItem($event,lineitem.ID)">OK</button>
-											<button type="button" ng-click="buildOrderRight.closeDeletePopover($event,$index)">Cancel</button>
+											<button type="button" ng-click="buildOrderRight.closeDeletePopover($event,lineitem.ID)">Cancel</button>
 										</div>
 									</script>
 								</span>
-								<img src="/src/assets/images/dialog_warning.png" ng-if="buildOrderRight.lineItemForm[lineitem.ID].formError" />
+								<img src="/src/assets/images/error.png" ng-if="buildOrderRight.lineItemForm[lineitem.ID].formError" />
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
 								<a ng-click="buildOrderRight.viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
@@ -322,8 +323,8 @@
 									</div>
 									<span>Outgoing Wire</span> -->
 									<div>
-            							<input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire" id="outgoingwire" class="checkbox-custom" >
-            							<label for="outgoingwire" class="checkbox-custom-label">Outgoing Wire</label>
+            							<input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire" id="outgoingwire{{$index}}" class="checkbox-custom" >
+            							<label for="outgoingwire{{$index}}" class="checkbox-custom-label">Outgoing Wire</label>
         						  </div>
 								</div>
 								<div class="location-selected">
@@ -588,34 +589,36 @@
 		</modal>
 		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up">
 			<div class="recipient-details">
-				<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
-					<div ng-repeat="row in buildOrderRight.activeOrders[line]">
-						<div class="recipient-header">
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
-								Recipient {{$index+1}}
-							</div>
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
-								{{row.ShippingAddress.FirstName}} {{row.ShippingAddress.LastName}} |  {{row.ShippingAddress.Zip}}
-							</div>
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
-								{{row.xp.TotalCost | currency}}
-							</div>
-						</div>
-						<div class="recipient-amt col-md-offset-7 col-md-5">
-							<div class="">
-								<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{row.LineTotal | currency}}</span>
-							</div>
-							<div class="">
-								<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{row.xp.deliveryCharges | currency}}</span>
-							</div>
-							<div class="">
-								<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{row.xp.Tax | currency}}</span>
-							</div>
-							<div class="">
-							<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{row.xp.TotalCost | currency}}</span>
-							</div>
-						</div>
-					</div>
+				<div ng-repeat="(key, val) in buildOrderRight.OrderConfirmGrouping">
+					<uib-accordion close-others="oneAtATime">
+						<uib-accordion-group is-open="isOpen">
+							<uib-accordion-heading>
+								<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
+									Recipient {{$index+1}}
+								</div>
+								<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
+									{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}} | {{val[0].ShippingAddress.Zip}}
+								</div>
+								<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
+									{{val[0].xp.TotalCost | currency}}
+								</div>
+							</uib-accordion-heading>
+								<div class="recipient-amt col-md-offset-7 col-md-5">
+									<div class="">
+										<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{val[0].LineTotal | currency}}</span>
+									</div>
+									<div class="">
+										<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{val[0].xp.deliveryCharges | currency}}</span>
+									</div>
+									<div class="">
+										<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{val[0].xp.Tax | currency}}</span>
+									</div>
+									<div class="">
+									<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{val[0].xp.TotalCost | currency}}</span>
+									</div>
+								</div>
+						</uib-accordion-group>
+					</uib-accordion>
 				</div>
 				<div class="recipient-details1">
 					<div class="recipient-amt col-md-offset-7 col-md-5">

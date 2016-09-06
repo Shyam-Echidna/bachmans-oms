@@ -10,6 +10,9 @@ function HomeConfig( $stateProvider ) {
 			parent: 'base',
 			url: '/home',
 			templateUrl: 'home/templates/home.tpl.html',
+			data: {
+				loadingMessage: 'Preparing for Home'
+			},
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
 			resolve: {

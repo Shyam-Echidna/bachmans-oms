@@ -274,7 +274,10 @@ input.error, .errorMMyy {
 				.panel-body{
 					position:relative;
 				padding:35px 0px;
-				 .delivery-address {
+				 .delivery-address{
+				 	.zip-code{
+				 		width:46%;
+					}
 				 	.address-header {
 				 	float: left;
                     width: 100%;
@@ -949,7 +952,7 @@ input.error, .errorMMyy {
 					}
 					.zip-code{
 						input{
-							width:30%;
+						 width:46% !important;
 						}
 					}
 					.phone-block{
@@ -1509,7 +1512,11 @@ input.error, .errorMMyy {
 		font-size: 15px;
 		margin:30px 0 20px;
 	}
-
+	.zip-code{
+		input{
+			 width:46%;
+			}
+		}
 	  div{
 	  	padding:0px;
 	  }
@@ -1637,13 +1644,19 @@ input.error, .errorMMyy {
 		}
 		.checkoutOrderSummary{
 			border:1px solid @color20;
+			.panel-group{
+					.panel{
+						border-radius:0px !important;
+					}
+				}
 			.panel-heading{
 			    padding: 0;
 				margin: 0px 0 10px;
 			}
 			.checkoutorderhead{
-				background-color:@color20;
+				background-color:#f2f5f7;
 				padding: 5px 10px;
+				line-height:18px;
 				p{
 					margin-bottom:0;
 					.helvetica-bold;
@@ -1664,6 +1677,8 @@ input.error, .errorMMyy {
 				padding: 8px 10px;
 				background-color:@base-bg-purple-light;
 				margin-bottom: 10px;
+				
+				
 				h1{
 					.helvetica-bold;
 				    font-size: 18px;

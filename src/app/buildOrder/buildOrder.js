@@ -218,7 +218,7 @@ function buildOrderConfig( $stateProvider ) {
 								var ticket = localStorage.getItem("alf_ticket"), prodList = BuildOrderService.GetProductList(res.Items, ProductImages);
 									dfr.resolve(prodList);
 							});
-						} else if(($stateParams.SearchType == 'Products' && $stateParams.ID !="") || $stateParams.SearchType =='Workshop'){
+						} else if($stateParams.SearchType =='Workshop'){
 							OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
 								OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
 									var ticket = localStorage.getItem("alf_ticket");
@@ -587,7 +587,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	$scope.gotoplp = function(){
 		vm.showPDP = false;
 		if($stateParams.SearchType == 'Products' && $stateParams.ID != ''){
-			vm.searchList=productList;
+			vm.searchSeqList=vm.fullProductsData;
 		}
 		if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true){
 			vm.hidePdpblock=false;
@@ -706,6 +706,24 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     vm.SelectExtra = function(selectedExtra, $event){
       $('.dropdown.open button p').text(selectedExtra);
     }
+	vm.prouctsList=function(e){
+		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.SequenceNumber}).then(function(res){
+			BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+				vm.seqProducts=prodList;
+				var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
+				vm.showProduct(selectedProd[0]);
+			 });
+		 });
+	}
+	vm.productsseqList=function(e){
+		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.xp.SequenceNumber}).then(function(res){
+			BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+				vm.seqProducts=prodList;
+				vm.showProduct(e);
+			 });
+		 });
+	}
+    // Function to get selected product
     // Function to get selected product
     vm.showProduct=function(e){
         if(vm.catList && vm.catList.length>0){
@@ -713,24 +731,15 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
             });
         }
-        else if(vm.searchList && vm.searchList.length>0){
-            vm.fullProductsData=_.filter(vm.searchList, function(obj) {
-                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
-            });
-        }
-        else if($stateParams.SearchType == 'Products' && $stateParams.ID != null){
-            vm.fullProductsData=_.filter(productList, function(obj) {
-                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
-            });
+        else if($stateParams.SearchType == 'Products'){
+			vm.fullProductsData=vm.seqProducts;
         }
 		else if(vm.hidePdpblock==true){
 			vm.fullProductsData=productList;
 		}
-        else{
-            vm.fullProductsData=_.filter($scope.buildOrder.list, function(obj) {
-                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
-            });
-        }
+		else{
+			vm.fullProductsData=vm.seqProducts;
+		}
 		if(vm.hidePdpblock==false){
 		vm.DeliveryType = false;
 		//vm.isCourier = false;
@@ -789,13 +798,11 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         vm.disable=true;
         vm.searchTxt=$scope.$parent.base.searchval;
         if($stateParams.ID==""){
-            console.log("********************", $scope.$parent.base.list);
             vm.searchList=$scope.$parent.base.searchList;
         }
         else{
-            //vm.productdata($stateParams.ID);
-            var selectedProd=_.where(productList, {"ID":$stateParams.ID});
-            vm.showProduct(selectedProd[0]);
+            var selectedProd=_.where($scope.$parent.base.searchList, {"ID":$stateParams.ID});
+			vm.prouctsList(selectedProd[0]);
         }
     }
     function DisplaySelectedColor(selectedSize, $index) {
@@ -937,6 +944,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		vm.showPDP = true;
 		var selectedProd=_.where(productList, {"ID":$stateParams.ID});
         vm.showProduct(selectedProd[0]);
+	}
+	vm.cleardata=function(){
+		if(vm.searchSeqList)
+		vm.searchSeqList='';
+		else if(vm.searchList)
+		vm.searchList='';
+		else if(vm.catList)
+		vm.catList='';
 	}
 }
 

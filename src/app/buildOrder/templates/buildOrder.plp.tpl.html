@@ -17,28 +17,29 @@
 	</ul>
 </div> -->
 
-<!-- algolia search starts -->
+<!-- buildorder search starts -->
 <div class="oms_main_container" ng-show='showplp'>
-    <h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.list.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.buildorderSearch.length}} products)</span></h1>
-    <h1 ng-if="buildOrder.list.length == 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>
-    <ul class="plp-container">
-        <li class="col-md-3" ng-repeat="products in buildOrder.buildorderSearch track by $index" ng-if="buildOrder.searchval.length > 0" >
-            <div class="plp-block" ng-click="buildOrder.showProduct(products)">
-                <div class="product_img">
-					<img ng-model="prodImage" ng-src= "{{products.baseImage}}"/>
+	<div ng-if="buildOrder.searchval.length > 0" ng-init="buildOrder.cleardata()">
+		<h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.buildorderSearch.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.buildorderSearch.length}} products)</span></h1>
+		<h1 ng-if="buildOrder.buildorderSearch.length == 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>
+		<ul class="plp-container">
+			<li class="col-md-3" ng-repeat="products in buildOrder.buildorderSearch track by $index" ng-if="buildOrder.searchval.length > 0" >
+				<div class="plp-block" ng-click="buildOrder.prouctsList(products)">
+					<div class="product_img">
+						<img ng-model="prodImage" ng-src= "{{products.baseImage}}"/>
+					</div>
+					<div class="plp-product-data">
+						<h2>{{products.Name}}</h2>
+						<h3>Size {{products.Size}}</h3>
+						<h4>Color {{products.Color}}</h4>
+					</div>
+					<div class="price_lst">
+						<h5>{{products.Price | currency}}</h5>
+					</div>
 				</div>
-                <div class="plp-product-data">
-                    <h2>{{products.Name}}</h2>
-                    <h3>Option Deluxe</h3>
-                    <h4>Color {{products.xp.SpecsOptions.Color}}</h4>
-                </div>
-                <div class="price_lst">
-                    <h5>{{products.StandardPriceSchedule.PriceBreaks[0].Price | currency}}</h5>
-                </div>
-            </div>
-        </li>
-    </ul>
-
+			</li>
+		</ul>
+	</div>
 	<!-- product Searched results -->
 	<div class="home-search-list" ng-if="buildOrder.searchType == 'Products' &&  buildOrder.searchval.length == 0">
 		<h1 ng-if="buildOrder.searchList.length > 0">Search Results for <span>"{{buildOrder.searchTxt}}"</span> <span class="count">({{buildOrder.searchList.length}} products)</span></h1>
@@ -46,13 +47,38 @@
 		<ul class="plp-container">
 			<li class="col-md-3" ng-repeat="prod in buildOrder.searchList track by $index">
 				<div class="plp-block">
-					<div ng-click="buildOrder.showProduct(prod)">
+					<div ng-click="buildOrder.prouctsList(prod)">
 						<div class="product_img">
 							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
-							<h4>Color {{prod.xp.SpecsOptions.Color}}</h4>
+							<h3>Color {{prod.Color}}</h3>
+							<h4>Size {{prod.Size}}</h4>
+						</div>
+						<div class="price_lst">
+							<h5 class="Price">{{prod.Price | currency}}</h5>
+						</div>	
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- product Searched results based on sequence number -->
+	<div class="home-search-list" ng-if="buildOrder.searchType == 'Products' &&  buildOrder.searchval.length == 0 && buildOrder.searchSeqList.length>0">
+		<h1 ng-if="buildOrder.searchSeqList.length > 0">Search Results for <span>"{{buildOrder.searchTxt}}"</span> <span class="count">({{buildOrder.searchSeqList.length}} products)</span></h1>
+		<h1 ng-if="buildOrder.searchSeqList.length == 0">No results found for <span>"{{buildOrder.searchTxt}}"</span></h1>
+		<ul class="plp-container">
+			<li class="col-md-3" ng-repeat="prod in buildOrder.searchSeqList track by $index">
+				<div class="plp-block">
+					<div ng-click="buildOrder.productsseqList(prod)">
+						<div class="product_img">
+							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
+						</div>
+						<div class="plp-product-data">
+							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
+							<h3>Color {{prod.xp.SpecsOptions.Color}}</h3>
+							<h4>Size {{prod.xp.SpecsOptions.Size}}</h4>
 						</div>
 						<div class="price_lst">
 							<h5 class="Price">{{prod.StandardPriceSchedule.PriceBreaks[0].Price | currency}}</h5>

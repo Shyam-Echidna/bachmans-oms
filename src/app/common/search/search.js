@@ -233,6 +233,12 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 			'query' : '',
 			'hits' : []
 		};
+		if($scope.servicename=='products'){
+			var ticket = localStorage.getItem("alf_ticket");
+			BuildOrderService.GetProductImages(ticket).then(function(imagesList){
+				vm.imagesList=imagesList.items;
+			})
+		}
 		// $scope.$watch('searchTerm', function(n,o) {
 			// if (n == o) {
 				// if (searching) $timeout.cancel(searching);
@@ -254,55 +260,78 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 			$scope.index.search($scope.search.query)
 			.then(function searchSuccess(content) {
 				console.log(content);
-				$scope.SearchResults= function(seqId){
+				// $scope.SearchResults= function(seqId){
+					// var ticket = localStorage.getItem("alf_ticket");
+					// BuildOrderService.GetProductImages(ticket).then(function(imagesList){
+						// BuildOrderService.GetSeqProd(seqId).then(function(res){
+							// // seqList = _.union(seqList, res);
+							// if(res.length==0){
+								// $scope.controlleras.list="";
+								// $state.go('buildOrder',{SearchType:'Products'});
+							// }
+							// else {
+								// console.log("imagesList", imagesList);
+								// BuildOrderService.GetProductList(res, imagesList.items).then(function(prodList){
+									// $scope.controlleras.searchList=prodList;
+									// if($scope.attribute=='buildorder-search'){
+										// $scope.controlleras.buildorderSearch=prodList;
+									// }
+									// if($scope.placeholder=="Search products"){
+										// $state.go('buildOrder',{SearchType:'Products'});
+									// }
+								// });
+							// }
+						// });	
+					// })
+				// }
+				// if($scope.servicename=='products' && $scope.attribute=='buildorder-search'){
+					// var seqId=[];
+					// var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
+					// seqId=_.union(seqId, searchedProdId);
+					// $scope.SearchResults(seqId);
+				// }
+				// else{
+					// $scope.controlleras.list = content.hits;
+				// }
+				if($scope.servicename=='products' && $scope.attribute=='buildorder-search'){
 					var ticket = localStorage.getItem("alf_ticket");
-					BuildOrderService.GetProductImages(ticket).then(function(imagesList){
-						BuildOrderService.GetSeqProd(seqId).then(function(res){
-							// seqList = _.union(seqList, res);
-							if(res.length==0){
-								$scope.controlleras.list="";
-								$state.go('buildOrder',{SearchType:'Products'});
-							}
-							else {
-								console.log("imagesList", imagesList);
-								BuildOrderService.GetProductList(res, imagesList.items).then(function(prodList){
-									//$scope.controlleras.list=prodList;
-									$scope.controlleras.searchList=prodList;
-									if($scope.attribute=='buildorder-search'){
-										$scope.controlleras.buildorderSearch=prodList;
-									}
-									if($scope.placeholder=="Search products"){
-										$state.go('buildOrder',{SearchType:'Products'});
-									}
-								});
-							}
-						});	
+						BuildOrderService.GetProductList(content.hits, vm.imagesList).then(function(prodList){
+							$scope.controlleras.buildorderSearch=prodList;
 					})
 				}
-				if($scope.servicename=='products' && $scope.attribute=='buildorder-search'){
-					var seqId=[];
-					var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
-					seqId=_.union(seqId, searchedProdId);
-					$scope.SearchResults(seqId);
+				else if($scope.servicename=='products'){
+					var ticket = localStorage.getItem("alf_ticket");
+						BuildOrderService.GetProductList(content.hits, vm.imagesList).then(function(prodList){
+							$scope.controlleras.searchList=prodList;
+						})
 				}
 				else{
 					$scope.controlleras.list = content.hits;
 				}
 				console.log("dddddd", $scope.controlleras.list);
+				// $scope.showProducts = function(){
+					// // var seqList=[];
+					// var seqId=[];
+					// if($scope.placeholder=="Search products"){
+						// var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
+						// seqId=_.union(seqId, searchedProdId);
+						// console.log("seqIdseqId", seqId);
+						// if(seqId.length>0){
+							// $scope.SearchResults(seqId);
+						// }
+						// else{
+							// $scope.controlleras.list="";
+							// $state.go('buildOrder',{SearchType:'Products'});
+						// }
+					// }
+				// }
 				$scope.showProducts = function(){
-					// var seqList=[];
-					var seqId=[];
-					if($scope.placeholder=="Search products"){
-						var searchedProdId=Underscore.pluck(content.hits, "SequenceNumber");
-						seqId=_.union(seqId, searchedProdId);
-						console.log("seqIdseqId", seqId);
-						if(seqId.length>0){
-							$scope.SearchResults(seqId);
-						}
-						else{
-							$scope.controlleras.list="";
-							$state.go('buildOrder',{SearchType:'Products'});
-						}
+					if($scope.placeholder=="Search products" && $scope.servicename=='products'){
+						var ticket = localStorage.getItem("alf_ticket");
+							BuildOrderService.GetProductList(content.hits, vm.imagesList).then(function(prodList){
+								$scope.controlleras.searchList=prodList;
+								$state.go('buildOrder',{SearchType:'Products'});
+							})
 					}
 				}
 			}, function searchFailure(err) {

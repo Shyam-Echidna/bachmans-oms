@@ -855,11 +855,11 @@
 										    </label>
 											</div>
 											</div>
-											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'addressbook'" ng-init="checkout.billingAddress.billingLimit=3">
-												<div class="client-del" ng-repeat="line in checkout.creditCardsList track by line.BillingAddress.ID | limitTo: checkout.billingAddress.billingLimit">
+											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'addressbook'" ng-init="checkout.creditCardsList.length < 3 ? checkout.billingLimit=checkout.creditCardsList.length : checkout.billingLimit=3">
+												<div class="client-del" ng-repeat="line in checkout.creditCardsList track by line.BillingAddress.ID | limitTo: checkout.billingLimit">
 													<div class="col-xs-12">
 													<label class="radio-inline radio-common col-xs-12">
-													<input type="radio" id="client-addr{{$index}}" value="line.BillingAddress" ng-click="checkout.billingAddress = line.BillingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
+													<input type="radio" id="client-addr{{$index}}" ng-value="line.BillingAddress" ng-click="checkout.billingAddress = line.BillingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
 													<label for="client-addr{{$index}}" class="col-xs-12"> 
 													<span>{{line.BillingAddress.FirstName}} {{line.BillingAddress.LastName}}</span>|
 												     <span>{{line.BillingAddress.Zip}}</span>
@@ -872,14 +872,14 @@
 												    </label>
 												    </div>
 												</div>
-												<div class="view-more" ng-if="checkout.billingAddress.billingLimit > 3" ng-click="checkout.billingAddress.billingLimit = checkout.creditCardsList.length"><a>View More+</a></div>
-												<div class="view-more" ng-if="checkout.billingAddress.billingLimit == checkout.creditCardsList.length && checkout.billingAddress.billingLimit > 3" ng-click="checkout.billingAddress.billingLimit = 3"><a>View Less-</a></div>
+												<div class="view-more" ng-if="checkout.billingLimit >= 3 && checkout.billingLimit != checkout.creditCardsList.length" ng-click="checkout.billingLimit = checkout.creditCardsList.length"><a>View More+</a></div>
+												<div class="view-more" ng-if="checkout.billingLimit == checkout.creditCardsList.length && checkout.billingLimit > 3" ng-click="checkout.billingLimit = 3"><a>View Less-</a></div>
 											</div>
-											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'currentrecipients'" ng-init="checkout.billingAddress.shippingLimit=3">
-												<div class="client-del" ng-repeat="line in checkout.deliveryInfo | limitTo: checkout.billingAddress.shippingLimit">
+											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'currentrecipients'" ng-init="checkout.deliveryInfo.length < 3 ? checkout.shippingLimit=checkout.deliveryInfo.length : checkout.shippingLimit=3">
+												<div class="client-del" ng-repeat="line in checkout.deliveryInfo | limitTo: checkout.shippingLimit">
 													<div class="col-xs-12">
 													<label class="radio-inline radio-common col-xs-12">
-													<input type="radio" id="client-recp{{$index}}" value="{{line.ShippingAddress}}" ng-click="checkout.billingAddress = line.ShippingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
+													<input type="radio" id="client-recp{{$index}}" ng-value="line.ShippingAddress" ng-click="checkout.billingAddress = line.ShippingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
 													<label for="client-recp{{$index}}" col-xs-12>
 														<span>{{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}}</span>|
 												     <span>{{line.ShippingAddress.Zip}}</span>
@@ -892,8 +892,8 @@
 												    </label>
 													</div>
 												</div>
-												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
-												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit == checkout.deliveryInfo.length && checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = 3"><a>View Less-</a></div>
+												<div class="view-more" ng-if="checkout.shippingLimit >= 3 && checkout.shippingLimit != checkout.deliveryInfo.length" ng-click="checkout.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
+												<div class="view-more" ng-if="checkout.shippingLimit == checkout.deliveryInfo.length && checkout.shippingLimit > 3" ng-click="checkout.shippingLimit = 3"><a>View Less-</a></div>
 											</div>
 											<form name="checkout.BillingFormSubmitted" novalidate>
 												<div class="col-xs-6 form-group holder-name p0">

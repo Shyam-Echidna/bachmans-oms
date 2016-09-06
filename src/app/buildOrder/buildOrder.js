@@ -1191,7 +1191,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						if(value.ShippingAddress!=null)
 							return value.ShippingAddress.FirstName + ' ' + value.ShippingAddress.LastName + ' ' + value.ShippingAddress.Zip + ' ' + (value.ShippingAddress.Street1).split(/(\d+)/g)[1] + ' ' + value.xp.DeliveryMethod + ' ' + value.xp.deliveryDate;
 					});
-					angular.forEach(vm.OrderConfirmGrouping, function(val, key){
+					angular.forEach(angular.copy(vm.OrderConfirmGrouping), function(val, key){
 						if(val[0].ShippingAddress!=null){
 							val[0].LineTotal = _.reduce(_.pluck(val, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
 							val[0].xp.deliveryCharges = _.reduce(_.map(val, function(item){return item.xp.deliveryCharges;}), function(memo, num){ return memo + num; }, 0);

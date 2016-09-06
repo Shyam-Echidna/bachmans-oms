@@ -872,11 +872,13 @@
 												    </label>
 												    </div>
 												</div>
-												<div class="view-more" ng-if="checkout.billingAddress.billingLimit > 3" ng-click="checkout.billingAddress.billingLimit = checkout.creditCardsList.length"><a>View More+</a></div>
-												<div class="view-more" ng-if="checkout.billingAddress.billingLimit == checkout.creditCardsList.length" ng-click="checkout.billingAddress.billingLimit = 3"><a>View Less-</a></div>
+												<div class="view-more" ng-if="checkout.billingAddress.billingLimit == 3" ng-click="checkout.billingAddress.billingLimit = checkout.creditCardsList.length"><p>View More+
+												</p></div>
+												<div class="view-more" ng-if="checkout.billingAddress.billingLimit > 3" ng-click="checkout.billingAddress.billingLimit = 3"><a>View Less-
+												</a></div>
 											</div>
 											<div class="client-list col-xs-12" ng-if="checkout.BillingAddresses == 'currentrecipients'" ng-init="checkout.billingAddress.shippingLimit=3">
-												<div class="client-del" ng-repeat="line in checkout.deliveryInfo track by line.ShippingAddress.Zip+line.ShippingAddress.Street1 | limitTo: checkout.billingAddress.shippingLimit">
+												<div class="client-del" ng-repeat="line in checkout.deliveryInfo">
 													<div class="col-xs-12">
 													<label class="radio-inline radio-common col-xs-12">
 													<input type="radio" id="client-recp{{$index}}" value="{{line.ShippingAddress}}" ng-click="checkout.billingAddress = line.ShippingAddress" ng-model="checkout.BillingAddressesSelected" name="addressesbook" />
@@ -890,12 +892,10 @@
 													</label>
 													<div class="radio"></div>
 												    </label>
-												     
 													</div>
-													
 												</div>
-												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
-												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit == checkout.deliveryInfo.length" ng-click="checkout.billingAddress.shippingLimit = 3"><a>View Less-</a></div>
+												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit == 3" ng-click="checkout.billingAddress.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
+												<div class="view-more" ng-if="checkout.billingAddress.shippingLimit > 3" ng-click="checkout.billingAddress.shippingLimit = 3"><a>View Less-</a></div>
 											</div>
 											<form name="checkout.BillingFormSubmitted" novalidate>
 												<div class="col-xs-6 form-group holder-name p0">

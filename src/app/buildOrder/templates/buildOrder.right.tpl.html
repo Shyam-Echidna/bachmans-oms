@@ -587,15 +587,23 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 				</tr>
 			</table>
 		</modal>
-		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up">
-			<div class="recipient-details">
+		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up order-details-pop-up">
+			<!-- <div class="recipient-details">
 				<uib-accordion close-others="oneAtATime">
 					<uib-accordion-group is-open="isOpen" ng-repeat="(key, val) in buildOrderRight.OrderConfirmGrouping">
 						<uib-accordion-heading>
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
+						   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+						   <svg class="close ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z"></path>
+								</svg>
+								<svg class="open ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 10 15 L 10 17 L 22 17 L 22 15 L 10 15 Z"></path>
+								</svg>
+ 							</div>
+							<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 recipient-no">
 								Recipient {{$index+1}}
 							</div>
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
+							<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 recipient-name">
 								{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}} | {{val[0].ShippingAddress.Zip}}
 							</div>
 							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
@@ -642,5 +650,69 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 					</div>
 					<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">Continue Shopping</div>
 				</div>
+			</div> -->
+			<div class="recipient-details">
+				<uib-accordion close-others="oneAtATime">
+					<uib-accordion-group is-open="isOpen" ng-repeat="(key, val) in buildOrderRight.OrderConfirmGrouping">
+						<uib-accordion-heading>
+						   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+						   <svg class="close ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z"></path>
+								</svg>
+								<svg class="open ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 10 15 L 10 17 L 22 17 L 22 15 L 10 15 Z"></path>
+								</svg>
+ 							</div>
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
+								Recipient {{$index+1}}
+							</div>
+							<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 recipient-name">
+								{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}} | {{val[0].ShippingAddress.Zip}}
+							</div>
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
+								{{val[0].xp.TotalCost | currency}}
+							</div>
+						</uib-accordion-heading>
+							<div class="recipient-amt col-md-offset-7 col-md-5">
+								<div class="">
+									<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{val[0].LineTotal | currency}}</span>
+								</div>
+								<div class="">
+									<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{val[0].xp.deliveryCharges | currency}}</span>
+								</div>
+								<div class="">
+									<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{val[0].xp.Tax | currency}}</span>
+								</div>
+								<div class="">
+								<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{val[0].xp.TotalCost | currency}}</span>
+								</div>
+							</div>
+					</uib-accordion-group>
+				</uib-accordion>
+				<div class="recipient-details1">
+					<div class="recipient-amt col-md-offset-7 col-md-5">
+					<div class="">
+						<span class="col-md-7">Total Amount </span><span class="col-md-5 amt-val">{{buildOrderRight.order.Subtotal | currency}}</span>
+					</div>
+					<div class="">
+						<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{buildOrderRight.order.ShippingCost | currency}}</span>
+					</div>
+					<div class="">
+						<span class="col-md-7">Total Tax </span><span class="col-md-5 amt-val">{{buildOrderRight.order.TaxCost | currency}}</span>
+					</div>
+				</div>
+				</div>
+				<div class="total-content">
+					<div class="total-header  col-md-12">
+						<span class="col-md-7">Total</span><span class="col-md-5 amt-val">{{buildOrderRight.order.Total | currency}}</span>
+					</div>
+				</div>
+				
 			</div>
+			<div class="continue-shop">
+					<div class="col-md-6 modify-order" ng-click="buildOrderRight.OrderConfirmPopUp = !buildOrderRight.OrderConfirmPopUp">
+						Modify Order
+					</div>
+					<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">Continue Shopping</div>
+				</div>
 		</modal>

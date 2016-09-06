@@ -2368,11 +2368,12 @@ input.error {
 					margin:10px 0 0 10px;
 				}
 				button.close{
-				background-color:#54565d;
-				opacity:0.9;
+				color:#8c58b5;
 				padding-bottom:3px;
+				background-color: transparent;
 				 &:hover{
-				 	background:#8c58b5;
+				 	color:#888;
+				 	background-color: transparent;
 				 }
 				}
 			}
@@ -2431,12 +2432,66 @@ input.error {
 							}
 						}
 					}
-				.recipient-details{
-						float:left;
+			}
+		}
+	}
+}
+.order-details-pop-up{
+	.modal-dialog{
+		.modal-content{
+			.modal-body{
+				height:400px !important;
+				overflow-y: hidden !important;
+					.recipient-details{
 						width:100%;
 						border:1px solid #ccc;
 						border-radius:4px;
 						.helvetica-regular;
+					  	height:300px;
+					  	overflow-y:auto;
+					.panel-group .panel{
+					 margin-bottom:10px !important;
+					}
+					.panel-heading{
+					    background: #f2f5f7;
+					    padding: 13px 0 25px 0;
+					     div{
+					     	font-size:12px;
+					     }
+						.panel-title a {
+							span {
+							svg.close {
+								width: 15px;
+								height: 15px;
+								margin:-3px 0 0 8px;
+								float: left;
+								display: inline-block;
+								opacity:1;
+								fill:#b5b9c2;
+								}
+								svg.open {
+								display: none;
+								fill:#5b5e63;
+								}
+							}
+						}
+					}
+					.panel-open {
+						.panel-heading {
+							.panel-title a span {
+							svg.open {
+									display: inline-block;
+									width: 15px;
+									height: 15px;
+									margin:-3px 0 0 8px;
+									float: left;
+								}
+								svg.close {
+									display: none;
+								}
+							}
+						}
+					}
 					.recipient-header{
 						    border: 2px solid #F5F5F4;
 						    float: left;
@@ -2455,20 +2510,23 @@ input.error {
 							   } 
 						}
 					.recipient-amt{
-						font-size: 14px;
+						font-size: 12px;
 					    line-height: 25px;
 					    margin-top:10px;
+					    .helvetica-regular;
 					   .amt-val{
 					    	float:right;
 					    	padding-left:35px;
+					    	.helvetica-bold;
 					    }
 					    span{
 					    	padding:0px;
-					    	font-size:14px;
+					    	font-size:12px;
+					    	.helvetica-regular;
 					    }
 					}
 					.recipient-details1{
-						border-top:1px solid #000;
+						border-top:1px solid  #d7d7d6;
 						float:left;
 						width:100%;
 						margin-top:10px;
@@ -2487,56 +2545,57 @@ input.error {
 					    	}
 					    	.amt-val{
 					    	float:right;
-					    	padding-left:34px;
+					    	text-align:right;
 					        }
 					    }
 					}
-					.continue-shop{
+						
+				}
+				.continue-shop{
 						margin: 10px 0 3px 0;
-					    float: left;
-					    width: 100%;
+					    position:absolute;
+					    bottom:0px;
+					    width: 93%;
 					    font-size: 18px;
+					    background:#f5f5f5;
+					    padding:10px 0;
 					    .modify-order{
-					      margin-top:-6px;
-					       a{
-						        font-family: "Helvetica-Bold";
+					     		font-family: "Helvetica-Bold";
 		    					font-size: 14px;
-		    					line-height: 50px;
 		    					text-align: center;
 		    					transition: background-color 0.5s ease-out;
 		    					text-decoration: none;
 		    					background-color: #969696;
 		   						color: #fff;
-		    					padding: 10px 50px;
-		    					&:hover{
+		    					padding:10px 0 5px 0;
+		    					width: 26%;
+		    					margin-left: 2%;
+								&:hover{
 		    					    color: #ffffff;
     								background-color:#54565d;		
 		    					}
-							}
-					    }
-					     
+						}
 					    .cont-shop{
 					     text-align: center;
 					    float: right;
-					    padding: 5px 10px;
+					    padding:10px 0 5px 0;
 					    background-color: #a576ca;
 					    border: none;
 					    color: #ffffff;
-					    transition: background-color 0.5s ease-out;
+					    transition:background-color 0.5s ease-out;
 					    width: 26%;
 					    margin-right: 2%;
-					     .helvetica-bold;
+					    .helvetica-bold;
+					    font-size:14px;
 					     &:hover{
 					        background-color: #8c58b5;
 					      }
 					    }
-					}	
-				}
+					}
 			}
 		}
 	}
 }
-
 
 .radio-common{
 	position: relative;

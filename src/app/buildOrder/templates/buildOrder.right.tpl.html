@@ -589,32 +589,32 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 		</modal>
 		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up">
 			<div class="recipient-details">
-				<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
+				<div ng-repeat="(key, val) in buildOrderRight.OrderConfirmGrouping">
 					<uib-accordion close-others="oneAtATime">
-						<uib-accordion-group ng-repeat="row in buildOrderRight.activeOrders[line]" is-open="isOpen">
+						<uib-accordion-group is-open="isOpen">
 							<uib-accordion-heading>
 								<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
 									Recipient {{$index+1}}
 								</div>
 								<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
-									{{row.ShippingAddress.FirstName}} {{row.ShippingAddress.LastName}} | {{row.ShippingAddress.Zip}}
+									{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}} | {{val[0].ShippingAddress.Zip}}
 								</div>
 								<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
-									{{row.xp.TotalCost | currency}}
+									{{val[0].xp.TotalCost | currency}}
 								</div>
 							</uib-accordion-heading>
 								<div class="recipient-amt col-md-offset-7 col-md-5">
 									<div class="">
-										<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{row.LineTotal | currency}}</span>
+										<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{val[0].LineTotal | currency}}</span>
 									</div>
 									<div class="">
-										<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{row.xp.deliveryCharges | currency}}</span>
+										<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{val[0].xp.deliveryCharges | currency}}</span>
 									</div>
 									<div class="">
-										<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{row.xp.Tax | currency}}</span>
+										<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{val[0].xp.Tax | currency}}</span>
 									</div>
 									<div class="">
-									<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{row.xp.TotalCost | currency}}</span>
+									<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{val[0].xp.TotalCost | currency}}</span>
 									</div>
 								</div>
 						</uib-accordion-group>

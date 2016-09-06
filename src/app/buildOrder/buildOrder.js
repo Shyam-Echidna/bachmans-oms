@@ -1172,6 +1172,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.List(vm.order.ID).then(function(res){
 				vm.AvoidMultipleDelryChrgs = [];	
 				vm.ActiveOrderCartLoader = LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
+					vm.OrderConfirmGrouping = _.groupBy(data, function(value){
+						return value.ShippingAddress.FirstName + ' ' + value.ShippingAddress.LastName + ' ' + value.ShippingAddress.Zip + ' ' + (value.ShippingAddress.Street1).split(/(\d+)/g)[1] + ' ' + value.xp.DeliveryMethod + ' ' + value.xp.deliveryDate;
+					});
 					data = _.groupBy(data, function(obj){
 						return obj.ProductID;
 					});

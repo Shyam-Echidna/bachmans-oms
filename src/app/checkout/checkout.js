@@ -617,7 +617,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			});
 		}
 		if(line){
-			if(line.xp.addressType == "Will Call"){
+			if(line.xp.addressType == "InStorePickUp"){
 				vm.getDeliveryCharges(line);
 			}
 		}
@@ -664,7 +664,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			deliverySum = 250;
 		}
 		line.xp.TotalCost = deliverySum+(parseFloat(line.Quantity)*parseFloat(line.UnitPrice));
-		if(line.xp.addressType == "Will Call"){
+		if(line.xp.addressType == "InStorePickUp"){
 			DeliveryMethod = "InStorePickUp";
 			dt = undefined;
 			delete line.xp.deliveryFeesDtls;
@@ -719,7 +719,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 					DeliveryMethod = "USPS";
 					dt = line.xp.deliveryDate;
 				}
-				if(line.xp.addressType == "Will Call"){
+				if(line.xp.addressType == "InStorePickUp"){
 					DeliveryMethod = "InStorePickUp";
 					dt = undefined;
 					delete line.xp.deliveryFeesDtls;
@@ -882,7 +882,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			line.xp.deliveryChargeAdjReason = vm.buyerDtls.xp.deliveryChargeAdjReasons[0];
 	};
 	vm.addressTypeSelect = function(line){
-		if(line.xp && line.xp.addressType=="Will Call"){
+		if(line.xp && line.xp.addressType=="InStorePickUp"){
 			vm.getStores(line);
 		}
 		/*else

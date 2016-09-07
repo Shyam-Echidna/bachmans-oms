@@ -1278,7 +1278,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 								//val.xp.deliveryDate = new Date(val.xp.deliveryDate);
 							if(!val.xp.addressType)
 								val.xp.addressType = "Residence";
-							if(val.xp.addressType=="Will Call"){
+							if(val.xp.addressType=="InStorePickUp"){
 								val.xp.pickupDate = new Date(val.xp.pickupDate);
 								val.willSearch = val.ShippingAddress.CompanyName;
 							}
@@ -1379,7 +1379,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				delete row.xp.PatientFName;
 				delete row.xp.PatientLName;
 			}
-			if(row.xp.addressType=="Will Call"){
+			if(row.xp.addressType=="InStorePickUp"){
 				delete row.xp.deliveryDate;
 				row.ShippingAddress.CompanyName = row.willSearch;
 				row.xp.DeliveryMethod = "InStorePickUp";
@@ -1625,7 +1625,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	vm.changeAddrType = function(addressType, line){
 		//line.xp.addressType = addressType;
 		vm.lineItemForm[line.ID].$setPristine();
-		if(addressType != "Will Call" || line.willSearch){
+		if(addressType != "InStorePickUp" || line.willSearch){
 			vm.getDeliveryCharges(line);
 		}
 		if(addressType == "Hospital" && !vm.HospitalNames){
@@ -1696,7 +1696,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			line.xp.Discount = deliverySum - 250;
 			deliverySum = 250;
 		}
-		if(line.xp.addressType == "Will Call"){
+		if(line.xp.addressType == "InStorePickUp"){
 			DeliveryMethod = "InStorePickUp";
 			dt = undefined;
 			delete line.xp.deliveryFeesDtls;
@@ -1705,7 +1705,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				DeliveryMethod = "DirectShip";
 			}
 		}
-		AddressValidationService.Validate(line.ShippingAddress).then(function(res){
+		vm.ActiveOrderCartLoader = AddressValidationService.Validate(line.ShippingAddress).then(function(res){
 			if(res.ResponseBody.ResultCode == 'Success') {
 				form.invalidAddress = false;
 				var validatedAddress = res.ResponseBody.Address;
@@ -1751,7 +1751,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					DeliveryMethod = "USPS";
 					dt = line.xp.deliveryDate;
 				}
-				if(line.xp.addressType == "Will Call"){
+				if(line.xp.addressType == "InStorePickUp"){
 					DeliveryMethod = "InStorePickUp";
 					dt = undefined;
 					delete line.xp.deliveryFeesDtls;
@@ -1759,7 +1759,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				if(DeliveryMethod=="UPS" && line.xp.DeliveryMethod=="Mixed" ){
 					alert("Faster Delivery Is Only Local Delivery...!");
 				}else{
-					vm.GetDeliveryChrgs(line, DeliveryMethod, dt).then(function(){
+					vm.ActiveOrderCartLoader = vm.GetDeliveryChrgs(line, DeliveryMethod, dt).then(function(){
 						line.xp.DeliveryMethod = DeliveryMethod;
 						angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 							deliverySum += parseFloat(val);
@@ -2009,7 +2009,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 			if(line.xp.addressType=="School")
 				line.xp.SearchedName = line.schSearch;
 		}
-		if(line.xp.addressType=="Will Call"){
+		if(line.xp.addressType=="InStorePickUp"){
 			delete line.xp.PatientFName;
 			delete line.xp.PatientLName;
 			delete line.xp.deliveryDate;
@@ -2110,7 +2110,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 			line.xp.Discount = deliverySum - 250;
 			deliverySum = 250;
 		}
-		if(line.xp.addressType == "Will Call"){
+		if(line.xp.addressType == "InStorePickUp"){
 			DeliveryMethod = "InStorePickUp";
 			dt = undefined;
 			delete line.xp.deliveryFeesDtls;
@@ -2164,7 +2164,7 @@ function buildOrderSummaryController($scope, $state, $stateParams, $exceptionHan
 					DeliveryMethod = "USPS";
 					dt = line.xp.deliveryDate;
 				}
-				if(line.xp.addressType == "Will Call"){
+				if(line.xp.addressType == "InStorePickUp"){
 					DeliveryMethod = "InStorePickUp";
 					dt = undefined;
 					delete line.xp.deliveryFeesDtls;
@@ -2383,7 +2383,7 @@ function BuildOrderService( $q, $window, $stateParams, OrderCloud, $http, alfres
 				}
 				if(!key['UPS'] && !key['LocalDelivery'] && !key['Mixed'] && key['InStorePickUp'] && !key['USPS'] && !key['DirectShip'] && !key['Courier']){
 					line.xp.NoDeliveryExInStore = true;
-					line.xp.addressType = "Will Call";
+					line.xp.addressType = "InStorePickUp";
 				}
 				delete line.xp.Status;
 				if(DeliveryMethod=="UPS" && !key['UPS'])

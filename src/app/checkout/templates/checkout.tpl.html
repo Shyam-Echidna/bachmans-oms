@@ -86,21 +86,21 @@
 											<div class="radio"></div>
 										</label>
 										<label class="radio-inline radio-common">
-											<input type="radio" id="store{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="Will Call" />
+											<input type="radio" id="store{{$index}}" name="optradio{{$index}}" ng-model="line.xp.addressType" ng-click="checkout.changeAddrType(line)" ng-disabled="{{line.xp.NoDeliveryExInStore}}" value="InStorePickUp" />
 											<label for="store{{$index}}">In-Store Pick Up</label>
 											<div class="radio"></div>
 										</label>
 									</div>
 									<p class="check-top">Zip Code <span class="star">*</span></p>
-									<input type="text" name="zip" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='Will Call' ? true : false" max-length="5" ng-minlength="5" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].zip.$invalid}" class="zip-code"></input>
+									<input type="text" name="zip" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" max-length="5" ng-minlength="5" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].zip.$invalid}" class="zip-code"></input>
 									<p class="check-top">Address 1 <span class="star">*</span></p>
-									<input type="text" name="street1" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='Will Call' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].street1.$invalid}"></input>
+									<input type="text" name="street1" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].street1.$invalid}"></input>
 									<p class="check-top">Address 2</p>
-									<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='Will Call' ? true : false"></input>
+									<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false"></input>
 									<h6 style="color:red;" ng-if="checkout.lineItemForm[line.ID].invalidAddress && line.ShippingAddress.Street1 && line.ShippingAddress.Zip">Invalid Address/Zip</h6>
 									<div class="check-top city-block">
 										<p>City <span class="star">*</span></p>
-										<input type="text" name="city" ng-model="line.ShippingAddress.City" ng-readonly="line.xp.addressType=='Will Call' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].city.$invalid}"></input>
+										<input type="text" name="city" ng-model="line.ShippingAddress.City" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].city.$invalid}"></input>
 									</div>
 									<div class="check-top state-block">
 										<!-- <p class="check-top">State</p> -->
@@ -109,7 +109,7 @@
 											<option selected>K</option>
 											<option>RNR</option>
 										</select>-->
-										<input type="text" name="state" ng-model="line.ShippingAddress.State" ng-readonly="line.xp.addressType=='Will Call' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].state.$invalid}" />
+										<input type="text" name="state" ng-model="line.ShippingAddress.State" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].state.$invalid}" />
 									</div>
 									<p class="check-top">Phone Number</p>
 									<div class="phone-block">
@@ -119,16 +119,16 @@
 									</div>
 									<div class="delivery-details">
 										<label class="radio-inline radio-common">
-											<input type="radio" id="delivery-dot" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='Will Call' ? line.xp.addressType : 'Residence'">
+											<input type="radio" id="delivery-dot" name="group{{$index}}" ng-model="line.xp.addressType" ng-value="line.xp.addressType!='InStorePickUp' ? line.xp.addressType : 'Residence'">
 											<label for="delivery-dot">Delivery</label>
 											<div class="radio"></div>
 										</label>
 										<label class="radio-inline radio-common">
-											<input type="radio" id="store-pickUp" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="Will Call">
+											<input type="radio" id="store-pickUp" ng-click="checkout.getStores(line)" name="group{{$index}}" ng-model="line.xp.addressType" value="InStorePickUp">
 											<label for="store-pickUp">In-Store Pick Up</label>
 											<div class="radio"></div>
 										</label>
-										<div ng-if="line.xp.addressType!='Will Call'">
+										<div ng-if="line.xp.addressType!='InStorePickUp'">
 											<p class="check-top">Delivery Date <span class="star">*</span></p>
 											<p class="modify" ng-init="checkout.deliveryAdj(line)" ng-if="line.xp.deliveryFeesDtls">
 												<span>
@@ -212,12 +212,12 @@
 											</ul>
 										</div>
 										
-										<div ng-if="line.xp.addressType=='Will Call'" class="select-store">
+										<div ng-if="line.xp.addressType=='InStorePickUp'" class="select-store">
 											 <p>Select Store</p>
 												 <!--<select>
 													<option ng-repeat="store in storeNames" value="{{store.storeName}}" ng-model="line.selected" ng-selected="store.storeName==line.xp.storeName">{{store.storeName}}</option>
 												 </select>-->
-												 <input type="search" ng-model="line.ShippingAddress.CompanyName" autocomplete="off" ng-value="line.xp.addressType=='Will Call' ? line.ShippingAddress.CompanyName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
+												 <input type="search" ng-model="line.ShippingAddress.CompanyName" autocomplete="off" ng-value="line.xp.addressType=='InStorePickUp' ? line.ShippingAddress.CompanyName : ''" uib-typeahead="st for st in checkout.storeNames | filter:$viewValue" typeahead-on-select="checkout.addStoreAddress($item, line)" />
 											 <p>
 											<fieldset id="group2">
 												<!-- <label class="radio-inline"><input type="radio" name="group2" ng-model="checkout.fromStoreOrOutside" value="1">Product is coming from my store</label> -->
@@ -422,7 +422,7 @@
 									</div>
 								</div>
 								<div class="col-lg-12 col-md-12">
-									<input type="button" ng-disabled="!line.xp.deliveryRun && line.xp.addressType!='Will Call'" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.ProceedToPayment(lineitems, $index, checkout.lineItemForm[line.ID])" />
+									<input type="button" ng-disabled="!line.xp.deliveryRun && line.xp.addressType!='InStorePickUp'" ng-value="checkout.recipients.length == $index+1 ? 'Continue to Payment' : 'Next'" ng-click="checkout.ProceedToPayment(lineitems, $index, checkout.lineItemForm[line.ID])" />
 								</div>
 							</form>
 						</uib-accordion-group>
@@ -993,15 +993,15 @@
 									<p>{{lineitems[0].ShippingAddress.Zip}}</p>
 									<span class="shipping-Phone">{{lineitems[0].ShippingAddress.Phone}}</span> 
 								</li>
-								<li class="shipping-Date" ng-if="lineitems[0].xp.addressType!='Will Call'">
+								<li class="shipping-Date" ng-if="lineitems[0].xp.addressType!='InStorePickUp'">
 									<p class="shipping-subTitle">Delivery Date</p>
 									<p>{{lineitems[0].xp.deliveryDate | date}}</p>
 								</li>
-								<li class="shipping-Date" ng-if="lineitems[0].xp.addressType=='Will Call'">
+								<li class="shipping-Date" ng-if="lineitems[0].xp.addressType=='InStorePickUp'">
 									<p class="shipping-subTitle">Pick-Up Date</p>
 									<p>{{lineitems[0].xp.pickupDate | date}}</p>
 								</li>
-								<li class="shipping-DeliveryPref" ng-if="lineitems[0].xp.addressType!='Will Call'">
+								<li class="shipping-DeliveryPref" ng-if="lineitems[0].xp.addressType!='InStorePickUp'">
 									<p class="shipping-subTitle">Delivery Preference</p>
 									<p>{{checkout.buyerDtls.xp.DeliveryRuns[0][lineitems[0].xp.deliveryRun].TimeSlot}}</p>
 								</li>

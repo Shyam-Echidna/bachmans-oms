@@ -46,8 +46,8 @@ angular.module( 'orderCloud' )
 							scope.$parent.buildOrder.guestUserModal = false;
 							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
 						}
-						scope.$parent.checkout.getShippingAddressModal = false;
-						scope.$parent.checkout.getBillingAddressModal = false;
+						//scope.$parent.checkout.getShippingAddressModal = false;
+						//scope.$parent.checkout.getBillingAddressModal = false;
 					});
 				});
 			}

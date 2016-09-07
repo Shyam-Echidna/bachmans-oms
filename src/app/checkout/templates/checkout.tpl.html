@@ -450,7 +450,7 @@
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.BachmansCharges}" ng-show="checkout.UserSpendingAcc['Bachman Charges']">Bachman's Charges
+							<div ng-click="checkout.paymentOption = 'BachmansCharge'" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.BachmansCharges}" ng-show="checkout.UserSpendingAcc['Bachman Charges'] && checkout.buyerDtls.xp.PaymentMethods.BachmansCharge.OMS">Bachman's Charges
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
@@ -460,7 +460,7 @@
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks']" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerks}">Purple Perks
+							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks'] && checkout.buyerDtls.xp.PaymentMethods.PurplePerks.OMS" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerks}">Purple Perks
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
@@ -1106,7 +1106,21 @@
 					<p>Subtotal  <span>{{checkout.order.Subtotal | currency}}</span></p>
 					<p>Delivery Charges   <span>{{checkout.order.ShippingCost | currency}} </span></p>
 					<p>Estimated Tax   <span>{{checkout.order.TaxCost | currency}} </span></p>
-					<p ng-if="checkout.orderDtls.SpendingAccounts.Coupon"><button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'Coupon')">x</button> Coupon Applied <span>-{{checkout.orderDtls.SpendingAccounts.Coupon.Amount | currency}} </span></p>
+					<p ng-if="checkout.order.PromotionDiscount > 0"><button ng-click="checkout.RemoveCoupon()">
+						<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve">
+
+							<g transform="translate(0,-952.36218)">
+							<path  d="M17,952.7c-4.3,0-8.5,1.6-11.8,4.9c-6.5,6.5-6.5,17.1,0,23.6c6.5,6.5,17.1,6.5,23.6,0c6.5-6.5,6.5-17.1,0-23.6
+								v0C25.5,954.3,21.3,952.7,17,952.7L17,952.7z M17,955.8c3.5,0,6.9,1.3,9.6,4c5.3,5.3,5.3,13.8,0,19.1c-5.3,5.3-13.8,5.3-19.1,0
+								c-5.3-5.3-5.3-13.8,0-19.1C10.1,957.2,13.5,955.8,17,955.8z M13.1,963.9c-0.1,0-0.1,0-0.2,0c-0.9,0.1-1.5,0.9-1.4,1.7
+								c0,0.4,0.2,0.7,0.5,1l2.7,2.7l-2.7,2.7c-0.6,0.6-0.6,1.6,0,2.2c0.6,0.6,1.6,0.6,2.2,0c0,0,0,0,0,0l2.7-2.7l2.7,2.7
+								c0.6,0.7,1.6,0.7,2.2,0.2c0.7-0.6,0.7-1.6,0.2-2.2c-0.1-0.1-0.1-0.1-0.2-0.2l-2.7-2.7l2.7-2.7c0.6-0.6,0.6-1.6,0-2.2
+								c-0.3-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.8,0.2-1.1,0.5l-2.7,2.7l-2.7-2.7C14,964.1,13.6,963.9,13.1,963.9L13.1,963.9z"/>
+							</g>
+					  	</svg>
+						</button> Coupon Applied <span>-{{checkout.order.PromotionDiscount | currency}} </span>
+					</p>
 					<p ng-if="checkout.orderDtls.SpendingAccounts.BachmansCharges">
 					<button ng-click="checkout.deleteSpendingAcc(checkout.orderDtls, 'BachmansCharges')">
 						<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -1175,7 +1189,9 @@
 				</div>
 				<div class="promo-code">
 					<p>Apply Promo Code</p>
-					<input type="text" ng-model="coupon" /><input type="button" value="Apply" ng-click="checkout.ApplyCoupon(coupon, checkout.orderDtls)" />
+					<input type="text" ng-model="checkout.coupon" />
+					<input type="button" value="Apply" ng-disabled="!checkout.coupon" ng-click="checkout.ApplyCoupon(checkout.coupon, checkout.orderDtls)"/>
+					<p style="color:red;" ng-bind="checkout.promoerror"></p>
 				</div>
 			</uib-accordion>
 		</div>

@@ -907,7 +907,16 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		});
 	}
 	vm.ApplyCoupon = function(coupon, orderDtls){
-		OrderCloud.UserGroups.ListUserAssignments(null, $stateParams.ID).then(function(res){
+		OrderCloud.As().Orders.AddPromotion(vm.order.ID, coupon).then(function(data){
+			vm.promoerror = "Promotions Applied";
+			vm.SumSpendingAccChrgs(orderDtls);
+			OrderCloud.As().Orders.Get(vm.order.ID).then(function(res){
+				vm.order = res;
+			});
+		}).catch(function(response){
+			vm.promoerror = response.data.Errors[0].Message;
+		});
+		/*OrderCloud.UserGroups.ListUserAssignments(null, $stateParams.ID).then(function(res){
 			OrderCloud.Coupons.ListAssignments(coupon, null, res.Items[0].UserGroupID).then(function(res){
 				OrderCloud.Coupons.Get(res.Items[0].CouponID).then(function(res1){
 					BuildOrderService.CompareDate().then(function(dt){
@@ -923,7 +932,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				alert("Coupon not found.....");
 			});
 		});
-		/*OrderCloud.Coupons.ListAssignments(null, $stateParams.ID).then(function(res){
+		OrderCloud.Coupons.ListAssignments(null, $stateParams.ID).then(function(res){
 			angular.forEach(res.Items, function(val, key){
 				OrderCloud.Coupons.Get(val.CouponID).then(function(res1){
 					if(res1.Code == coupon){
@@ -945,7 +954,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				});
 			}, true);
 		});*/
-	}
+	};
 	vm.ApplySpendingAccCharges = function(obj, model, customCharges, orderDtls, type){
 		var dat;
 		if(model != 'Full'){
@@ -966,14 +975,24 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			sum = sum + parseInt(val.Amount);
 		}, true);
 		if(_.isEmpty(vm.orderDtls.SpendingAccounts)){
-			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost + vm.order.TaxCost;
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost + vm.order.TaxCost + vm.order.PromotionDiscount;
 		}else{
-			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum + vm.order.TaxCost;
+			vm.order.Total = vm.order.Subtotal + vm.order.ShippingCost - sum + vm.order.TaxCost + vm.order.PromotionDiscount;
 		}
 	};
 	vm.deleteSpendingAcc = function(orderDtls, ChargesType){
 		delete vm.orderDtls.SpendingAccounts[ChargesType];
 		vm.SumSpendingAccChrgs(orderDtls);
+	};
+	vm.RemoveCoupon = function(){
+		OrderCloud.As().Orders.ListPromotions(vm.order.ID).then(function(res1){
+			OrderCloud.As().Orders.RemovePromotion(vm.order.ID, res1.Items[0].Code).then(function(res2){
+				vm.SumSpendingAccChrgs(vm.orderDtls);
+				OrderCloud.As().Orders.Get(vm.order.ID).then(function(res3){
+					vm.order = res3;
+				});
+			});
+		});	
 	};
 	vm.PayByChequeOrCash = function(orderDtls){
 		if(vm.PayCashCheque=='PayCash'){

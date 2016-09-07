@@ -45,25 +45,19 @@ function HomeConfig( $stateProvider ) {
                     return dd.promise;
                 },
 				OrdersOnHold: function(OrderCloud, $q){
-                 var dd=$q.defer();
-                 var onholdorders = [];
-                 var onholdordersobj = {};
-                 OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
-                  console.log(res);
-                  angular.forEach(res.Items, function(res, key){
-                   console.log(res);
-                   angular.forEach(res.Items, function(res1, key1){
-                    console.log(res1);
-        OrderCloud.Orders.Get(res1.OrderID).then(function(data){
-         console.log(data);
-         onholdordersobj={"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID};
-         onholdorders.push(onholdordersobj);
-        })
-       })
-      })
-      dd.resolve(onholdorders);
-                 })
-                 return dd.promise;
+					var dd=$q.defer(), onholdorders = [], onholdordersobj = {};
+					OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
+						angular.forEach(res.Items, function(res, key){
+							angular.forEach(res.Items, function(res1, key1){
+								OrderCloud.Orders.Get(res1.OrderID).then(function(data){
+									onholdordersobj={"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID};
+									onholdorders.push(onholdordersobj);
+								});
+							},true);
+						},true);
+						dd.resolve(onholdorders);
+					});
+					return dd.promise;
                 },
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();

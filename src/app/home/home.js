@@ -127,18 +127,18 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	console.log("OrderList", OrderList);
     vm.onHold = OrdersOnHold;
 	$scope.gridOptions = {
-		data: 'home.onHold',
-		enableSorting: true,
-		columnDefs: [
-			{ name: 'ID', displayName:'Shipment'},
-			{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
-			{ name: 'FromUserFirstName', displayName:'Sender Name'},
-			{ name: 'BillingAddress', displayName:'Occassions'},
-			{ name: 'Totl', displayName:'Wire Status Code'},
-			{ name: 'CSRID', displayName:'CSR ID'},
-			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
-		]
-	};
+	  data: 'home.onHold',
+	  enableSorting: true,
+	  columnDefs: [
+	   { name: 'ID', displayName:'Shipment'},
+	   { name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
+	   { name: 'FromUserFirstName', displayName:'Sender Name'},
+	   { name: 'BillingAddress', displayName:'Occassions'},
+	   { name: 'Totl', displayName:'Wire Status Code'},
+	   { name: 'xp.CSRID', displayName:'CSR ID'},
+	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
+	  ]
+	 };
 	vm.saved = OrderList.saved;
 	$scope.user='User';
 	$scope.CSRAdminData = {

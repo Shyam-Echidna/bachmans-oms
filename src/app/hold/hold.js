@@ -14,7 +14,7 @@ function HoldConfig( $stateProvider ) {
 			resolve:{
 				Order: function(OrderCloud, $q, $stateParams, LineItemHelpers){
 					var dd=$q.defer();
-					OrderCloud.Orders.ListOutgoing(null, null, $stateParams.orderID, null, null, 'ID').then(function(res){
+					OrderCloud.Orders.ListOutgoing(null, null, $stateParams.orderID).then(function(res){
 						console.log(res);
 						OrderCloud.LineItems.List(res.Items[0].ID, null, null, null, null, null, {"xp.Status":'OnHold'}).then(function(data){
 							console.log(data);
@@ -30,13 +30,13 @@ function HoldConfig( $stateProvider ) {
 					var dd=$q.defer();
 					OrderCloud.Products.List(null, null, null, null, null, {"xp.WireService": true}).then(function(res){
 						console.log(res);
-						OrderCloud.LineItems.List(res.Items[0].ID, null, null, null, null, null, {"xp.Status":'OnHold'}).then(function(data){
+						/*OrderCloud.LineItems.List(res.Items[0].ID, null, null, null, null, null, {"xp.Status":'OnHold'}).then(function(data){
 							console.log(data);
 							LineItemHelpers.GetProductInfo(data.Items).then(function(data1){
 								dd.resolve(data);
 							})
 							//dd.resolve(data);
-						})
+						})*/
 						dd.resolve(res);
 					})
 					return dd.promise;
@@ -49,16 +49,17 @@ function HoldConfig( $stateProvider ) {
 function HoldController($scope, $state, $stateParams, Order, WiredProduct, OrderCloud, LineItemHelpers, Underscore) {
 	var vm = this;
 	vm.onholdlineitems=Order.Items;
+	vm.onholdlineitems1=vm.onholdlineitems;
 	vm.wiredproducts=WiredProduct;
 	vm.wireserviceopt=null;
 	console.log(vm.onholdlineitems);
+	console.log(vm.wiredproducts);
+	vm.deliveryinfo=vm.onholdlineitems1[0];
 	vm.addItem=function(){
-		if(vm.deliveryinfo==null/* || vm.wireserviceopt==null*/){
-			alert("Please select a lineitem or wireservice Option");
-		}
-		else{
-			vm.selectSKU =! vm.selectSKU;
-		}
+		vm.selectSKU =! vm.selectSKU;
+		$scope.gridOptions.columnDefs[0].visible=true;
+		$scope.gridApi.core.refresh();
+		//$scope.gridOptions.gridApi.core.refresh();
 	}
 	vm.removeItem=function(){
 		if(vm.deliveryinfo==null/* || vm.wireserviceopt==null*/){
@@ -106,12 +107,13 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 		vm.selectFloristshow =! vm.selectFloristshow;
 	}
 	$scope.gridOptions = {
-		data: 'hold.onholdlineitems',
+		data: 'hold.onholdlineitems1',
 		enableSorting: true,
+		enableFiltering: true,
 		enableCellEditOnFocus: true,
 		columnDefs: [
-			{ name: 'selectradio ', displayName:' ', cellTemplate: '<div class="data_cell"><input type="radio" name="holdlineitem" ng-click="grid.appScope.showlineitem(row.entity)" /></div>'},
-			{ name: 'ID', displayName:'Inventory Status'},
+			{ name: 'selectradio ', displayName:' ',visible: false, cellTemplate: '<div class="data_cell"><input type="radio" name="holdlineitem" ng-click="grid.appScope.showlineitem(row.entity)" /></div>'},
+			{ name: 'ID', displayName:'Inventory Status',enableFiltering: true},
 			{ name: 'ProductID', displayName:'SKU Code', enableCellEdit:true},
 			{ name: 'Product.Name', displayName:'Product Name'},
 			{ name: 'BillingAddress', displayName:'SKU Option'},
@@ -135,11 +137,12 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 	$scope.gridskuopt = {
 		data: 'hold.wiredproducts.Items',
 		enableSorting: true,
+		enableFiltering: true,
 		enableRowSelection:true,
 		columnDefs: [
 			{ name: 'checkbox', displayName:'', cellTemplate: '<div class="data_cell"><input type="radio" name="dummyprod" ng-click="grid.appScope.dummyprod(row.entity)" /></div>'},
-			{ name: 'ID', displayName:'SKU Code',enableCellEdit:true},
-			{ name: 'Name', displayName:'Product Name',enableCellEdit:true},
+			{ name: 'ID', displayName:'SKU Code',enableCellEdit:true,enableFiltering: true},
+			{ name: 'Name', displayName:'Product Name',enableCellEdit:true,enableFiltering: true},
 			{ name: 'ProductID', displayName:'List Price',enableCellEdit:true}
 		]
 	};
@@ -156,11 +159,13 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
         console.log("floristdata",vm.floristdata);
 	$scope.gridfloristopt = {
 		data: 'hold.floristdata',
+		enableFiltering: true,
+		enableSorting: true,
 		columnDefs: [
 			{ name: 'checkbox', cellTemplate: '<div class="data_cell"><input type="radio" name="dummyprod" ng-click="grid.appScope.addflorist(row.entity)" /></div>'},
 			{ name: 'floristStatus', displayName:'Florist Status', },
 			{ name: 'floristCode', displayName:'Florist Code'},
-			{ name: 'floristName', displayName:'Florist Name'},
+			{ name: 'floristName', displayName:'Florist Name',enableFiltering: true},
 			{ name: 'Address', displayName:'Address'},
 			{ name: 'zipCode', displayName:'Zip code'},
 			{ name: 'Notes', displayName:'Notes'}
@@ -186,8 +191,8 @@ function HoldController($scope, $state, $stateParams, Order, WiredProduct, Order
 			vm.selectSKU =! vm.selectSKU;
 			console.log(vm.dummyproduct);
 			console.log(vm.onholdlineitems);
-			vm.onholdlineitems.push(vm.dummyproduct);
-			console.log("zxczxc",vm.onholdlineitems);
+			vm.onholdlineitems1.push(vm.dummyproduct);
+			console.log("zxczxc",vm.onholdlineitems1);
 			//$state.reload();
 			$scope.gridApi.core.refresh();
 		}

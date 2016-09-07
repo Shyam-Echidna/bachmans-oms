@@ -332,7 +332,7 @@ input.error {
 					color:@primary-dark-color;
 					margin:5px 0 0;
 				}
-				   .product_img {
+				   /*.product_img {
 	                 overflow:hidden;
 	                 position:relative;
 	               text-align:center;
@@ -348,7 +348,7 @@ input.error {
 	                     -webkit-transform:scale(1.2);
 	                     transform:scale(1.2);
 	                 }
-	            }
+	            }*/
 			}
 		}
 		.plp-container{
@@ -411,6 +411,7 @@ input.error {
 					.alternative-img{
 						position:relative;
 						margin-top:10px;
+						min-height: 100px;
 						ul {
 							position:absolute;
 							white-space:nowrap;
@@ -446,7 +447,7 @@ input.error {
 						margin:0px;
 					}
 					button {
-						padding: 10px 45px;
+						padding: 10px 45px 6px 45px;
 						background-color: @color15;
 						.helvetica-bold;
 						font-size: 14px ;
@@ -560,7 +561,7 @@ input.error {
 					 .color-selection,.dropdown-box{
 					 	width:100%;
 					 	float:left;
-					 	margin-bottom:20px;
+					 	margin-bottom:10px;
 					 	h5{
 					 		font-size:13px;
 					 		color:#54565d;
@@ -572,7 +573,20 @@ input.error {
 					 	.color-circle{
 					 		margin: 12px 0 0 6px;
 					 	}
-					 }	
+					 }
+					 .delivery-methods{
+					 	.helvetica-bold;
+					 	float:left;
+					 	p{
+					 			margin:0;
+					 	}
+					 	.radio-btn-container{
+					 	margin:5px 0 20px 0;
+					 		size-box{
+					 			padding:0;	
+					 		}
+					 	}
+					 }
 				}
 				.key-product {
 					background-color:@color11;
@@ -2457,7 +2471,14 @@ input.error {
 					    padding: 13px 0 25px 0;
 					     div{
 					     	font-size:12px;
+					     	.recipient-name{
+					     		font-size:12px;
+					     		 overflow: hidden;
+							    white-space:nowrap;
+							    text-overflow:ellipsis;
+							}
 					     }
+
 						.panel-title a {
 							span {
 							svg.close {
@@ -2668,7 +2689,7 @@ input.error {
     float: left;
 	.size-box{
 		text-align: center;
-		padding:5px 0 0 0;
+		padding:0px;
 		input[type=radio]{
 			opacity: 0;
 			display: none;
@@ -2733,19 +2754,19 @@ input.error {
 			margin: auto;
 		  }
 		  input[type=radio]:not(old)+label{
-		  	 h5{
+		  	 h5,.courier,.faster-del{
 		  	 		padding-left: 30px;
+		  			
 		  	 }
-
-		  }
+		   }
 		  input[type=radio]:not(old):checked+label{
-			   h5{
+			   h5,.courier,.faster-del{
 			   	 	padding-left: 10px;
 			   }
 			   h5, .price{
 			   		color:#54565d;
 			   }
-		  }
+			}
 		.hidden-sm{
 			display:inline-block !important;
 		}
@@ -2764,16 +2785,24 @@ input.error {
 			}
 		}
 		
-		h5, .price{
+		h5, .price,.courier,.faster-del{
 			font-size:13px;
 			.helvetica-regular;
 			color:#8b8e96;
 			margin:0 0 10px 0;
 
 		}
+		
 		.price{
 			margin-left:20px;
 			.helvetica-bold;
+		}
+		.courier,.faster-del{
+		  text-transform:capitalize;
+		}
+		.courier,.faster-del{
+			position: absolute;
+    		top: -9px;
 		}
 	}
 }

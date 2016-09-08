@@ -2472,10 +2472,19 @@ input.error {
 					     div{
 					     	font-size:12px;
 					     	.recipient-name{
-					     		font-size:12px;
-					     		 overflow: hidden;
-							    white-space:nowrap;
-							    text-overflow:ellipsis;
+					     		    font-size: 12px;
+								    overflow: hidden;
+								    white-space: nowrap;
+								    text-overflow: ellipsis;
+								    width: 30%;
+								    display: inline-block;
+								    line-height: 6px;
+								    padding: 5px 0 0 0px;
+								    border-right: 1px solid #000;
+								    margin-right: 8px;
+							}
+							.zip-val{
+							 font-size: 12px;
 							}
 					     }
 
@@ -2522,7 +2531,7 @@ input.error {
 						   
 						    background:#f2f5f7;
 						    .recipient-name{
-						    .helvetica-bold;
+						       .helvetica-bold;
 							 }
 							  .recipient-val{
 							   		text-align:right;
@@ -2778,8 +2787,8 @@ input.error {
 		}
 		&.disable-box{
 			cursor: no-drop!important;
-			opacity: .2;
-			border: 1px solid #f1f1f1;
+			opacity: .5;
+			
 			label{
 				cursor: no-drop!important;
 			}

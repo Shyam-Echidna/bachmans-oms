@@ -667,7 +667,7 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 								Recipient {{$index+1}}
 							</div>
 							<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-								<span class="recipient-name">{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}}</span> | {{val[0].ShippingAddress.Zip}}
+								<span class="recipient-name">{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}}</span><span class="zip-val">{{val[0].ShippingAddress.Zip}}</span>
 							</div>
 							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
 								{{val[0].xp.TotalCost | currency}}

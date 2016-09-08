@@ -128,7 +128,7 @@ function HomeConfig( $stateProvider ) {
 }
 
 
-function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList) {
+function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList,$q) {
 	var vm = this;
 	OrderCloud.Auth.RemoveImpersonationToken();
 	$scope.events=[];

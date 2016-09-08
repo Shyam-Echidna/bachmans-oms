@@ -1,0 +1,74 @@
+<div class="container-fluid order-claim-page">
+	<div ng-repeat="line in orderClaim.lineValsummary track by line">
+		<div class="adress-details">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+				<span class="name">{{orderClaim.groupsummary[line][0].ShippingAddress.FirstName}} {{orderClaim.groupsummary[line][0].ShippingAddress.LastName}}</span><br>
+			</div>
+			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  pull-right">
+				<div class="address"> 
+				   {{orderClaim.groupsummary[line][0].ShippingAddress.Street1}} {{orderClaim.groupsummary[line][0].ShippingAddress.Street2}}<br> {{orderClaim.groupsummary[line][0].ShippingAddress.City}}, {{orderClaim.groupsummary[line][0].ShippingAddress.State}}{{orderClaim.groupsummary[line][0].ShippingAddress.City}}, {{orderClaim.groupsummary[line][0].ShippingAddress.Country}} {{orderClaim.groupsummary[line][0].ShippingAddress.Zip}}
+				</div>
+			</div>
+		</div>
+		<div class="custom-info">
+			<table class="table table-bordered">
+				<thead class="thead-default">
+				    <tr>
+				      <th>Quantity</th>
+				      <th>Products*</th>
+				      <th>Price*</th>
+				      <th>Select Claim Resolution*</th>
+				      <th>Reason Code*</th>
+				      <th>Enter Reason for Claim*</th>     
+				    </tr>
+				</thead>
+				<tbody>
+				    <tr ng-repeat="orderSummary in orderClaim.groupsummary[line]">
+				    	<td  class="qty-value">{{orderSummary.Quantity}}</td>
+				    	<td class="pro-module">
+					    	<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 product-img">
+					    	</div>
+				      		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pro-details">
+				      			<h1>{{orderSummary.Product.Name}}</h1>
+				      			<p>SKU #123920 </p>
+				      			<p>Deluxe</p>
+				      			<p> - Purple</p>
+				      	  		<p class="delivery-date">Delivered: {{orderSummary.xp.deliveryDate | date:'MM/dd/yyyy'}}</p>
+				      	  		<a href="javascript:void(0)" class="view">View Notes</a>
+				      		</div>
+				  		</td>
+				    	<td class="price">{{orderSummary.LineTotal | currency}}</td>
+				    	<td class="item">
+				    		<p>{{orderSummary.selectresolution}}</p>
+				    	</td>
+				    	<td>
+				    		<p>{{orderSummary.selectcode}}</p>
+				    	</td>
+				    	<td class="item">
+				    		<p>{{orderSummary.descp}}</p>
+				    	</td>
+				    </tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="orderclaimtotal">
+		<h3>Claim Totals</h3>
+		<div>
+			<span>Item Refund Amount</span>
+			<span>{{orderClaim.Item_Refund_Amount | currency}}</span>
+		</div>
+		<div>
+			<span>Delivery Refund</span>
+			<span>$0.00</span>
+		</div>
+		<div>
+			<span>Tax Refund</span>
+			<span>$3.34</span>
+		</div>
+		<div>
+			<span>Total Refund back to Visa Ending in 3452</span>
+			<span>$63.33</span>
+		</div>
+	</div>
+</div>

@@ -49,7 +49,11 @@
 					      	  		<a href="javascript:void(0)" class="view">View Notes</a>
 					      		</div>
 					  		</td>
-					    	<td class="price">{{orderSummary.LineTotal | currency}}</td>
+					    	<td class="price" ng-init="priceedit=true">
+					    		<input ng-model="orderSummary.LineTotal" value="{{orderSummary.LineTotal | currency}}" ng-disabled="priceedit">
+					    		<button ng-click="priceedit=false" ng-show="priceedit">edit</button>
+					    		<button ng-click="priceedit=true" ng-show="!priceedit">save</button>
+					    	</td>
 					    	<td class="item">
 					    		<select name="singleSelect" ng-init="orderSummary.selectresolution=''" ng-model="orderSummary.selectresolution" ng-options="resolution for resolution in orderClaim.refund.Resolutions" ng-change="orderSummary.resolution(resolution)">
 					    			<option value="">Select</option>

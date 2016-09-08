@@ -107,8 +107,8 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 					};
 				refundarr.push(refund);
 				vm.Item_Refund_Amount=vm.Item_Refund_Amount+vm.orderclaimarr[i].LineTotal;
-				//vm.Delivery_Refund=vm.Delivery_Refund+vm.orderclaimarr[i].xp.deliveryCharges;
-				//vm.Tax_Refund=vm.Tax_Refund+vm.orderclaimarr[i].xp.Tax;
+				vm.Delivery_Refund=vm.Delivery_Refund+vm.orderclaimarr[i].xp.deliveryCharges;
+				vm.Tax_Refund=vm.Tax_Refund+vm.orderclaimarr[i].xp.Tax;
 			}
 			refundclaimobj={"Refunds":refundarr};
 			vm.orderclaimsummaryfunc(vm.orderclaimarr);

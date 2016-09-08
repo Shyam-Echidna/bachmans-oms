@@ -20,7 +20,9 @@
 				</div>
 			</div>
 		</div>
-		<button ng-click="saveCalendar()">View Calender</button>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 view-cal">
+			<button ng-click="saveCalendar()">View Calender</button>
+		</div>
 		<!--Order on hold starts here -->
 		<div class="col-sm-12 orders_on_hold">
 			<h1 class="heading">Orders on Hold</h1>
@@ -44,7 +46,7 @@
 		</div>
 	</script> -->
 	<modal title="Save Order For Later" visible="home.showcalendarModal" id="calendarmodal" class="modal-pop-up calendarModal">
-		Save Order as:<br/>
+		
 		<div ui-calendar="uiConfig.calendar" class="calendar" ng-model="eventSources" style="width:100%"></div> 
 	</modal>
 	</div>

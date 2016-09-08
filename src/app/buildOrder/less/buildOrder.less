@@ -2693,7 +2693,7 @@ input.error {
 
 
 .radio-btn-container{
-	    margin: 12px 0 20px 0;
+	    margin: 7px 0 20px 0;
     width: 100%;
     float: left;
 	.size-box{
@@ -2854,7 +2854,19 @@ input.error {
 		border: 1px solid #000!important;
 		label{
 			cursor: no-drop!important;
-			opacity: .3;
+		
+			&:after{
+			    display: block;
+			    position: absolute;
+			    content: "";
+			    width: 184%;
+			    left: -8px;
+			    top: 46%;
+			    border: 1px solid #333;
+			    transform: rotate(44deg);
+			    opacity: 0.4;
+			}
+				
 		}
 	}
 }

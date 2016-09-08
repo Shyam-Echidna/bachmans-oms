@@ -271,7 +271,7 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitem)" value="Church" ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">Church</label>
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitem)" value="Shipping" ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">Standard Shipping</label>
 									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitem)" value="School"  ng-disabled="{{lineitem.xp.NoDeliveryExInStore}}">School</label>
-									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitem)" value="Will Call" ng-disabled="{{lineitem.xp.NoInStorePickUp}}">In-Store Pick Up</label>
+									<label class="radio-inline"><input type="radio" name="optradio" ng-model="addressType" ng-click="buildOrderRight.changeAddrType(addressType, lineitem)" value="InStorePickUp" ng-disabled="{{lineitem.xp.NoInStorePickUp}}">In-Store Pick Up</label>
 								</div> -->
 								<div class="receipient-location" ng-init="lineitem.xp.addressType ? '' : lineitem.xp.addressType='Residence'">
 									<label class="radio-inline radio-common">
@@ -310,7 +310,7 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 										<div class="radio"></div>
 									</label>
 									<label class="radio-inline radio-common">
-										<input type="radio" id="store{{$index}}" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="Will Call" ng-disabled="{{lineitem.xp.NoInStorePickUp}}">
+										<input type="radio" id="store{{$index}}" name="optradio" ng-model="lineitem.xp.addressType" ng-click="buildOrderRight.changeAddrType(lineitem.xp.addressType, lineitem)" value="InStorePickUp" ng-disabled="{{lineitem.xp.NoInStorePickUp}}">
 										<label for="store{{$index}}">In-Store Pick Up<span ng-if="lineitem.xp.NoInStorePickUp">(Not Available)</span></label>
 										<div class="radio"></div>
 									</label>
@@ -330,9 +330,9 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 								<div class="location-selected">
 									<!-- <div class="residence-address" ng-init="buildOrderRight.GetSearchedVal(lineitem)"> -->
 									<div class="residence-address">
-										<div class="hospital-search" ng-if="lineitem.xp.addressType!='Residence' && lineitem.xp.addressType!='Will Call'" >
+										<div class="hospital-search" ng-if="lineitem.xp.addressType!='Residence' && lineitem.xp.addressType!='InStorePickUp'" >
 											<h1>Find {{lineitem.xp.addressType}} <span class="star">*</span></h1>
-											<input type="search" name="{{lineitem.xp.addressType}}" autocomplete="off" uib-typeahead="hosp for hosp in buildOrderRight[lineitem.xp.addressType+'Names'] | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.ShippingAddress.CompanyName" ng-required="lineitem.xp.addressType!='Residence' && lineitem.xp.addressType!='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID][lineitem.xp.addressType].$invalid}" />
+											<input type="search" name="{{lineitem.xp.addressType}}" autocomplete="off" uib-typeahead="hosp for hosp in buildOrderRight[lineitem.xp.addressType+'Names'] | filter:$viewValue" typeahead-on-select="buildOrderRight.AllDtls($item, lineitem)" ng-model="lineitem.ShippingAddress.CompanyName" ng-required="lineitem.xp.addressType!='Residence' && lineitem.xp.addressType!='InStorePickUp'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID][lineitem.xp.addressType].$invalid}" />
 										</div>
 										<!-- <div class="hospital-search" ng-if="lineitem.xp.addressType=='Funeral'">
 											<h1>Find Funeral <span class="star">*</span></h1>
@@ -354,15 +354,15 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 											<h1>Business Name<span class="star">*</span></h1>
 											<input type="text" name="business" ng-model="lineitem.businessSearch" ng-required="lineitem.xp.addressType=='Business'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].business.$invalid}" />
 										</div> -->
-										<div class="willCall-address" ng-show="lineitem.xp.addressType=='Will Call'" ng-if="lineitem.xp.addressType=='Will Call' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
+										<div class="willCall-address" ng-show="lineitem.xp.addressType=='InStorePickUp'" ng-if="lineitem.xp.addressType=='InStorePickUp' ? DeliveryMethod = 'InStorePickUp' : DeliveryMethod = 'LocalDelivery'">
 											<div class="willCall-search">
 												<h1>Find store <span class="star">*</span></h1>
-												<input type="search" name="store" autocomplete="off" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].store.$invalid}" />
+												<input type="search" name="store" autocomplete="off" ng-model="lineitem.willSearch" uib-typeahead="st for st in storeNames | filter:$viewValue" typeahead-on-select="storesDtls($item)" ng-required="lineitem.xp.addressType=='InStorePickUp'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].store.$invalid}" />
 											</div>
 											<div class="pick-up-date">
 												<h1>Pick-up Date <span class="star">*</span></h1>
 												<p class="input-group">
-												  <input type="text" name="pickupdate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-required="lineitem.xp.addressType=='Will Call'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].pickupdate.$invalid}" />
+												  <input type="text" name="pickupdate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.pickupDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.InStorePickUp, startingDay: 1}" ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-required="lineitem.xp.addressType=='InStorePickUp'" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].pickupdate.$invalid}" />
 												<span class="input-group-btn">
 												  <button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp">
 													<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -385,17 +385,17 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 												</p>
 											</div>
 										</div>
-										<div class="location-Code" ng-if="lineitem.xp.addressType!='Will Call' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+										<div class="location-Code" ng-if="lineitem.xp.addressType!='InStorePickUp' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
 										<div class="col-md-6 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>
 												<input type="number" name="zip" ng-minlength="5" ng-model="lineitem.ShippingAddress.Zip" max-length="5" autocomplete="off" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].zip.$invalid}"></input>
 											</div>
 											</div>
-											<div class="delivery-date col-md-6" ng-if="lineitem.xp.addressType!='Will Call'">
+											<div class="delivery-date col-md-6" ng-if="lineitem.xp.addressType!='InStorePickUp'">
 												<p>Delivery Date <span class="star">*</span></p>
 												<p class="input-group">
-												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" ng-required="lineitem.xp.addressT" ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
+												  <input type="text" name="deliverydate" readonly class="form-control" placeholder="MM/DD/YYYY" uib-datepicker-popup="MM/dd/yyyy" ng-model="lineitem.xp.deliveryDate" is-open="lineitem.openCalenderPopUp" datepicker-options="{formatYear: 'yy', minDate: lineitem.xp.MinDays.MinToday, startingDay: 1}" ng-required="lineitem.xp.addressType!='InStorePickUp'" ng-change="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].deliverydate.$invalid}" />
 												  <span class="input-group-btn">
 													<button type="button" class="btn btn-default" ng-click="lineitem.openCalenderPopUp=!lineitem.openCalenderPopUp"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 													 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
@@ -587,15 +587,23 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 				</tr>
 			</table>
 		</modal>
-		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up">
-			<div class="recipient-details">
+		<modal title="Order Details Confirm" visible="buildOrderRight.OrderConfirmPopUp" id="mymodal" class="view-addr-book modal-pop-up order-details-pop-up">
+			<!-- <div class="recipient-details">
 				<uib-accordion close-others="oneAtATime">
 					<uib-accordion-group is-open="isOpen" ng-repeat="(key, val) in buildOrderRight.OrderConfirmGrouping">
 						<uib-accordion-heading>
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
+						   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+						   <svg class="close ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z"></path>
+								</svg>
+								<svg class="open ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 10 15 L 10 17 L 22 17 L 22 15 L 10 15 Z"></path>
+								</svg>
+ 							</div>
+							<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 recipient-no">
 								Recipient {{$index+1}}
 							</div>
-							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-name">
+							<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 recipient-name">
 								{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}} | {{val[0].ShippingAddress.Zip}}
 							</div>
 							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
@@ -642,5 +650,69 @@ common/loading-indicators/templates/view.loading.tpl.html'}">
 					</div>
 					<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">Continue Shopping</div>
 				</div>
+			</div> -->
+			<div class="recipient-details">
+				<uib-accordion close-others="oneAtATime">
+					<uib-accordion-group is-open="isOpen" ng-repeat="(key, val) in buildOrderRight.OrderConfirmGrouping">
+						<uib-accordion-heading>
+						   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+						   <svg class="close ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 L 15 10 Z"></path>
+								</svg>
+								<svg class="open ng-scope" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+									<path d="M 16 3 C 8.83214 3 3 8.83214 3 16 C 3 23.1679 8.83214 29 16 29 C 23.1679 29 29 23.1679 29 16 C 29 8.83214 23.1679 3 16 3 Z M 16 5 C 22.087 5 27 9.91302 27 16 C 27 22.087 22.087 27 16 27 C 9.91302 27 5 22.087 5 16 C 5 9.91302 9.91302 5 16 5 Z M 10 15 L 10 17 L 22 17 L 22 15 L 10 15 Z"></path>
+								</svg>
+ 							</div>
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-no">
+								Recipient {{$index+1}}
+							</div>
+							<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+								<span class="recipient-name">{{val[0].ShippingAddress.FirstName}} {{val[0].ShippingAddress.LastName}}</span> | {{val[0].ShippingAddress.Zip}}
+							</div>
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 recipient-val">
+								{{val[0].xp.TotalCost | currency}}
+							</div>
+						</uib-accordion-heading>
+							<div class="recipient-amt col-md-offset-7 col-md-5">
+								<div class="">
+									<span class="col-md-7">Amount </span><span class="col-md-5 amt-val">{{val[0].LineTotal | currency}}</span>
+								</div>
+								<div class="">
+									<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{val[0].xp.deliveryCharges | currency}}</span>
+								</div>
+								<div class="">
+									<span class="col-md-7">Tax </span><span class="col-md-5 amt-val">{{val[0].xp.Tax | currency}}</span>
+								</div>
+								<div class="">
+								<span class="col-md-7">Sub Total  </span><span class="col-md-5 amt-val">{{val[0].xp.TotalCost | currency}}</span>
+								</div>
+							</div>
+					</uib-accordion-group>
+				</uib-accordion>
+				<div class="recipient-details1">
+					<div class="recipient-amt col-md-offset-7 col-md-5">
+					<div class="">
+						<span class="col-md-7">Total Amount </span><span class="col-md-5 amt-val">{{buildOrderRight.order.Subtotal | currency}}</span>
+					</div>
+					<div class="">
+						<span class="col-md-7">Delivery Charges  </span><span class="col-md-5 amt-val">{{buildOrderRight.order.ShippingCost | currency}}</span>
+					</div>
+					<div class="">
+						<span class="col-md-7">Total Tax </span><span class="col-md-5 amt-val">{{buildOrderRight.order.TaxCost | currency}}</span>
+					</div>
+				</div>
+				</div>
+				<div class="total-content">
+					<div class="total-header  col-md-12">
+						<span class="col-md-7">Total</span><span class="col-md-5 amt-val">{{buildOrderRight.order.Total | currency}}</span>
+					</div>
+				</div>
+				
 			</div>
+			<div class="continue-shop">
+					<div class="col-md-6 modify-order" ng-click="buildOrderRight.OrderConfirmPopUp = !buildOrderRight.OrderConfirmPopUp">
+						Modify Order
+					</div>
+					<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">Continue Shopping</div>
+				</div>
 		</modal>

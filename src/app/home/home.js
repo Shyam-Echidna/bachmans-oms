@@ -45,25 +45,19 @@ function HomeConfig( $stateProvider ) {
                     return dd.promise;
                 },
 				OrdersOnHold: function(OrderCloud, $q){
-					var dd=$q.defer();
-					var onholdorders = [];
-					var onholdordersobj = {};
+					var dd=$q.defer(), onholdorders = [], onholdordersobj = {};
 					OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
-					console.log(res);
 						angular.forEach(res.Items, function(res, key){
-							console.log(res);
-						angular.forEach(res.Items, function(res1, key1){
-							console.log(res1);
-							OrderCloud.Orders.Get(res1.OrderID).then(function(data){
-								console.log(data);
-								onholdordersobj={"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID};
-								onholdorders.push(onholdordersobj);
-							})
-						})
-							})
-							dd.resolve(onholdorders);
-					})
-						return dd.promise;
+							angular.forEach(res.Items, function(res1, key1){
+								OrderCloud.Orders.Get(res1.OrderID).then(function(data){
+									onholdordersobj={"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID};
+									onholdorders.push(onholdordersobj);
+								});
+							},true);
+						},true);
+						dd.resolve(onholdorders);
+					});
+					return dd.promise;
                 },
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();
@@ -166,18 +160,18 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	console.log("OrderList", OrderList);
     vm.onHold = OrdersOnHold;
 	$scope.gridOptions = {
-		data: 'home.onHold',
-		enableSorting: true,
-		columnDefs: [
-			{ name: 'ID', displayName:'Shipment'},
-			{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
-			{ name: 'FromUserFirstName', displayName:'Sender Name'},
-			{ name: 'BillingAddress', displayName:'Occassions'},
-			{ name: 'Totl', displayName:'Wire Status Code'},
-			{ name: 'CSRID', displayName:'CSR ID'},
-			{ name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
-		]
-	};
+	  data: 'home.onHold',
+	  enableSorting: true,
+	  columnDefs: [
+	   { name: 'ID', displayName:'Shipment'},
+	   { name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
+	   { name: 'FromUserFirstName', displayName:'Sender Name'},
+	   { name: 'BillingAddress', displayName:'Occassions'},
+	   { name: 'Totl', displayName:'Wire Status Code'},
+	   { name: 'xp.CSRID', displayName:'CSR ID'},
+	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
+	  ]
+	 };
 	vm.saved = OrderList.saved;
 	$scope.user='User';
 	$scope.CSRAdminData = {

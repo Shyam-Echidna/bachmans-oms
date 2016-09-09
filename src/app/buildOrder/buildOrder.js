@@ -220,7 +220,7 @@ function buildOrderConfig( $stateProvider ) {
 							});
 						} else if($stateParams.SearchType =='Workshop'){
 							OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
-								OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.SequenceNumber":prod.xp.SequenceNumber}).then(function(res){
+								OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.ProductCode":prod.xp.ProductCode}).then(function(res){
 									var ticket = localStorage.getItem("alf_ticket");
 									BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
 										dfr.resolve(prodList);
@@ -735,7 +735,11 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.fullProductsData=vm.seqProducts;
         }
 		else if(vm.hidePdpblock==true){
-			vm.fullProductsData=productList;
+			//$scope.fullEventsProductsData=productList;
+			vm.fullEventsData=_.groupBy(productList, function(value){
+				return value.xp.EventDate;
+			});
+			console.log("groupName", vm.fullEventsData);
 		}
 		else{
 			vm.fullProductsData=vm.seqProducts;
@@ -777,22 +781,27 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 				}
            })
            );
+		   $scope.radio.selectedSize = e.xp.SpecsOptions.Size;
+			vm.productTitle = e.Name;
+			vm.prodDesription = e.Description;
+			availableSizes = DisplaySizes(vm.fullProductsData, true);
+			vm.allSizes = availableSizes;
+			var selectedSizeHold = angular.copy(availableSizes);
+			DisplaySelectedColor(e.xp.SpecsOptions.Size, _.findIndex(selectedSizeHold, function (item) { 
+				if(e.xp.SpecsOptions.Size === null || e.xp.SpecsOptions.Size === null){
+				  return item.xp.SpecsOptions.Size == e.xp.SpecsOptions.Size 
+				}else{
+				 return item.xp.SpecsOptions.Size.toLowerCase() == e.xp.SpecsOptions.Size.toLowerCase() 
+				}
+			   })
+			   );
+			vm.showPDP = true;
 		}
-        $scope.radio.selectedSize = e.xp.SpecsOptions.Size;
-        vm.productTitle = e.Name;
-        vm.prodDesription = e.Description;
-        availableSizes = DisplaySizes(vm.fullProductsData, true);
-        vm.allSizes = availableSizes;
-        var selectedSizeHold = angular.copy(availableSizes);
-        DisplaySelectedColor(e.xp.SpecsOptions.Size, _.findIndex(selectedSizeHold, function (item) { 
-            if(e.xp.SpecsOptions.Size === null || e.xp.SpecsOptions.Size === null){
-              return item.xp.SpecsOptions.Size == e.xp.SpecsOptions.Size 
-            }else{
-             return item.xp.SpecsOptions.Size.toLowerCase() == e.xp.SpecsOptions.Size.toLowerCase() 
-            }
-           })
-           );
-        vm.showPDP = true;
+		else{
+			vm.DisplayEvent(e);
+			vm.showPDP = true;
+		}
+
     }
     if($stateParams.SearchType == 'Products'){
         vm.disable=true;
@@ -861,6 +870,18 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         vm.selectedKey=selectedSku.xp.KeyAttributes;
         vm.selectedWarranty=selectedSku.xp.Warranty;
     }
+	vm.DisplayEvent=function(selectedSku) {
+        vm.productTitle = selectedSku.Name;
+        vm.prodDesription = selectedSku.Description;
+        vm.selectedProductId = selectedSku.ID;
+        vm.selectedProductImg=selectedSku.baseImage;
+		vm.selectedPrice=selectedSku.StandardPriceSchedule.PriceBreaks;
+    }
+	vm.limit=1;
+	vm.showAll=function(){
+		var keys = Object.keys(vm.fullEventsData);
+		vm.limit=keys.length;
+	}
     vm.changeImage=function(img){
         vm.changeImg=img;
     }

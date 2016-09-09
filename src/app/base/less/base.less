@@ -543,6 +543,21 @@ input[type=number]::-webkit-outer-spin-button {
 .container-fluid .promotion_wrapper {
 	height:auto;
 	/* overflow:auto; */
+	.view-cal{
+	  padding:0;
+	  margin-top:20px;
+		button{
+			border: 1px solid #a57bc5;
+		    background: #fff;
+		    color: #8c58b5;
+		    font-size: 16px;
+		    padding:0 20px;
+		    text-transform: uppercase;
+		    .helvetica-bold;
+		    height: 30px;
+            line-height: 30px;
+		}
+	}
 	.orders_on_hold {
 		height:auto;
 		padding:0px;
@@ -656,6 +671,7 @@ input[type=number]::-webkit-outer-spin-button {
 		height: 86px;
 		.text-ellipses;
 		-webkit-line-clamp: 5;
+		margin-bottom: 2px;
 	}
 	.promotion_date{	
 		padding-left:0;
@@ -663,28 +679,90 @@ input[type=number]::-webkit-outer-spin-button {
 		bottom: 0;
 		width: 86%;
 	}
-}
-.promotion_date {
-	border-top:1px solid @color21;
-	height:auto;
-	margin-top:10px;
-	overflow:auto;
-	padding:8px 0;
-	img {
-		float:left;
-		width:18px;
-		height:16px;
-	}
-	p {
-		color:@color1;
-		float:left;
-		.helvetica-bold;
-		font-size:12px;
-		line-height:21px;
-		padding-left:7px;
-		margin-bottom:5px;
+	.more-details{
+		color: #afafaf;
+	    height: auto;
+	    font-size:10px;
+	    .helvetica-bold;
+	    margin: 0px;
 	}
 }
+
+.events-date{
+		width: 86%;
+	    margin: 0;
+	    float: left;
+	    position: absolute;
+	    bottom: 0px;
+	    height: 55px;
+	    .event-date{
+			 width: 30%;
+			line-height: 52px;
+			font-family: "Helvetica-Bold";
+			font-size: 10px;
+			position: relative;
+			float: left;
+			padding: 3px 0 0;
+			position: relative;
+			float: left;
+			top: 4px;
+		     .helvetica-bold;
+		     span{
+		     	.helvetica-bold;
+		     	font-size:10px;
+			    position: absolute;
+			    right: 0;
+			    left:0px;
+			    top:-9px;
+			    text-transform: uppercase;
+		     }
+		     span.event-day{
+				font-size: 10px;
+			    font-family: "Helvetica-regular";
+			    position: absolute;
+			    right: 0;
+			    left: 0;
+			    top:15px;
+			    color: #afafaf;	
+		   }
+	    }
+	 
+    		.event-time{
+    			    float: right;
+			    text-align: left;
+			    width: 40%;
+			    padding: 5px 0px 0 0;
+			    font-size: 11px;
+			    text-transform: uppercase;
+			    font-family: "Helvetica-regular";
+			    margin-top:15px;
+			    span.events-countdown{
+				        width: 10px;
+					    height: 10px;
+					    float: left;
+					    position: relative;
+					    top: 2px;
+					    margin:0 5px 0 8px;
+				    svg{
+			    	    fill: none;
+						stroke: #000;	
+				    }
+			    }
+			    span.events-cost{
+			    	font-size: 12px;
+			    	.helvetica-bold;
+    				text-align: right;
+    				margin-top:1px;
+			    }
+			    span{
+			    	 display: block;
+    				padding-top: 0;
+    				color: #a879cc;
+			    }
+    		}
+	  
+	}
+
 .orders_table {
 	background:@color0;
 	border-radius:4px;

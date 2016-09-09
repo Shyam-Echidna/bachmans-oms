@@ -5,20 +5,47 @@
 </div> -->
 
 <div class="container-fluid home-template" ng-if="!$parent.base.currentUser.xp.CSRAdmin">
-
 	<div class="col-xs-12 col-sm-12 promotion_wrapper">
 	<!-- <button ng-click="home.goToAlgoliaResultsPage(home.searchTerm)">frtger</button> -->
 <!-- 		<h1 class="heading">Promotions & Information</h1>
 		<div ng-repeat="PromoInfo in home.PromoInformation" ng-include="PromoInfo"></div>	 -->
 		<h1 class="heading">{{home.eventList.name}}</h1>
-		<div ng-repeat="eventInfo in home.eventList.events ">
-			<div class="promotion_box ng-scope" ui-sref="buildOrder({ID:eventInfo.ID,SearchType:'Workshop'})">
-				<h1>{{eventInfo.Name}}</h1>
-				<p>{{eventInfo.Description}}</p>
-				<div class="col-sm-12 promotion_date"><img src="../../assets/images/icons-svg/calendar.svg" alt="">
-					<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p>
-				</div>
+		<div ng-repeat="eventInfo in events | limitTo : 5">
+			<div class="promotion_box ng-scope" ui-sref="buildOrder({ID:eventInfo.id,SearchType:'Workshop'})">
+				<h1>{{eventInfo.title}}</h1>
+				<p>{{eventInfo.description}}</p>
+				<p class="more-details">More details</p>
+				
+				  <!--  <img src="../../assets/images/icons-svg/calendar.svg" alt="">
+					<p>{{eventInfo.start | date:'mediumDate'}}</p>
+					<span>{{eventInfo.startTime}}</span> -->
+					<div class="events-date">
+						<div class="event-date">11<span class="ng-binding">Jun</span>
+							<span class="event-day ng-binding">Saturday</span>
+						</div>
+						
+							<div class="event-time">
+								<span class="events-countdown">	
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 59 63" style="enable-background:new 0 0 59 63;" xml:space="preserve">
+										<circle cx="29.3" cy="32.7" r="25"></circle>
+										<path d="M42.5,0.9c6.2,2.3,11.5,6.5,15.2,11.9"></path>
+										<path d="M0.9,12.8c3.4-5,8.1-9,13.8-11.4"></path>
+										<polyline points="31.6,15.3 31.6,35 14.5,35 "></polyline>
+										<line x1="40.2" y1="55.2" x2="45.1" y2="62.2"></line>
+										<line x1="17" y1="55.2" x2="12.2" y2="62.2"></line>
+									</svg>
+								</span>
+								9 AM-10 AM<span class="events-cost">$210.00</span>
+							</div>
+					
+					</div>
+				
 			</div>
+		</div>
+
+
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 view-cal">
+			<button ng-click="saveCalendar()">View Calender</button>
 		</div>
 		<!--Order on hold starts here -->
 		<div class="col-sm-12 orders_on_hold">
@@ -33,6 +60,7 @@
 				<div ui-grid="CSRAdminData" class="order-grid col-md-12 col-sm-12"></div>
 			</div>
 		</div>
+		
 	<!--Saved Order ends here -->
 	<!-- <script type="text/ng-template" id="deleteAddress.html">
 		<div click-outside="closePopover()">
@@ -41,6 +69,10 @@
 			<button type="button" ng-click="cancelPopUp()">CANCEL</button>
 		</div>
 	</script> -->
+	<modal title="Save Order For Later" visible="home.showcalendarModal" id="calendarmodal" class="modal-pop-up calendarModal">
+		
+		<div ui-calendar="uiConfig.calendar" class="calendar" ng-model="eventSources" style="width:100%"></div> 
+	</modal>
 	</div>
 </div>
 
@@ -53,8 +85,10 @@
 			<div class="promotion_box ng-scope">
 				<h1>{{eventInfo.Name}}</h1>
 				<p>{{eventInfo.Description}}</p>
-				<div class="col-sm-12 promotion_date"><img src="../../assets/images/icons-svg/calendar.svg" alt="">
-				<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p>
+				<div class="col-sm-12 promotion_date">
+			 	<img src="../../assets/images/icons-svg/calendar.svg" alt="">
+				<p>{{eventInfo.xp.EventDate | date:'mediumDate'}}</p> 
+					
 				</div>
 			</div>
 		</div>

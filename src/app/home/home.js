@@ -44,7 +44,7 @@ function HomeConfig( $stateProvider ) {
 					//console.log("aaaaaa", arr);
                     return dd.promise;
                 },
-				OrdersOnHold: function(OrderCloud, $q){
+				/*OrdersOnHold: function(OrderCloud, $q){
 					var dd=$q.defer(), onholdorders = [], onholdordersobj = {};
 					OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
 						angular.forEach(res.Items, function(res, key){
@@ -58,7 +58,7 @@ function HomeConfig( $stateProvider ) {
 						dd.resolve(onholdorders);
 					});
 					return dd.promise;
-                },
+                },*/
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();
                 },*/
@@ -124,11 +124,11 @@ function HomeConfig( $stateProvider ) {
                     return LineItems.List('5u_UJNKj902oIbW3Ya16Ew');
                 }*/
             }
-		})
+		});
 }
 
 
-function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList, OrdersOnHold) {
+function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList,$q) {
 	var vm = this;
 	OrderCloud.Auth.RemoveImpersonationToken();
 	$scope.events=[];
@@ -158,7 +158,25 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
         console.log(lineitem);
     });*/
 	console.log("OrderList", OrderList);
-    vm.onHold = OrdersOnHold;
+	var onholdorders = [];
+	OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
+		angular.forEach(res.Items, function(res, key){
+			angular.forEach(res.Items, function(res1, key1){
+				onholdorders.push(OrderCloud.Orders.Get(res1.OrderID));
+			},true);
+		},true);
+		$q.all(onholdorders).then(function(data){
+			onholdorders=[];
+			angular.forEach(data, function(data, key1){
+				if(!data.xp)
+					data.xp={};
+				if(!data.xp.CSRDID)
+					data.xp.CSRID =	null;
+				onholdorders.push({"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID});
+			},true);
+			vm.onHold = onholdorders;
+		});
+	});
 	$scope.gridOptions = {
 	  data: 'home.onHold',
 	  enableSorting: true,

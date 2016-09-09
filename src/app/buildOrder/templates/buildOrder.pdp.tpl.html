@@ -149,6 +149,7 @@
 					<button class="addCart" ng-click="AddtoCart(buildOrder.productDetails.ID)">ADD TO CART</button>
 				</div> -->
 				<div class="pdp-right col-md-5 col-lg-5">
+					<div ng-if="buildOrder.hidePdpblock==false">
 					<h2 ng-init="sizeval=''">{{buildOrder.productTitle | lowercase}}</h2>
 					<h5 ng-if="buildOrder.allSizes[0].xp.SpecsOptions.Size !== null">Type</h5> 
 					<div class="radio-btn-container">
@@ -180,8 +181,43 @@
 							</div>
 						</div>
 					</div>
+					</div>
+					<div class="workshop-events" ng-if="buildOrder.hidePdpblock">	
+						<h2>{{buildOrder.productTitle}}</h2>
+						<span ng-repeat="eventPrice in buildOrder.selectedPrice">
+							<span>{{eventPrice.Price | currency}}</span>
+						</span>
+						<p>choose a date to register for:</p>
+						<uib-accordion ng-init="buildOrder.eventInfo[0]=true">
+							<uib-accordion-group ng-repeat="(key, value) in buildOrder.fullEventsData track by $index | limitTo : buildOrder.limit">
+								<uib-accordion-heading>
+									<p> {{key | date:'fullDate'}}
+									<span>select this Date to Choose Time </span>
+									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<g>
+											<rect x="10" width="4" height="24" />
+											<rect y="10" width="24" height="4" />
+										</g>
+									</svg>
+									<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<rect y="10" width="24" height="4"/>
+									</svg>
+									</p>
+								</uib-accordion-heading>
+								<ul>
+									<li ng-repeat="eventslots in value track by $index" >
+										<label>
+											<input type="checkbox" id="event{{$index}}" ng-click="buildOrder.DisplayEvent(eventslots)">{{eventslots.xp.slot }} 
+										</label>
+									</li>
+								</ul>
+							</uib-accordion-group>
+							<a ng-click="buildOrder.showAll()">See More Dates</a>
+						</uib-accordion>
+					</div>
 					<!-- started -->
-					<div class="color-selection">
+					<div class="color-selection" ng-if="!buildOrder.hidePdpblock">
 						<h5>Select Color</h5>
 						<div class="color-circle">
 							<ul class="list-inline">
@@ -193,7 +229,7 @@
 							</ul>
 						</div>
 					</div>
-					<div class="delivery-methods">
+					<div class="delivery-methods" ng-if="!buildOrder.hidePdpblock">
 						<p ng-if="buildOrder.Courier || buildOrder.Faster">
 							<b>Delivery Methods Available:</b>
 						</p>
@@ -246,7 +282,7 @@
 							<li>Comes with seat cushions</li>
 						</ul>
 					</div>
-					<div class="dropdown-box">
+					<div class="dropdown-box" ng-if="!buildOrder.hidePdpblock">
 						<h5>Add Something Extra</h5>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<div class="row" >
@@ -275,7 +311,8 @@
 						</div>
 					</div>
 				</div>
-				<button class="addCart" ng-click="AddtoCart(buildOrder.selectedProductId, buildOrder.selectedProductImg)">ADD TO CART</button>
+				<button class="addCart" ng-if="buildOrder.hidePdpblock">REGISTER</button>
+				<button class="addCart" ng-click="AddtoCart(buildOrder.selectedProductId, buildOrder.selectedProductImg)" ng-if="!buildOrder.hidePdpblock">ADD TO CART</button>
 				</div>
 				<div class="key-product col-xs-12 p0" ng-if="buildOrder.selectedKey.length>0">
 					<h3>Key Product Info:</h3>

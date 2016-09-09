@@ -587,6 +587,31 @@ input.error {
 					 		}
 					 	}
 					 }
+					 .workshop-events{
+						svg{
+							width:5px;
+							height:5px;
+							display:none;
+						}
+						.panel-default{
+							svg.plus{
+								display:block;
+								fill:red;
+							}
+							svg.minus{
+								display:none;
+							}
+						}	
+						.panel-default.panel-open{
+							svg.minus{
+								display:block;
+								fill:red;
+							}
+							svg.plus{
+								display:none;
+							}
+						}
+					}
 				}
 				.key-product {
 					background-color:@color11;
@@ -2845,4 +2870,3 @@ input.error {
 		}
 	}
 }
-

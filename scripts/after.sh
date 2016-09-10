@@ -1,7 +1,6 @@
-#!/bin/bash
-sudo chown ec2-user:nginx -R /var/www
-cd /var/www
-npm install bower gulp
+source /home/ec2-user/.bash_profile
+cd /var/www/html/Bachmans-oms
+npm install --quiet -g grunt-cli karma bower
 npm install
-bower install
-
+bower install --allow-root
+gulp compile

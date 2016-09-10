@@ -437,8 +437,8 @@ input.error {
 						.helvetica-bold;
 						font-size: 20px;
 						color: @primary-dark-color;
-						margin: 0 0 24px;
 						text-transform: capitalize;
+						margin:0px;
 					}
 					>h5{
 						.helvetica-bold;
@@ -453,7 +453,7 @@ input.error {
 						font-size: 14px ;
 						color: @color1;
 						border-radius: 5px;
-						margin-top: 10px;
+						margin-top: 20px;
 						.background-fade;
 						 margin-bottom: 25px;
 						&:hover {
@@ -588,31 +588,135 @@ input.error {
 					 	}
 					 }
 					 .workshop-events{
-						svg{
-							width:5px;
-							height:5px;
-							display:none;
+							.prod-price{
+								color:#333333;
+								font-size:20px;
+								.helvetica-regular;
+								margin: 10px 0 15px 0;
+							    float: left;
+							    width: 100%;
+						      }
+							 .register{
+								font-size:16px;
+								.helvetica-bold;
+								color:#333333;
+								margin: 0px;
+							   }
+							.panel-group {
+								padding: 0px;
+								margin-bottom: 0;
+								.panel-default {
+									padding: 7px 0;
+									margin-top: 0;
+									border: 0;
+									svg.plus{
+										display:block;
+									
+									}
+									svg.minus{
+										display:none;
+									}
+									 &.panel-open{
+									   svg.minus{
+										display:block;
+										
+									   }
+									   svg.plus{
+										display:none;
+									    }
+									    &.panel-default{
+									    margin: 10px 0!important;
+									      background:#f7f7f7;
+									      .panel-heading{
+									      	background:transparent;
+									      	h4{
+									      		p{
+									      		  color:#8c58b5;
+									      		  .events-img{
+									      		   svg.minus{
+										             fill:#8c58b5;
+									                }
+									      		  }
+									      		}
+									      	}
+									      }
+									    }
+
+									 }
+									.panel-heading {
+									    padding: 3px 10px;
+										background: #fff;
+										h4 {
+										   a{
+										   	  text-decoration:none;
+										   }
+											p {
+											       margin-left:24px;
+												    color: #333333;
+												    font-size: 15px;
+												    .helvetica-bold;
+												h3 {
+													font-size:15px;
+													.helvetica-bold;
+												}
+												span {
+													font-size:14px;
+													.helvetica-regular;
+													color: #424342;
+													display: block;
+													padding-top: 7px;
+												}
+												.events-img{
+													position: absolute;
+												    left: 0;
+												    display: inline-block;
+												    padding:2px 0px;
+												    margin-left: 25px;
+													svg{
+														
+													    fill: #333333;
+													    width: 20px;
+													    height: 10px;
+													}
+												}
+											}
+										}
+									}
+									.panel-body {
+										border-top: 0;
+										padding: 5px 0 0 16px;
+										.event-drpDown {
+											label {
+												margin: 0;
+												display: block;
+												&+label {
+													padding-top: 15px;
+												}
+												span {
+													font-size:16px;
+													.helvetica-regular;
+												    padding-left: 15px;
+												}
+											}
+											.checkbox-custom + .checkbox-custom-label:before{
+											 height: 16px;
+											}
+											li{
+												margin:0 0 10px 0;
+											}
+										}
+									}
+								}
+								.see-more{
+									color:#8c58b5;
+									border-bottom:1px solid #c5abda;
+									text-decoration: none;
+    								margin-left: 38px;
+    								text-decoration: none;
+								}
+							 }
+							}
 						}
-						.panel-default{
-							svg.plus{
-								display:block;
-								fill:red;
-							}
-							svg.minus{
-								display:none;
-							}
-						}	
-						.panel-default.panel-open{
-							svg.minus{
-								display:block;
-								fill:red;
-							}
-							svg.plus{
-								display:none;
-							}
-						}
-					}
-				}
 				.key-product {
 					background-color:@color11;
 					padding: 15px 25px;

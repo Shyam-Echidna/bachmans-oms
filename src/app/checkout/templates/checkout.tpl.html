@@ -892,9 +892,23 @@
 												    </label>
 													</div>
 												</div>
-												<div class="view-more" ng-if="checkout.shippingLimit >= 3 && checkout.shippingLimit != checkout.deliveryInfo.length" ng-click="checkout.shippingLimit = checkout.deliveryInfo.length"><a>View More+</a></div>
-												<div class="view-more" ng-if="checkout.shippingLimit == checkout.deliveryInfo.length && checkout.shippingLimit > 3" ng-click="checkout.shippingLimit = 3"><a>View Less-</a></div>
-											</div>
+												<div class="view-more" ng-if="checkout.shippingLimit >= 3 && checkout.shippingLimit != checkout.deliveryInfo.length" ng-click="checkout.shippingLimit = checkout.deliveryInfo.length">
+												View More
+												<span>
+												<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+												<g>
+													<rect x="10" width="4" height="24"></rect>
+													<rect y="10" width="24" height="4"></rect>
+												</g>
+												</svg>
+												</span>
+												</div>
+												<div class="view-more" ng-if="checkout.shippingLimit == checkout.deliveryInfo.length && checkout.shippingLimit > 3" ng-click="checkout.shippingLimit = 3">
+												View Less<span>
+												<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"><rect y="10" width="24" height="4"></rect></svg>
+												</span>
+												</div>
+											 </div>
 											<form name="checkout.BillingFormSubmitted" novalidate>
 												<div class="col-xs-6 form-group holder-name p0">
 													<label for="firstName">First Name <span class="star">*</span></label>

@@ -185,35 +185,47 @@
 					<div class="workshop-events" ng-if="buildOrder.hidePdpblock">	
 						<h2>{{buildOrder.productTitle}}</h2>
 						<span ng-repeat="eventPrice in buildOrder.selectedPrice">
-							<span>{{eventPrice.Price | currency}}</span>
+							<span class="prod-price">{{eventPrice.Price | currency}}</span>
 						</span>
-						<p>choose a date to register for:</p>
+						<p class="register">Choose a date to register for:</p>
 						<uib-accordion ng-init="buildOrder.eventInfo[0]=true">
 							<uib-accordion-group ng-repeat="(key, value) in buildOrder.fullEventsData track by $index | limitTo : buildOrder.limit">
 								<uib-accordion-heading>
-									<p> {{key | date:'fullDate'}}
-									<span>select this Date to Choose Time </span>
+									<p><span class="events-img">
 									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
 										<g>
 											<rect x="10" width="4" height="24" />
 											<rect y="10" width="24" height="4" />
 										</g>
 									</svg>
-									<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                   <svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 										 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
 										<rect y="10" width="24" height="4"/>
 									</svg>
+									
+									</span> {{key | date:'fullDate'}}
+									<span>Select this Date to Choose Time </span>
 									</p>
 								</uib-accordion-heading>
-								<ul>
+								<div class="event-drpDown">
+								  <ul>
+									<li ng-repeat="eventslots in value track by $index" >
+									<div>
+            							<input type="checkbox" id="event{{$index}}" ng-click="buildOrder.DisplayEvent(eventslots)" class="checkbox-custom" >
+            							<label for="event{{$index}}" class="checkbox-custom-label">{{eventslots.xp.slot }}</label>
+        						     </div>
+								   </li>
+								</ul>	
+								</div>
+								<!-- <ul>
 									<li ng-repeat="eventslots in value track by $index" >
 										<label>
 											<input type="checkbox" id="event{{$index}}" ng-click="buildOrder.DisplayEvent(eventslots)">{{eventslots.xp.slot }} 
 										</label>
 									</li>
-								</ul>
+								</ul> -->
 							</uib-accordion-group>
-							<a ng-click="buildOrder.showAll()">See More Dates</a>
+							<a ng-click="buildOrder.showAll()" class="see-more">(See More Dates)</a>
 						</uib-accordion>
 					</div>
 					<!-- started -->
@@ -364,7 +376,7 @@
 									</svg>
 								</p>
 							</uib-accordion-heading>
-							<h6><span><a href="">VIEW CARE GUIDE</a></span></h6>
+							<h6><span><a href="" ng-click="viewCareGuide()">VIEW CARE GUIDE</a></span></h6>
 							<table class="table table-bordered">
 								<tbody>
 									<tr ng-repeat="(key, value) in buildOrder.selectedSpecification">
@@ -527,4 +539,12 @@
 </ui-view>
 <modal title="Order Details Confirm" visible="buildOrder.OrderConfirmPopUp" id="OrderConfirmPopUp" class="create-user-pop-up modal-pop-up">
 	My details goes here.......
+</modal>
+<modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up">
+	<ul>
+		<li ng-repeat="articles in buildOrder.articles">
+			<h1>{{articles.title}}</h1>
+			<p>{{articles.description}}</p>
+		</li>
+	</ul>
 </modal>

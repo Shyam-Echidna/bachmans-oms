@@ -733,6 +733,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         }
         else if($stateParams.SearchType == 'Products'){
 			vm.fullProductsData=vm.seqProducts;
+			_.filter(vm.fullProductsData, function(obj) {
+                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct)
+					vm.articles=obj.xp.Articles;
+				});
         }
 		else if(vm.hidePdpblock==true){
 			//$scope.fullEventsProductsData=productList;
@@ -743,6 +747,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}
 		else{
 			vm.fullProductsData=vm.seqProducts;
+			_.filter(vm.fullProductsData, function(obj) {
+                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct)
+					vm.articles=obj.xp.Articles;
+			});
 		}
 		if(vm.hidePdpblock==false){
 		vm.DeliveryType = false;
@@ -2005,8 +2013,12 @@ function buildOrderPLPController(productList, $stateParams) {
 	}*/
 }
 
-function buildOrderPDPController() {
+function buildOrderPDPController($scope) {
 	var vm = this;
+	vm.viewCareGuide = false;
+	$scope.viewCareGuide=function(){
+		vm.viewCareGuide = !vm.viewCareGuide;
+	}
 }
   
 function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieStore, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q, SearchData, $sce) {

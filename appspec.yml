@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+#  - source: /scripts/vhosts.conf
+#    destination: /etc/nginx/conf.d/
+  - source: /
+    destination: /var/www/html/Bachmans-oms
+hooks:
+#  BeforeInstall:
+#    - location: scripts/before.sh
+#      timeout: 300
+  AfterInstall:
+    - location: scripts/after.sh
+      timeout: 2000

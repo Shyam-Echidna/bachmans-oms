@@ -16,7 +16,7 @@ function HomeConfig( $stateProvider ) {
                 OrderList: function(OrderCloud, $q) {
 					var arr={};
 					var dd=$q.defer();
-					OrderCloud.Orders.ListOutgoing(null,null,'ME32SnOluUqPP71HnpuzAg', null, null, 'FromUserID').then(function(data){
+					/*OrderCloud.Orders.ListOutgoing(null,null,'ME32SnOluUqPP71HnpuzAg', null, null, 'FromUserID').then(function(data){
 						console.log("searched order", data);
 						arr.saved=_.filter(data.Items, function(obj) {
 								return _.indexOf([obj.xp.SavedOrder.Flag], true) > -1
@@ -25,8 +25,11 @@ function HomeConfig( $stateProvider ) {
 								return _.indexOf([obj.xp.Status], "OnHold") > -1
 						});
 						dd.resolve(arr);
+					});*/
+					OrderCloud.Orders.ListOutgoing(null, null, null, null, null, null, null, {"xp.SavedOrder.Flag":true}).then(function(data){
+						arr.saved=data.Items;
+						dd.resolve(arr);
 					});
-					console.log("aaaaaa", arr);
                     return dd.promise;
                 },
                 /*ShipmentList: function(OrderCloud) {

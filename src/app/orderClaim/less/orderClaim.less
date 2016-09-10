@@ -1,21 +1,30 @@
 .container-fluid.order-claim-page{
-	padding:74px 0 0 0;
+	padding:0px 0 0 0;
 	.helvetica-regular;
+	background:#fff;
 	.custom-details{
-		    background: #ccc;
+		    background: #f1f1f1;
     		padding: 20px 30px;
     		font-size: 20px;
     		margin: 30px 0px;
     		.custom{
-    			.helvetica-bold;	
+    			.helvetica-bold;
+    			color:#8c58b5;
+    		}
+    		.custom-name{
+    		   .helvetica-regular;
+    		       font-size: 17px;
+   				 margin-left: 10px;
     		}
 	}
 	.adress-details{
-		background: #ccc;
+		background: #f5f5f5;
     	float: left;
     	width: 32%;
     	padding: 10px;
     	font-size: 14px;
+    	.helvetica-bold;
+    	color:#333;
 		 div{
 		 	padding:0px;
 		 	.edit{
@@ -27,6 +36,7 @@
 		.table{
 		.thead-default{
 			background:#e6e6e6;
+			.helvetica-bold;
 		}
 		.select-module{
 			    vertical-align: middle;
@@ -70,6 +80,7 @@
 					 position: relative;
 				    top: 10px;
 				    height:200px;
+				    width: 22%;
 				 	.product-img{
 			    	 background: #ccc;
 			   		 height: 130px;
@@ -91,6 +102,10 @@
 				}
 				.view{
 					text-decoration: underline;
+					color:#000;
+					&:hover{
+					 color:#a77bca;
+					}
 				}
 			}
 			.qty-value{
@@ -108,11 +123,33 @@
 			textarea{
 				height: auto;
 			    border-radius: 0px;
-			    margin-top: 12px;
+			    
 			}
 			.price{
 			    position: relative;
 				top: 10px;
+
+				svg{
+					position:absolute;
+					right:0px;
+					top:11px;
+					width:15px;
+					height:15px;
+					margin-right:3px;
+				}
+				input{
+					width:94%;
+					border: 1px solid #ccc;
+				    padding: 2px 4px;
+				    background: #f7f7f7;
+				}
+				.save{
+				    background: #a77bca;
+				    color: #fff;
+				    padding: 1px 14px;
+				    text-transform: capitalize;
+				    margin-top: 10px;
+				}
 			}
 			.delivery{
 				.helvetica-bold;
@@ -124,6 +161,10 @@
 			.item{
 				position:relative;
 				top:10px;
+				select{
+				    padding: 3px 0;
+   					border: 1px solid #ccc;
+				}
 			}
 		}
 		.claim-total{

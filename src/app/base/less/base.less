@@ -554,8 +554,14 @@ input[type=number]::-webkit-outer-spin-button {
 		    padding:0 20px;
 		    text-transform: uppercase;
 		    .helvetica-bold;
-		    height: 30px;
-            line-height: 30px;
+		    height: 35px;
+            line-height: 35px;
+            transition: background-color 0.5s ease-out;
+            float:right;
+            &:hover{
+            	background-color: #a576ca;
+    			color: #ffffff;
+            }
 		}
 	}
 	.orders_on_hold {

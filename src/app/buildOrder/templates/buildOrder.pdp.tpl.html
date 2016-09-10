@@ -376,7 +376,7 @@
 									</svg>
 								</p>
 							</uib-accordion-heading>
-							<h6><span><a href="">VIEW CARE GUIDE</a></span></h6>
+							<h6><span><a href="" ng-click="viewCareGuide()">VIEW CARE GUIDE</a></span></h6>
 							<table class="table table-bordered">
 								<tbody>
 									<tr ng-repeat="(key, value) in buildOrder.selectedSpecification">
@@ -539,4 +539,12 @@
 </ui-view>
 <modal title="Order Details Confirm" visible="buildOrder.OrderConfirmPopUp" id="OrderConfirmPopUp" class="create-user-pop-up modal-pop-up">
 	My details goes here.......
+</modal>
+<modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up">
+	<ul>
+		<li ng-repeat="articles in buildOrder.articles">
+			<h1>{{articles.title}}</h1>
+			<p>{{articles.description}}</p>
+		</li>
+	</ul>
 </modal>

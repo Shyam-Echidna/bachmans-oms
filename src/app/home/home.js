@@ -63,15 +63,57 @@ function HomeConfig( $stateProvider ) {
                     return OrderCloud.Shipments.List();
                 },*/
 				EventList:function(OrderCloud, $q, Underscore){
-					var arr={};
-					var events=[];
-					var dfr = $q.defer();
+					var arr={}, events=[], dfr = $q.defer();
 					OrderCloud.Categories.Get('WorkshopsEvents_Information').then(function(res){
-						arr["name"]=res.Name;
-						console.log("77777777", arr["name"]);
+						arr["name"] = res.Name;
 					});
 					OrderCloud.Categories.ListProductAssignments('WorkshopsEvents', null, 1 ,100).then(function(assign){
-						var count=1;
+						angular.forEach(assign.Items, function(res, key){
+							events.push(OrderCloud.Products.Get(res.ProductID));
+						},true);
+						$q.all(events).then(function(result){
+							var count=1,events = [];
+							angular.forEach(result, function(data, key){
+								if(!_.isEmpty(data.xp)){
+									if(data.xp.EventDate!=null){
+										events.push({
+											id: data.ID,
+											title: data.Name,
+											start: new Date(data.xp.EventDate),
+											//end : new Date(cat.xp.EndDate) // Uncomment if we have date range 
+											productcode : data.xp.ProductCode,
+											description: data.Description
+										})
+									}
+								}
+								if(count==assign.Items.length){
+									var groupName=_.groupBy(events, function(value){
+										return value.start;
+									});
+									var data;
+									var result=[];
+									var cont=1;
+									var keys = Object.keys(groupName);
+									angular.forEach(groupName, function(val){
+										data=_.uniq(val, function(item){
+											return item.productcode;
+										});
+										result = _.union(result, data);
+										if(cont==keys.length){
+											var sort=_.sortBy(result, function(o) { return o.start; });
+											sort.reverse();
+											arr["events"]=sort;
+											dfr.resolve(arr);
+											console.log("arr", arr["events"]);
+										}
+										cont++;
+										console.log("result", result);
+									});
+								}
+								count++;
+							},true);
+						});
+						/*var count=1;
 						angular.forEach(assign.Items, function(res, key1){
 							OrderCloud.Products.Get(res.ProductID).then(function(data){
 								if(!_.isEmpty(data.xp)){
@@ -114,7 +156,7 @@ function HomeConfig( $stateProvider ) {
 								}
 								count++;
 							})
-						})
+						});*/
 					});
 					return dfr.promise;
 				}

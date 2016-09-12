@@ -111,7 +111,6 @@ function BaseConfig( $stateProvider ) {
 
 function BaseService($q, $localForage, Underscore, OrderCloud) {
     var service = {
- 
         GetCategoryTree: _getCategoryTree,
         GetProductList: _getProductList
     };
@@ -256,8 +255,8 @@ function BuildOrderTopController() {
 function AlfrescoFact($http, $q, alfrescoOmsUrl) {
     var service = {
         Get: _get,
+		GetAlfrescoLogin:_getAlfrescoLogin,
 		GetHome:_getHome
-		
     };
     return service;
  
@@ -280,6 +279,30 @@ function AlfrescoFact($http, $q, alfrescoOmsUrl) {
  
         }).success(function (data, status, headers, config) {
  
+            defferred.resolve(data);
+        }).error(function (data, status, headers, config) {
+            defferred.reject(data);
+        });
+        return defferred.promise;
+    }
+	function _getAlfrescoLogin() {
+        var data = {
+            username: "admin",
+            password: "Bachmans"
+        };
+        var defferred = $q.defer();
+ 
+        $http({
+            method: 'POST',
+            dataType: "json",
+            url: "http://52.206.111.191:8080/alfresco/service/api/login",
+            data: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+ 
+        }).success(function (data, status, headers, config) {
+			console.log("logggggged in alfresco");
             defferred.resolve(data);
         }).error(function (data, status, headers, config) {
             defferred.reject(data);

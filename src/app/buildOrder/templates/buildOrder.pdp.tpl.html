@@ -187,8 +187,8 @@
 						<span ng-repeat="eventPrice in buildOrder.selectedPrice">
 							<span class="prod-price">{{eventPrice.Price | currency}}</span>
 						</span>
-						<p class="register">Choose a date to register for:</p>
-						<uib-accordion ng-init="buildOrder.eventInfo[0]=true">
+						<p class="register">Choose a date to register for:</p>{{buildOrder.limit}}
+						<uib-accordion ng-init="buildOrder.eventsLimit.length < 2 ? buildOrder.limit=buildOrder.eventsLimit.length : buildOrder.limit=1">
 							<uib-accordion-group ng-repeat="(key, value) in buildOrder.fullEventsData track by $index | limitTo : buildOrder.limit">
 								<uib-accordion-heading>
 									<p><span class="events-img">
@@ -326,7 +326,7 @@
 				<button class="addCart" ng-if="buildOrder.hidePdpblock">REGISTER</button>
 				<button class="addCart" ng-click="AddtoCart(buildOrder.selectedProductId, buildOrder.selectedProductImg)" ng-if="!buildOrder.hidePdpblock">ADD TO CART</button>
 				</div>
-				<div class="key-product col-xs-12 p0" ng-if="buildOrder.selectedKey.length>0">
+				<div class="key-product col-xs-12 p0">
 					<h3>Key Product Info:</h3>
 					<p class="row">
 						<div ng-repeat="(key, value) in buildOrder.selectedKey">
@@ -540,11 +540,18 @@
 <modal title="Order Details Confirm" visible="buildOrder.OrderConfirmPopUp" id="OrderConfirmPopUp" class="create-user-pop-up modal-pop-up">
 	My details goes here.......
 </modal>
-<modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up view-care-guide">
-	<ul>
+<modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up view-care-guide" ng-init="buildOrderPDP.showArticle=false;">
+	<p ng-if="buildOrderPDP.showArticle" ng-click="buildOrderPDP.showArticle=!buildOrderPDP.showArticle">BACK</p>
+	<ul ng-if="!buildOrderPDP.showArticle">
 		<li ng-repeat="articles in buildOrder.articles">
-			<h1>{{articles.title}}</h1>
-			<p>{{articles.description}}</p>
+			<div ng-click="buildOrderPDP.getArticle(articles.contentUrl);buildOrderPDP.showArticle=!buildOrderPDP.showArticle">
+				<h1>{{articles.title}}</h1>
+				<p>{{articles.description}}</p>
+			</div>
 		</li>
 	</ul>
+	<div class="articlePDP" ng-if="buildOrderPDP.showArticle">
+		<div class="article-img"></div>
+		<div ng-include="buildOrderPDP.articleURL"></div>
+	</div>
 </modal>

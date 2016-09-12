@@ -245,7 +245,7 @@ function buildOrderConfig( $stateProvider ) {
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList) {
+function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList, AlfrescoFact) {
 	var vm = this;
 	vm.selected = undefined;
 	vm.hidePdpblock=false;
@@ -743,6 +743,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.fullEventsData=_.groupBy(productList, function(value){
 				return value.xp.EventDate;
 			});
+			vm.eventsLimit = Object.keys(vm.fullEventsData);
+			vm.limit=1;
 			console.log("groupName", vm.fullEventsData);
 		}
 		else{
@@ -885,7 +887,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         vm.selectedProductImg=selectedSku.baseImage;
 		vm.selectedPrice=selectedSku.StandardPriceSchedule.PriceBreaks;
     }
-	vm.limit=1;
 	vm.showAll=function(){
 		var keys = Object.keys(vm.fullEventsData);
 		vm.limit=keys.length;
@@ -982,6 +983,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		else if(vm.catList)
 		vm.catList='';
 	}
+	AlfrescoFact.GetAlfrescoLogin().then(function (data) {
+        var tckt = data.data.ticket;
+        localStorage.setItem("alfrescoTicket",tckt);
+    });
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -2013,11 +2018,16 @@ function buildOrderPLPController(productList, $stateParams) {
 	}*/
 }
 
-function buildOrderPDPController($scope) {
+function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
 	var vm = this;
 	vm.viewCareGuide = false;
 	$scope.viewCareGuide=function(){
 		vm.viewCareGuide = !vm.viewCareGuide;
+	}
+	vm.getArticle=function(data){
+		var alfticket = localStorage.getItem("alfrescoTicket");
+		vm.articleURL=$sce.trustAsResourceUrl(alfrescoAccessURL+data+"?alf_ticket="+alfticket);
+		
 	}
 }
   

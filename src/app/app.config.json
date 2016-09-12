@@ -4,6 +4,8 @@
   "clientid": "89641BEA-944E-4208-BD79-82C41B4A1579",
   "buyerid": "Bachmans",
   "environment": "prod",
+  "alfrescoLogin":"http://52.206.111.191:8080/alfresco/service/api/login",
+  "alfrescoAccessURL":"http://52.206.111.191:8080/alfresco/service",
   "alfrescoURL": "http://103.227.151.31:8080/alfresco/service/",
   "alfrescoOmsUrl": "http://103.227.151.31:8080/alfresco/service/slingshot/doclib/doclist/documents/site/bachmansstorefront/documentLibrary/",
   "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime",

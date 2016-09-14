@@ -1,3 +1,22 @@
+.modal-dialog {
+  position:absolute !important;
+  top:50% !important;
+  transform: translate(-50%, -50%) !important;
+  -ms-transform: translate(-50%, -50%) !important;
+  -webkit-transform: translate(-50%, -50%) !important;
+  width:50% !important;
+  left: 50%;
+}
+
+.modal-body {
+  top:0px; // height of header
+  bottom:45px;  // height of footer
+  left:0;
+  right:0;
+  overflow-y:auto;
+}
+
+
 div.col-sm-6.form-group button.btn {
 	margin-top: 26px;
 }
@@ -2113,7 +2132,7 @@ input.error {
 		cursor: pointer;
 	}
 	.popover{
-		top:-81px;
+		top: -62px;
 		height:82px;
 	 .popover-inner{
 	   .popover-content{
@@ -2299,14 +2318,7 @@ input.error {
 }
 .modal-pop-up.modal{
 	.modal-dialog{
-		width: 45%;
-		height: 210px;
-		padding: 20px;
-		position: absolute;
-		top: 50%;
-		padding:0;
-		margin:0 auto;
-		margin-top: -105px;
+		
 		.modal-content{
 			border-radius: 0;
 		}
@@ -2360,17 +2372,9 @@ input.error {
 	}
 	&.create-user-pop-up{
 		.modal-dialog{
-		width: 700px;
-		height: 358px;
-	    margin-top: -179px;
+		
 			.modal-body{
-				position: absolute;
-				top: 56px;
-				height: 300px;
-				background-color: white;
-				bottom: 0;
-				overflow-y: auto;
-				width:100%;
+				
 				.user-top{
 					padding-top:5px;
 					 	p{
@@ -2526,10 +2530,7 @@ input.error {
 }
 .view-addr-book.modal-pop-up{
 	.modal-dialog{
-	    width: 700px;
-		height: 358px;
-	    margin-top: -179px;
-		.modal-content{
+	    .modal-content{
 			border-radius:0;
 			.modal-header{
 				h4{
@@ -2549,14 +2550,7 @@ input.error {
 				}
 			}
 			.modal-body{
-				position: absolute;
-				top: 56px;
-				height: 300px;
-				background-color: white;
-				bottom: 0;
-				overflow-y: auto;
-				width:100%;
-					table{
+				table{
 						width:100%;
 						tr{
 							border:1px solid @color21;
@@ -2611,8 +2605,7 @@ input.error {
 	.modal-dialog{
 		.modal-content{
 			.modal-body{
-				height:400px !important;
-				overflow-y: hidden !important;
+			
 					.recipient-details{
 						width:100%;
 						border:1px solid #ccc;

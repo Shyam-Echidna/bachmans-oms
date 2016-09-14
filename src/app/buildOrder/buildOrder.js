@@ -138,7 +138,7 @@ function buildOrderConfig( $stateProvider ) {
 		},
 		resolve: {
 			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 					var d = $q.defer();
 					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
 						.then(function(data) {
@@ -180,7 +180,7 @@ function buildOrderConfig( $stateProvider ) {
 			},
 			spendingAccounts:function($q, $state, $stateParams, OrderCloud){
 				var arr = [], spendingAcc = {}, filterPurple;
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop'){
 					var dfd = $q.defer();
 					OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 						angular.forEach(assign.Items, function(value, key) {
@@ -208,32 +208,17 @@ function buildOrderConfig( $stateProvider ) {
 				});
 				return dfr.promise;
 			},
-			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages, algolia) {
+			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages) {
 				if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'|| $stateParams.SearchType =='Workshop'){
 					var dfr = $q.defer();
 					OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(data) {
 						OrderCloud.Auth.SetImpersonationToken(data['access_token']);
 						if($stateParams.SearchType == 'plp'){
-							// return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
-								// var ticket = localStorage.getItem("alf_ticket"), prodList = BuildOrderService.GetProductList(res.Items, ProductImages);
-									// dfr.resolve(prodList);
-							// });
-							var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');
-								var index = client.initIndex('products');
-								var search = {
-									'query' : '',
-									'hits' : []
-								};
-								search.query=$stateParams.ID;
-								index.search(search.query).then(function searchSuccess(content) {
-									if(content.hits.length>0){
-										BuildOrderService.GetProductList(content.hits, ProductImages).then(function(catProducts){
-											dfr.resolve(catProducts);
-										});
-									}
-							})
-						}
-						else if($stateParams.SearchType =='Workshop'){
+							return OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, null, $stateParams.ID).then(function(res){
+								var ticket = localStorage.getItem("alf_ticket"), prodList = BuildOrderService.GetProductList(res.Items, ProductImages);
+									dfr.resolve(prodList);
+							});
+						} else if($stateParams.SearchType =='Workshop'){
 							OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
 								OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.ProductCode":prod.xp.ProductCode}).then(function(res){
 									var ticket = localStorage.getItem("alf_ticket");
@@ -260,7 +245,7 @@ function buildOrderConfig( $stateProvider ) {
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList, AlfrescoFact, alfrescoAccessURL) {
+function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList, AlfrescoFact) {
 	var vm = this;
 	vm.selected = undefined;
 	vm.hidePdpblock=false;
@@ -722,16 +707,28 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
       $('.dropdown.open button p').text(selectedExtra);
     }
 	vm.prouctsList=function(e){
-		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":e.ProductCode}).then(function(res){
-			BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
-				vm.seqProducts=prodList;
-				var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
-				vm.showProduct(selectedProd[0]);
-			 });
-		 });
+		if($stateParams.SearchType == 'BuildOrder'){
+			OrderCloud.Products.List(null, 1, 100, null, null, {"xp.SequenceNumber":e.SequenceNumber}).then(function(res){
+				console.log(res);
+				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+					vm.seqProducts=prodList;
+					var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
+					vm.showProduct(selectedProd[0]);
+				 });
+			});
+		}
+		else{
+			OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.SequenceNumber}).then(function(res){
+				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+					vm.seqProducts=prodList;
+					var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
+					vm.showProduct(selectedProd[0]);
+				 });
+			});
+		}
 	}
 	vm.productsseqList=function(e){
-		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":e.xp.ProductCode}).then(function(res){
+		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.xp.SequenceNumber}).then(function(res){
 			BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
 				vm.seqProducts=prodList;
 				vm.showProduct(e);
@@ -741,38 +738,16 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     // Function to get selected product
     // Function to get selected product
     vm.showProduct=function(e){
-        if($stateParams.SearchType == 'plp'){
- 			vm.fullProductsData=vm.seqProducts;
-			_.filter(vm.fullProductsData, function(obj) {
-                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
-					vm.articles=obj.xp.Articles;
-					vm.selectedSpecification=obj.xp.Attributes;
-					vm.selectedKey=obj.xp.KeyAttributes;
-					vm.selectedWarranty=obj.xp.Warranty;
-				}
-			});
+        if(vm.catList && vm.catList.length>0){
+            vm.fullProductsData=_.filter(vm.catList, function(obj) {
+                return _.indexOf([obj.xp.ProductCode], e.xp.ProductCode) > -1
+            });
         }
         else if($stateParams.SearchType == 'Products'){
-		//var alfticket = localStorage.getItem("alfrescoTicket");
-		//var imgList=BuildOrderService.GetAttributeImages(alfticket);
 			vm.fullProductsData=vm.seqProducts;
-			vm.selectedKey=[];
 			_.filter(vm.fullProductsData, function(obj) {
-                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
-						vm.articles=obj.xp.Articles;
-						vm.selectedSpecification=obj.xp.Attributes;
-						//vm.selectedKey=obj.xp.KeyAttributes;
-							//console.log("atrributessss",imgList);
-							// angular.forEach(obj.xp.KeyAttributes, function(value, key) {
-								// console.log("key", key);
-								// var attImg=Underscore.where(imgList.items, {title: key});
-								// vm.selectedKey.push({
-									// url:alfrescoAccessURL+"/" + attImg[0].contentUrl + "?alf_ticket=" + alfticket,
-									// attribute:value
-								// })
-							// });
-						vm.selectedWarranty=obj.xp.Warranty;
-					}
+                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct)
+					vm.articles=obj.xp.Articles;
 				});
         }
 		else if(vm.hidePdpblock==true){
@@ -787,12 +762,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		else{
 			vm.fullProductsData=vm.seqProducts;
 			_.filter(vm.fullProductsData, function(obj) {
-                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
+                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct)
 					vm.articles=obj.xp.Articles;
-					vm.selectedSpecification=obj.xp.Attributes;
-					vm.selectedKey=obj.xp.KeyAttributes;
-					vm.selectedWarranty=obj.xp.Warranty;
-				}
 			});
 		}
 		if(vm.hidePdpblock==false){
@@ -917,6 +888,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         vm.selectedProductImg=selectedSku.baseImage;
         vm.changeImg=angular.copy(selectedSku.baseImage);
         vm.selectedalternativeImg=selectedSku.alternativeImg;
+        vm.selectedSpecification=selectedSku.xp.Attributes;
+        vm.selectedKey=selectedSku.xp.KeyAttributes;
+        vm.selectedWarranty=selectedSku.xp.Warranty;
     }
 	vm.DisplayEvent=function(selectedSku) {
         vm.productTitle = selectedSku.Name;
@@ -1197,7 +1171,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					$scope.createListItem(prodID, DeliveryMethod, baseImg);
 				}else{
 					var orderParams = {"Type":"Standard","xp":{"OrderSource":"OMS","CSRID":$cookieStore.get('OMS.CSRID')}};
-					if($stateParams.SearchType == 'Products'){
+					if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
 						console.log(OrderCloud.Auth.ReadToken());
 						BuildOrderService.AdminLogin().then(function(res){
     						console.log("token==",res);
@@ -1205,7 +1179,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
     						OrderCloud.As().Orders.Create(orderParams).then(function(res1){
     							CurrentOrder.Set(res1.ID);
 								vm.order = res1;
-								if($stateParams.SearchType == 'Products'){
+								if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
 									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order = res1;	
 								}
 								$scope.createListItem(prodID, DeliveryMethod, baseImg);
@@ -1235,7 +1209,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 			lineItemParams.xp.MinDate = res.MinDate;
 			lineItemParams.xp.ProductImageUrl = baseImg;
-			if($stateParams.SearchType=='Products'){
+			if($stateParams.SearchType=='Products' && $stateParams.SearchType == 'BuildOrder'){
 				vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
@@ -1267,7 +1241,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	};
 	vm.getLineItems = function(){
 		if(vm.order.Status == "Unsubmitted" && vm.order != undefined){
-			if($stateParams.SearchType=="Products"){
+			if($stateParams.SearchType=="Products" && $stateParams.SearchType == 'BuildOrder'){
 				vm.ActiveOrderCartLoader = OrderCloud.LineItems.List(vm.order.ID).then(function(res){
 					vm.AvoidMultipleDelryChrgs = [];	
 					vm.ActiveOrderCartLoader = LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
@@ -2056,35 +2030,16 @@ function buildOrderPLPController(productList, $stateParams) {
 	}*/
 }
 
-function buildOrderPDPController($scope, $http, $sce, alfrescoAccess, alfrescoAccessURL, Underscore) {
+function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
 	var vm = this;
 	vm.viewCareGuide = false;
 	$scope.viewCareGuide=function(){
 		vm.viewCareGuide = !vm.viewCareGuide;
 	}
 	vm.getArticle=function(data){
-		vm.articleURL="", vm.articleImgURL="";
 		var alfticket = localStorage.getItem("alfrescoTicket");
 		vm.articleURL=$sce.trustAsResourceUrl(alfrescoAccessURL+data+"?alf_ticket="+alfticket);
-		var file=data.substring(data.lastIndexOf("/") + 1, data.length);
-		var imgName= file.substring(0, file.lastIndexOf(".") + 0);
-		var str1 = data.substr(0, data.lastIndexOf("/"));
-		var str2 = str1.substring(str1.lastIndexOf("/") + 1, str1.length);
-		var str3 =alfrescoAccessURL+"/getArticleData/nodes.json?id="+str2+"&alf_ticket="+alfticket;
-		console.log("result", str3);
-		$http.get(str3).then(function(assign) {
-			var assign=assign.data.displayPath;
-			var str4 = assign.substring(assign.lastIndexOf("Bachmans Quick Start/") + 0, assign.length);
-			var url=alfrescoAccess+ str4 + "/Media"+"?alf_ticket="+alfticket;
-			$http.get(url).then(function(res) {
-				Underscore.filter(res.data.items, function(row){
-					if((row.nodeType=="ws:image") && (row.fileName==imgName+".jpg")){
-						console.log("rrrrl", alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
-						vm.articleImgURL=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
-					}
-				})
-			})
-		});
+		
 	}
 }
   
@@ -2525,7 +2480,7 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 	//}
 }
 
-function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore, GetCstTime, alfrescoAccess) {
+function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore, GetCstTime) {
     var upselldata = [];
     var crossdata = [];
     var productdetail = [];
@@ -2550,8 +2505,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		GetProductList:_getProductList,
 		GetSeqProd:_getSeqProd,
 		GetExtras:_getExtras,
-		AdminLogin: _adminLogin,
-		GetAttributeImages:_getAttributeImages
+		AdminLogin: _adminLogin
     }
     function _adminLogin(){
     	var data = $.param({
@@ -2871,25 +2825,6 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
         });
         return d.promise;
     }
-	function _getAttributeImages(ticket) {
-        var d = $q.defer();
-		//console.log("ticket" + ticket + "alfrescoOmsUrl:" + alfrescoOmsUrl );
-        $http({
-            method: 'GET',
-            dataType: "json",
-            url: alfrescoAccess + "Attributes?alf_ticket=" + ticket,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).success(function (data, status, headers, config) {
-            d.resolve(data);
-			//console.log("alfresco successssss");
-        }).error(function (data, status, headers, config) {
-			//console.log("alfresco error");
-            d.reject(data);
-        });
-        return d.promise;
-    }
 	function _getProductList(res, productImages){
 		var d = $q.defer(), ticket = localStorage.getItem("alf_ticket"), data, imgUrl;      
 		data = Underscore.filter(res, function(row){
@@ -2920,7 +2855,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		var vs = this, d = $q.defer(), arr = [];
 		vs.listAllProducts = function(){
 			angular.forEach(sequence, function(seqId, key){
-				arr.push(OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":seqId}));
+				arr.push(OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":seqId}));
 			},true);
 			$q.all(arr).then(function(result){
 				arr = [];

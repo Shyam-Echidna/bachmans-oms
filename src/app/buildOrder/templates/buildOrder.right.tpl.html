@@ -1,5 +1,4 @@
-		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="{promise:buildOrderRight.ActiveOrderCartLoader,message:'Please wait',templateUrl:'
-common/loading-indicators/templates/view.loading.tpl.html'}">
+		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="buildOrderRight.ActiveOrderCartLoader">
             <h1>ACTIVE ORDER</h1>
 			<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
 				<div class="pdt_name">

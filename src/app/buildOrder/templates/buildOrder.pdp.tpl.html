@@ -329,9 +329,9 @@
 				<div class="key-product col-xs-12 p0">
 					<h3>Key Product Info:</h3>
 					<p class="row">
-						<div ng-repeat="attribute in buildOrder.selectedKey">
-							<span class="col-xs-1"><img src="{{attribute.url}}"></span>
-							<label for="" class="col-xs-2">{{attribute.attribute}}</label>
+						<div ng-repeat="(key, value) in buildOrder.selectedKey">
+							<span class="col-xs-1"></span>
+							<label for="" class="col-xs-2">{{value}}</label>
 						</div>
 					</p>
 				</div>
@@ -551,9 +551,7 @@
 		</li>
 	</ul>
 	<div class="articlePDP" ng-if="buildOrderPDP.showArticle">
-		<div class="article-img">
-			<img src="{{buildOrderPDP.articleImgURL}}"/>
-		</div>
+		<div class="article-img"></div>
 		<div ng-include="buildOrderPDP.articleURL"></div>
 	</div>
 </modal>

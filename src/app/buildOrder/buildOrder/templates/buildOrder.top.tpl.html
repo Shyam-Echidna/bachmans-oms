@@ -1,0 +1,53 @@
+<div class="buildordertop" ng-show="application.headerstat">
+
+    <div id="BaseTop">
+        <!--Header starts here -->
+    <div class="header">
+        <div class="row">
+            <div class="logo">
+                <a href="#" ui-sref="home" ng-include="buildOrderTop.logo"></a>
+            </div>
+            <!-- <div class="search_box" ng-hide="hideSearchBox">
+                <div class="search_feild" ng-click="toggleMenu($event)">
+                    <a ui-sref="buildOrder"><i class="fa fa-search"></i></a>
+                    <ordercloud-search servicename="Products" controlleras="buildOrder"></ordercloud-search>
+                </div>
+            </div> -->
+			 <!-- algolia search -->
+            <div class="search_box" ng-hide="hideSearchBox">
+                <div class="search_feild" ng-click="toggleMenu($event)">
+                    <a ui-sref="buildOrder"><i class="fa fa-search"></i></a>
+                    <ordercloud-search servicename="products" controlleras="buildOrder" attribute="buildorder-search"></ordercloud-search>
+                </div>
+            </div>
+			<div class="buildordersummaryheader" ng-show="showOrdersummary">
+                <p ng-click="BacktoOrder()">
+				<span>
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+						 viewBox="-27.9 72.8 42 28" style="enable-background:new -27.9 72.8 42 28;" xml:space="preserve">
+						<text transform="matrix(1 0 0 1 -304 500)" style="font-family:'HelveticaNeue-Bold'; font-size:5px;">Created by Rohith M S</text>
+						<text transform="matrix(1 0 0 1 -304 505)" style="font-family:'HelveticaNeue-Bold'; font-size:5px;">from the Noun Project</text>
+						<g>
+							<path d="M11.9,88.8h-29.5l7.4,7.5l-2.9,2.9l-12.5-12.5l12.5-12.5l2.9,2.9l-7.4,7.5h29.5V88.8z"/>
+						</g>
+					</svg>
+				</span> Back to order</p>
+            </div>
+			<div class="buildordersummaryheader" ng-show="orderDetails">	
+                <p ng-click="backTocreate()">
+				<span>
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+						 viewBox="-27.9 72.8 42 28" style="enable-background:new -27.9 72.8 42 28;" xml:space="preserve">
+						<text transform="matrix(1 0 0 1 -304 500)" style="font-family:'HelveticaNeue-Bold'; font-size:5px;">Created by Rohith M S</text>
+						<text transform="matrix(1 0 0 1 -304 505)" style="font-family:'HelveticaNeue-Bold'; font-size:5px;">from the Noun Project</text>
+						<g>
+							<path d="M11.9,88.8h-29.5l7.4,7.5l-2.9,2.9l-12.5-12.5l12.5-12.5l2.9,2.9l-7.4,7.5h29.5V88.8z"/>
+						</g>
+					</svg>
+				</span>Back to create</p>
+            </div>
+        </div>
+    </div>
+    <!--Header ends here -->
+</div>
+</div>

@@ -1,0 +1,14 @@
+<ui-view id="buildorder">
+    <div id="BuildOrderTopNav" ui-view="buildordertop"></div>
+    <div class="buildOrder-plp">
+        <div class="row">
+            <div id="BuildOrderLeftNav" ui-view="buildorderleft"></div>
+            <div id="BuildOrderPLP" ui-view="buildorderplp" ng-hide="buildOrder.showPDP" class="buildOrderPlp-main"></div>
+            <div id="BuildOrderPDP" ui-view="buildorderpdp" ng-show="buildOrder.showPDP" class="buildOrderPdp-main"></div>
+            <div id="BuildOrderRightNav" ui-view="buildorderright"></div>
+			<div id="BuildOrderSummary" ui-view="buildordersummary" class="buildOrderSummary-main"></div>
+			<div id="BuildorderOrderHistoryDetails" ui-view="buildorderorderhistorydetails" class="buildOrderSummary-main"></div>
+        </div>
+    </div>
+    <div id="BuildOrderDownNav" ui-view="buildorderdown"></div>
+</ui-view>

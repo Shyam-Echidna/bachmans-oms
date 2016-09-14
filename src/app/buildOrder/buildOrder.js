@@ -138,7 +138,7 @@ function buildOrderConfig( $stateProvider ) {
 		},
 		resolve: {
 			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
 					var d = $q.defer();
 					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
 						.then(function(data) {
@@ -180,7 +180,7 @@ function buildOrderConfig( $stateProvider ) {
 			},
 			spendingAccounts:function($q, $state, $stateParams, OrderCloud){
 				var arr = [], spendingAcc = {}, filterPurple;
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop'){
 					var dfd = $q.defer();
 					OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 						angular.forEach(assign.Items, function(value, key) {
@@ -707,13 +707,25 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
       $('.dropdown.open button p').text(selectedExtra);
     }
 	vm.prouctsList=function(e){
-		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.SequenceNumber}).then(function(res){
-			BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
-				vm.seqProducts=prodList;
-				var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
-				vm.showProduct(selectedProd[0]);
-			 });
-		 });
+		if($stateParams.SearchType == 'BuildOrder'){
+			OrderCloud.Products.List(null, 1, 100, null, null, {"xp.SequenceNumber":e.SequenceNumber}).then(function(res){
+				console.log(res);
+				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+					vm.seqProducts=prodList;
+					var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
+					vm.showProduct(selectedProd[0]);
+				 });
+			});
+		}
+		else{
+			OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.SequenceNumber}).then(function(res){
+				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+					vm.seqProducts=prodList;
+					var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
+					vm.showProduct(selectedProd[0]);
+				 });
+			});
+		}
 	}
 	vm.productsseqList=function(e){
 		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.SequenceNumber":e.xp.SequenceNumber}).then(function(res){
@@ -1159,7 +1171,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					$scope.createListItem(prodID, DeliveryMethod, baseImg);
 				}else{
 					var orderParams = {"Type":"Standard","xp":{"OrderSource":"OMS","CSRID":$cookieStore.get('OMS.CSRID')}};
-					if($stateParams.SearchType == 'Products'){
+					if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
 						console.log(OrderCloud.Auth.ReadToken());
 						BuildOrderService.AdminLogin().then(function(res){
     						console.log("token==",res);
@@ -1167,7 +1179,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
     						OrderCloud.As().Orders.Create(orderParams).then(function(res1){
     							CurrentOrder.Set(res1.ID);
 								vm.order = res1;
-								if($stateParams.SearchType == 'Products'){
+								if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
 									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order = res1;	
 								}
 								$scope.createListItem(prodID, DeliveryMethod, baseImg);
@@ -1197,7 +1209,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 			lineItemParams.xp.MinDate = res.MinDate;
 			lineItemParams.xp.ProductImageUrl = baseImg;
-			if($stateParams.SearchType=='Products'){
+			if($stateParams.SearchType=='Products' && $stateParams.SearchType == 'BuildOrder'){
 				vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
@@ -1229,7 +1241,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	};
 	vm.getLineItems = function(){
 		if(vm.order.Status == "Unsubmitted" && vm.order != undefined){
-			if($stateParams.SearchType=="Products"){
+			if($stateParams.SearchType=="Products" && $stateParams.SearchType == 'BuildOrder'){
 				vm.ActiveOrderCartLoader = OrderCloud.LineItems.List(vm.order.ID).then(function(res){
 					vm.AvoidMultipleDelryChrgs = [];	
 					vm.ActiveOrderCartLoader = LineItemHelpers.GetProductInfo(res.Items).then(function(data) {

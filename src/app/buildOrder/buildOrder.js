@@ -138,22 +138,26 @@ function buildOrderConfig( $stateProvider ) {
 		},
 		resolve: {
 			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
-					var d = $q.defer();
-					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
-						.then(function(data) {
-							OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-							OrderCloud.As().Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
-								if(res.Items.length != 0){
-									CurrentOrder.Set(res.Items[0].ID);
-									d.resolve(res.Items[0]);
-								}else{
-									d.resolve();
-								}
-							});
-						});
-						return d.promise;
-					}
+				var d = $q.defer();
+			    if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop' && !$stateParams.orderDetails){
+			     OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
+			      .then(function(data) {
+			       OrderCloud.Auth.SetImpersonationToken(data['access_token']);
+			       OrderCloud.As().Me.ListOutgoingOrders(null, 1, 100, null, null, {"Status":"Unsubmitted"}).then(function(res){
+			        if(res.Items.length != 0){
+			         CurrentOrder.Set(res.Items[0].ID);
+			         d.resolve(res.Items[0]);
+			        }else{
+			         d.resolve();
+			        }
+			       });
+			      });
+			     }else{
+			      OrderCloud.Orders.Get($stateParams.orderID).then(function(res){
+			       d.resolve(res);
+			      });
+			     }
+			    return d.promise;
 			},
 			SearchData: function($q, $stateParams, $state, OrderCloud, Order) {
 				var arr = {}, d = $q.defer();

@@ -226,12 +226,12 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	  enableSorting: true,
 	  columnDefs: [
 	   { name: 'ID', displayName:'Shipment'},
-	   { name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>'},
-	   { name: 'FromUserFirstName', displayName:'Sender Name'},
-	   { name: 'BillingAddress', displayName:'Occassions'},
-	   { name: 'Totl', displayName:'Wire Status Code'},
-	   { name: 'xp.CSRID', displayName:'CSR ID'},
-	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"15%"}
+	   { name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>', width:"14.2%"},
+	   { name: 'FromUserFirstName', displayName:'Sender Name',width:"14.2%"},
+	   { name: 'BillingAddress', displayName:'Occassions',width:"14.2%"},
+	   { name: 'Totl', displayName:'Wire Status Code',width:"14.2%"},
+	   { name: 'xp.CSRID', displayName:'CSR ID',width:"14.2%"},
+	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"14.2%"}
 	  ]
 	 };
 	vm.saved = OrderList.saved;

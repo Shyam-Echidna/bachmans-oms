@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="orderCloud" ng-controller="AppCtrl as application">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <title>{{application.title || application.appName}}</title>
+	<base href="/">
+    <!-- inject:css -->
+    <!-- endinject -->
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+</head>
+
+<body>
+<ui-view></ui-view>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- bower:js -->
+<!-- endinject -->
+
+<!-- inject:js -->
+<script src="/src/app/app.js"></script>
+<script src="/src/app/app.spec.js"></script>
+<script src="/src/app/account/account.js"></script>
+<script src="/src/app/addressBook/addressBook.js"></script>
+<script src="/src/app/base/base.js"></script>
+<script src="/src/app/buildOrder/buildOrder.js"></script>
+<script src="/src/app/checkout/checkout.js"></script>
+<script src="/src/app/custInfo/custInfo.js"></script>
+<script src="/src/app/home/home.js"></script>
+<script src="/src/app/login/login.js"></script>
+<script src="/src/app/orderHistory/orderHistory.js"></script>
+<script src="/src/assets/js/bootstrap.min.js"></script>
+<script src="/src/app/account/tests/account.spec.js"></script>
+<script src="/src/app/account/tests/account.test.js"></script>
+<script src="/src/app/base/tests/base.spec.js"></script>
+<script src="/src/app/base/tests/base.test.js"></script>
+<script src="/src/app/buildOrder/tests/buildOrder.spec.js"></script>
+<script src="/src/app/buildOrder/tests/buildOrder.test.js"></script>
+<script src="/src/app/checkout/tests/buildOrder.spec.js"></script>
+<script src="/src/app/checkout/tests/buildOrder.test.js"></script>
+<script src="/src/app/common/auto-id/auto-id.js"></script>
+<script src="/src/app/common/buyer-select/ordercloud-buyer-selected.js"></script>
+<script src="/src/app/common/confirmPassword/confirmPassword.js"></script>
+<script src="/src/app/common/current-order/current-order.js"></script>
+<script src="/src/app/common/files/files.js"></script>
+<script src="/src/app/common/georgraphy/geography.js"></script>
+<script src="/src/app/common/helper-factories/assignment-helpers.js"></script>
+<script src="/src/app/common/helper-factories/paging-helpers.js"></script>
+<script src="/src/app/common/infinite-scroll/infinite-scroll.js"></script>
+<script src="/src/app/common/geoService/geoService2.js"></script>
+<script src="/src/app/common/lineitems/lineitems.js"></script>
+<script src="/src/app/common/localforage/localforage.config.js"></script>
+<script src="/src/app/common/media/ordercloud.media.js"></script>
+<script src="/src/app/common/ordercloud-logo/ordercloud_logo.js"></script>
+<script src="/src/app/common/search/search.js"></script>
+<script src="/src/app/common/token-refresh/token-refresh.js"></script>
+<script src="/src/app/common/underscore/underscore.factory.js"></script>
+<script src="/src/app/common/address/address.js"></script>
+<script src="/src/app/login/tests/login.spec.js"></script>
+<script src="/src/app/login/tests/login.test.js"></script>
+<script src="/src/app/login/tests/logout.test.js"></script>
+<script src="/src/app/common/auto-id/tests/auto-id.spec.js"></script>
+<script src="/src/app/common/auto-id/tests/auto-id.test.js"></script>
+<script src="/src/app/common/buyer-select/tests/buyer-select.spec.js"></script>
+<script src="/src/app/common/buyer-select/tests/buyer_select.test.js"></script>
+<script src="/src/app/common/files/tests/files.spec.js"></script>
+<script src="/src/app/common/files/tests/files.test.js"></script>
+<script src="/src/app/common/helper-factories/tests/assignment-helpers.spec.js"></script>
+<script src="/src/app/common/helper-factories/tests/assignment-helpers.test.js"></script>
+<script src="/src/app/common/helper-factories/tests/paging-helpers.spec.js"></script>
+<script src="/src/app/common/helper-factories/tests/paging-helpers.test.js"></script>
+<script src="/src/app/common/infinite-scroll/tests/infinite-scroll.spec.js"></script>
+<script src="/src/app/common/infinite-scroll/tests/infinite-scroll.test.js"></script>
+<script src="/src/app/common/ordercloud-logo/tests/ordercloud-logo.test.js"></script>
+<script src="/src/app/common/ordercloud-logo/tests/ordercloud_logo.spec.js"></script>
+<script src="/src/app/common/search/tests/search.spec.js"></script>
+<script src="/src/app/common/search/tests/search.test.js"></script>
+<!-- endinject -->
+</body>
+</html>

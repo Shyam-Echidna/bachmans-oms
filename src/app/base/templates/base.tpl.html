@@ -1,0 +1,7 @@
+<div id="DashboardWrapper">
+    <div id="DashboardContent">
+        <nav class="navbar-flex hidden-print" ui-view="top"></nav>
+        <main ng-class="{'build-order':application.headerstat}" ui-view cg-busy="application.contentLoading"></main>
+    </div>
+    <div id="DashboardDown" ui-view="down" class="hidden-print"></div>
+</div>

@@ -1,0 +1,64 @@
+.container-fluid.orderConfirmation-Wrap{
+	padding:0;
+	.orderConfirm{
+		width: 80%;
+	    position: absolute;
+	    top: 50%;
+	    left: 0;
+	    right: 0;
+	    margin: auto;
+	    text-align: center;
+	    transform: translateY(-50%);
+	    p.orderConfirm-title{
+	    	color:#8B5BB3;
+	    	font-size:2em;
+	    	.helvetica-bold;
+	    }
+	    p.orderConfirm-ID{
+	    	font-size:1.5em;
+	    	.helvetica-medium;
+	    	margin: 40px 0 30px 0;
+	    	span{
+	    	.helvetica-bold;
+	    	}
+	    }
+	    div.orderConfirm-mailContent{
+	    	text-align: center;
+	    	display:inline-block;
+	    	width:60%;
+		    p.orderConfirm-mail, p.orderConfirm-sendToDiff{
+		    	color:#666666;
+		    	font-size: 1.2em;
+		    	.helvetica-medium;
+		    	text-align: left;
+		    	span{
+		    		color:#000;
+		    		font-size: 1.5em;
+		    	}
+		    	input{
+		    		border:1px solid @color21;
+		    		height:45px;
+		    		padding-left:5px;
+		    		width: 55%;
+	    			margin-left: 10px;
+	    			background-color: @color23;
+	    			color: @color26;
+		    	}
+		    }
+		}
+		div.orderConfirm-Btn{
+			button.sendBtn{
+				width: 10%;
+			    padding: 5px 10px;
+			    margin-left: 24px;
+			    margin-top: 15px;
+			    background-color: @primary-color;
+			    color: #fff;
+			    .background-fade;
+			    &:hover{
+			    background-color: @primary-dark-color;
+			    }
+			}
+		}
+	}
+}

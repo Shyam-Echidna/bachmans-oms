@@ -1,0 +1,13 @@
+<div class="checkoutfooter" ng-show="application.headerstat">
+	<div class="cancel-order">
+		<h5 ng-click="cancelOrder()">Cancel Order</h5>
+	</div>
+	<div class="save-later" ng-click="vm.saveLaterPopup()">
+		<h5>Save For Later</h5>
+	</div>
+	<modalr title="Save Order For Later" visible="vm.showModal" id="mymodal">
+		Save Order as:<br/>
+		<input type="text" ng-model="saveOrderTxt" /><br/>
+		<input type="button" ng-click="saveForLater(saveOrderTxt)" value="SAVE" />
+	</modalr>
+</div>

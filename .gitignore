@@ -1,0 +1,11 @@
+*.sw*
+*~
+/build/
+/compile/
+!gulp/
+node_modules/
+bower_components/
+errorShots/
+.idea/
+plato/
+.svn/

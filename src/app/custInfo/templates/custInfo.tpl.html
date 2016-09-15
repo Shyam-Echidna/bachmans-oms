@@ -1,0 +1,253 @@
+<div class="container-fluid customer-info">
+	<div class="cust-info-container row">
+		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
+			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
+				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
+				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
+					<div class="info-blk form-group col-md-12 cust-form">
+						<p class="col-md-3 cust-del">Email Address:</p>
+					
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.Email}}</span>
+						<input ng-show="isEditing" type="email" class="form-control col-md-6" ng-model="custInfo.list.user.Email" placeholder="email">
+						
+					</div>
+					<p class="cust-top col-md-12">Primary Account Holder</p>
+					<div class="info-blk form-group col-md-12">
+						<p class="col-md-3 cust-del">First Name:</p>
+						
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.Email}}</span>
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.FirstName}}</span>
+						<input type="text" ng-show="isEditing" name="fname" class="form-control col-md-6" ng-model="custInfo.list.user.FirstName"  placeholder="FirstName">
+					
+					</div>
+					<div class="info-blk form-group col-md-12">
+						<p class="col-md-3 cust-del">Last Name:</p>
+						
+						<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.LastName}}</span>
+						<input type="text" ng-show="isEditing" class="form-control col-md-6" ng-model="custInfo.list.user.LastName"  placeholder="LastName">
+						
+					</div>
+					<div class="cust-street cust-top col-md-12">
+						<p class="col-md-3 cust-del">Street Address:</p>
+						<div class="col-md-6 cust-addr">
+							<p ng-show="!isEditing">{{custInfo.list.defaultAddr[0].CompanyName}}</p>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr.CompanyName" placeholder="CompanyName" class="cust-addr1">
+							<div>
+								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].FirstName}} {{custInfo.list.defaultAddr[0].LastName}}</span>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].FirstName" placeholder="FirstName">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].LastName" placeholder="LastName">
+							</div>
+							<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].Street1}} {{custInfo.list.defaultAddr[0].Street2}} {{custInfo.list.defaultAddr[0].City}}</span>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1" ng-blur="custInfo.getLocation()" required>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street2" placeholder="Street2">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City" readonly>
+							<div>
+								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].State}} {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</span>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Zip" ng-blur="custInfo.getLocation()" placeholder="Zip" required>
+							</div>
+						</div>
+						<div class="info-blk cust-top">
+							<p class="col-md-3">Phone Number:</p>
+						
+							<span ng-show="!isEditing" class="col-md-6 phone-num">{{custInfo.list.user.Phone}}</span><!--
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.user.Phone"> -->
+							<input type="number" ng-show="isEditing" placeholder="Area Code" ng-model="custInfo.list.user.contact.Phone1" max-length="3" class="col-md-3 phone-val">
+							<input type="number" ng-show="isEditing" placeholder="Prefix" ng-model="custInfo.list.user.contact.Phone2" max-length="3" class="col-md-3 phone-val">
+							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4" class="col-md-3 phone-val">
+							
+						</div>
+					<div class="info-blk">
+						<p class="col-md-3">Tax Exempt Number:</p>
+					
+						<span ng-show="!isEditing" class="col-md-6"></span>
+						<input type="text" ng-show="isEditing" value="" class="col-md-6 phone-val1">
+					
+					</div>
+			        <div class="form-group" ng-show="isEditing">
+						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			
+					</div>
+				</form>
+			</div>
+ 			<div class="cust-change-pwd col-sm-12 col-xs-12 col-md-12 col-lg-12">
+				<h1>PASSWORD</h1>
+				<a ng-click="viewChangePassword()">change password</a>
+			</div> 
+			<div class="cust-addrlistContainer col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<h1>ADDRESS BOOK</h1>
+				<div class="cust-addr-list cust-top">
+					<ul ng-repeat="address in custInfo.list.addresses">
+						<li>
+							<p>{{address.FirstName}} {{address.LastName}}</p>
+							<p class="sub-addr">{{address.Street1}}</p>
+							<p class="sub-addr">{{address.Street2}}</p>
+							<p class="group-addr">
+								<span class="sub-addr">{{address.City}}</span>
+								<span class="sub-addr">{{address.State}}</span>
+								<span class="sub-addr">{{address.Country}}</span>
+								<span class="sub-addr">{{address.Zip}}</span>
+							</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="subscription col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<h1>SUBSCRIPTIONS</h1>
+				<table>
+					<tr>
+						<th>On</th>
+						<th>Off</th>
+						<th>Subscription Type</th>
+					</tr>
+					<tr ng-repeat="subscriptionList in custInfo.subscribedList track by $index">
+						<td>
+							<label class="radio-common">
+								<input type="radio" name="group{{$index}}" ng-checked="subscriptionList.Checked" ng-click="subscriptionList.Checked=true">
+								<div class="radio"></div>
+							</label>
+						</td>
+						<td>
+							<label class="radio-common">
+								<input type="radio" name="group{{$index}}" ng-checked="!subscriptionList.Checked" ng-click="subscriptionList.Checked=false">
+								<div class="radio"></div>
+							</label>
+						</td>
+						<td>
+							{{subscriptionList.name}}
+						</td>
+					</tr>
+				</table>
+				<button ng-click="custInfo.updateSubscription()" class="save">Save</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
+		<div class="card col-sm-12 col-xs-12 col-md-12 col-lg-12">
+			<h1>PURPLE PERKS</h1>
+			<div>
+				<div class="card-img">
+					<img src="../assets/images/flowers.jpg">
+				</div>
+				<div class="card-content">
+					<h2>MEMBER SINCE: <span>{{custInfo.spendingAcc.purple.StartDate | date:'yyyy'}}</span></h2>
+					<h3>EARNED TO DATE:<span>{{custInfo.spendingAcc.purple.xp.EarnedToDate | currency}}</span></h3>
+				</div>
+			</div>
+			<h4>POINTS EARNED:<span>{{custInfo.spendingAcc.purple.xp.PointsEarned}}</span></h4>
+			<h5>CURRENT BALANCE:<span>{{custInfo.spendingAcc.purple.Balance | currency}}</span></h5>
+			<p>(EXPIRES: <span>{{custInfo.spendingAcc.purple.EndDate | date:'MM/dd/yyyy'}}<span>)</p>
+		</div>
+		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+			<h1>PAYMENT OPTIONS <!-- <button ng-click="add">ADD CARD</button> --></h1>
+			<div ng-repeat="creditCard in custInfo.creditCard" class="credit-card-details">
+				<h4>{{creditCard.CardType}} ENDING IN {{creditCard.PartialAccountNumber }}</h4>
+				<div class="card-left">
+					<p>Name on Card</p>
+					<p  class="sub-addr">{{creditCard.CardholderName}}</p>
+					<!-- <button ng-click='isEditing = !isEditing'>Edit</button> -->
+				</div>
+				<div>
+					<p>Billing Address:</p>
+					<p class="sub-addr">{{custInfo.list.user.FirstName}} {{custInfo.list.user.LastName}}</p>
+					<p class="sub-addr">{{custInfo.list.defaultAddr[0].Street1}}, {{custInfo.list.defaultAddr[0].Street2}}, {{custInfo.list.defaultAddr[0].City}}</p>
+					<p class="sub-addr">{{custInfo.list.defaultAddr[0].State}}, {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</p>
+				</div>
+<!-- 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">Edit</button>
+				<button>Delete</button> -->
+			</div>
+<!--  			<div ng-show="paymentEdit" class="credit-card-edit col-sm-12 col-xs-12 col-md-12 col-lg-12">
+				<div>
+					<h5>Card Information</h5>
+					<p>Cardholder's Name</p>
+					<input type="text" ng-model="custInfo.creditCard.CardholderName" placeholder="cardholder's Name"/>
+					<div>
+						<div class="two-blocks">
+							<p>Card Number</p>
+							<input type="number" placeholder="Card Number"/>
+						</div>
+						<div class="two-blocks">
+							<p>Expiration Date:</p>
+							<input type="date" placeholder="Expiration Date"/>
+						</div>
+					</div>
+				</div>
+				<div>
+					<h5>Customer's Information</h5>
+					<div class="two-blocks">
+						<p>First Name:</p><input type="text" placeholder="First Name"/>
+					</div>
+					<div class="two-blocks">
+						<p>Last Name:</p><input type="text" placeholder="Last Name"/>
+					</div>
+						<p>Street1:</p><input type="text" placeholder="Street1"/>
+						<p>Street2:</p><input type="text" placeholder="Street2"/>
+						<p>City:</p><input type="text" placeholder="City"/>
+					<div>
+						<p>State:</p><input type="text" placeholder="State"/>
+						<p>Zip:</p><input type="text" placeholder="Zip"/>
+					</div>
+				</div>
+				<button ng-click='paymentEdit = !paymentEdit' class="save">Save</button>
+				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">cancel</button>
+			</div>  -->
+		</div>
+		<div class="account-credits col-sm-12 col-xs-12 col-md-12 col-lg-12">
+			<h1>ACCOUNT CREDITS</h1>
+			<h2>CREDIT BALANCE: <span>{{custInfo.spendingAcc.charges.Balance | currency}}</span></h2>
+		</div>
+<!-- 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+			<h1>PROMOTIONS</h1>
+			<p>Free Shipping</p>
+			<p class="sub-addr">Lorem lpsum dolor sit amet</p>
+		</div> -->
+		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+			<h1>ORDER HISTORY</h1>
+			<a ui-sref="orderHistory({userID:custInfo.list.user.ID, name:custInfo.list.user.FirstName})">View Order History</a>
+		</div>
+	</div>
+	<modal title="Choose a Security Question" visible="showModal" class="change-pwd modal-pop-up">
+		<form name="myForm" ng-submit="ok()" >
+				<div class="form-group security-qtn-block">
+                  <label for="security-select">Choose a Security Question</label>
+               <!--    <select class="form-control" id="security-select">
+                     <option value="Select a Security Question">Select a Security Question</option>
+                     <option value="What was your childhood nickname?">What was your childhood nickname?</option>
+                     <option value="What was the name of the hospital where you were born?">What was the name of the hospital where you were born?</option>
+                     <option value="What is your favorite movie?">What is your favorite movie?</option>
+                  </select> -->
+ 				  <div uib-dropdown class="form-control " id="security-select2">
+                     <div id="sort-dropdown" uib-dropdown-toggle>
+                     <p class="sort-active-show">Select a Security Question</p></div>
+                     <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+                       
+                        <li>
+                           <a href="">What was your childhood nickname?</a>
+                        </li>
+                         <li>
+                           <a href="">What was the name of the hospital where you were born?</a>
+                        </li>
+                         <li>
+                           <a href="">What is your favorite movie?</a>
+                        </li>
+                          <li>
+                           <a href="">What was your childhood nickname?</a>
+                        </li>
+                         <li>
+                           <a href="">What was the name of the hospital where you were born?</a>
+                        </li>
+                         <li>
+                           <a href="">What is your favorite movie?</a>
+                        </li>
+                     </ul>
+                     
+                  </div>
+                  <input type="text" class="form-control" placeholder="Enter Your Answer">
+               </div>
+			<div class="form-group">
+                  <button type="submit" class="save">SEND</button>
+            </div>
+		</form>
+	</modal>
+</div>

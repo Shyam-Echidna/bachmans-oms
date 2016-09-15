@@ -1,0 +1,175 @@
+<div class="basetopdiv" ng-hide="application.headerstat">
+<div id="BaseTop">
+        <!--Header starts here -->
+    <div class="header home-header">
+        <div class="row">
+            <div class="logo">
+                <a href="#" ui-sref="home" ng-include="base.logo">
+				</a>
+            </div>
+            <div class="browser" uib-dropdown dropdown-append-to-body is-open="base.isopen" auto-close="outsideClick">
+                <p id="btn-append-to-body" type="button" class="maincat_dropdown btn" uib-dropdown-toggle>BROWSE <i class="fa fa-chevron-down"></i></p>
+				<div uib-dropdown-menu class="browse dropdown-menu">
+					<ul role="menu" aria-labelledby="btn-append-to-body" class="col-sm-12 dropdown-menu main_cat">
+						<li ng-repeat="categories in baseTop.tree" class="sub-nav">
+							<a class="maincat_link" ng-class="{'category-arw': categories.ChildCount}" ng-mouseover="baseTop.page = 1">{{categories.Name}}</a>
+							<ul class="menu_level_2" ng-if="categories.ChildCount">
+								<li ng-repeat="subcategories in categories.children track by $index" ng-if="((categories.ID =='c1') && ((subcategories.xp.StartDate| date:'MM/dd') < (application.cstTime| date:'MM/dd')) && ((subcategories.xp.EndDate| date:'MM/dd') > (application.cstTime| date:'MM/dd')))">
+									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
+									<ul class="menu_level_3" ng-if="subcategories.ChildCount">
+										<li ng-repeat="subchildcategories in subcategories.children">
+											<a ui-sref="buildOrder({ID:subchildcategories.ID,SearchType:'plp'})" ng-click="base.isopen=false">{{subchildcategories.Name}}</a>	 
+										</li>
+									</ul> 
+								</li>
+								<button class="up-arrow" ng-click="baseTop.back()" ng-show="baseTop.numRecords < (baseTop.page * baseTop.numRecords)">
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+										<g>
+											<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+										</g>
+									</svg>
+								</button>
+								<button class="down-arrow" ng-click="baseTop.next()" ng-show="categories.children.length > (baseTop.page * baseTop.numRecords)">
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+										<g>
+											<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+										</g>
+									</svg>
+								</button>
+								<li ng-repeat="subcategories in categories.children track by $index" ng-if="(($index < (baseTop.page * baseTop.numRecords)) && ($index >= ((baseTop.page - 1) * baseTop.numRecords)) && categories.ID !='c1')">
+									<a ui-sref="plp({ID:subcategories.ID,childCount:subcategories.ChildCount})" ng-class="{'category-arw': subcategories.ChildCount}" class="submaincat_link">{{subcategories.Name}}</a>
+									<ul class="menu_level_3" ng-if="subcategories.ChildCount">
+										<li ng-repeat="subchildcategories in subcategories.children">
+											<a  ui-sref="plp({ID:subchildcategories.ID,childCount:subchildcategories.ChildCount})">{{subchildcategories.Name}}</a>	 
+										</li>
+									</ul> 
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<div class="base-overlay" ng-click="base.isopen=false"></div>
+				</div>
+            </div>
+			<div class="search_box">
+				<div class="customer" uib-dropdown>
+					<a href uib-dropdown-toggle>{{switchSearch}}
+					<i class="fa fa-chevron-down"></i> </a>
+					<div uib-dropdown-menu>
+						<ul>
+							<li ng-click="selectChange('customer')">Customer</li>
+							<li ng-click="selectChange('order')">Order Number</li>
+							<li ng-click="selectChange('recipient')">Recipient</li>
+							<li ng-click="selectChange('product')">Product</li>
+							<li ng-click="selectChange('phone')">Phone Number</li>
+						</ul>
+					</div>
+                </div>
+				<div class="search_feild" ng-switch on="switchSearch">
+					<i class="fa fa-search"></i>
+					<!-- algolia search for customer -->
+					<div ng-switch-when="customer" uib-dropdown>
+						<ordercloud-search servicename="customer" controlleras="base" placeholder="Search user" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="user in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:user.ID,SearchType:'User',showOrdersummary: false})" class="search_result">
+									<p>{{user.FirstName}} {{user.LastName}}</p>
+									<div class="user-name">{{user.Email}}</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for order -->
+					<div ng-switch-when="order" uib-dropdown>
+						<ordercloud-search servicename="orders" controlleras="base" placeholder="Search orders" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="orders in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ng-click="baseTop.searchGoTo(orders.FromUserID, orders.ID)" class="search_result">
+									<p>{{orders.ID}}</p>
+									<div class="order-name">{{orders.FromUserFirstName}} {{orders.FromUserLastName}}</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for recipient -->
+					<div ng-switch-when="recipient" uib-dropdown>
+						<ordercloud-search servicename="orders_recepient" controlleras="base" placeholder="Search recipient" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown recipient-dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="recipient in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ng-click="baseTop.searchGoTo(recipient.FromUserID, recipient.ID)" class="search_result">
+									<p>
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<circle cx="12" cy="12" r="12"/>
+										<g>
+											<path d="M12.9,12l3.6,3.6l-0.9,0.9L12,12.9l-3.6,3.6l-0.9-0.9l3.6-3.6L7.5,8.4l0.9-0.9l3.6,3.6l3.6-3.6l0.9,0.9
+												L12.9,12z"/>
+										</g>
+									</svg>
+									
+									{{recipient.FirstName}} {{recipient.LastName}} {{}}</p>
+									<div class="recipient-name">{{recipient.FromUserFirstName}} {{recipient.FromUserLastName}}</div>
+									<div class="recepient-order">
+										<p>{{recipient.ID}}</p>
+										<div ng-if="recipient.DateSubmitted == 'null'">{{recipient.DateCreated | date }}</div>
+										<div ng-if="recipient.DateSubmitted != 'null'">{{recipient.DateSubmitted | date }}</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for products -->
+					<div ng-switch-when="product" uib-dropdown>
+						<ordercloud-search servicename="products" controlleras="base" placeholder="Search products" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="products in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:products.ID,SearchType:'Products'})" class="search_result">
+									<p>{{products.Name}}</p>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- algolia search for phone -->
+					<div ng-switch-when="phone" uib-dropdown>
+						<ordercloud-search servicename="customer_phonenumber" controlleras="base" placeholder="Search phone number" uib-dropdown-toggle></ordercloud-search>
+						<div class="search_dropdown" uib-dropdown-menu>
+							<div class="searchelement"  ng-repeat="phone in base.list track by $index" ng-if="base.qeueryLength > 0 && base.list.length != 0">
+								<a ui-sref="buildOrder({ID:phone.ID,SearchType:'User',showOrdersummary: false})" class="search_result">
+									<p>{{phone.PhoneNumber}}</p>
+									<div class="phone-num">{{phone.FirstName}} {{phone.LastName}}</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+            <div class="build_order">
+                <a ui-sref="buildOrder({SearchType:'BuildOrder'})"><img src="../assets/images/icons-svg/build-order.svg"><p>Build Order</p></a>
+            </div>
+            <div class="build_order" uib-dropdown>
+                <a href uib-dropdown-toggle>
+					<i class="fa fa-chevron-down"></i>
+                    <p>Hi, {{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</p>
+					<img src="../assets/images/icons-svg/profile.svg">
+                </a>
+				<div uib-dropdown-menu>
+					<ul class="dropdown-menu-right" >
+						<li>
+							<a href="" ui-sref="account.changePassword">Change Password</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a ng-click="application.logout()">Logout</a>
+						</li>
+						<li ng-if="application.isImpersonating">
+							<a ng-click="application.EndImpersonation()">Stop Impersonation</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+        </div>
+    </div>
+    <!--Header ends here -->
+</div>
+</div>

@@ -1,0 +1,162 @@
+.container-fluid.order-claim-page{
+	padding:74px 0 0 0;
+	.helvetica-regular;
+	.custom-details{
+		    background: #ccc;
+    		padding: 20px 30px;
+    		font-size: 20px;
+    		margin: 30px 0px;
+    		.custom{
+    			.helvetica-bold;	
+    		}
+	}
+	.adress-details{
+		background: #ccc;
+    	float: left;
+    	width: 32%;
+    	padding: 10px;
+    	font-size: 14px;
+		 div{
+		 	padding:0px;
+		 	.edit{
+		 	font-size: 10px;
+		 	}
+		 }
+	}
+	.custom-info{
+		.table{
+		.thead-default{
+			background:#e6e6e6;
+		}
+		.select-module{
+			    vertical-align: middle;
+			    position: relative;
+			    top: 0px;
+			    bottom: 0;
+			    left: 0;
+			    right: 0;
+			    margin: auto;
+		.Checkbox {
+					display: flex;
+                    input {
+                        z-index: 1;
+                        /*opacity: 0;*/
+                        left: 50%;
+                        top: 50%;
+                        transform: translatex(-50%) translatey(-50%);
+                        display: block;
+                        cursor: pointer;
+                        width: 14px;
+                        height: 14px;
+                        margin-top: 0;
+                    }
+                    &-visible {
+                        width:22px;
+                        height:25px;
+                        border: 1px solid #dedede
+                    }
+                    > input:checked + .Checkbox-visible {
+                        background-position: 15px;
+                    }
+                }
+	             label {
+	                color:#464646;
+	                vertical-align: middle;
+	                margin-bottom: 0px;
+	                margin-left: 5px;
+	            }
+			}
+			.pro-module{
+					 position: relative;
+				    top: 10px;
+				    height:200px;
+				 	.product-img{
+			    	 background: #ccc;
+			   		 height: 130px;
+			    	 width: 100px;
+				    }
+			}
+			.pro-details{
+				   p{
+				   	   margin:0px;
+				   }
+				h1{
+					font-size:15px;
+					.helvetica-bold;
+					 margin: 0px;
+				}
+				.delivery-date{
+					margin: 5px 0px !important;
+    				.helvetica-bold;
+				}
+				.view{
+					text-decoration: underline;
+				}
+			}
+			.qty-value{
+			    text-align: center;
+			    position: relative;
+			    top: 20px;
+			}
+			.selectpicker{
+				position: relative;
+			    top: 10px;
+			    width: 91%;
+			    border: 1px solid #ccc;
+			    padding: 4px;
+			}
+			textarea{
+				height: auto;
+			    border-radius: 0px;
+			    margin-top: 12px;
+			}
+			.price{
+			    position: relative;
+				top: 10px;
+			}
+			.delivery{
+				.helvetica-bold;
+				 font-size: 20px
+			}
+			td,th{
+				padding: 8px 14px;
+			}
+			.item{
+				position:relative;
+				top:10px;
+			}
+		}
+		.claim-total{
+			float: right;
+    		width: 30%;
+    		margin: 40px 40px 0 0;
+    		.claim-header{
+    			font-size:15px;
+    			.helvetica-bold;
+    			padding-bottom:5px;
+    			.claim-content{
+    				table{
+					    border: 1px solid #ccc !important;
+					}
+				}
+    		}
+		}
+	}
+	.claim-edit{
+		    background: #000;
+		    float: left;
+		    width: 100%;
+		    color: #fff;
+		    .cancel-claim {
+		    float: left;
+		    padding: 5px 40px;
+		    border-right: 1px solid #fff;
+						}
+		.continue-claim{
+			 background: #969292;
+			float: right;
+			padding: 5px 80px;
+
+		}
+	}
+}

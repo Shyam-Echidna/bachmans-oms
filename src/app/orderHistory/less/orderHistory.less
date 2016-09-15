@@ -1,0 +1,52 @@
+.order-history-main{
+    position: absolute;
+    top: 0px;
+    bottom: 30px;
+    padding: 0 15px;
+    box-sizing: border-box;
+    width: 100%;
+	overflow:auto;
+	.order-history {
+		h5 {
+			overflow: hidden;
+			font-size:17px;
+			.order-header {
+				line-height: 2;
+				.helvetica-bold;
+			}
+			button {
+				float: right;
+				padding: 8px;
+			}
+		}
+		.order-grid{
+			box-sizing: border-box;
+			padding:0;
+			margin-bottom:15px;
+			border:1px solid @color21;
+			border-bottom:none;
+			height: initial !important;
+			.ui-grid-render-container-body .ui-grid-viewport{
+				height:initial !important;
+				.ui-grid-canvas .ui-grid-row .ui-grid-cell:last-child{
+					background-color:@color20;
+					.background-fade;
+					&:hover{
+						background-color:@primary-dark-color;
+						button{
+							color:@color0;
+						}
+					}
+					button{
+						background-color:transparent;
+					}
+				}
+			}
+		}
+	}
+	.no-items{
+		font-size:16px;
+		font-family: "Helvetica Medium";
+		margin-top:15px;
+	}
+}

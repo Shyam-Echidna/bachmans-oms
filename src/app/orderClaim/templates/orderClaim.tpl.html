@@ -1,0 +1,128 @@
+<div class="container-fluid order-claim-page">
+	<div class="custom-details">
+		<span class="custom">Order Claim Summary for: </span>
+		<span class="custom-name">{{orderClaim.uname}}, Order # {{orderClaim.orderID}}</span>
+	</div>
+	<div ng-repeat="line in orderClaim.lineVal track by line">
+		
+	
+		<div class="adress-details">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+				<span class="name">{{orderClaim.groups[line][0].ShippingAddress.FirstName}} {{orderClaim.groups[line][0].ShippingAddress.LastName}}</span><br>
+				<!-- <span class="edit">Edit Recepient</span> -->
+			</div>
+			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  pull-right">
+				<div class="address"> 
+				   {{orderClaim.groups[line][0].ShippingAddress.Street1}} {{orderClaim.groups[line][0].ShippingAddress.Street2}}<br> {{orderClaim.groups[line][0].ShippingAddress.City}}, {{orderClaim.groups[line][0].ShippingAddress.State}}{{orderClaim.groups[line][0].ShippingAddress.City}}, {{orderClaim.groups[line][0].ShippingAddress.Country}} {{orderClaim.groups[line][0].ShippingAddress.Zip}}
+				</div>
+			</div>
+		</div>
+		<div class="custom-info">
+			<table class="table table-bordered">
+				<thead class="thead-default">
+				    <tr>
+				      <th>Select</th>
+				      <th>Quantity</th>
+				      <th>Products*</th>
+				      <th>Price*</th>
+				      <th>Select Claim Resolution*</th>
+				      <th>Reason Code*</th>
+				      <th>Enter Reason for Claim*</th>     
+				    </tr>
+				</thead>
+				<tbody>
+				    <tr ng-repeat="orderSummary in orderClaim.groups[line]">
+				    	<th scope="row" class="select-module">
+				      		<div class="Checkbox">
+			                	<input type="checkbox" ng-disabled="orderSummary.selectresolution=='' || orderSummary.selectcode==''" ng-model="orderSummary.checkclaim" ng-click="orderClaim.selectorderclaims(orderSummary)">
+			                	<!-- <div class="Checkbox-visible"></div> -->
+			            	</div>
+			        	</th>
+				    	<td  class="qty-value">{{orderSummary.Quantity}}</td>
+				    	<td class="pro-module">
+					    	<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 product-img">
+					    	</div>
+				      		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pro-details">
+				      			<h1>{{orderSummary.Product.Name}}</h1>
+				      			<p>SKU #123920 </p>
+				      			<p>Deluxe</p>
+				      			<p> - Purple</p>
+				      	  		<p class="delivery-date">Delivered: {{orderSummary.xp.deliveryDate | date:'MM/dd/yyyy'}}</p>
+				      	  		<a href="javascript:void(0)" class="view">View Notes</a>
+				      		</div>
+				  		</td>
+				    	<td class="price">{{orderSummary.LineTotal | currency}}</td>
+				    	<td class="item">
+				    		<select name="singleSelect" ng-init="orderSummary.selectresolution=''" ng-model="orderSummary.selectresolution" ng-options="resolution for resolution in orderClaim.refund.Resolutions">
+				    			<option value="">Select</option>
+				    		</select>
+				    	</td>
+				    	<td>
+				    		<select name="singleSelect" ng-init="orderSummary.selectcode=''" ng-model="orderSummary.selectcode" ng-options="code for code in orderClaim.refund.ReasonCode">
+				    			<option value="">Select</option>
+				    		</select>
+				    	</td>
+				    	<td class="item">
+				    		<textarea ng-init="orderSummary.descp=''" ng-model="orderSummary.descp"></textarea>
+				    	</td>
+				    </tr>
+				    <!-- <tr> | date:'yyyy-MM-dd HH:mm:ss Z'
+				    	<th scope="row" class="select-module">
+				    		<div class="Checkbox">
+			            		<input type="checkbox">
+			            		<div class="Checkbox-visible"></div>
+			            	</div>
+			        	</th>
+				    	<td class="qty-value">1</td>
+				    	<td class="pro-module">
+				   			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 product-img">
+				    		</div>
+			      			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pro-details">
+			      	  			<h1>Stargazing Lilies</h1>
+			      	 			<p>SKU #123920 </p>
+			      	  			<p>Deluxe</p>
+			      	  			<p> - Purple</p>
+			      	  			<p class="delivery-date">Delivered: 6/12/2015</p>
+			      	  			<p class="view">View Notes</p>
+			      			</div>
+				  		</td>
+				    	<td class="price">$39.99</td>
+				    	<td class="item">Re-Send Item</td>
+				    	<td></td>
+				    	<td class="item">Fowers were wilting when the package was opened by recepient.</td>
+				    </tr> -->
+				</tbody>
+			</table>
+			<!-- <div class="claim-total">
+				<div class="claim-header">Claim Totals</div>
+				<div class="claim-content">
+					<table class="table table-bordered">   
+					    <tbody>
+					    	<tr>
+					        	<td>Item Refund Amount</td>
+					        	<td>$59.99</td>
+					    	</tr>
+					    	<tr>
+					        	<td>Delivery Refund</td>
+					        	<td>$0.00</td> 
+					    	</tr>
+					    	<tr>
+					        	<td>Tax Refund</td>
+					        	<td>$3.34</td> 
+					    	</tr>
+					    	<tr>
+					        	<td><b>Total Refund back to Visa Ending in 3452</b></td>
+					        	<td><b>$63.33</b></td>
+					    	</tr>
+					    </tbody>
+					</table>
+				</div>
+			</div> -->
+		</div>
+	</div>
+	<div class="claim-edit">
+		<div class="cancel-claim">Cancel Claim </div>
+		<div class="continue-claim" ng-click="orderClaim.completeclaim(orderClaim.orderID)">Complete Claim</div>
+	</div>
+</div>
+

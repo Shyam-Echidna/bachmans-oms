@@ -1,0 +1,533 @@
+<ui-view>
+	<div class="oms_main_container buildOrder-pdp-container" id="buildOrder-pdp-container">
+		<div class="buildOrder-pdp" ng-if="UpsellSimilar!=true">
+			<h1>
+				<a ng-click="gotoplp()" ng-if="buildOrder.searchType!='Products'">
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+						<style type="text/css">
+							.st0{fill:#8B8E96;}
+						</style>
+						<g>
+							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+						</g>
+					</svg>
+					Back to Search Results
+				</a>
+				<a ng-click="gotoplp()" ng-if="buildOrder.searchType=='Products' && buildOrder.id==''" >
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+						<style type="text/css">
+							.st0{fill:#8B8E96;}
+						</style>
+						<g>
+							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+						</g>
+					</svg>
+					Back to Search Results
+				</a>
+				<a ng-click="buildOrder.gotoSearchPlp(6374)" ng-if="buildOrder.searchType=='Products' && buildOrder.id!=''" >
+					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+						<style type="text/css">
+							.st0{fill:#8B8E96;}
+						</style>
+						<g>
+							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+						</g>
+					</svg>
+					Back to Search Results
+				</a>
+			</h1>
+			<div class="buildOrder-pdp-content row">
+				<div class="pdp-left col-md-7 col-lg-7">
+					<img src="assets/images/flowers.jpg">
+				</div>
+				<div class="pdp-right col-md-5 col-lg-5" ng-init="colorval=''">
+					<h2 ng-init="sizeval=''">{{buildOrder.productDetails.Name}}</h2>
+					<div class="pdp-type">	
+						<h3></h3>
+						<ul>
+							<li ng-repeat="opt in buildOrder.productDetails.options.Size track by $index">
+								<label>
+									<input type="radio" name="sizeopt" ng-model="buildOrder.productDetails.sizeval" value="{{opt}}" ng-init="$index==0?(buildOrder.productDetails.sizeval=opt):''" ng-change="selectVarients()">{{opt}}
+								</label>
+							</li>
+						</ul>
+					</div>
+					<div class="price">
+						<h3>{{buildOrder.productDetails.prodPrice | currency}}</h3>
+						<!-- <h6><span>$1,800.00</span></h6> -->
+						<ul>
+							<li>- <span>Red Iron Construction</span></li>
+							<li>- <span>Seats up to 6</span></li>
+							<li>- <span>Comes With Seat Cushion</span></li>
+						</ul>
+					</div>
+					<!-- <div class="pdp-color" ng-repeat="colortext in buildOrder.productDetails.optionskey">
+						<div ng-repeat="color in buildOrder.productDetails.options" ng-show="colortext=='color'">
+							<h3>{{colortext}}:</h3>
+							{{color}}
+							<span>
+								<input type="radio" id="color1" name="color">
+								<label for="color1"><span></span></label>
+							</span>
+						</div>
+					</div> -->
+					<div class="pdp-color">
+						<div>
+							<h3></h3>
+							<span ng-repeat="opt in buildOrder.productDetails.options.Color track by $index">
+								<input type="radio" id="color1" name="coloropt" ng-model="buildOrder.productDetails.colorval" value="{{opt}}" ng-init="$index==0?(buildOrder.productDetails.colorval=opt):''" ng-change="selectVarients()">
+								<label for="color1"><span ng-style="{'background-color': opt}"></span></label>
+							</span>
+						</div>
+					</div>
+					<div class="extra">
+						<h3>Add Something Extras:</h3>
+						<p class="row">
+							<label for="" class="col-xs-4">Balloons</label>
+							<select name="" id="" class="col-xs-6">
+								<option value="">SELECT</option>
+								<option value="">ONE</option>
+								<option value="">TWO</option>
+								<option value="">THREE</option>
+							</select>
+						</p>
+						<p class="row">
+							<label for="" class="col-xs-4">Plushies</label>
+							<select name="" id="" class="col-xs-6">
+								<option value="">SELECT</option>
+								<option value="">ONE</option>
+								<option value="">TWO</option>
+								<option value="">THREE</option>
+							</select>
+						</p>
+						<p class="row">
+							<label for="" class="col-xs-4">Gourmet</label>
+							<select name="" id="" class="col-xs-6">
+								<option value="">SELECT</option>
+								<option value="">ONE</option>
+								<option value="">TWO</option>
+								<option value="">THREE</option>
+							</select>
+						</p>
+						<p ng-if="buildOrder.Courier || buildOrder.Faster">
+							<b>Delivery Methods Available:</b>
+						</p>
+						<p>
+<!-- 							<label ng-if="buildOrder.Courier" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">Courier</label>
+							<label ng-if="buildOrder.Faster" class=""><input type="radio" name="optradio1" ng-model="buildOrder.DeliveryType" value="Faster Delivery" >Faster Delivery</label>
+						 -->
+							<label class="radio-common" ng-if="buildOrder.Courier">
+								<input type="radio" id="courier" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">
+								<label for="courier">Courier</label>
+								<div class="radio"></div>
+							</label>
+							<label class="radio-common" ng-if="buildOrder.Faster">
+								<input type="radio" id="faster" name="optradio1" ng-model="buildOrder.DeliveryType" value="Faster Delivery">
+								<label for="faster">Faster Delivery</label>
+								<div class="radio"></div>
+							</label>
+						 </p>
+					</div>
+					<!--<div class="pdp-quantity">
+						<h3>Quantity</h3>
+						<input type="number" ng-init="quantityVal=1" ng-model="quantityVal" value="1" />
+					</div>-->
+
+					<!--<div class="pdp-delivery">
+						<h4>Select Delivery</h4>
+						<div class="zipcode">
+							<p>Zip Code</p>
+							<input type="number">
+						</div>
+						<div class="date">
+							<img src="../assets/images/icons-svg/calendar.svg" alt="">
+							<p>Date</p>
+							<input type="date">
+						</div>
+					</div>-->
+					<button class="addCart" ng-click="AddtoCart(buildOrder.productDetails.ID)">ADD TO CART</button>
+				</div>
+
+				<div class="key-product col-xs-12 p0">
+					<h3>Key Product Info:</h3>
+					<p class="row">
+						<span class="col-xs-1"></span>
+						<label for="" class="col-xs-2">Zone 3</label>
+						<span class="col-xs-1"></span>
+						<label for="" class="col-xs-2">Full Sun</label>
+						<span class="col-xs-1"></span>
+						<label for="" class="col-xs-2">Low Water</label>
+					</p>
+				</div>
+				<div class="pdp-description col-xs-12 col-md-12 col-lg-12 p0">
+					<!--<h5>Description</h5>
+					<p>{{buildOrder.productDetails.Description}}</p>-->
+					<uib-accordion>
+						<uib-accordion-group is-open="status.open1">
+							<uib-accordion-heading>
+								<p ng-class="{'footer-minus': status.open1, 'footer-plus': !status.open1}">Description:
+									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<g>
+											<rect x="10" width="4" height="24" />
+											<rect y="10" width="24" height="4" />
+										</g>
+									</svg>
+									<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<rect y="10" width="24" height="4"/>
+									</svg>
+								</p>
+							</uib-accordion-heading>
+							<ul class="footer_cat col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<li>
+									<p>{{buildOrder.productDetails.Description}}</p>
+								</li>
+
+							</ul>
+						</uib-accordion-group>
+						<uib-accordion-group is-open="status.open2" class="specification">
+							<uib-accordion-heading>
+								<p ng-class="{'footer-minus': status.open2, 'footer-plus': !status.open2}">Specifications:
+									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<g>
+											<rect x="10" width="4" height="24" />
+											<rect y="10" width="24" height="4" />
+										</g>
+									</svg>
+									<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<rect y="10" width="24" height="4"/>
+									</svg>
+								</p>
+							</uib-accordion-heading>
+							<h6><span><a href="">VIEW CARE GUIDE</a></span></h6>
+							<table class="table table-bordered">
+
+								<tbody>
+									<tr>
+										<td>Leaf Shape</td>
+										<td>Abstratct</td>
+
+									</tr>
+									<tr>
+										<td>Leaf Color</td>
+										<td>Green(Spring)</td>
+
+									</tr>
+									<tr>
+										<td>Mature Height</td>
+										<td>40'-80'</td>
+
+									</tr>
+									<tr>
+										<td>Mature Height</td>
+										<td>40'-80'</td>
+
+									</tr>
+									<tr>
+										<td>Growth Rate</td>
+										<td>13"-24" per Year</td>
+
+									</tr>
+									<tr>
+										<td>Sun Preference</td>
+										<td>Full Sun</td>
+
+									</tr>
+									<tr>
+										<td>Soil Preference</td>
+										<td>Slightly</td>
+
+									</tr>
+									<tr>
+										<td>Lifespan</td>
+										<td>100-200 Years</td>
+
+									</tr>
+									<tr>
+										<td>Growth Rate</td>
+										<td>13"-24" per Year</td>
+
+									</tr>
+
+								</tbody>
+							</table>
+						</uib-accordion-group>
+
+						<uib-accordion-group is-open="status.open3">
+							<uib-accordion-heading>
+								<p ng-class="{'footer-minus': status.open3, 'footer-plus': !status.open3}">Return/Warranty/Exchange:
+									<svg class="plus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<g>
+											<rect x="10" width="4" height="24" />
+											<rect y="10" width="24" height="4" />
+										</g>
+									</svg>
+									<svg class="minus" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+										<rect y="10" width="24" height="4"/>
+									</svg>
+								</p>
+							</uib-accordion-heading>
+							<ul class="footer_cat col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<li><a>Contact Us</a></li>
+								<li><a>FAQs</a></li>
+								<li><a>Store Locator</a></li>
+								<li><a>Delivery</a></li>
+								<li><a>Gift Cards</a></li>
+								<li><a>Purple Perks</a></li>
+							</ul>
+						</uib-accordion-group>
+					</uib-accordion>
+					<!-- <p ng-click="accordion=1">Bachman’s Products</p>
+
+			  <ul ng-show="accordion==1" class="footer_cat col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<li ng-repeat="categories in base.tree" class="sub-nav col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				  <a ui-sref="category({parentId:categories.ID,childCount:categories.ChildCount,ID:categories.ID})" class="maincat_link">{{categories.Name}}</a>
+				</li>
+			  </ul> -->
+
+				</div>
+			</div>
+		</div>
+		
+		<div class="buildOrder-pdp" ng-if="UpsellSimilar==true">
+			<h1>
+			<a ng-click="buildOrder.gotopdp()">
+				<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+				viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+					<style type="text/css">
+						.st0{fill:#8B8E96;}
+					</style>
+					<g>
+						<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
+					</g>
+				</svg>
+				Back to Order
+			</a>
+			</h1>
+			<div class="owl-theme" id="pdpCarouselView">
+				<div class="buildOrder-pdp-content row" ng-repeat="prods in buildOrder.UpsellProdDtls.UpsellCarousel">
+					<div class="pdp-left col-md-7 col-lg-7">
+						<img src="assets/images/flowers.jpg">
+					</div>
+					<div class="pdp-right col-md-5 col-lg-5">
+						<h2>{{prods.data.Name}}</h2>
+						<div class="pdp-type" ng-repeat="opt in prods.data.options" ng-if="opt.Type=='contentSize'">	
+							<h3>{{opt.Type}}:</h3>
+							<ul>
+								<li ng-repeat="sizeopt in opt.Option">
+									<label>
+										<input type="radio" name="sizeopt" ng-model="prods.data.sizeval" value="{{sizeopt}}" ng-init="$index==0?(prods.data.sizeval=sizeopt):''" ng-change="selectVarients('upsell',$parent.$parent.$index)">{{sizeopt}}
+									</label>
+								</li>
+							</ul>
+						</div>
+						<div class="price">
+							<h3>{{prods.data.prodPrice | currency}}</h3>
+						</div>
+						<div class="pdp-color" ng-repeat="opt in prods.data.options" ng-if="opt.Type=='delMethods'">
+							<div>
+								<h3>{{opt.Type}}:</h3>
+								<span ng-repeat="coloropt in opt.Option">
+									<input type="radio" id="color1" name="coloropt" ng-model="prods.data.colorval" value="{{coloropt}}" ng-init="$index==0?(prods.data.colorval=coloropt):''" ng-change="selectVarients('upsell',$parent.$parent.$index)">
+									<label for="color1"><span ng-style="{'background-color': coloropt}"></span></label>
+								</span>
+							</div>
+						</div>
+						<button class="addCart" ng-click="AddtoCart(prods.data.ID, prods.data.specID, prods.data.varientsOption)">ADD TO CART</button>
+					</div>
+					<div class="pdp-description col-xs-12 col-md-12 col-lg-12 p0">
+						<p ng-class="{'footer-minus': status.open1, 'footer-plus': !status.open1}">Description:
+						</p>
+						<p>{{prods.data.Description}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="pdp-tabs">
+			<ul class="nav nav-pills nav-stacked">
+				<li ng-class="{active:upsell == false}">
+					<a ng-click="upsellToggle('upsell');">UPSELL ITEMS
+							  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 10" style="enable-background:new 0 0 21 10;" xml:space="preserve">
+								<g>
+								  <path d="M20.5,0l-10,10L0.5,0H20.5z" />
+								</g>
+							  </svg>
+							</a>
+				</li>
+				<li ng-class="{active:similar == false}">
+					<a ng-click="similarToggle('similar');">SIMILAR ITEMS
+							  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 21 10" style="enable-background:new 0 0 21 10;" xml:space="preserve">
+									<g>
+									  <path d="M20.5,0l-10,10L0.5,0H20.5z" />
+									</g>
+							  </svg>
+							</a>
+				</li>
+			</ul>
+			<div class="pdp-tabs-content row">
+			<!-- upsell items starts -->
+				<div ng-hide='upsell' class="pdp-upsell col-md-12" ng-class="{upsellAnimation:upsell == false}" >
+					<div class="items-list">
+						<span>Upsell Items</span>
+						<ul>
+							<li ng-repeat="cat in Categories"><a href="javascript:void(0)" ng-click="getCategoriesItems(cat.ID)">{{cat.Name}}</a></li>
+						</ul>
+					</div>
+					<ul class="pdp-upsell-container" id="owl-carousel-upsell">
+						<li class="item" ng-repeat="upsell in CategoryItemsUpsell">
+							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, CategoryItemsUpsell)">
+								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
+								<h2>{{upsell.Name}}</h2>
+								<h3>Option Deluxe</h3>
+								<h4>Color Red</h4>
+								<div class="price_lst">
+									<h5>{{upsell.Price | currency}}</h5>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- similar items starts -->
+				<div ng-hide='similar' class="pdp-similarItems col-md-12" ng-class="{upsellAnimation:similar == false}">
+					<ul class="pdp-upsell-container" id="owl-carousel-similar">
+						<li class="item" ng-repeat="cross in CategoryItemsSimilar">
+							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(cross.ID, CategoryItemsSimilar)">
+								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
+								<h2>{{cross.Name}}</h2>
+								<h3>Option Deluxe</h3>
+								<h4>Color Red</h4>
+								<div class="price_lst">
+									<h5>{{pricelist.Price | currency}}</h5>
+								</div>
+							</div>
+						</li> 
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</ui-view>
+<modal title="Enter User Details" visible="buildOrder.guestUserModal" id="guestUserModal" class="create-user-pop-up modal-pop-up">
+		<div class="search-blk">
+			<div uib-dropdown>
+				<ordercloud-search servicename="customer" controlleras="buildOrder" placeholder="Search user" uib-dropdown-toggle></ordercloud-search>
+                <div class="search_dropdown" uib-dropdown-menu>
+                    <div class="searchelement"  ng-repeat="user in buildOrder.list track by $index">
+                        <a class="search_result" ng-click="buildOrder.selectUser(user);">
+                            <p>{{user.Username}}</p>
+                            <div>{{user.Email}}</div>
+                        </a>
+                    </div>
+                </div>
+			</div>
+			<a class="create" ng-click="userEdit=!userEdit">Create New User</a>
+		</div>
+		<div ng-hide="!showUser" class="showUserDetails">
+			<p>First Name: <span>{{buildOrder.showDetails.FirstName}}</span></p>
+			<p>Last Name: <span>{{buildOrder.showDetails.LastName}}</span></p>
+			<p>email Address: <span>{{buildOrder.showDetails.Email}}</span></p>
+			 <p>Phone Number: <span>{{buildOrder.showDetails.PhoneNumber}}</span></p>
+			<div class="button-list user-top">
+				<button type="button" class="save"  ng-click="buildOrder.openUser(buildOrder.showDetails.ID)">Open</button>
+				<button type="button" ng-click="showUser=!showUser">CANCEL</button>
+			</div>
+		</div>
+		<form ng-hide="!userEdit" class="create-user">
+			<h1>Enter user Sign Up details</h1>
+			<div class="inline-div user-top">
+					<div>
+						<p>Enter username</p>
+						<input type="text" ng-model="create.Username"/>
+					</div>
+			</div>
+			<div class="create-user-container" id="top">
+				<div class="inline-div user-top">
+					<div>
+						<p>First Name</p>
+						<input type="text" ng-model="create.FirstName"/>
+					</div>
+					<div>
+						<p>Last Name</p>
+						<input type="text" ng-model="create.LastName"/>
+					</div>
+				</div>
+				<p>{{selectedUser}}</p>
+				<div class="inline-div user-top">
+					<div>
+						<p>Enter email address</p>
+						<input type="text" ng-model="create.Email"/>
+					</div>
+					<div class="contact-num user-top">
+						<p>Phone number</p>
+						<input type="number" ng-model="create.Phone1"/>
+						<input type="number" ng-model="create.Phone2"/>
+						<input type="number" ng-model="create.Phone3"/>
+					</div>
+				</div>
+				<div class="inline-div user-top">
+					<div>
+						<p>Enter password</p>
+						<input type="password" ng-model="create.Password"/>
+					</div>
+					<div>
+						<p>Confirm password</p>
+						<input type="password" ng-model="create.Password"/>
+					</div>
+				</div>
+				<h1>Enter user address details</h1>
+				<div class="inline-div user-top">
+					<div>
+						<p>Company name</p>
+						<input type="text"  ng-model="createaddr.CompanyName"/>
+					</div>
+					<div>
+						<p>ZIP Code</p>
+						<input class="zip-code" type="number" ng-model="createaddr.Zip"/>
+					</div>
+				</div>
+				<div class="user-top">
+					<p>Address</p>
+					<input type="text"  ng-model="createaddr.Street1"/>
+				</div>
+				<div class="user-top">
+					<p>Address 2</p>
+					<input type="text" ng-model="createaddr.Street2"/>
+				</div>
+				<div class="inline-div user-top">
+					<div>
+						<p>City</p>
+						<input type="text"  ng-model="createaddr.City"/>
+					</div>
+					<div>
+						<p>State</p>
+						<select ng-model="createaddr.State">
+							<option selected>MN</option>
+							<option>MN</option>
+							<option>MN</option>
+						</select>
+					</div>
+					<div>
+						<p>Country</p>
+						<input type="text"  ng-model="createaddr.Country"/>
+					</div>
+				</div>
+				<div class="user-top">
+					<label><input type="checkbox" ng-model="createaddr.IsShipping">Shipping Address</label>
+					<label><input type="checkbox" ng-model="createaddr.IsBilling">Billing Address</label>
+					<label><input type="checkbox" ng-model="createaddr.IsDefault">Default Address</label>
+				</div>
+			</div>
+			<div class="button-list user-top">
+				<button type="button" class="save" ng-click="buildOrder.createUser(create, createaddr)">SAVE</button>
+				<button type="button" ng-click="userEdit=!userEdit">CANCEL</button>
+			</div>
+		</form>
+</modal>
+<modal title="Order Details Confirm" visible="buildOrder.OrderConfirmPopUp" id="OrderConfirmPopUp" class="create-user-pop-up modal-pop-up">
+	My details goes here.......
+</modal>

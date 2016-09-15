@@ -764,7 +764,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     // Function to get selected product
     // Function to get selected product
     vm.showProduct=function(e){
-		var alfticket = localStorage.getItem("alfrescoTicket");
+		var alfticket = localStorage.getItem("alf_ticket");
 		vm.selectedKey=[];
         if($stateParams.SearchType == 'plp'){
  			vm.fullProductsData=vm.seqProducts;
@@ -1053,10 +1053,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		else if(vm.catList)
 		vm.catList='';
 	}
-	AlfrescoFact.GetAlfrescoLogin().then(function (data) {
-        var tckt = data.data.ticket;
-        localStorage.setItem("alfrescoTicket",tckt);
-    });
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {

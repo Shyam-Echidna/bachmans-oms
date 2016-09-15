@@ -82,7 +82,9 @@ function HomeConfig( $stateProvider ) {
 											start: new Date(data.xp.EventDate),
 											//end : new Date(cat.xp.EndDate) // Uncomment if we have date range 
 											productcode : data.xp.ProductCode,
-											description: data.Description
+											description: data.Description,
+											startTime:data.xp.Slot.StartTime,
+											endTime:data.xp.Slot.EndTime
 										})
 									}
 								}
@@ -246,14 +248,14 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	  ]
 	};
 	var ticket = localStorage.getItem("alf_ticket");
-	HomeService.GetPromoInfo(ticket).then(function(res){
-		vm.PromoInformation=[];
-		for(var i=3;i<res.items.length;i++){
-			vm.PromoInfo = $sce.trustAsResourceUrl(alfrescoURL+res.items[i].contentUrl+"?alf_ticket="+ticket);
-			vm.PromoInformation.push(vm.PromoInfo);
+	// HomeService.GetPromoInfo(ticket).then(function(res){
+		// vm.PromoInformation=[];
+		// for(var i=3;i<res.items.length;i++){
+			// vm.PromoInfo = $sce.trustAsResourceUrl(alfrescoURL+res.items[i].contentUrl+"?alf_ticket="+ticket);
+			// vm.PromoInformation.push(vm.PromoInfo);
 
-		}
-	});
+		// }
+	// });
 	$scope.deleteAddress = {
         templateUrl: 'deleteAddress.html',
     }

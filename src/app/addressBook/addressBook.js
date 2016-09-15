@@ -49,8 +49,8 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 	vm.searchedAddr;
 	var prevIndex;
 	vm.defaultEdit=false;
-	if(obj.xp)
 	vm.defaultAddr=_.filter(vm.list, function(obj) {
+		if(obj.xp)
 		return _.indexOf([obj.xp.IsDefault], true) > -1
 	});
 	console.log("vm.defaultAddr", vm.defaultAddr);

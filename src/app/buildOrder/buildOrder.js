@@ -2069,25 +2069,25 @@ function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
 		vm.articleURL="", vm.articleImgURL="";
 		var alfticket = localStorage.getItem("alfrescoTicket");
 		vm.articleURL=$sce.trustAsResourceUrl(alfrescoAccessURL+data+"?alf_ticket="+alfticket);
-		var file=data.substring(data.lastIndexOf("/") + 1, data.length);
-		var imgName= file.substring(0, file.lastIndexOf(".") + 0);
-		var str1 = data.substr(0, data.lastIndexOf("/"));
-		var str2 = str1.substring(str1.lastIndexOf("/") + 1, str1.length);
-		var str3 =alfrescoAccessURL+"/getArticleData/nodes.json?id="+str2+"&alf_ticket="+alfticket;
-		console.log("result", str3);
-		$http.get(str3).then(function(assign) {
-			var assign=assign.data.displayPath;
-			var str4 = assign.substring(assign.lastIndexOf("Bachmans Quick Start/") + 0, assign.length);
-			var url=alfrescoAccess+ str4 + "/Media"+"?alf_ticket="+alfticket;
-			$http.get(url).then(function(res) {
-				Underscore.filter(res.data.items, function(row){
-					if((row.nodeType=="ws:image") && (row.fileName==imgName+".jpg")){
-						console.log("rrrrl", alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
-						vm.articleImgURL=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
-					}
-				})
-			})
-		});
+		// var file=data.substring(data.lastIndexOf("/") + 1, data.length);
+		// var imgName= file.substring(0, file.lastIndexOf(".") + 0);
+		// var str1 = data.substr(0, data.lastIndexOf("/"));
+		// var str2 = str1.substring(str1.lastIndexOf("/") + 1, str1.length);
+		// var str3 =alfrescoAccessURL+"/getArticleData/nodes.json?id="+str2+"&alf_ticket="+alfticket;
+		// console.log("result", str3);
+		// $http.get(str3).then(function(assign) {
+			// var assign=assign.data.displayPath;
+			// var str4 = assign.substring(assign.lastIndexOf("Bachmans Quick Start/") + 0, assign.length);
+			// var url=alfrescoAccess+ str4 + "/Media"+"?alf_ticket="+alfticket;
+			// $http.get(url).then(function(res) {
+				// Underscore.filter(res.data.items, function(row){
+					// if((row.nodeType=="ws:image") && (row.fileName==imgName+".jpg")){
+						// console.log("rrrrl", alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
+						// vm.articleImgURL=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
+					// }
+				// })
+			// })
+		// });
 	}
 }
   

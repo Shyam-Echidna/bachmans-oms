@@ -184,6 +184,10 @@ function BaseController($sce, CurrentUser, defaultErrorMessageResolver, ProductL
         var ticket = data.data.ticket;
         localStorage.setItem("alf_ticket", ticket);
     });
+	AlfrescoFact.GetAlfrescoLogin().then(function (data) {
+        var ticket = data.data.ticket;
+        localStorage.setItem("alfrescoTicket", ticket);
+    });
     vm.isopen = false;
     $scope.status = {
         open1: true,
@@ -255,6 +259,7 @@ function BuildOrderTopController() {
 function AlfrescoFact($http, $q, alfrescoOmsUrl) {
     var service = {
         Get: _get,
+		GetAlfrescoLogin:_getAlfrescoLogin,
 		GetHome:_getHome
     };
     return service;
@@ -284,30 +289,30 @@ function AlfrescoFact($http, $q, alfrescoOmsUrl) {
         });
         return defferred.promise;
     }
-	// function _getAlfrescoLogin() {
-        // var data = {
-            // username: "admin",
-            // password: "Bachmans"
-        // };
-        // var defferred = $q.defer();
+	function _getAlfrescoLogin() {
+        var data = {
+            username: "admin",
+            password: "Bachmans"
+        };
+        var defferred = $q.defer();
  
-        // $http({
-            // method: 'POST',
-            // dataType: "json",
-            // url: "http://52.206.111.191:8080/alfresco/service/api/login",
-            // data: JSON.stringify(data),
-            // headers: {
-                // 'Content-Type': 'application/json'
-            // }
+        $http({
+            method: 'POST',
+            dataType: "json",
+            url: "http://52.206.111.191:8080/alfresco/service/api/login",
+            data: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
  
-        // }).success(function (data, status, headers, config) {
-			// console.log("logggggged in alfresco");
-            // defferred.resolve(data);
-        // }).error(function (data, status, headers, config) {
-            // defferred.reject(data);
-        // });
-        // return defferred.promise;
-    // }
+        }).success(function (data, status, headers, config) {
+			console.log("logggggged in alfresco");
+            defferred.resolve(data);
+        }).error(function (data, status, headers, config) {
+            defferred.reject(data);
+        });
+        return defferred.promise;
+    }
 	function _getHome(path) {
         
         var defferred = $q.defer();

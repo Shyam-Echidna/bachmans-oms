@@ -2,8 +2,8 @@
 	<div class="cust-info-container row">
 		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
+				
 				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
-				<!-- <p>Bachman's Employee: <span>Yes</span></p> -->
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
 					<div class="info-blk form-group col-md-12 cust-form">
 						<p class="col-md-3 cust-del">Email Address:</p>
@@ -69,9 +69,9 @@
 			        <div class="form-group" ng-show="isEditing">
 						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			
 					</div>
+				</div>	
 				</form>
-			</div>
- 			<div class="cust-change-pwd col-sm-12 col-xs-12 col-md-12 col-lg-12">
+				<div class="cust-change-pwd col-sm-12 col-xs-12 col-md-12 col-lg-12">
 				<h1>PASSWORD</h1>
 				<a ng-click="viewChangePassword()">change password</a>
 			</div> 
@@ -94,11 +94,7 @@
 				</div>
 			</div>
 			<div class="subscription col-xs-12 col-sm-12 col-md-12 col-lg-12">
-				<div class="sub-header">
 				<h1>SUBSCRIPTIONS</h1>
-				<button ng-click="custInfo.updateSubscription()" class="save">Save</button>
-				</div>
-				<div class="sud-del">
 				<table>
 					<tr>
 						<th>On</th>
@@ -123,10 +119,10 @@
 						</td>
 					</tr>
 				</table>
-				</div>
+				<button ng-click="custInfo.updateSubscription()" class="save">Save</button>
+			</div>	
 				
 			</div>
-		</div>
 	</div>
 	<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 		<div class="card col-sm-12 col-xs-12 col-md-12 col-lg-12">

@@ -80,7 +80,7 @@ function buildOrderConfig( $stateProvider ) {
 		url: '/buildOrder/:SearchType/:ID/:prodID/:orderID/:orderDetails',
 		templateUrl:'buildOrder/templates/buildOrder.tpl.html',
 		data: {
-            loadingMessage: 'Preparing for Active Orders'
+            loadingMessage: 'LOADING'
         },
 		params: {
 			showOrdersummary: false,
@@ -263,6 +263,7 @@ function buildOrderConfig( $stateProvider ) {
 
 function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoURL, Underscore, ProductImages, productList, AlfrescoFact) {
 	var vm = this;
+	vm.upselloverlay=false;
 	vm.selected = undefined;
 	vm.hidePdpblock=false;
 	if($stateParams.SearchType == 'Workshop'){
@@ -454,6 +455,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	vm.similar = true;
 	vm.upsellToggle = function(upsell) {
 		var tempArr = [];
+		vm.upselloverlay=true;
 		vm.upsell = vm.upsell === false ? true: false;
 		vm.similar = true;
 		if(!vm.Categories){
@@ -2086,6 +2088,7 @@ function buildOrderPLPController(productList, $stateParams) {
 
 function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
 	var vm = this;
+	vm.upselloverlay=false;
 	vm.viewCareGuide = false;
 	$scope.viewCareGuide=function(){
 		vm.viewCareGuide = !vm.viewCareGuide;

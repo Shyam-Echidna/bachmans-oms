@@ -42,7 +42,8 @@ function CustInfoConfig( $stateProvider ) {
 						OrderCloud.As().Me.ListAddresses(null, 1, 100).then(function(addrList){
 							arr["addresses"]=addrList.Items;
 								arr["defaultAddr"]=_.filter(addrList.Items, function(obj) {
-									return _.indexOf([obj.xp.IsDefault], true) > -1
+									if(obj.xp)
+										return _.indexOf([obj.xp.IsDefault], true) > -1
 								});
 							console.log("addrList", addrList);
 							dfr.resolve(arr);

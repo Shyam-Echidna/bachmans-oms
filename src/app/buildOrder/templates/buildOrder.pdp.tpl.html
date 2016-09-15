@@ -1,7 +1,7 @@
 <ui-view>
 
 	<div class="oms_main_container buildOrder-pdp-container" id="buildOrder-pdp-container">
-	<div class="upselloverlay" ng-show="buildOrder.upselloverlay">{{buildOrder.upselloverlay}}</div>
+		<div class="upselloverlay" ng-show="!buildOrder.upsell || !buildOrder.similar"></div>
 		<div class="buildOrder-pdp" ng-if="buildOrder.UpsellSimilar!=true">
 			<h1>
 				<a ng-click="gotoplp()" ng-if="buildOrder.searchType!='Products'">

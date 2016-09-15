@@ -12,7 +12,6 @@
 						<input ng-show="isEditing" type="email" class="form-control col-md-6" ng-model="custInfo.list.user.Email" placeholder="email">
 						
 					</div>
-					<p class="cust-top col-md-12">Primary Account Holder</p>
 					<div class="info-blk form-group col-md-12">
 						<p class="col-md-3 cust-del">First Name:</p>
 						
@@ -59,13 +58,6 @@
 							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4" class="col-md-3 phone-val">
 							
 						</div>
-					<div class="info-blk">
-						<p class="col-md-3">Tax Exempt Number:</p>
-					
-						<span ng-show="!isEditing" class="col-md-6"></span>
-						<input type="text" ng-show="isEditing" value="" class="col-md-6 phone-val1">
-					
-					</div>
 			        <div class="form-group" ng-show="isEditing">
 						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			
 					</div>

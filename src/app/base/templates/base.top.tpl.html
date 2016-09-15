@@ -116,7 +116,31 @@
 								<a ng-click="baseTop.searchGoTo(recipient.FromUserID, recipient.ID)" class="search_result">
 									<p>
 									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" ng-if="recipient.Status=='Open'" class="cs1">
+										<circle cx="12" cy="12" r="12"/>
+										<g>
+											<path d="M12.9,12l3.6,3.6l-0.9,0.9L12,12.9l-3.6,3.6l-0.9-0.9l3.6-3.6L7.5,8.4l0.9-0.9l3.6,3.6l3.6-3.6l0.9,0.9
+												L12.9,12z"/>
+										</g>
+									</svg>
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" ng-if="recipient.Status=='Completed'" class="cs2">
+										<circle cx="12" cy="12" r="12"/>
+										<g>
+											<path d="M12.9,12l3.6,3.6l-0.9,0.9L12,12.9l-3.6,3.6l-0.9-0.9l3.6-3.6L7.5,8.4l0.9-0.9l3.6,3.6l3.6-3.6l0.9,0.9
+												L12.9,12z"/>
+										</g>
+									</svg>
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" ng-if="recipient.Status=='Canceled'" class="cs3">
+										<circle cx="12" cy="12" r="12"/>
+										<g>
+											<path d="M12.9,12l3.6,3.6l-0.9,0.9L12,12.9l-3.6,3.6l-0.9-0.9l3.6-3.6L7.5,8.4l0.9-0.9l3.6,3.6l3.6-3.6l0.9,0.9
+												L12.9,12z"/>
+										</g>
+									</svg>
+									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" ng-if="recipient.Status=='Unsubmitted'" class="cs4">
 										<circle cx="12" cy="12" r="12"/>
 										<g>
 											<path d="M12.9,12l3.6,3.6l-0.9,0.9L12,12.9l-3.6,3.6l-0.9-0.9l3.6-3.6L7.5,8.4l0.9-0.9l3.6,3.6l3.6-3.6l0.9,0.9

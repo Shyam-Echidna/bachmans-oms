@@ -89,21 +89,23 @@
 		</ul>
 	</div>
 	<!-- category Product List starts -->
-	<div class="home-search-list" ng-if="buildOrder.searchType == 'plp' &&  buildOrder.searchval.length == 0">
-		<h1 ng-if="buildOrder.catList.length == 0">No results found for <span>"{{buildOrder.searchTxt}}"</span></h1>
+	<div class="home-search-list" ng-if="buildOrder.searchType == 'plp' &&  buildOrder.searchval.length == 0 && buildOrder.catList.length>0">
+		<!-- <h1 ng-if="buildOrder.searchSeqList.length > 0">Products under the category<span>"{{buildOrder.searchTxt}}"</span> <span class="count">({{buildOrder.searchSeqList.length}} products)</span></h1> -->
+		<!-- <h1 ng-if="buildOrder.catList.length == 0">No Products found</span></h1> -->
 		<ul class="plp-container">
 			<li class="col-md-3" ng-repeat="prod in buildOrder.catList track by $index">
 				<div class="plp-block">
-					<div ng-click="buildOrder.showProduct(prod)">
+					<div ng-click="buildOrder.prouctsList(prod)">
 						<div class="product_img">
 							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
-							<h4>Color {{prod.xp.SpecsOptions.Color}}</h4>
+							<h3>Color {{prod.Color}}</h3>
+							<h4>Size {{prod.Size}}</h4>
 						</div>
 						<div class="price_lst">
-							<h5 class="Price">{{prod.StandardPriceSchedule.PriceBreaks[0].Price | currency}}</h5>
+							<h5 class="Price">{{prod.Price | currency}}</h5>
 						</div>	
 					</div>
 				</div>

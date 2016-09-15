@@ -12,7 +12,7 @@
 							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
 						</g>
 					</svg>
-					Back to Search Results
+					Back
 				</a>
 				<a ng-click="gotoplp()" ng-if="buildOrder.searchType=='Products'">
 					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -24,7 +24,7 @@
 							<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
 						</g>
 					</svg>
-					Back to Search Results
+					Back 
 				</a>
 			</h1>
 			<div class="buildOrder-pdp-content row">
@@ -431,7 +431,7 @@
 						<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"/>
 					</g>
 				</svg>
-				Back to Order
+				Back 
 			</a>
 			</h1>
 			<div class="owl-theme" id="pdpCarouselView">
@@ -541,7 +541,19 @@
 	My details goes here.......
 </modal>
 <modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up view-care-guide" ng-init="buildOrderPDP.showArticle=false;">
-	<p ng-if="buildOrderPDP.showArticle" ng-click="buildOrderPDP.showArticle=!buildOrderPDP.showArticle">BACK</p>
+	<div ng-if="buildOrderPDP.showArticle" ng-click="buildOrderPDP.showArticle=!buildOrderPDP.showArticle" class="page_header_back">
+	<a>
+		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+			<style type="text/css">
+				.st0{fill:#8B8E96;}
+			</style>
+			<g>
+				<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"></path>
+			</g>
+		</svg>
+		Back
+	</a>
+</div>
 	<ul ng-if="!buildOrderPDP.showArticle">
 		<li ng-repeat="articles in buildOrder.articles">
 			<div ng-click="buildOrderPDP.getArticle(articles.contentUrl);buildOrderPDP.showArticle=!buildOrderPDP.showArticle">

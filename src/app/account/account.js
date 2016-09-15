@@ -97,7 +97,7 @@ function AccountService( $q, $uibModal, OrderCloud ) {
 	return service;
 }
 
-function AccountController( $exceptionHandler, toastr, CurrentUser, AccountService ) {
+function AccountController( $exceptionHandler, CurrentUser, AccountService ) {
 	var vm = this;
 	vm.profile = angular.copy(CurrentUser);
 	var currentProfile = CurrentUser;
@@ -133,7 +133,7 @@ function ConfirmPasswordController( $uibModalInstance ) {
 	};
 }
 
-function ChangePasswordController( $state, $exceptionHandler, toastr, AccountService, CurrentUser ) {
+function ChangePasswordController( $state, $exceptionHandler, AccountService, CurrentUser ) {
 	var vm = this;
 	vm.currentUser = CurrentUser;
 

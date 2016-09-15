@@ -102,7 +102,7 @@ function LoginService( $q, $window, toastr, $state,OrderCloud, clientid, buyerid
                             $state.go('home')
                         })
                         .catch(function () {
-                            toastr.error("Your token has expired, please log in again.")
+                            //toastr.error("Your token has expired, please log in again.")
                         });
                 }else{
                     _logout();

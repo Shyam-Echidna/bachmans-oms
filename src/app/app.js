@@ -141,7 +141,7 @@ function AppCtrl($q, $rootScope, $state, $http, appname, LoginService, toastr, $
         LoginService.RememberMe();
     });
     $rootScope.$on('OC:AccessForbidden', function(){
-        toastr.warning("I'm sorry, it doesn't look like you have permission to access this page.", 'Warning:');
+        //toastr.warning("I'm sorry, it doesn't look like you have permission to access this page.", 'Warning:');
     })
 	$.ajax({
 	    method:"GET",

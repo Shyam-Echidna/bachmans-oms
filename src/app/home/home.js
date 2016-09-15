@@ -206,21 +206,19 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
 		angular.forEach(res.Items, function(res, key){
 			angular.forEach(res.Items, function(res1, key1){
-				onholdorders.push(OrderCloud.Orders.Get(res1.OrderID));
+				OrderCloud.Orders.Get(res1.OrderID).then(function(res2){
+					console.log(res2);
+					OrderCloud.LineItems.Get(res1.OrderID,res1.LineItemID).then(function(res3){
+						console.log(res3);
+						onholdorders.push({"ID":res.ID,"DateCreated":res2.DateCreated,"FromUserFirstName":res2.FromUserFirstName,"Occassions":res3.xp.addressType,"WireStatusCode":res3.xp.WireService,"CSRID":res2.xp.CSRID});
+					})
+				})
+				//onholdorders.push(OrderCloud.Orders.Get(res1.OrderID));
 			},true);
 		},true);
-		$q.all(onholdorders).then(function(data){
-			onholdorders=[];
-			angular.forEach(data, function(data, key1){
-				if(!data.xp)
-					data.xp={};
-				if(!data.xp.CSRDID)
-					data.xp.CSRID =	null;
-				onholdorders.push({"ID":data.ID,"DateCreated":data.DateCreated,"FromUserFirstName":data.FromUserFirstName,"Occassions":"","WireStatusCode":"Wire Status Code","CSRID":data.xp.CSRID});
-			},true);
-			vm.onHold = onholdorders;
-		});
+		vm.onHold = onholdorders;
 	});
+	console.log(vm.onHold);
 	$scope.gridOptions = {
 	  data: 'home.onHold',
 	  enableSorting: true,

@@ -107,7 +107,7 @@ function AccountController( $exceptionHandler, toastr, CurrentUser, AccountServi
 			.then(function(data) {
 				vm.profile = angular.copy(data);
 				currentProfile = data;
-				toastr.success('Account changes were saved.', 'Success!');
+				//toastr.success('Account changes were saved.', 'Success!');
 			})
 			.catch(function(ex) {
 				vm.profile = currentProfile;
@@ -140,7 +140,7 @@ function ChangePasswordController( $state, $exceptionHandler, toastr, AccountSer
 	vm.changePassword = function() {
 		AccountService.ChangePassword(vm.currentUser)
 			.then(function() {
-				toastr.success('Password successfully changed', 'Success!');
+				//toastr.success('Password successfully changed', 'Success!');
 				vm.currentUser.CurrentPassword = null;
 				vm.currentUser.NewPassword = null;
 				vm.currentUser.ConfirmPassword = null;

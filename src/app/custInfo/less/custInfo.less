@@ -117,12 +117,14 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 			span{
 				.helvetica-regular;
 				font-size: 14px;
+				height: 21px;
+               line-height: 17px;
 			}
 			input.form-control{
 				width:auto;
 			}
 			.cust-del{
-			 width:15%;
+			 width:16%;
 			}
 			.phone-num{
 			 padding:0px;
@@ -191,7 +193,7 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 			height: 250px;
 			.cust-addr-list{
 				    position: absolute;
-					top: 70px;
+					top: 53px;
 					overflow-y: auto;
 					bottom:-15px;
 					width:@width0;
@@ -224,7 +226,43 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 			}
 		}
 		.subscription{
-			table{
+		    position: relative;
+    		margin-top: 25px;
+    		    height:300px;
+			.sub-header{
+				background-color: #e4e6ea;
+			    float: left;
+			    width: 100%;
+			    padding: 10px;
+				h1{
+					float:left;
+					font-family: "Helvetica-Bold";
+				    font-size: 15px;
+				    padding: 5px 0 0 0;
+				    margin: 0px;
+				    height:auto;
+				}
+				.save {
+			       padding: 5px 10px;
+				    font-family: "Helvetica-Bold";
+				    font-size: 11px;
+				    color: #ffffff;
+				    background-color: #a77bca;
+				    margin-top: 0px;
+				    float: right;
+			      &:hover{
+			    	    background-color: #8c58b5;
+			     }
+    		  }
+
+			}
+			.sud-del{
+			      overflow-y: auto;
+			    width: 100%;
+			    position: absolute;
+			   	top:55px;
+			   	bottom:-15px;
+				table{
 					th, td{
 						width:20%;
 						.helvetica-regular;
@@ -241,6 +279,8 @@ input[type="number"],input[type="text"],input[type="email"],textarea,input[type=
 						padding:5px 0;
 					}
 				}
+			}
+			
 		}
 		.sub-addr{	
 			.helvetica-regular;

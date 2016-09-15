@@ -69,7 +69,7 @@ function checkoutConfig( $stateProvider ) {
 		url: '/checkout/:ID',
 		templateUrl:'checkout/templates/checkout.tpl.html',
         data: {
-            loadingMessage: 'Preparing for Checkout'
+            loadingMessage: 'LOADING'
         },
 		views: {
 			'': {

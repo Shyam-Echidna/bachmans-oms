@@ -11,7 +11,7 @@ function HomeConfig( $stateProvider ) {
 			url: '/home',
 			templateUrl: 'home/templates/home.tpl.html',
 			data: {
-				loadingMessage: 'Preparing for Home'
+				loadingMessage: 'LOADING'
 			},
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
@@ -226,9 +226,9 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	   { name: 'ID', displayName:'Shipment'},
 	   { name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>', width:"14.2%"},
 	   { name: 'FromUserFirstName', displayName:'Sender Name',width:"14.2%"},
-	   { name: 'BillingAddress', displayName:'Occassions',width:"14.2%"},
-	   { name: 'Totl', displayName:'Wire Status Code',width:"14.2%"},
-	   { name: 'xp.CSRID', displayName:'CSR ID',width:"14.2%"},
+	   { name: 'Occassions', displayName:'Occassions',width:"14.2%"},
+	   { name: 'WireStatusCode', displayName:'Wire Status Code',width:"14.2%"},
+	   { name: 'CSRID', displayName:'CSR ID',width:"14.2%"},
 	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"14.2%"}
 	  ]
 	 };
@@ -240,7 +240,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	  enableSorting: false,
 	  columnDefs: [ 
 		{ name: 'xp.SavedOrder.Name', displayName:'Order Name', filter: {placeholder: 'Search order'}},
-		{ name: 'FromUserFirstName', displayName:'Customer', enableFiltering:false},
+		{ name: 'FromUserFirstName', displayName:'Customer', enableFiltering:true},
 		{ name: 'Delete', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell"><a popover-trigger="none" popover-is-open="grid.appScope.showDeliveryToolTip[row.entity.ID]" ng-click="grid.appScope.showDeliveryToolTip[row.entity.ID] = !grid.appScope.showDeliveryToolTip[row.entity.ID]" uib-popover-template="grid.appScope.deleteAddress.templateUrl" popover-placement="bottom"><img src="../assets/images/icons-svg/cancel.svg">Delete</a></div><script type="text/ng-template" id="deleteAddress.html"><div click-outside="grid.appScope.closePopover()"><h2>Delete this Address</h2><button type="button" ng-click="grid.appScope.deleteOrder(row)">DELETE</button><button type="button" ng-click="grid.appScope.cancelPopUp()">CANCEL</button></div></script>', width: "15%"},
 		{ name: 'openOrder', displayName:'', enableFiltering:false, cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:row.entity.FromUserID,SearchType:grid.appScope.user,orderID:row.entity.ID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width: "15.2%"}
 	  ]

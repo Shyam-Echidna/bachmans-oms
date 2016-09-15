@@ -179,8 +179,8 @@ function AddressBookController($scope, $http, $state, $stateParams, $location, $
 		})
 	}
 	vm.deleteAddr =function(addrID){
-		OrderCloud.As().Me.DeleteAddress(addrID, true).then(function(){
-			$state.go('addressBook', {}, {reload:true});
+		OrderCloud.Addresses.Delete(addrID).then(function(){
+		   $state.go('addressBook', {}, {reload:true});
 		});
 	}
 	$scope.deleteAddress = {

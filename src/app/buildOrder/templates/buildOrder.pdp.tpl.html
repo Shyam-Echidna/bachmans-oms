@@ -1,5 +1,7 @@
 <ui-view>
+
 	<div class="oms_main_container buildOrder-pdp-container" id="buildOrder-pdp-container">
+	<div class="upselloverlay" ng-show="buildOrder.upselloverlay">{{buildOrder.upselloverlay}}</div>
 		<div class="buildOrder-pdp" ng-if="buildOrder.UpsellSimilar!=true">
 			<h1>
 				<a ng-click="gotoplp()" ng-if="buildOrder.searchType!='Products'">
@@ -14,6 +16,7 @@
 					</svg>
 					Back
 				</a>
+		
 				<a ng-click="gotoplp()" ng-if="buildOrder.searchType=='Products'">
 					<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 					viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">

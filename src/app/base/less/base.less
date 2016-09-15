@@ -566,7 +566,7 @@ input[type=number]::-webkit-outer-spin-button {
 				background-image:none;
 			}
 			 .ui-grid-cell{
-			 	max-width: 14.4% !important;
+			 	/*max-width: 14.4% !important;*/
     			padding: 11px 16px 8px 16px !important;
 			 }
 		}
@@ -648,9 +648,9 @@ input[type=number]::-webkit-outer-spin-button {
 	float:left;
 	height:auto;
 	margin-right:1%;
-	padding:0 20px 0 15px;
+	padding:0px 15px;
 	width:19%;
-	height:210px;
+	height:220px;
 	position:relative;
 	h1 {
 		.helvetica-bold;
@@ -661,8 +661,15 @@ input[type=number]::-webkit-outer-spin-button {
 		line-height:21px;
 		.text-ellipses;
 		-webkit-line-clamp: 2;
-		
-	}
+		display: block;
+ 		text-transform: lowercase;
+ 		&::first-letter{
+ 		  text-transform: uppercase;
+ 		}
+ 	   
+ 		}
+ 		
+ 		
 	 
 	> p {
 		color:@color1;
@@ -681,7 +688,7 @@ input[type=number]::-webkit-outer-spin-button {
 	}
 	.more-details{
 		color: #afafaf;
-	    height: auto;
+	  
 	    font-size: 10px;
 	    font-family: "Helvetica-Bold";
 	    margin: -10px 0 0 0;
@@ -689,6 +696,9 @@ input[type=number]::-webkit-outer-spin-button {
 	    border-bottom: 1px solid #ccc;
 	    padding-bottom: 3px;
 	    width: 100%;
+	    margin-top: 2px;
+    	line-height: 20px;
+   		height: 20px;
 	}
 }
 
@@ -709,7 +719,7 @@ input[type=number]::-webkit-outer-spin-button {
 			padding: 3px 0 0;
 			position: relative;
 			float: left;
-			top: 4px;
+			top: 6px;
 		     .helvetica-bold;
 		     span{
 		     	.helvetica-bold;
@@ -733,8 +743,6 @@ input[type=number]::-webkit-outer-spin-button {
 	 
     		.event-time{
     			     float: right;
-				    text-align: right;
-				    width: 50%;
 				    padding: 5px 0px 0 0;
 				    font-size: 10px;
 				    text-transform: uppercase;
@@ -746,7 +754,7 @@ input[type=number]::-webkit-outer-spin-button {
 					    float: left;
 					    position: relative;
 					    top: 2px;
-					    margin: 0 0px 0 0px;
+					    margin: 0 7px 0 0px;
 					    left: 1px;
 				    svg{
 			    	    fill: none;

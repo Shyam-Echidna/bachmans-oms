@@ -1068,6 +1068,7 @@ input.error {
 				font-size: 21px ;
 				color: @primary-dark-color;
 				margin-top:10px;
+				text-transform: capitalize;
 			}
 			.order-header {
 				background: #fff;
@@ -3027,6 +3028,32 @@ input.error {
 /*View Guide Modal */
 
 .view-care-guide{
+	.modal-body{
+		    	overflow-y: hidden;
+		    	
+			}
+			.page_header_back{
+					font-family: "Helvetica-regular";
+				    font-size: 13px;
+				    color: #54565d;
+				    margin: 10px 0;
+				    a{
+				    	color: #54565d;
+					    cursor: pointer;
+					    text-decoration: none;
+					    &:hover{
+					        color: #a77bca;
+					    }
+					    svg{
+					    width: 10px;
+					    height: 9px;
+					    color: rgb(84, 86, 93);
+					    display: inline-block;
+					    transform: rotate(180deg);
+					    }
+				    }
+			}
+			
 	ul{
 		li{
 		    padding: 5px;
@@ -3049,4 +3076,30 @@ input.error {
 
 	
 	}
+	.right-content{
+		width:100%;
+		.content-body-block{
+		       text-align: justify;
+			     font-family: "Helvetica-regular";
+			     font-size:13px;
+			     padding-right:14px;
+			     table{
+			     	ul{
+			     	 li{
+			     	 	&:nth-child(even){
+		    			background: transparent;
+		    			}
+		    			margin:0px;
+		    			padding:0px;
+			     	 }
+			     	}
+			     }
+		}
+	}
+	.articlePDP{
+		height:300px;
+		overflow-y: auto;
+	}
 }
+
+

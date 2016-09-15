@@ -9,7 +9,9 @@
 	<!-- <button ng-click="home.goToAlgoliaResultsPage(home.searchTerm)">frtger</button> -->
 <!-- 		<h1 class="heading">Promotions & Information</h1>
 		<div ng-repeat="PromoInfo in home.PromoInformation" ng-include="PromoInfo"></div>	 -->
+
 		<h1 class="heading">Workshop &amp; Events</h1>
+
 		<div ng-repeat="eventInfo in events | limitTo : 5">
 			<div class="promotion_box ng-scope" ui-sref="buildOrder({ID:eventInfo.id,SearchType:'Workshop'})">
 				<h1>{{eventInfo.title}}</h1>
@@ -20,8 +22,8 @@
 					<p>{{eventInfo.start | date:'mediumDate'}}</p>
 					<span>{{eventInfo.startTime}}</span> -->
 					<div class="events-date">
-						<div class="event-date">11<span class="ng-binding">Jun</span>
-							<span class="event-day ng-binding">Saturday</span>
+						<div class="event-date">{{eventInfo.start | date:'dd'}}<span class="ng-binding">{{eventInfo.start | date:'MMM'}}</span>
+							<span class="event-day ng-binding">{{eventInfo.start | date:'EEEE'}}</span>
 						</div>
 						
 							<div class="event-time">

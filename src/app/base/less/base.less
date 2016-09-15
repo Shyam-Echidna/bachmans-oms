@@ -538,17 +538,18 @@ input[type=number]::-webkit-outer-spin-button {
 	  padding:0;
 	  margin-top:20px;
 		button{
-			border: 1px solid #a57bc5;
-		    background: #fff;
-		    color: #8c58b5;
+			float: right;
+		    font-family: "Helvetica-Bold";
 		    font-size: 16px;
+		    color: #8c58b5;
+		    border: 1px solid #8c58b5;
+		    background-color: #ffffff;
+		    border-radius: 7px;
+		    transition: background-color 0.5s ease-out;
+		    height:35px;
+		    line-height:35px;
+		    margin-right: 15px;
 		    padding:0 20px;
-		    text-transform: uppercase;
-		    .helvetica-bold;
-		    height: 35px;
-            line-height: 35px;
-            transition: background-color 0.5s ease-out;
-            float:right;
             &:hover{
             	background-color: #a576ca;
     			color: #ffffff;
@@ -565,7 +566,7 @@ input[type=number]::-webkit-outer-spin-button {
 				background-image:none;
 			}
 			 .ui-grid-cell{
-			 	max-width: 14.4% !important;
+			 	/*max-width: 14.4% !important;*/
     			padding: 11px 16px 8px 16px !important;
 			 }
 		}
@@ -647,9 +648,9 @@ input[type=number]::-webkit-outer-spin-button {
 	float:left;
 	height:auto;
 	margin-right:1%;
-	padding:0 20px 0 15px;
+	padding:0px 15px;
 	width:19%;
-	height:210px;
+	height:220px;
 	position:relative;
 	h1 {
 		.helvetica-bold;
@@ -660,7 +661,16 @@ input[type=number]::-webkit-outer-spin-button {
 		line-height:21px;
 		.text-ellipses;
 		-webkit-line-clamp: 2;
-	}
+		display: block;
+ 		text-transform: lowercase;
+ 		&::first-letter{
+ 		  text-transform: uppercase;
+ 		}
+ 	   
+ 		}
+ 		
+ 		
+	 
 	> p {
 		color:@color1;
 		.helvetica-regular;
@@ -678,10 +688,17 @@ input[type=number]::-webkit-outer-spin-button {
 	}
 	.more-details{
 		color: #afafaf;
-	    height: auto;
-	    font-size:10px;
-	    .helvetica-bold;
-	    margin: 0px;
+	  
+	    font-size: 10px;
+	    font-family: "Helvetica-Bold";
+	    margin: -10px 0 0 0;
+	    float: left;
+	    border-bottom: 1px solid #ccc;
+	    padding-bottom: 3px;
+	    width: 100%;
+	    margin-top: 2px;
+    	line-height: 20px;
+   		height: 20px;
 	}
 }
 
@@ -702,7 +719,7 @@ input[type=number]::-webkit-outer-spin-button {
 			padding: 3px 0 0;
 			position: relative;
 			float: left;
-			top: 4px;
+			top: 6px;
 		     .helvetica-bold;
 		     span{
 		     	.helvetica-bold;
@@ -725,24 +742,24 @@ input[type=number]::-webkit-outer-spin-button {
 	    }
 	 
     		.event-time{
-    			    float: right;
-			    text-align: left;
-			    width: 40%;
-			    padding: 5px 0px 0 0;
-			    font-size:9px;
-			    text-transform: uppercase;
-			    font-family: "Helvetica-regular";
-			    margin-top:15px;
+    			     float: right;
+				    padding: 5px 0px 0 0;
+				    font-size: 10px;
+				    text-transform: uppercase;
+				    font-family: "Helvetica-regular";
+				    margin-top: 15px;
 			    span.events-countdown{
 				        width: 10px;
 					    height: 10px;
 					    float: left;
 					    position: relative;
 					    top: 2px;
-					    margin:0 5px 0 8px;
+					    margin: 0 7px 0 0px;
+					    left: 1px;
 				    svg{
 			    	    fill: none;
-						stroke: #000;	
+						stroke: #000;
+						margin-top: -1px;	
 				    }
 			    }
 			    span.events-cost{

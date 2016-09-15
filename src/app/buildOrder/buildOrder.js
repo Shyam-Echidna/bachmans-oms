@@ -722,6 +722,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     vm.SelectExtra = function(selectedExtra, $event){
       $('.dropdown.open button p').text(selectedExtra);
     }
+	GetAttributeImages();
+	function GetAttributeImages() {
+		var tkt = localStorage.getItem("alf_ticket");
+		BuildOrderService.GetAttributeImages(tkt).then(function(imgList){
+			vm.attributeImgs=imgList;
+			console.log("vm.attributeImgs", vm.attributeImgs);
+		});
+	}
 	vm.prouctsList=function(e){
 		if($stateParams.SearchType == 'BuildOrder'){
 			OrderCloud.Products.List(null, 1, 100, null, null, {"xp.ProductCode":e.ProductCode}).then(function(res){
@@ -756,14 +764,22 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
     // Function to get selected product
     // Function to get selected product
     vm.showProduct=function(e){
+		var alfticket = localStorage.getItem("alf_ticket");
+		vm.selectedKey=[];
         if($stateParams.SearchType == 'plp'){
  			vm.fullProductsData=vm.seqProducts;
 			_.filter(vm.fullProductsData, function(obj) {
                 if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
 					vm.articles=obj.xp.Articles;
 					vm.selectedSpecification=obj.xp.Attributes;
-					vm.selectedKey=obj.xp.KeyAttributes;
 					vm.selectedWarranty=obj.xp.Warranty;
+					angular.forEach(obj.xp.KeyAttributes, function(value, key) {
+					var attImg=Underscore.where(vm.attributeImgs.items, {title: key});
+					vm.selectedKey.push({
+						url:alfrescoURL + attImg[0].contentUrl + "?alf_ticket=" + alfticket,
+						attribute:value
+						})
+					});
 				}
 			});
         }
@@ -774,8 +790,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
 						vm.articles=obj.xp.Articles;
 						vm.selectedSpecification=obj.xp.Attributes;
-						vm.selectedKey=obj.xp.KeyAttributes;
 						vm.selectedWarranty=obj.xp.Warranty;
+						angular.forEach(obj.xp.KeyAttributes, function(value, key) {
+						var attImg=Underscore.where(vm.attributeImgs.items, {title: key});
+						vm.selectedKey.push({
+							url:alfrescoURL+ attImg[0].contentUrl + "?alf_ticket=" + alfticket,
+							attribute:value
+							})
+						});
 					}
 				});
         }
@@ -794,8 +816,14 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
 					vm.articles=obj.xp.Articles;
 					vm.selectedSpecification=obj.xp.Attributes;
-					vm.selectedKey=obj.xp.KeyAttributes;
 					vm.selectedWarranty=obj.xp.Warranty;
+					angular.forEach(obj.xp.KeyAttributes, function(value, key) {
+					var attImg=Underscore.where(vm.attributeImgs.items, {title: key});
+					vm.selectedKey.push({
+						url:alfrescoURL + attImg[0].contentUrl + "?alf_ticket=" + alfticket,
+						attribute:value
+						})
+					});
 				}
 			});
 		}
@@ -1025,10 +1053,6 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		else if(vm.catList)
 		vm.catList='';
 	}
-	AlfrescoFact.GetAlfrescoLogin().then(function (data) {
-        var tckt = data.data.ticket;
-        localStorage.setItem("alfrescoTicket",tckt);
-    });
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -2071,25 +2095,25 @@ function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
 		var alfticket = localStorage.getItem("alfrescoTicket");
 
 		vm.articleURL=$sce.trustAsResourceUrl(alfrescoAccessURL+data+"?alf_ticket="+alfticket);
-		var file=data.substring(data.lastIndexOf("/") + 1, data.length);
-		var imgName= file.substring(0, file.lastIndexOf(".") + 0);
-		var str1 = data.substr(0, data.lastIndexOf("/"));
-		var str2 = str1.substring(str1.lastIndexOf("/") + 1, str1.length);
-		var str3 =alfrescoAccessURL+"/getArticleData/nodes.json?id="+str2+"&alf_ticket="+alfticket;
-		console.log("result", str3);
-		$http.get(str3).then(function(assign) {
-			var assign=assign.data.displayPath;
-			var str4 = assign.substring(assign.lastIndexOf("Bachmans Quick Start/") + 0, assign.length);
-			var url=alfrescoAccess+ str4 + "/Media"+"?alf_ticket="+alfticket;
-			$http.get(url).then(function(res) {
-				Underscore.filter(res.data.items, function(row){
-					if((row.nodeType=="ws:image") && (row.fileName==imgName+".jpg")){
-						console.log("rrrrl", alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
-						vm.articleImgURL=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
-					}
-				})
-			})
-		});
+		// var file=data.substring(data.lastIndexOf("/") + 1, data.length);
+		// var imgName= file.substring(0, file.lastIndexOf(".") + 0);
+		// var str1 = data.substr(0, data.lastIndexOf("/"));
+		// var str2 = str1.substring(str1.lastIndexOf("/") + 1, str1.length);
+		// var str3 =alfrescoAccessURL+"/getArticleData/nodes.json?id="+str2+"&alf_ticket="+alfticket;
+		// console.log("result", str3);
+		// $http.get(str3).then(function(assign) {
+			// var assign=assign.data.displayPath;
+			// var str4 = assign.substring(assign.lastIndexOf("Bachmans Quick Start/") + 0, assign.length);
+			// var url=alfrescoAccess+ str4 + "/Media"+"?alf_ticket="+alfticket;
+			// $http.get(url).then(function(res) {
+				// Underscore.filter(res.data.items, function(row){
+					// if((row.nodeType=="ws:image") && (row.fileName==imgName+".jpg")){
+						// console.log("rrrrl", alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
+						// vm.articleImgURL=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+row.contentUrl+"?alf_ticket="+alfticket);
+					// }
+				// })
+			// })
+		// });
 	}
 }
   
@@ -2555,7 +2579,8 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		GetProductList:_getProductList,
 		GetSeqProd:_getSeqProd,
 		GetExtras:_getExtras,
-		AdminLogin: _adminLogin
+		AdminLogin: _adminLogin,
+		GetAttributeImages:_getAttributeImages
     }
     function _adminLogin(){
     	var data = $.param({
@@ -2875,6 +2900,25 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
         });
         return d.promise;
     }
+	function _getAttributeImages(ticket) {
+        var d = $q.defer();
+		//console.log("ticket" + ticket + "alfrescoOmsUrl:" + alfrescoOmsUrl );
+        $http({
+            method: 'GET',
+            dataType: "json",
+            url: alfrescoOmsUrl + "Attributes?alf_ticket=" + ticket,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).success(function (data, status, headers, config) {
+            d.resolve(data);
+			//console.log("alfresco successssss");
+        }).error(function (data, status, headers, config) {
+			//console.log("alfresco error");
+            d.reject(data);
+        });
+        return d.promise;
+    }
 	function _getProductList(res, productImages){
 		var d = $q.defer(), ticket = localStorage.getItem("alf_ticket"), data, imgUrl;      
 		data = Underscore.filter(res, function(row){
@@ -2883,10 +2927,18 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 			});
 			// console.log("alternative", alternative);
 			if(imgUrl.length > 0){
-				var baseImage = Underscore.where(imgUrl, {title: row.ID});
-				if(baseImage.length > 0){
-					row.baseImage = alfrescoURL + baseImage[0].contentUrl + "?alf_ticket=" + ticket;
-				}
+				var podID=row.ID, baseImage;
+				podID=podID.toString();
+				//var baseImage = Underscore.where(imgUrl, {title: row.ID});
+				Underscore.filter(imgUrl, function(row1){
+					if(row1.title.indexOf(podID) != -1)
+					{
+						row.baseImage = alfrescoURL + row1.contentUrl + "?alf_ticket=" + ticket;
+					}
+				});
+				// if(baseImage.length > 0){
+					// row.baseImage = alfrescoURL + baseImage[0].contentUrl + "?alf_ticket=" + ticket;
+				// }
 				//console.log("row.baseImage", row.baseImage);
 				row.alternativeImg = [];
 				angular.forEach(imgUrl, function(value, key) {

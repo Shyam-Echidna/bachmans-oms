@@ -7,14 +7,23 @@ function HoldConfig( $stateProvider ) {
 	$stateProvider
 		.state( 'hold', {
 			parent: 'base',
-			url: '/hold/:orderID',
+			url: '/hold/:ID/:OrderID/:LineItemID',
 			templateUrl: 'hold/templates/hold.tpl.html',
 			controller: 'HoldCtrl',
 			controllerAs: 'hold',
 			resolve:{
 				Order: function(OrderCloud, $q, $stateParams, LineItemHelpers){
 					var dd=$q.defer();
-					OrderCloud.Orders.ListOutgoing(null, null, $stateParams.orderID).then(function(res){
+					var arr=[];
+					console.log($stateParams);
+					OrderCloud.LineItems.Get($stateParams.OrderID,$stateParams.LineItemID).then(function(data){
+						console.log(data);
+						arr.push(data);
+						LineItemHelpers.GetProductInfo(arr).then(function(data1){
+							dd.resolve(data);
+						})
+					})
+					/*OrderCloud.Orders.ListOutgoing(null, null, $stateParams.orderID).then(function(res){
 						console.log(res);
 						OrderCloud.LineItems.List(res.Items[0].ID, null, null, null, null, null, {"xp.Status":'OnHold'}).then(function(data){
 							console.log(data);
@@ -23,7 +32,7 @@ function HoldConfig( $stateProvider ) {
 							})
 							//dd.resolve(data);
 						})
-					})
+					})*/
 					return dd.promise;
 				},
 				WiredProduct: function(OrderCloud, $q){
@@ -48,13 +57,13 @@ function HoldConfig( $stateProvider ) {
 
 function HoldController($scope, $state, $stateParams, Order, WiredProduct, OrderCloud, LineItemHelpers, Underscore) {
 	var vm = this;
-	vm.onholdlineitems=Order.Items;
+	vm.onholdlineitems=Order;
 	vm.onholdlineitems1=vm.onholdlineitems;
 	vm.wiredproducts=WiredProduct;
 	vm.wireserviceopt=null;
 	console.log(vm.onholdlineitems);
 	console.log(vm.wiredproducts);
-	vm.deliveryinfo=vm.onholdlineitems1[0];
+	vm.deliveryinfo=vm.onholdlineitems1;
 	vm.addItem=function(){
 		vm.selectSKU =! vm.selectSKU;
 		$scope.gridOptions.columnDefs[0].visible=true;

@@ -327,6 +327,57 @@
 					</div>
 				</div>
 				<!--  -->
+				<div class="row faster-delivery-content">
+                                    <div class="assembly">
+                                        <h5>Assembly:</h5>
+                                        <div class="radio-inline">
+                                           <input type="radio" id="assembled" name="assembly" value="Assembled">
+                                           <label for="assembled" class="m0">
+                                           <span class="radioOutline"><span class="radioInside"></span></span>
+                                           <span class="label-name">Assembled</span>
+                                           </label>
+                                        </div>
+                                        <div class="radio-inline">
+                                           <input type="radio" id="notAssembled" name="assembly" value="Not Assembled">
+                                           <label for="notAssembled">
+                                           <span class="radioOutline"><span class="radioInside"></span></span>
+                                           <span class="label-name">Not Assembled</span>
+                                           </label>
+                                        </div>
+                                        <p class="note"><span>Note:&nbsp;</span>Assembly charges may be applicable</p>
+                                    </div>
+                                    <div class="placement">
+                                        <h5>Placement:</h5>
+                                        <div class="radio-inline">
+                                           <input type="radio" id="placed" name="placement" value="Placed">
+                                           <label for="placed"  class="m0">
+                                           <span class="radioOutline"><span class="radioInside"></span></span>
+                                           <span class="label-name">Placed</span>
+                                           </label>
+                                        </div>
+                                        <div class="radio-inline">
+                                           <input type="radio" id="notPlaced" name="placement"value="Not Placed">
+                                           <label for="notPlaced">
+                                           <span class="radioOutline"><span class="radioInside"></span></span>
+                                           <span class="label-name">Not Placed</span>
+                                           </label>
+                                        </div>
+                                        <br>
+                                        <textarea placeholder="Placement Instruction" rows="4" cols="10"></textarea>
+                                        <p class="note"><span>Note:&nbsp;</span>Placement Charges Will be applicable</p>
+                                    </div>
+                                    <!-- <div class="fastDelivery" ng-show="pdp.Faster"> -->
+                                        <div class="fastDelivery">
+                                         
+                                         <div class="Checkbox">
+                                            <input type="checkbox" name="deliverytype" id="fastDelivery" ng-model="pdp.DeliveryType" value="Mixed"  ng-true-value="'Mixed'" ng-false-value="'NO'" />
+                                           
+                                            <div class="Checkbox-visible"></div>
+                                         </div>
+                                         <label class="fastDelivery" for="fastDelivery">Select Faster Delivery</label>
+                                         <p class="note"><span>Note:&nbsp;</span>Faster Delivery Charges Will be applicable</p>
+                                    </div>
+                                </div>
 				<button class="addCart" ng-if="buildOrder.hidePdpblock">REGISTER</button>
 				<button class="addCart" ng-click="AddtoCart(buildOrder.selectedProductId, buildOrder.selectedProductImg)" ng-if="!buildOrder.hidePdpblock">ADD TO CART</button>
 				</div>

@@ -832,6 +832,12 @@ input.error, .errorMMyy {
 				    font-size: 18px;
 				    margin: 0px 0px 20px 0;
 				}
+				.accordion-toggle .checkbox-custom-label{
+					margin:0;
+					&::before{
+					padding-top:2px;
+					}
+				}
 				.panel-heading{
 					background-color:@color0;
 					h4{
@@ -1036,6 +1042,10 @@ input.error, .errorMMyy {
                                     width: 16px;
                                 }
 							}
+					}
+					&.highlight{
+						border-color:@primary-dark-color;
+						color:@primary-dark-color;
 					}
 				}
 			}

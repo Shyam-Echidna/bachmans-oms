@@ -3131,7 +3131,196 @@ input.error {
     z-index: 9;
     opacity: 0.2;
 }
-.faster-delivery-content{
-	margin: 12px 0;
-    cursor: default;
-}
+.oms_main_container .faster-delivery-content{
+                            margin: 12px 0px;
+                            cursor: default;
+                            h5{
+                                //font: 1.188em @proxima-regular;
+                                color: #000000;
+                                margin-bottom: 10px;
+                            }
+                            .radio-inline{
+                                padding-left: 0px;
+                                width: 45%;
+                                margin: 0px;
+                                &:first-child{
+                                	label{
+                                		margin-left:0;
+                                	}
+                                }
+                            }
+                            .placement{
+                                margin: 20px 0px;
+                            }
+                            .note{
+                            font-size:0.85em;
+                                //font: 0.85em @proxima-regular;
+                                color: #666666;
+                                margin-top: 7px;
+                                    span{
+                                        color: #000000;
+                                    }
+                            }
+                            input[type=radio], input[type=checkbox] {
+                                    display: none;
+                                }
+                            label{
+			display: inline-block;
+			cursor: pointer;
+			position: relative;
+			padding-left: 0;
+			width: 100%;
+			margin: 0;
+			font-weight: 400;
+			text-transform: capitalize;
+			text-align:left;
+		}
+		 .radioOutline{
+		    position: relative;
+		}
+		input[type=radio]:not(old)+label .radioOutline .radioInside{
+		    border: 1px solid #8c58b5;
+			border-radius: 50%;
+			background: 0 0;
+			display: inline-block;
+			width: 18px;
+			height: 18px;
+			text-align: center;
+		 }
+	   input[type=radio]:not(old):checked+label .radioOutline{
+	 		    border: 1px solid #8c58b5;
+			border-radius: 50%;
+			background: 0 0;
+			display: inline-block;
+			width: 18px;
+			height: 18px;
+			text-align: center;
+			top:4px;
+		}
+		input[type=radio]:not(old):checked+label .radioOutline .radioInside{
+		    width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			display: inline-block;
+			background-color: #8c58b5;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+		   }
+			input[type=radio]:not(old)+label .radioOutline .radioInside{
+		    width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			display: inline-block;
+			background-color: transparent;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+		  }
+		  input[type=radio]:not(old)+label{
+		  	 h5,.courier,.faster-del{
+		  	 		padding-left: 30px;
+		  			
+		  	 }
+		   }
+                            /*input[type=radio] {
+                                    display: none;
+                                }
+                                input[type=radio]{
+                                    opacity: 0;
+                                    &:not(old){
+                                        &+ label .radioOutline, &:checked + label .radioOutline{
+                                            //border: 1px solid @base-bg-purple-dark;
+                                            border-radius: 50%;
+                                            background: transparent;
+                                            display: inline-block;
+                                            width: 18px;
+                                            height: 18px;
+                                            text-align: center;
+                                            cursor: pointer;
+                                            vertical-align: middle;
+                                        }
+                                        &:checked + label .radioOutline .radioInside{
+                                            display: block;
+                                            width: 10px;
+                                            height: 10px;
+                                            border-radius: 50%;
+                                            display: inline-block;
+                                            //background-color: @base-bg-purple-dark;
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            right: 0;
+                                            bottom: 0;
+                                            margin: auto;
+                                        }
+                                        &+ label .radioOutline .radioInside{
+                                            display: block;
+                                            width: 10px;
+                                            height: 10px;
+                                            border-radius: 50%;
+                                            display: inline-block;
+                                            background-color: transparent;
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            right: 0;
+                                            bottom: 0;
+                                            margin: auto;
+                                        }
+                                    }   
+                                }*/
+                                .label-name ,label{
+                                    //font: 1em @proxima-regular;
+                                    font-size: 1em;
+                                    margin-left:20px;
+                                    color: #666666;
+                                    vertical-align: middle;
+                                    cursor: pointer;
+                                    text-transform: capitalize;
+                                    &.fastDelivery{
+                                        margin: 0px 0px 0px 5px;
+
+                                    }
+                                }
+                                label.m0{
+                                	margin-left:0;
+                                }
+                                
+                                /*.cuctom-checkbox;*/
+                                    .Checkbox {
+                                        display: inline-block;
+    									vertical-align: middle;
+                                        &-visible {
+                                            width: 17px;
+                                            height: 17px;
+                                            border: 1px solid #b9b9b9;
+                                        }
+                                        > input:checked + .Checkbox-visible {
+                                            background-position: center;
+                                        }
+                                        &+label{
+                                        	font-size: 1em;
+										    display: inline-block;
+										    width: initial;
+										    vertical-align: middle;
+                                        }
+                                    }
+                                    textarea{
+                                        width: 100%;
+                                        resize: none;
+                                        padding: 5px 10px;
+                                        //font: 0.9em @proxima-regular;
+                                        line-height: initial;
+                                        outline: 0;
+                                        border: 1px solid #ccc;
+                                        margin-top: 7px;
+                                    }
+                                   
+                        }

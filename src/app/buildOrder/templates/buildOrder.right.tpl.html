@@ -92,9 +92,9 @@
 						</g>
 						</svg>
 					Edit</button>-->
-					<p>Size: {{buildOrderRight.activeOrders[line][0].Product.xp.SpecsOptions.Size}}</p>
-					<p>Color: {{buildOrderRight.activeOrders[line][0].Product.xp.SpecsOptions.Color}}</p>
-					<p>Quantity: {{prodQty[line]}}</p>
+					<p class="prod-variants">Size: <span>{{buildOrderRight.activeOrders[line][0].Product.xp.SpecsOptions.Size}}</span></p>
+					<p class="prod-variants">Color: <span>{{buildOrderRight.activeOrders[line][0].Product.xp.SpecsOptions.Color}}</span></p>
+					<p>Quantity: <span>{{prodQty[line]}}</span></p>
 					<div class="note-edit">
 						<button class="notes" ng-hide="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="buildOrderRight.showNoteField($index)">Notes</button>
 						<form ng-submit="buildOrderRight.updateProdNote($index,prodNotes,buildOrderRight.activeOrders[line][0].ProductID,line,$parent.buildOrderRight)">
@@ -387,8 +387,10 @@
 											</div>
 										</div>
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='InStorePickUp' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
-											<a ng-click="buildOrderRight.viewAddrBook(lineitem)" ng-if="lineitem.xp.addressType=='Residence' && buildOrderRight.AvoidMultipleDelryChrgs.length > 0">Address Book</a>
-											<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="lineitem.xp.addressType=='Residence' && buildOrderRight.AvoidMultipleDelryChrgs.length > 0" class="above-addr">Address From Cart</a>
+											<div class="address-cart">
+												<a ng-click="buildOrderRight.viewAddrBook(lineitem)" ng-if="lineitem.xp.addressType=='Residence'">Address Book</a>
+												<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="lineitem.xp.addressType=='Residence'">Address From Cart</a>
+											</div>
 										<div class="col-md-6 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>

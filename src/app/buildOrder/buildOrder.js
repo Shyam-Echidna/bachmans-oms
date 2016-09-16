@@ -2814,7 +2814,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 	}
 	function _CompareDate(endDate){
 		var d = $q.defer();
-		/*$.ajax({
+		$.ajax({
 			method:"GET",
 			dataType:"json",
 			contentType: "application/json",
@@ -2826,8 +2826,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 				d.resolve(res);
 		}).error(function(err){
 			console.log("err"+err);
-		});*/
-		d.resolve("1");
+		});
 		return d.promise;
 	}
 	function _GetPreceedingZeroDate(dt){

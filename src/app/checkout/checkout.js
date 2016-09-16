@@ -170,7 +170,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		if(vm.addCard){
 			checkoutService.AddCreditCard(card, billingAddress, vm).then(function(res1){
 				if(res1=="1"){
-					checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts).then(function(res2){
+					checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts, angular.copy(GetCstDateTime.datetime)).then(function(res2){
 						if(res2=="1"){
 							checkoutService.CreditCardPayment(vm).then(function(res3){
 								if(res3=="1"){
@@ -182,7 +182,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				}
 			});
 		}else{
-			checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts).then(function(res1){
+			checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts, angular.copy(GetCstDateTime.datetime)).then(function(res1){
 				if(res1=="1"){
 					checkoutService.CreditCardPayment(vm).then(function(res2){
 						if(res2=="1"){
@@ -1128,8 +1128,8 @@ function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
 		});
 		return d.promise;
 	}
-	function _spendingAccountsRedeemtion(SpendingAccounts){
-		var PaymentType, TempStoredArray = [], dat = new Date(angular.copy(GetCstDateTime.datetime)), d = $q.defer();
+	function _spendingAccountsRedeemtion(SpendingAccounts, cstdatetime){
+		var PaymentType, TempStoredArray = [], dat = new Date(cstdatetime), d = $q.defer();
 		angular.forEach(SpendingAccounts, function(val, key){
 			PaymentType = {"Type":"SpendingAccount", "SpendingAccountID":val.ID, "Description": key, "Amount": val.Amount, "xp":null};
 			if(key == "Cheque" || key == "PaidCash"){
@@ -1140,21 +1140,25 @@ function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
 			}
 			TempStoredArray.push(OrderCloud.Payments.Create(vm.order.ID, PaymentType));
 		}, true);
-		$q.all(TempStoredArray).then(function(result){
-			TempStoredArray = [];
-			angular.forEach(result, function(val, key){
-				TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, val.ID, {"Type": val.Type, "DateExecuted": (dat.getMonth()+1)+"/"+dat.getDate()+"/"+dat.getFullYear(), "Amount":val.Amount, "xp": null}));
-			}, true);
-			$q.all(TempStoredArray).then(function(result2){
-				console.log("===========>>>"+result2);
-				d.resolve("1");
+		if(TempStoredArray.length != 0){
+			$q.all(TempStoredArray).then(function(result){
+				TempStoredArray = [];
+				angular.forEach(result, function(val, key){
+					TempStoredArray.push(OrderCloud.Payments.CreateTransaction(vm.order.ID, val.ID, {"Type": val.Type, "DateExecuted": (dat.getMonth()+1)+"/"+dat.getDate()+"/"+dat.getFullYear(), "Amount":val.Amount, "xp": null}));
+				}, true);
+				$q.all(TempStoredArray).then(function(result2){
+					console.log("===========>>>"+result2);
+					d.resolve("1");
+				});
 			});
-		});
+		}else{
+			d.resolve("1");
+		}	
 		return d.promise;
 	}
 	function _creditCardPayment(vm){
-		var d = $q.defer();
-		if(vm.selectedCard!="createcreditcard" && vm.order.Total > 0) {
+		var d = $q.defer();//for demo uncomment later
+		/*if(vm.selectedCard!="createcreditcard" && vm.order.Total > 0) {
             CreditCardService.ExistingCardAuthCapture(vm.selectedCard, vm.order)
                 .then(function(res){
 					if(res.ResponseBody.messages.resultCode != "Error"){
@@ -1196,7 +1200,7 @@ function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
 						d.resolve("0");
 					}
 				});	
-        } else{
+        } else{*/
 			OrderCloud.Orders.Submit(vm.orderID)
 				.then(function(){
 					TaxService.CollectTax(vm.orderID)
@@ -1205,7 +1209,7 @@ function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService){
 							$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
 						})
 				});
-        }
+        //}
 		return d.promise;
 	}
 	return service;

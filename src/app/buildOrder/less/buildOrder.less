@@ -1466,6 +1466,22 @@ input.error {
 		.position-common;
 		right: 0;
 		background-color: @color0;
+		.no-items{
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height:43px;
+			p{
+				font-size:14px;
+				padding:0 18%;
+				.helvetica-regular;
+				color:@color1;
+				text-align:center;
+			}
+		}
 		.cg-busy{
 			width: 20%;
 		    left: initial;
@@ -1794,6 +1810,9 @@ input.error {
 						margin-right: 5px;
 						vertical-align: sub;
 					}
+					.panel-group{
+						margin-bottom:0;
+					}
 					.location-recipientName {
 						p {
 							font-size: 11px ;
@@ -1905,6 +1924,15 @@ input.error {
 						}
 					}
 					.location-note {
+						&.add-card{
+							h1{
+								.helvetica-bold;
+								font-size:15px;
+								margin-top:15px;
+								color: @primary-dark-color;
+								padding-left:0;
+							}
+						}
 						.panel{
 							border-radius:0;
 							.panel-heading {
@@ -1969,6 +1997,9 @@ input.error {
 							color: @color2;
 							.in-block;
 							margin-left:6px;
+						}
+						.checkbox-custom-label{
+							.helvetica-regular;
 						}
 					}
 					.message-lines {
@@ -2651,9 +2682,11 @@ input.error {
 								    padding: 5px 0 0 0px;
 								    border-right: 1px solid #000;
 								    margin-right: 8px;
+									height:13px;
 							}
 							.zip-val{
 							 font-size: 12px;
+							 line-height:0;
 							}
 					     }
 
@@ -2662,7 +2695,7 @@ input.error {
 							svg.close {
 								width: 15px;
 								height: 15px;
-								margin:-3px 0 0 8px;
+								margin:-1px 0 0 8px;
 								float: left;
 								display: inline-block;
 								opacity:1;
@@ -2682,7 +2715,7 @@ input.error {
 									display: inline-block;
 									width: 15px;
 									height: 15px;
-									margin:-3px 0 0 8px;
+									margin:-1px 0 0 8px;
 									float: left;
 								}
 								svg.close {
@@ -2777,7 +2810,7 @@ input.error {
 					    .cont-shop{
 					     text-align: center;
 					    float: right;
-					    padding:10px 0 5px 0;
+					    padding:7px 0 7px 0;
 					    background-color: #a576ca;
 					    border: none;
 					    color: #ffffff;

@@ -1,5 +1,8 @@
 		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary">
             <h1>ACTIVE ORDER</h1>
+			<div ng-if="buildOrderRight.lineItemProducts.length == 0" class="no-items">
+				<p>There are currently no items in your order.</p>
+		   </div>
 			<div ng-repeat="line in buildOrderRight.lineItemProducts track by line">
 				<div class="pdt_name">
 					<h2>{{buildOrderRight.activeOrders[line][0].Product.Name}}</h2>
@@ -494,7 +497,7 @@
 												<textarea rows="5" ng-model="lineitem.xp.deliveryNote"></textarea>
 											</uib-accordion-group>
 										</div>
-										<div class="location-note" ng-if="lineitem.xp.addressType">
+										<div class="location-note add-card" ng-if="lineitem.xp.addressType">
 											<h1>Add Card Message</h1>
 										</div>
 									</uib-accordion>

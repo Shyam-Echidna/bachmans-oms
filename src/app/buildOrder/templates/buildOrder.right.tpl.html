@@ -1,4 +1,4 @@
-		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary">
+		<div class="oms-plp-right" id="oms-plp-right" ng-show="hideActiveSummary" cg-busy="{promise:buildOrderRight.ActiveOrderCartLoader,templateUrl:'common/loading-indicators/templates/view.loading.tpl.html'}">
             <h1>ACTIVE ORDER</h1>
 			<div ng-if="buildOrderRight.lineItemProducts.length == 0" class="no-items">
 				<p>There are currently no items in your order.</p>
@@ -92,11 +92,12 @@
 						</g>
 						</svg>
 					Edit</button>-->
-					<p ng-repeat="(key, val) in buildOrderRight.activeOrders[line][0].varientsOptions">{{key}}: {{val}}</p>
+					<p>Size: {{buildOrderRight.activeOrders[line][0].Product.xp.SpecsOptions.Size}}</p>
+					<p>Color: {{buildOrderRight.activeOrders[line][0].Product.xp.SpecsOptions.Color}}</p>
 					<p>Quantity: {{prodQty[line]}}</p>
 					<div class="note-edit">
 						<button class="notes" ng-hide="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="buildOrderRight.showNoteField($index)">Notes</button>
-						<form ng-submit="buildOrderRight.updateProdNote($index,prodNotes,buildOrderRight.activeOrders[line][0].ProductID,line)">
+						<form ng-submit="buildOrderRight.updateProdNote($index,prodNotes,buildOrderRight.activeOrders[line][0].ProductID,line,$parent.buildOrderRight)">
 							<input type="text" ng-model="prodNotes" ng-init="prodNotes=buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-show="buildOrderRight.activeOrders[line][0].Product.xp.productNote || buildOrderRight.prodNoteShow{{$index}}" placeholder="Product Note" ng-readonly="!buildOrderRight.readOnly{{$index}}" />
 						</form>
 						<button ng-show="buildOrderRight.activeOrders[line][0].Product.xp.productNote" ng-click="buildOrderRight.showNoteField($index, 'buildOrderRight.readOnly{{$index}}')">
@@ -248,8 +249,6 @@
 								<img src="/src/assets/images/error.png" ng-if="buildOrderRight.lineItemForm[lineitem.ID].formError" />
 							</uib-accordion-heading>
 							<div class="receipient-drpDown">
-								<a ng-click="buildOrderRight.viewAddrBook(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore">View Address Book</a>
-								<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="!lineitem.xp.NoDeliveryExInStore" class="above-addr">Above Address</a>
 								<div class="qty">
 									<p>Quantity <span class="star">*</span></p>
 									<input type="number" name="qty" ng-model="lineitem.Quantity" ng-blur="buildOrderRight.getDeliveryCharges(lineitem, buildOrderRight.lineItemForm[lineitem.ID])" ng-min="1" ng-max="999" ng-required="true" />
@@ -388,6 +387,8 @@
 											</div>
 										</div>
 										<div class="location-Code" ng-if="lineitem.xp.addressType!='InStorePickUp' ? DeliveryMethod = 'LocalDelivery' : DeliveryMethod = 'InStorePickUp'">
+											<a ng-click="buildOrderRight.viewAddrBook(lineitem)" ng-if="lineitem.xp.addressType=='Residence' && buildOrderRight.AvoidMultipleDelryChrgs.length > 0">Address Book</a>
+											<a ng-click="buildOrderRight.GetAboveAddresses(lineitem)" ng-if="lineitem.xp.addressType=='Residence' && buildOrderRight.AvoidMultipleDelryChrgs.length > 0" class="above-addr">Address From Cart</a>
 										<div class="col-md-6 zipcont">
 											<div class="zipCode">
 												<p>Zip Code <span class="star">*</span></p>
@@ -712,9 +713,9 @@
 				
 			</div>
 			<div class="continue-shop">
-					<div class="col-md-6 modify-order" ng-click="buildOrderRight.OrderConfirmPopUp = !buildOrderRight.OrderConfirmPopUp">
-						Modify Order
-					</div>
-					<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">Continue Shopping</div>
+				<div class="col-md-6 modify-order" ng-click="buildOrderRight.OrderConfirmPopUp = !buildOrderRight.OrderConfirmPopUp">Continue Shopping</div>
+				<div class="col-md-6 cont-shop" ng-click="gotoCheckout();OrderSummary();">
+					View Order Summary
 				</div>
+			</div>
 		</modal>

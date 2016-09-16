@@ -1729,9 +1729,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			d.resolve("1");
 		});
 	}
-	vm.updateProdNote = function(index,note,prodID,line){
-		this.$parent.activeOrders[line][0].Product.xp.productNote = note;
-		this.$parent['readOnly'+index] = false;
+	vm.updateProdNote = function(index,note,prodID,line,parent){
+		parent.activeOrders[line][0].Product.xp.productNote = note;
+		parent['readOnly'+index] = false;
 		OrderCloud.Products.Patch(prodID,{"xp":{"productNote":note}}).then(function(data){
 			
 		});
@@ -2277,7 +2277,7 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 				value.ShippingAddress.deliveryDate = value.xp.deliveryDate;
 				value.ShippingAddress.lineID = value.ID;
 				value.ShippingAddress.DeliveryMethod = value.xp.DeliveryMethod;
-				value.xp.ProductImageUrl = $sce.trustAsResourceUrl(value.xp.ProductImageUrl);
+				value.xp.ProductImageUrl = value.xp.ProductImageUrl;
 				if(value.xp.deliveryFeesDtls)
 					value.ShippingAddress.deliveryPresent = true;
 				vm.AvoidMultipleDelryChrgs.push(value.ShippingAddress);

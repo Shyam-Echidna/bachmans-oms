@@ -21,7 +21,7 @@
 <div class="oms_main_container" ng-show='showplp'>
 	<div ng-if="buildOrder.searchval.length > 0" ng-init="buildOrder.cleardata()">
 		<h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.buildorderSearch.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.buildorderSearch.length}} products)</span></h1>
-		<h1 ng-if="buildOrder.buildorderSearch.length == 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>
+		<h1 ng-if="buildOrder.buildorderSearch.length == 0 && buildOrder.searchval.length > 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>
 		<ul class="plp-container">
 			<li class="col-md-3" ng-repeat="products in buildOrder.buildorderSearch track by $index" ng-if="buildOrder.searchval.length > 0" >
 				<div class="plp-block" ng-click="buildOrder.prouctsList(products)">
@@ -64,14 +64,14 @@
 			</li>
 		</ul>
 	</div>
-	<!-- product Searched results based on sequence number -->
+	<!-- direct pdp- product Searched results based on sequence number -->
 	<div class="home-search-list" ng-if="buildOrder.searchType == 'PDP' &&  buildOrder.searchval.length == 0 && buildOrder.searchSeqList.length>0">
 		<h1 ng-if="buildOrder.searchSeqList.length > 0">Search Results for <span>"{{buildOrder.searchTxt}}"</span> <span class="count">({{buildOrder.searchSeqList.length}} products)</span></h1>
 		<h1 ng-if="buildOrder.searchSeqList.length == 0">No results found for <span>"{{buildOrder.searchTxt}}"</span></h1>
 		<ul class="plp-container">
 			<li class="col-md-3" ng-repeat="prod in buildOrder.searchSeqList track by $index">
 				<div class="plp-block">
-					<div ng-click="buildOrder.productsseqList(prod)">
+					<div ng-click="buildOrder.showProduct(prod)">
 						<div class="product_img">
 							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
 						</div>
@@ -90,7 +90,7 @@
 	</div>
 	<!-- category Product List starts -->
 	<div class="home-search-list" ng-if="buildOrder.searchType == 'plp' &&  buildOrder.searchval.length == 0 && buildOrder.catList.length>0">
-		<!-- <h1 ng-if="buildOrder.searchSeqList.length > 0">Products under the category<span>"{{buildOrder.searchTxt}}"</span> <span class="count">({{buildOrder.searchSeqList.length}} products)</span></h1> -->
+		<h1 ng-if="buildOrder.catList.length > 0">Products under the category <span>"{{buildOrder.catList[0].Category}}"</span> <span class="count">({{buildOrder.catList.length}} products)</span></h1>
 		<!-- <h1 ng-if="buildOrder.catList.length == 0">No Products found</span></h1> -->
 		<ul class="plp-container">
 			<li class="col-md-3" ng-repeat="prod in buildOrder.catList track by $index">

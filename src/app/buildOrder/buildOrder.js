@@ -617,7 +617,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	/*----End of Upsell Data----*/
 	$scope.gotoplp = function(){
 		vm.showPDP = false;
-		if($stateParams.SearchType == 'PDP' && vm.seqProducts !='' ){
+		if($stateParams.SearchType == 'PDP' && vm.seqProducts !='' && vm.searchval == ""){
 			vm.searchSeqList=vm.seqProducts;
 		}
 		if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true){
@@ -867,7 +867,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.showPDP = true;
 		}
     }
-    if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
+	if($stateParams.SearchType == 'Products'){
+		vm.searchTxt=$stateParams.ID;
+	}
+    if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'plp'){
         vm.disable=true;
         //vm.searchTxt=$scope.$parent.base.searchval;
         // if($stateParams.ID==""){
@@ -1038,6 +1041,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		vm.searchList='';
 		else if(vm.catList)
 		vm.catList='';
+		else if(vm.seqProducts)
+		vm.seqProducts='';
 	}
 }
 

@@ -26,7 +26,7 @@
 			<li class="col-md-3" ng-repeat="products in buildOrder.buildorderSearch track by $index" ng-if="buildOrder.searchval.length > 0" >
 				<div class="plp-block" ng-click="buildOrder.prouctsList(products)">
 					<div class="product_img">
-						<img ng-model="prodImage" ng-src= "{{products.baseImage}}"/>
+						<img ng-model="prodImage" ng-src="{{buildOrderPLP.alfrescoAccessURL}}/imagefinder/{{products.ID}}?alf_ticket={{buildOrderPLP.alfrecoTct}}"/>
 					</div>
 					<div class="plp-product-data">
 						<h2>{{products.Name}}</h2>
@@ -49,7 +49,7 @@
 				<div class="plp-block">
 					<div ng-click="buildOrder.prouctsList(prod)">
 						<div class="product_img">
-							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
+							<img ng-model="prodImage" ng-src="{{buildOrderPLP.alfrescoAccessURL}}/imagefinder/{{prod.ID}}?alf_ticket={{buildOrderPLP.alfrecoTct}}"/>
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
@@ -73,7 +73,7 @@
 				<div class="plp-block">
 					<div ng-click="buildOrder.showProduct(prod)">
 						<div class="product_img">
-							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
+							<img ng-model="prodImage" ng-src="{{buildOrderPLP.alfrescoAccessURL}}/imagefinder/{{prod.ID}}?alf_ticket={{buildOrderPLP.alfrecoTct}}"/>
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>
@@ -97,7 +97,7 @@
 				<div class="plp-block">
 					<div ng-click="buildOrder.prouctsList(prod)">
 						<div class="product_img">
-							<img ng-model="prodImage" ng-src= "{{prod.baseImage}}"/>
+							<img ng-model="prodImage" ng-src="{{buildOrderPLP.alfrescoAccessURL}}/imagefinder/{{prod.ID}}?alf_ticket={{buildOrderPLP.alfrecoTct}}"/>
 						</div>
 						<div class="plp-product-data">
 							<h2 class="product-name-plp"><span>{{prod.Name}}</span></h2>

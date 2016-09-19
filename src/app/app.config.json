@@ -7,6 +7,7 @@
   "alfrescoLogin":"http://52.206.111.191:8080/alfresco/service/api/login",
   "alfrescoAccessURL":"http://52.206.111.191:8080/alfresco/service",
   "alfrescoURL": "http://103.227.151.31:8080/alfresco/service/",
+  "alfrescoDocsUrl": "http://52.206.111.191:8080/alfresco/service/slingshot/doclib/doclist/documents/site/bachmansstorefront/documentLibrary/",
   "alfrescoOmsUrl": "http://103.227.151.31:8080/alfresco/service/slingshot/doclib/doclist/documents/site/bachmansstorefront/documentLibrary/",
   "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime",
   "PMCStoresURL":"http://192.168.101.49:8080/Bachman/getStores",

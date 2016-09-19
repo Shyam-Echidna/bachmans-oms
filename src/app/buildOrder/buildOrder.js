@@ -139,7 +139,7 @@ function buildOrderConfig( $stateProvider ) {
 		resolve: {
 			Order: function($rootScope, $q, $state, toastr, $stateParams, CurrentOrder, OrderCloud) {
 				var d = $q.defer();
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop' && !$stateParams.orderDetails){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop' && $stateParams.SearchType != 'PDP' && !$stateParams.orderDetails){
 					OrderCloud.Users.GetAccessToken($stateParams.ID, impersonation)
 					.then(function(data) {
 					OrderCloud.Auth.SetImpersonationToken(data['access_token']);
@@ -189,7 +189,7 @@ function buildOrderConfig( $stateProvider ) {
 			},
 			spendingAccounts:function($q, $state, $stateParams, OrderCloud){
 				var arr = [], spendingAcc = {}, filterPurple;
-				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop'){
+				if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'Workshop' && $stateParams.SearchType != 'PDP'){
 					var dfd = $q.defer();
 					OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(assign){
 						angular.forEach(assign.Items, function(value, key) {
@@ -218,8 +218,8 @@ function buildOrderConfig( $stateProvider ) {
 				return dfr.promise;
 			},
 
-			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages, algolia) {
-				if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'|| $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType =='Workshop'){
+			productList: function (OrderCloud, $stateParams, BuildOrderService, $q, ProductImages) {
+				if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'Products'|| $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType =='Workshop' || $stateParams.SearchType =='PDP'){
 					var dfr = $q.defer();
 					OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation).then(function(data) {
 						OrderCloud.Auth.SetImpersonationToken(data['access_token']);
@@ -228,19 +228,23 @@ function buildOrderConfig( $stateProvider ) {
 								// var ticket = localStorage.getItem("alf_ticket"), prodList = BuildOrderService.GetProductList(res.Items, ProductImages);
 									// dfr.resolve(prodList);
 							// });
-							var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');
-								var index = client.initIndex('products');
-								var search = {
-									'query' : '',
-									'hits' : []
-								};
-								search.query=$stateParams.ID;
-								index.search(search.query).then(function searchSuccess(content) {
-									if(content.hits.length>0){
-										BuildOrderService.GetProductList(content.hits, ProductImages).then(function(catProducts){
-											dfr.resolve(catProducts);
-										});
-									}
+							BuildOrderService.GetAlgoliaResults($stateParams.ID).then(function(res){
+								if(res.hits.length>0){
+									BuildOrderService.GetProductList(res.hits, ProductImages).then(function(catProducts){
+										dfr.resolve(catProducts);
+									});
+								}
+								else dfr.resolve();
+							})
+						}
+						else if($stateParams.SearchType == 'Products'){
+							BuildOrderService.GetAlgoliaResults($stateParams.ID).then(function(res){
+								if(res.hits.length>0){
+									BuildOrderService.GetProductList(res.hits, ProductImages).then(function(plpProducts){
+										dfr.resolve(plpProducts);
+									});
+								}
+								else dfr.resolve();
 							})
 						}
 						else if($stateParams.SearchType =='Workshop'){
@@ -291,7 +295,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	$scope.showplp = true;
 	$scope.gotoCheckout=function(){
 		if($scope.showOrdersummary == true){
-			if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+			if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 				vm.guestUserModal =! vm.guestUserModal;
 			}else{
 				$state.go('checkout', {ID:$stateParams.ID}, {reload:true});	
@@ -423,7 +427,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		//vm.isFaster = false;
 		vm.Faster = false;
 		vm.GiftCard = false;
-		if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
+		if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop' && $stateParams.SearchType != 'PDP'){
 			OrderCloud.Categories.ListProductAssignments(null, prodID).then(function(res){
 				OrderCloud.Categories.Get(res.Items[0].CategoryID).then(function(res2){
 					if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip){
@@ -442,18 +446,18 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			});
 		}
 	};
-	if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
-		vm.disable=true;
-		if($stateParams.ID==""){
-			console.log("********************", $scope.$parent.base.list);
-			vm.searchList=$scope.$parent.base.list;
-			vm.searchTxt=$scope.$parent.base.searchval;
-		}
-		else{
-			vm.productdata($stateParams.ID);
-		}
-	}
-	if($stateParams.SearchType == 'plp'){
+	// if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+		// vm.disable=true;
+		// if($stateParams.ID==""){
+			// console.log("********************", $scope.$parent.base.list);
+			// vm.searchList=$scope.$parent.base.list;
+			// vm.searchTxt=$scope.$parent.base.searchval;
+		// }
+		// else{
+			// vm.productdata($stateParams.ID);
+		// }
+	// }
+	if($stateParams.SearchType == 'plp' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'BuildOrder'){
 		vm.disable=true;
 	}
 	/*if($stateParams.prodID!=""){
@@ -613,8 +617,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	/*----End of Upsell Data----*/
 	$scope.gotoplp = function(){
 		vm.showPDP = false;
-		if($stateParams.SearchType == 'Products' && $stateParams.ID != '' && $stateParams.SearchType != 'BuildOrder'){
-			vm.searchSeqList=vm.fullProductsData;
+		if($stateParams.SearchType == 'PDP' && vm.seqProducts !='' ){
+			vm.searchSeqList=vm.seqProducts;
 		}
 		if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true){
 			vm.hidePdpblock=false;
@@ -764,55 +768,22 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			});
 		}
 	}
-	vm.productsseqList=function(e){
-		OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":e.xp.ProductCode}).then(function(res){
-			BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
-				vm.seqProducts=prodList;
-				vm.showProduct(e);
+	vm.productsseqList=function(){
+		OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(e){
+			OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":e.xp.ProductCode}).then(function(res){
+				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+					vm.seqProducts=prodList;
+					vm.showProduct(e);
+				 });
 			 });
-		 });
+		})
 	}
     // Function to get selected product
     // Function to get selected product
     vm.showProduct=function(e){
 		var alfticket = localStorage.getItem("alf_ticket");
 		vm.selectedKey=[];
-        if($stateParams.SearchType == 'plp'){
- 			vm.fullProductsData=vm.seqProducts;
-			_.filter(vm.fullProductsData, function(obj) {
-                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
-					vm.articles=obj.xp.Articles;
-					vm.selectedSpecification=obj.xp.Attributes;
-					vm.selectedWarranty=obj.xp.Warranty;
-					angular.forEach(obj.xp.KeyAttributes, function(value, key) {
-					var attImg=Underscore.where(vm.attributeImgs.items, {title: key});
-					vm.selectedKey.push({
-						url:alfrescoURL + attImg[0].contentUrl + "?alf_ticket=" + alfticket,
-						attribute:value
-						})
-					});
-				}
-			});
-        }
-        else if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
-			vm.fullProductsData=vm.seqProducts;
-			vm.selectedKey=[];
-			_.filter(vm.fullProductsData, function(obj) {
-                if(_.indexOf([obj.xp.IsBaseProduct]== true) && obj.xp.IsBaseProduct){
-						vm.articles=obj.xp.Articles;
-						vm.selectedSpecification=obj.xp.Attributes;
-						vm.selectedWarranty=obj.xp.Warranty;
-						angular.forEach(obj.xp.KeyAttributes, function(value, key) {
-						var attImg=Underscore.where(vm.attributeImgs.items, {title: key});
-						vm.selectedKey.push({
-							url:alfrescoURL+ attImg[0].contentUrl + "?alf_ticket=" + alfticket,
-							attribute:value
-							})
-						});
-					}
-				});
-        }
-		else if(vm.hidePdpblock==true){
+		if(vm.hidePdpblock==true){
 			//$scope.fullEventsProductsData=productList;
 			vm.fullEventsData=_.groupBy(productList, function(value){
 				return value.xp.EventDate;
@@ -839,30 +810,30 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			});
 		}
 		if(vm.hidePdpblock==false){
-		vm.DeliveryType = false;
-		//vm.isCourier = false;
-		vm.Courier = false;
-		vm.DirectShip = false;
-		//vm.isFaster = false;
-		vm.Faster = false;
-		vm.GiftCard = false;
-		OrderCloud.Categories.ListProductAssignments(null, e.ID).then(function(res){
-			OrderCloud.Categories.Get(res.Items[0].CategoryID).then(function(res2){
-				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip){
-					vm.DirectShip = true;
-				}
-				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Mixed){
-					vm.Faster = true;
-				}
-				if(res2.Name == "Gift Cards"){
-					vm.GiftCard = true;
-				}
-				if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Courier == true){
-					vm.Courier = true;
-				}
-			});	
-		});
-		vm.productExtras=extraProducts();
+			vm.DeliveryType = false;
+			//vm.isCourier = false;
+			vm.Courier = false;
+			vm.DirectShip = false;
+			//vm.isFaster = false;
+			vm.Faster = false;
+			vm.GiftCard = false;
+			OrderCloud.Categories.ListProductAssignments(null, e.ID).then(function(res){
+				OrderCloud.Categories.Get(res.Items[0].CategoryID).then(function(res2){
+					if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.DirectShip){
+						vm.DirectShip = true;
+					}
+					if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Mixed){
+						vm.Faster = true;
+					}
+					if(res2.Name == "Gift Cards"){
+						vm.GiftCard = true;
+					}
+					if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Courier == true){
+						vm.Courier = true;
+					}
+				});	
+			});
+			vm.productExtras=extraProducts();
 			$scope.radio.selectedColor = e.xp.SpecsOptions.Color;
 			availableColors = DisplayColors(vm.fullProductsData, true);
 			vm.allColors = availableColors;
@@ -873,9 +844,9 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 				}else{
 					return item.xp.SpecsOptions.Color.toLowerCase() == e.xp.SpecsOptions.Color.toLowerCase() 
 				}
-           })
-           );
-		   $scope.radio.selectedSize = e.xp.SpecsOptions.Size;
+			})
+			);
+			$scope.radio.selectedSize = e.xp.SpecsOptions.Size;
 			vm.productTitle = e.Name;
 			vm.prodDesription = e.Description;
 			availableSizes = DisplaySizes(vm.fullProductsData, true);
@@ -895,19 +866,23 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.DisplayEvent(e);
 			vm.showPDP = true;
 		}
-
     }
-    if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+    if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
         vm.disable=true;
-        vm.searchTxt=$scope.$parent.base.searchval;
-        if($stateParams.ID==""){
-            vm.searchList=$scope.$parent.base.searchList;
-        }
-        else{
-            var selectedProd=_.where($scope.$parent.base.searchList, {"ID":$stateParams.ID});
-			vm.prouctsList(selectedProd[0]);
-        }
+        //vm.searchTxt=$scope.$parent.base.searchval;
+        // if($stateParams.ID==""){
+            // vm.searchList=$scope.$parent.base.searchList;
+        // }
+		vm.searchList=productList;
+        // else{
+            // var selectedProd=_.where($scope.$parent.base.searchList, {"ID":$stateParams.ID});
+			// vm.prouctsList(selectedProd[0]);
+        // }
     }
+	if($stateParams.SearchType == 'PDP')
+	{
+		vm.productsseqList();
+	}
     function DisplaySelectedColor(selectedSize, $index) {
         vm.selectedSizeIndex = $index;
         // vm.selectedProductIndex = -1;
@@ -1119,7 +1094,7 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 	vm.spendingAccounts= spendingAccounts;
 	$scope.notedata = vm.list.Notes;
 	$scope.addNote= function(){
-		$scope.notedata.push({ Date: new Date(), Description:$scope.note.descp});
+		$scope.notedata.unshift({ Date: new Date(), Description:$scope.note.descp});
 		$scope.notel = {"Notes":$scope.notedata};
 		OrderCloud.Users.Patch($stateParams.ID,{"xp":$scope.notel});
 	}
@@ -1236,7 +1211,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					$scope.createListItem(prodID, DeliveryMethod, baseImg);
 				}else{
 					var orderParams = {"Type":"Standard","xp":{"OrderSource":"OMS","CSRID":$cookieStore.get('OMS.CSRID')}};
-					if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+					if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 						console.log(OrderCloud.Auth.ReadToken());
 						BuildOrderService.AdminLogin().then(function(res){
     						console.log("token==",res);
@@ -1244,7 +1219,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
     						OrderCloud.As().Orders.Create(orderParams).then(function(res1){
     							CurrentOrder.Set(res1.ID);
 								vm.order = res1;
-								if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+								if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 									angular.element(document.getElementById("order-summary")).scope().$parent.buildordersummary.order = res1;	
 								}
 								$scope.createListItem(prodID, DeliveryMethod, baseImg);
@@ -1274,7 +1249,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			}
 			lineItemParams.xp.MinDate = res.MinDate;
 			lineItemParams.xp.ProductImageUrl = baseImg;
-			if($stateParams.SearchType=='Products' || $stateParams.SearchType == 'BuildOrder'){
+			if($stateParams.SearchType=='Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'plp' || $stateParams.SearchType == 'PDP'){
 				vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 					lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
@@ -1306,7 +1281,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	};
 	vm.getLineItems = function(){
 		if(vm.order.Status == "Unsubmitted" && vm.order != undefined){
-			if($stateParams.SearchType=="Products" && $stateParams.SearchType == 'BuildOrder'){
+			if($stateParams.SearchType=="Products" && $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'plp' || $stateParams.SearchType == 'PDP'){
 				vm.ActiveOrderCartLoader = OrderCloud.LineItems.List(vm.order.ID).then(function(res){
 					vm.AvoidMultipleDelryChrgs = [];	
 					vm.ActiveOrderCartLoader = LineItemHelpers.GetProductInfo(res.Items).then(function(data) {
@@ -1557,7 +1532,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			});*/
 		}
 	};
-	if($stateParams.SearchType!="Products" && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'BuildOrder')
+	if($stateParams.SearchType!="Products" && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'BuildOrder' || $stateParams.SearchType != 'PDP')
 		vm.getLineItems();
 	$scope.cancelOrder = function(){
 		OrderCloud.As().Orders.Cancel(vm.order.ID).then(function(data){
@@ -2131,10 +2106,10 @@ function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
   
 function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieStore, $stateParams, $exceptionHandler, Order, CurrentOrder, AddressValidationService, LineItemHelpers, OrderCloud, $http, BuildOrderService, $q, SearchData, $sce) {
     var vm = this;
-    if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop'){
+    if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'plp' && $stateParams.SearchType!='Workshop' && $stateParams.SearchType != 'PDP'){
 		vm.order = Order;
 	}
-	else if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+	else if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 		vm.order=angular.element(document.getElementById("BuildOrderRightNav")).scope().buildOrderRight.order;
 	}
 	vm.selectUser = function(user){	
@@ -2256,7 +2231,7 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 	vm.statechange = function(){
 		angular.element(document.getElementById("buildorder")).scope().$parent.buildOrder.guestUserModal=false;
 		$stateParams.ID=vm.order.FromUserID;
-		if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+		if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 			$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
 		}
 	}
@@ -2566,7 +2541,7 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 	//}
 }
 
-function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore, GetCstTime) {
+function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCloud, $http, alfrescoOmsUrl, alfrescoURL, Underscore, $cookieStore, GetCstTime, algolia) {
     var upselldata = [];
     var crossdata = [];
     var productdetail = [];
@@ -2592,7 +2567,8 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		GetSeqProd:_getSeqProd,
 		GetExtras:_getExtras,
 		AdminLogin: _adminLogin,
-		GetAttributeImages:_getAttributeImages
+		GetAttributeImages:_getAttributeImages,
+		GetAlgoliaResults:_getAlgoliaResults
     }
     function _adminLogin(){
     	var data = $.param({
@@ -2858,7 +2834,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		var d = $q.defer(), OrderOnHold = _.pluck(data, 'xp');
 		OrderOnHold = _.pluck(OrderOnHold, 'Status');
 		if(OrderOnHold.indexOf("OnHold") == -1){
-			if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+			if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 				OrderCloud.Orders.Patch(ID, {"xp": {"Status": "","CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(res){
 					d.resolve(res);
 				});
@@ -2880,7 +2856,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 				delChrgs += parseFloat(val1);
 			},true);
 		},true);
-		if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder'){
+		if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'plp'){
 			OrderCloud.Orders.Patch(orderID, {ShippingCost: delChrgs}).then(function(res){
 				d.resolve(res);
 			});
@@ -2978,7 +2954,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 				d.resolve(arr);
 			});
 		};
-		if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType!=undefined && $stateParams.SearchType!='Workshop'){
+		if($stateParams.SearchType != 'Products' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType!=undefined && $stateParams.SearchType!='Workshop' && $stateParams.SearchType != 'PDP' || $stateParams.SearchType == 'plp'){
 				vs.listAllProducts();
 		}else{
 			OrderCloud.Users.GetAccessToken('gby8nYybikCZhjMcwVPAiQ', impersonation)
@@ -3071,6 +3047,16 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 			]
 		}
 		return data;
+	}
+	function _getAlgoliaResults(data){
+		var client = algolia.Client('31LAEMRXWG', '600b3cc15477fd21c5931d1bfbb36b3d');
+		var index = client.initIndex('products');
+		var search = {
+			'query' : '',
+			'hits' : []
+		};
+		search.query=data;
+		return index.search(search.query);
 	}
     return service;
 }

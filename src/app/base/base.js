@@ -179,11 +179,11 @@ function BaseController($sce, CurrentUser, defaultErrorMessageResolver, ProductL
         errorMessages['noSpecialChars'] = 'Only Alphanumeric characters are allowed';
     });
 	vm.product = ProductList;
-    AlfrescoFact.Get().then(function (data) {
-        console.log(data);
-        var ticket = data.data.ticket;
-        localStorage.setItem("alf_ticket", ticket);
-    });
+    // AlfrescoFact.Get().then(function (data) {
+        // console.log(data);
+        // var ticket = data.data.ticket;
+        // localStorage.setItem("alf_ticket", ticket);
+    // });
 	AlfrescoFact.GetAlfrescoLogin().then(function (data) {
         var ticket = data.data.ticket;
         localStorage.setItem("alfrescoTicket", ticket);

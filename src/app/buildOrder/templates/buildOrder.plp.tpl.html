@@ -65,7 +65,7 @@
 		</ul>
 	</div>
 	<!-- product Searched results based on sequence number -->
-	<div class="home-search-list" ng-if="buildOrder.searchType == 'Products' &&  buildOrder.searchval.length == 0 && buildOrder.searchSeqList.length>0">
+	<div class="home-search-list" ng-if="buildOrder.searchType == 'PDP' &&  buildOrder.searchval.length == 0 && buildOrder.searchSeqList.length>0">
 		<h1 ng-if="buildOrder.searchSeqList.length > 0">Search Results for <span>"{{buildOrder.searchTxt}}"</span> <span class="count">({{buildOrder.searchSeqList.length}} products)</span></h1>
 		<h1 ng-if="buildOrder.searchSeqList.length == 0">No results found for <span>"{{buildOrder.searchTxt}}"</span></h1>
 		<ul class="plp-container">

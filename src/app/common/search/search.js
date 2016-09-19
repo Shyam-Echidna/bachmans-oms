@@ -233,7 +233,7 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 			'query' : '',
 			'hits' : []
 		};
-		if($scope.servicename=='products'){
+		if($scope.servicename=='products' && $scope.attribute=='buildorder-search'){
 			var ticket = localStorage.getItem("alf_ticket");
 			BuildOrderService.GetProductImages(ticket).then(function(imagesList){
 				vm.imagesList=imagesList.items;
@@ -249,7 +249,6 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 				$scope.controlleras.list=="";
 			}
 			$scope.controlleras.searchval=$scope.search.query;
-			console.log("qqqqqqqq", $scope.controlleras.searchval);
 			if (n == o) {
 				if (searching) $timeout.cancel(searching);
 			} else {
@@ -300,10 +299,11 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 					})
 				}
 				else if($scope.servicename=='products'){
-					var ticket = localStorage.getItem("alf_ticket");
-						BuildOrderService.GetProductList(content.hits, vm.imagesList).then(function(prodList){
-							$scope.controlleras.searchList=prodList;
-						})
+					// var ticket = localStorage.getItem("alf_ticket");
+						// BuildOrderService.GetProductList(content.hits, vm.imagesList).then(function(prodList){
+							// $scope.controlleras.searchList=prodList;
+						// })
+					$scope.controlleras.searchList=content.hits;
 				}
 				else{
 					$scope.controlleras.list = content.hits;
@@ -327,11 +327,7 @@ function ordercloudSearchCtrl($state, $timeout, $scope, TrackSearch, OrderCloud,
 				// }
 				$scope.showProducts = function(){
 					if($scope.placeholder=="Search products" && $scope.servicename=='products'){
-						var ticket = localStorage.getItem("alf_ticket");
-							BuildOrderService.GetProductList(content.hits, vm.imagesList).then(function(prodList){
-								$scope.controlleras.searchList=prodList;
-								$state.go('buildOrder',{SearchType:'Products'});
-							})
+						$state.go('buildOrder',{ID:$scope.search.query,SearchType:'Products'});
 					}
 				}
 			}, function searchFailure(err) {

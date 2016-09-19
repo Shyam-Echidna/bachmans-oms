@@ -164,7 +164,7 @@
 						<ordercloud-search servicename="products" controlleras="base" placeholder="Search products" uib-dropdown-toggle></ordercloud-search>
 						<div class="search_dropdown" uib-dropdown-menu>
 							<div class="searchelement"  ng-repeat="products in base.searchList track by $index" ng-if="base.qeueryLength > 0 && base.searchList.length != 0">
-								<a ui-sref="buildOrder({ID:products.ID,SearchType:'Products'})" class="search_result">
+								<a ui-sref="buildOrder({ID:products.ID,SearchType:'PDP'})" class="search_result">
 									<p>{{products.Name}}</p>
 								</a>
 							</div>

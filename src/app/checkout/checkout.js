@@ -168,8 +168,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
         }, 0);
     };
 
-    vm.submitOrder = function(card, billingAddress) {
-		if(vm.addCard){
+    vm.submitOrder = function(card, billingAddress){
+		if(vm.addCard && vm.paymentOption != 'PO'){
 			checkoutService.AddCreditCard(card, billingAddress, vm).then(function(res1){
 				if(res1=="1"){
 					checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts, angular.copy(GetCstDateTime.datetime), vm).then(function(res2){
@@ -184,15 +184,27 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				}
 			});
 		}else{
-			checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts, angular.copy(GetCstDateTime.datetime), vm).then(function(res1){
-				if(res1=="1"){
-					checkoutService.CreditCardPayment(vm).then(function(res2){
-						if(res2=="1"){
-							console.log("-========>");
-						}
+			if(vm.paymentOption != 'PO'){
+				checkoutService.SpendingAccountsRedeemtion(vm.orderDtls.SpendingAccounts, angular.copy(GetCstDateTime.datetime), vm).then(function(res1){
+					if(res1=="1"){
+						checkoutService.CreditCardPayment(vm).then(function(res2){
+							if(res2=="1"){
+								console.log("-========>");
+							}
+						});
+					}
+				});
+			}else{
+				OrderCloud.Orders.Submit(vm.order.ID).then(function(){
+					vm.order.xp.PONumber = vm.CurrentUser.xp.PO.PONumber;
+					OrderCloud.Orders.Update(vm.order.ID, vm.order);
+					TaxService.CollectTax(vm.order.ID).then(function(){
+						$q.all(vm.ShipmentsPromise).then(function(results){
+							$state.go('orderConfirmation' , {userID: vm.order.FromUserID ,ID: vm.orderID});
+						});
 					});
-				}
-			});
+				});
+			}	
 		}
 		/*var PaymentType, TempStoredArray = [], dat = new Date();
 		angular.forEach(vm.orderDtls.SpendingAccounts, function(val, key){
@@ -438,7 +450,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}
 	};
 	vm.ProceedToReview = function(billingform, creditcardform){
-		if(creditcardform){
+		if(creditcardform && vm.paymentOption != 'PO'){
 			billingform.$submitted = true;
 			creditcardform.$submitted = true;
 			if(billingform.$valid && creditcardform.$valid && vm.card.ExpMonth!="MM" && vm.card.ExpYear!="YYYY"){
@@ -450,7 +462,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				vm.status.isThirdDisabled = false;
 			}
 		}
-		if(vm.selectedCard.cvvform){
+		if(vm.selectedCard.cvvform && vm.paymentOption != 'PO'){
 			if(vm.selectedCard.cvvform.$invalid){
 				vm.selectedCard.cvvform.$submitted = true;
 			}else{
@@ -461,6 +473,14 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 				vm.status.isSecondDisabled = true;
 				vm.status.isThirdDisabled = false;
 			}
+		}
+		if(vm.paymentOption == 'PO'){
+			vm.paymentDone = true;
+			vm.status.delInfoOpen = false;
+			vm.status.paymentOpen = false;
+			vm.status.reviewOpen = true;
+			vm.status.isSecondDisabled = true;
+			vm.status.isThirdDisabled = false;
 		}
 	};
 	vm.lineDtlsSubmit = function(lineitems, index){
@@ -1063,20 +1083,18 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 			"redemption": "G"
 		};*/
 		OrderCloud.SpendingAccounts.Get(CardNo).then(function(data){
-			vm.InvalidGiftCard = false;
-			/*if(data.xp.RedeemDate)
-				data.xp.RedeemDate = new Date(data.xp.RedeemDate);
-			else
-				data.xp.RedeemDate = new Date(angular.copy(GetCstDateTime.datetime));*/
-			//params.four51TimeStamp = data.xp.RedeemDate.getFullYear()+"-"+(data.xp.RedeemDate.getMonth()+1)+"-"+data.xp.RedeemDate.getDate()+" "+data.xp.RedeemDate.getHours()+":"+data.xp.RedeemDate.getMinutes()+":"+data.xp.RedeemDate.getSeconds();
-			//params.transactionAmountFromF51 = data.Balance;
-			$http.post(GCBalance, {"card_number": CardNo}).success(function(res2){
-				if(res2.card_value != data.Balance && res2.card_value!="cardNumber not available")
-					data.Balance = res2.card_value;
-				vm.UserSpendingAcc[data.Name] = data;
-				vm.orderDtls.SpendingAccounts.GiftCard = {"ID":data.ID, "Amount":data.Balance};
-				vm.SumSpendingAccChrgs(orderDtls);
-			});
+			if(new Date(data.StartDate) <= new Date(GetCstDateTime.datetime) && new Date(data.EndDate) >= new Date(GetCstDateTime.datetime)){
+				vm.InvalidGiftCard = false;
+				$http.post(GCBalance, {"card_number": CardNo}).success(function(res2){
+					if(res2.card_value != data.Balance && res2.card_value!="cardNumber not available")
+						data.Balance = res2.card_value;
+					vm.UserSpendingAcc[data.Name] = data;
+					vm.orderDtls.SpendingAccounts.GiftCard = {"ID":data.ID, "Amount":data.Balance};
+					vm.SumSpendingAccChrgs(orderDtls);
+				});
+			}else{
+				vm.InvalidGiftCard = true;
+			}	
 		}).catch(function(err){
 			vm.InvalidGiftCard = true;
 		});
@@ -1118,6 +1136,18 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		vm.CheckOutLoader = BuildOrderService.DeliveryFeesService(line, form, vm, GetCstDateTime.datetime).then(function(res){
 			console.log(res);
 		});
+	};
+	OrderCloud.Users.Get($stateParams.ID).then(function(res){
+		vm.CurrentUser = res;
+	});
+	vm.ClearOtherPayments = function(){
+		vm.paymentOption = 'PO';
+		vm.orderDtls.SpendingAccounts = {};
+		if(vm.selectedCard)
+			vm.selectedCard.CVV = null;
+		if(vm.selectedCard)
+			vm.card.CVV = null;
+		vm.SumSpendingAccChrgs(vm.orderDtls);
 	};
 }
 

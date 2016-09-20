@@ -204,5 +204,25 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 		ConstantContact.UpdateContact(params).then(function(res){
 			console.log("subscribedListparams", res);
 		});
-	}
+	};
+	vm.showPOModal = false;
+	vm.UpdatePONumber = function(){
+		if(vm.PoNo == UserList.user.xp.PO.PONumber){
+			vm.ValidPO = true;
+			if(vm.NPoNo==vm.CPoNo){
+				vm.PoNotMatches = true;
+				UserList.user.xp.PO.PONumber = vm.NPoNo;
+				OrderCloud.Users.Update(UserList.user.ID, UserList.user).then(function(res){
+					vm.showPOModal = !vm.showPOModal;
+					vm.PoNo = null;
+					vm.NPoNo = null;
+					vm.CPoNo = null;
+				});
+			}else{
+				vm.PoNotMatches = false;
+			}
+		} else{
+			vm.ValidPO = false;
+		}
+	};
 }

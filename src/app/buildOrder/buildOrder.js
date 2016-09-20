@@ -46,6 +46,8 @@ angular.module( 'orderCloud' )
 							scope.$parent.buildOrder.guestUserModal = false;
 							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
 						}
+						if(scope.$parent.custInfo)
+							scope.$parent.custInfo.showPOModal = false; 
 						//scope.$parent.checkout.getShippingAddressModal = false;
 						//scope.$parent.checkout.getBillingAddressModal = false;
 					});
@@ -1261,7 +1263,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						MinDate[k] = v.MinDays;
 					}
 				});	
-				lineItemParams.xp.MinDate = res.MinDate;
+				lineItemParams.xp.MinDate = MinDate;
 				lineItemParams.xp.ProductImageUrl = baseImg;
 				if($stateParams.SearchType=='Products' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'plp'){
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){

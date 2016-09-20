@@ -14,16 +14,15 @@ function LoginConfig( $stateProvider, $locationProvider ) {
             controller:'LoginCtrl',
             controllerAs: 'login',
 			resolve: {
-				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoURL) {
+				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoAccessURL) {
 					var df = $q.defer();
 					AlfrescoFact.Get().then(function (data) {
                         console.log(data);
                         var ticket = data.data.ticket;
-                        localStorage.setItem("alf_ticket", ticket);
-                        console.log("alf_ticketalf_ticket", ticket);
+                        localStorage.setItem("alfrescoTicket", ticket);
 						var homePath="OMS/Home?alf_ticket=";
 						AlfrescoFact.GetHome(homePath).then(function (data) {
-							AlfrescoFact.logo=$sce.trustAsResourceUrl(alfrescoURL+data.items[0].contentUrl+"?alf_ticket="+ ticket);
+							AlfrescoFact.logo=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+data.items[0].contentUrl+"?alf_ticket="+ ticket);
 							df.resolve(AlfrescoFact.logo);
 						 console.log("logoooooooooooooo", AlfrescoFact.logo);
 						 });

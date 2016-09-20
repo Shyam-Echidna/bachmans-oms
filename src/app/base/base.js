@@ -91,15 +91,15 @@ function BaseConfig( $stateProvider ) {
                     return AlfrescoFact.Get().then(function (data) {
                         console.log(data);
                         var ticket = data.data.ticket;
-                        localStorage.setItem("alf_ticket", ticket);
+                        localStorage.setItem("alfrescoTicket", ticket);
                         return ticket;
                     });
                 },
-				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoURL) {
+				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoAccessURL) {
 					var df = $q.defer();
 					var homePath="OMS/Home?alf_ticket=";
 					AlfrescoFact.GetHome(homePath).then(function (data) {
-						AlfrescoFact.logo=$sce.trustAsResourceUrl(alfrescoURL+data.items[0].contentUrl+"?alf_ticket="+ localStorage.getItem("alf_ticket"));
+						AlfrescoFact.logo=$sce.trustAsResourceUrl(alfrescoAccessURL+"/"+data.items[0].contentUrl+"?alf_ticket="+ localStorage.getItem("alfrescoTicket"));
 						df.resolve(AlfrescoFact.logo);
 						console.log("logoooooooooooooo", AlfrescoFact.logo);
 					});
@@ -184,10 +184,10 @@ function BaseController($sce, CurrentUser, defaultErrorMessageResolver, ProductL
         // var ticket = data.data.ticket;
         // localStorage.setItem("alf_ticket", ticket);
     // });
-	AlfrescoFact.GetAlfrescoLogin().then(function (data) {
-        var ticket = data.data.ticket;
-        localStorage.setItem("alfrescoTicket", ticket);
-    });
+	// AlfrescoFact.Get().then(function (data) {
+        // var ticket = data.data.ticket;
+        // localStorage.setItem("alfrescoTicket", ticket);
+    // });
     vm.isopen = false;
     $scope.status = {
         open1: true,
@@ -256,40 +256,13 @@ function BuildOrderTopController() {
     var vm = this;
 }
  
-function AlfrescoFact($http, $q, alfrescoOmsUrl) {
+function AlfrescoFact($http, $q, alfrescoDocsUrl, alfrescoLogin) {
     var service = {
         Get: _get,
-		GetAlfrescoLogin:_getAlfrescoLogin,
 		GetHome:_getHome
     };
     return service;
- 
-    function _get() {
-        var data = {
- 
-            username: "admin",
-            password: "echidna"
-        };
-        var defferred = $q.defer();
- 
-        $http({
-            method: 'POST',
-            dataType: "json",
-            url: "http://103.227.151.31:8080/alfresco/service/api/login",
-            data: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json'
-            }
- 
-        }).success(function (data, status, headers, config) {
- 
-            defferred.resolve(data);
-        }).error(function (data, status, headers, config) {
-            defferred.reject(data);
-        });
-        return defferred.promise;
-    }
-	function _getAlfrescoLogin() {
+	function _get() {
         var data = {
             username: "admin",
             password: "Bachmans"
@@ -299,7 +272,7 @@ function AlfrescoFact($http, $q, alfrescoOmsUrl) {
         $http({
             method: 'POST',
             dataType: "json",
-            url: "http://52.206.111.191:8080/alfresco/service/api/login",
+            url: alfrescoLogin,
             data: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json'
@@ -321,7 +294,7 @@ function AlfrescoFact($http, $q, alfrescoOmsUrl) {
 
                 method: 'GET',
                 dataType:"json",
-                url: alfrescoOmsUrl+path+localStorage.getItem("alf_ticket"),
+                url: alfrescoDocsUrl+path+localStorage.getItem("alfrescoTicket"),
                
                 headers: {
                     'Content-Type': 'application/json'

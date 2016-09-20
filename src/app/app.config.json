@@ -10,7 +10,8 @@
   "localdeliverytimeurl":"http://103.227.151.31:8080/Bachman/localdeliverytime",
   "PMCStoresURL":"http://192.168.101.49:8080/Bachman/getStores",
   "GetCstTime": "http://52.206.111.191:8080/Bachman/localdeliverytime",
-  "PurplePerkEagle": "http://192.168.101.49:8080/Bachman/getPurplePerksRedemptionLatestValue",
-  "GiftCardEagle": "http://192.168.101.49:8080/Bachman/getGiftCardRedemption",
-  "OrderPrintURL": "http://192.168.101.49:8080/Bachman/omsprint/"
+  "OrderPrintURL": "http://192.168.101.49:8080/Bachman/omsprint/",
+  "GC_PP_Redemption": "https://Four51TRIAL104401.jitterbit.net/Bachmans_Dev/GiftCard_PurplePerks_Redemption",
+  "PPBalance" : "https://Four51TRIAL104401.jitterbit.net/BachmansOnPrem/PurplePerksBalanceCheck",
+  "GCBalance" : "https://Four51TRIAL104401.jitterbit.net/BachmansOnPrem/GiftCardBalance"
 }

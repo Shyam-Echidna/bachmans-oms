@@ -265,10 +265,11 @@ function buildOrderConfig( $stateProvider ) {
 						else if($stateParams.SearchType =='Workshop'){
 							OrderCloud.As().Me.GetProduct($stateParams.ID).then(function(prod){
 								OrderCloud.As().Me.ListProducts(null, null, null, null, null, {"xp.ProductCode":prod.xp.ProductCode}).then(function(res){
-									var ticket = localStorage.getItem("alfrescoTicket");
+									dfr.resolve(res.Items);
+									/*var ticket = localStorage.getItem("alfrescoTicket");
 									BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
 										dfr.resolve(prodList);
-									});
+									});*/
 								});
 							});
 						}else{
@@ -799,8 +800,23 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			vm.fullEventsData=_.groupBy(productList, function(value){
 				return value.xp.EventDate;
 			});
+			_.filter(productList, function(obj){
+				if(obj.xp.IsBaseEvent== true && obj.xp.IsBaseEvent){
+					vm.ticketInformation=obj.xp.TicketInformation;
+					vm.cancellationOrPolicies=obj.xp.CancellationOrPolicies;
+					var alternativeImg=[];
+					angular.forEach(obj.xp.Images, function(value, key) {
+						alternativeImg.push(alfrescoAccessURL+"/"+value.ContentURL+"?alf_ticket="+alfticket);
+						vm.selectedalternativeImg = _.union(vm.selectedalternativeImg, alternativeImg);
+						if(value.IsDefault){
+							vm.selectedProductImg=alfrescoAccessURL+"/"+value.ContentURL+"?alf_ticket="+alfticket;
+							console.log("vm.selectedProductImg", vm.selectedProductImg);
+						}
+						
+					});
+				}
+			});
 			vm.eventsLimit = Object.keys(vm.fullEventsData);
-			vm.limit=1;
 			console.log("groupName", vm.fullEventsData);
 		}
 		else{
@@ -935,13 +951,13 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
                 console.log('PDP PRODUCT ERROR :: ', selectedSku);
             }
         }
-		else if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true && $scope.radio.selectedSize != -1){
-            var selectedSku = _.filter(vm.fullProductsData, function (_obj) {
-                return ((_obj.xp.SpecsOptions.Size == $scope.radio.selectedSize))
-            });
-				activeProduct = selectedSku[0];
-				DisplayProduct(selectedSku[0]);
-		}
+		// else if($stateParams.SearchType == 'Workshop' && vm.hidePdpblock==true && $scope.radio.selectedSize != -1){
+            // var selectedSku = _.filter(vm.fullProductsData, function (_obj) {
+                // return ((_obj.xp.SpecsOptions.Size == $scope.radio.selectedSize))
+            // });
+				// activeProduct = selectedSku[0];
+				// DisplayProduct(selectedSku[0]);
+		// }
     }
     function DisplayProduct(selectedSku) {
         vm.productTitle = selectedSku.Name;
@@ -955,13 +971,8 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
         vm.productTitle = selectedSku.Name;
         vm.prodDesription = selectedSku.Description;
         vm.selectedProductId = selectedSku.ID;
-        vm.selectedProductImg=selectedSku.baseImage;
 		vm.selectedPrice=selectedSku.StandardPriceSchedule.PriceBreaks;
     }
-	vm.showAll=function(){
-		var keys = Object.keys(vm.fullEventsData);
-		vm.limit=keys.length;
-	}
     vm.changeImage=function(img){
         vm.changeImg=img;
     }
@@ -1563,7 +1574,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			});*/
 		}
 	};
-	if($stateParams.SearchType!="Products" && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'PDP')
+	if($stateParams.SearchType!="Products" && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'PDP' && $stateParams.SearchType != 'Workshop')
 		vm.getLineItems();
 	$scope.cancelOrder = function(){
 		OrderCloud.As().Orders.Cancel(vm.order.ID).then(function(data){

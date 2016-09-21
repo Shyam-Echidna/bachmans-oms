@@ -46,6 +46,8 @@ angular.module( 'orderCloud' )
 							scope.$parent.buildOrder.guestUserModal = false;
 							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
 						}
+						if(scope.$parent.custInfo)
+							scope.$parent.custInfo.showPOModal = false; 
 						//scope.$parent.checkout.getShippingAddressModal = false;
 						//scope.$parent.checkout.getBillingAddressModal = false;
 					});
@@ -1272,7 +1274,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 						MinDate[k] = v.MinDays;
 					}
 				});	
-				lineItemParams.xp.MinDate = res.MinDate;
+				lineItemParams.xp.MinDate = MinDate;
 				lineItemParams.xp.ProductImageUrl = baseImg;
 				if($stateParams.SearchType=='Products' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'plp'){
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
@@ -2216,10 +2218,10 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 	        }).success(function (data3, status, headers, config) {
 	        	angular.element(document.getElementById("buildorder")).scope().$parent.buildOrder.guestUserModal=false;
 				var anonymoustoken=$cookieStore.get("OMS.impersonation.token");
-				OrderCloud.As().Orders.Get(vm.order.ID).then(function(resp){
+				OrderCloud.Orders.Get(vm.order.ID).then(function(resp){
 					console.log(resp);
-					$stateParams.ID=resp.FromUserID;
-					$state.go('checkout', {ID:$stateParams.ID}, {reload:true});
+					//$stateParams.ID=resp.FromUserID;
+					$state.go('checkout', {ID:$stateParams.ID, FromUserID:resp.FromUserID}, {reload:true});
 				})
 				console.log("..", anonymoustoken);
 				console.log("alfresco successssss", data3);

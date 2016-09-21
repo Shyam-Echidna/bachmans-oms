@@ -132,7 +132,8 @@
 					<h3>EARNED TO DATE:<span>{{custInfo.spendingAcc.purple.xp.EarnedToDate | currency}}</span></h3>
 				</div>
 			</div>
-			<h4>POINTS EARNED:<span>{{custInfo.spendingAcc.purple.xp.PointsEarned}}</span></h4>
+			<!-- <h4>POINTS EARNED:<span>{{custInfo.spendingAcc.purple.xp.PointsEarned}}</span></h4> -->
+			<h4>POINTS EARNED:<span>{{custInfo.spendingAcc.purple.xp.LoyaltyPointsBalance}}</span></h4>
 			<h5>CURRENT BALANCE:<span>{{custInfo.spendingAcc.purple.Balance | currency}}</span></h5>
 			<p>(EXPIRES: <span>{{custInfo.spendingAcc.purple.EndDate | date:'MM/dd/yyyy'}}<span>)</p>
 		</div>
@@ -199,6 +200,10 @@
 			<p>Free Shipping</p>
 			<p class="sub-addr">Lorem lpsum dolor sit amet</p>
 		</div> -->
+		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-if="custInfo.list.user.xp.PO.PORequired=='Yes'">
+			<h1>Change Number</h1>
+			<a ng-click="custInfo.showPOModal=true">Change PO Number</a>
+		</div>
 		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
 			<h1>ORDER HISTORY</h1>
 			<a ui-sref="orderHistory({userID:custInfo.list.user.ID, name:custInfo.list.user.FirstName})">View Order History</a>
@@ -244,6 +249,26 @@
                </div>
 			<div class="form-group">
                   <button type="submit" class="save">SEND</button>
+            </div>
+		</form>
+	</modal>
+	<modal title="Change PO Number" visible="custInfo.showPOModal" class="change-pwd modal-pop-up">
+		<form name="POForm" ng-submit="custInfo.UpdatePONumber()" novalidate>
+			<div class="form-group security-qtn-block">
+				<input type="text" class="form-control" ng-model="custInfo.PoNo" required placeholder="Current PO Number">
+		   </div>
+		   <div class="form-group security-qtn-block">
+				<input type="text" class="form-control" ng-model="custInfo.NPoNo" required placeholder="New PO Number">
+		   </div>
+		   <div class="form-group security-qtn-block">
+				<input type="text" class="form-control" ng-model="custInfo.CPoNo" required placeholder="Confirm PO Number">
+		   </div>
+		   <div class="form-group security-qtn-block">
+				<span ng-if="custInfo.PoNotMatches==false">Confirm PO Not Matches...!</span>
+				<span ng-if="custInfo.ValidPO==false">PO Number is not valid...!</span>
+		   </div>
+			<div class="form-group">
+                <button type="submit" ng-disabled="POForm.invalid" class="update">Update</button>
             </div>
 		</form>
 	</modal>

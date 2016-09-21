@@ -2,7 +2,6 @@ angular.module( 'orderCloud' )
 
 	.config( HomeConfig )
 	.controller( 'HomeCtrl', HomeController )
-	.factory( 'HomeService', HomeService);
 
 function HomeConfig( $stateProvider ) {
 	$stateProvider
@@ -172,7 +171,7 @@ function HomeConfig( $stateProvider ) {
 }
 
 
-function HomeController($sce, $rootScope, $state, $compile, HomeService, Underscore, OrderList, $scope, alfrescoURL, OrderCloud, EventList,$q) {
+function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderList, $scope, OrderCloud, EventList,$q) {
 	var vm = this;
 	OrderCloud.Auth.RemoveImpersonationToken();
 	$scope.events=[];
@@ -328,7 +327,7 @@ function HomeController($sce, $rootScope, $state, $compile, HomeService, Undersc
 	/* event sources array*/
     $scope.eventSources = [$scope.events];
 }
-
+/*
 function HomeService( $q, $http, alfrescoURL) {
 	var service = {		
 		GetPromoInfo:_getPromoInfo
@@ -353,3 +352,4 @@ function HomeService( $q, $http, alfrescoURL) {
 	}
 	return service;
 }
+*/

@@ -1,5 +1,5 @@
 <div id="CheckoutTopNav" ui-view="checkouttop"></div>
-<div class="checkoutContainer row">
+<div class="checkoutContainer row" cg-busy="{promise:checkout.CheckOutLoader,templateUrl:'common/loading-indicators/templates/view.loading.tpl.html'}">
 	<div class="checkoutContainer-left col-sm-9 col-xs-9 col-md-9 col-lg-9">
 		<div class="checkoutSection">
 			<uib-accordion close-others="checkout.oneAtATime">
@@ -16,7 +16,7 @@
 							</span> Delivery Information <button ng-click="checkout.deliveryInfoEdit($event)" ng-if="checkout.deliveryInfoDone && !checkout.status.delInfoOpen">Edit</button></h1>
 					</uib-accordion-heading>
 					<uib-accordion close-others="checkout.oneAtATime" ng-init="checkout.delInfoRecipient[0]=true">
-						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]" is-disabled="$index > 0 ? checkout.delInfoTab[$index] : false">
+						<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.activeOrders" ng-init="line=lineitems[0]" is-open="checkout.delInfoRecipient[$index]" is-disabled="$index > 0 ? checkout.delInfoTab[$index] : false">
 							<uib-accordion-heading ng-init="$index > 0 ? checkout.delInfoTab[$index]=true : checkout.delInfoTab[$index]=false">
 								<h2>Recipient {{$index+1}} {{line.ShippingAddress.FirstName}} {{line.ShippingAddress.LastName}} | {{line.ShippingAddress.Zip}}</h2>
 							</uib-accordion-heading>
@@ -92,9 +92,9 @@
 										</label>
 									</div>
 									<p class="check-top">Zip Code <span class="star">*</span></p>
-									<input type="text" name="zip" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" max-length="5" ng-minlength="5" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].zip.$invalid}" class="zip-code"></input>
+									<input type="text" name="zip" ng-model="line.ShippingAddress.Zip" ng-blur="checkout.GetDeliveryFees(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" max-length="5" ng-minlength="5" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].zip.$invalid}" class="zip-code"></input>
 									<p class="check-top">Address 1 <span class="star">*</span></p>
-									<input type="text" name="street1" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.getDeliveryCharges(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].street1.$invalid}"></input>
+									<input type="text" name="street1" ng-model="line.ShippingAddress.Street1" ng-blur="checkout.GetDeliveryFees(line, checkout.lineItemForm[line.ID])" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].street1.$invalid}"></input>
 									<p class="check-top">Address 2</p>
 									<input type="text" ng-model="line.ShippingAddress.Street2" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false"></input>
 									<h6 style="color:red;" ng-if="checkout.lineItemForm[line.ID].invalidAddress && line.ShippingAddress.Street1 && line.ShippingAddress.Zip">Invalid Address/Zip</h6>
@@ -170,7 +170,7 @@
 													<input type="text" ng-model="line.dateVal.Month" placeholder="MM" max-length="2" />/
 													<input type="text" ng-model="line.dateVal.Date" placeholder="DD" max-length="2" ng-change="checkout.dateSelect()" />/
 													<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" max-length="4" />
-													<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" show-weeks="false" show-button-bar="false" min-date="checkout.initDate" init-date="checkout.initDate">
+													<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" show-weeks="false" show-button-bar="false" datepicker-options="{formatYear: 'yy', minDate: line.xp.MinDays.MinToday, startingDay: 1}">
 														<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 															 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
 
@@ -204,7 +204,7 @@
 													<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.Name}}</p>
 													<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run3.TimeSlot}}</p>
 												</li>
-												<li ng-if="line.xp.addressType=='Funeral' && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}" class="preference">
+												<li ng-if="(line.xp.addressType=='Funeral' || line.xp.addressType=='Church') && (line.xp.deliveryDate | date)==(tom | date)" ng-click="line.xp.deliveryRun='Run4'" ng-class="{active:line.xp.deliveryRun=='Run4'}" class="preference">
 													<p class="delivery-header">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.Name}}</p>
 													<p class="delivery-day">{{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.TimeSlot}}</p>
 													<p class="delivery-day">${{checkout.buyerDtls.xp.DeliveryRuns[0].Run4.charge}}</p>
@@ -459,7 +459,7 @@
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
 							</div>
-							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks'] && checkout.buyerDtls.xp.PaymentMethods.PurplePerks.OMS" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerks, 'highlight': checkout.paymentOption == 'GiftCard'}">Purple Perks
+							<div ng-click="checkout.paymentOption = 'PurplePerk'" ng-show="checkout.UserSpendingAcc['Purple Perks'] && checkout.buyerDtls.xp.PaymentMethods.PurplePerks.OMS" ng-class="{'active-tab': checkout.orderDtls.SpendingAccounts.PurplePerks, 'highlight': checkout.paymentOption == 'PurplePerk'}">Purple Perks
 								<span class="selected">
 									<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path d="M5.378 11.37L2 7.59l1.438-1.286L5.374 8.47l5.185-5.84L12 3.91l-6.622 7.46" fill="#fff"/></svg>
 								</span>
@@ -719,7 +719,7 @@
 													<input ng-model="GiftCardNo" type="text" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 												</div>
 												<span style="color:red;" ng-if="checkout.InvalidGiftCard">Invalid Gift Card...!</span>
-												<button ng-click="checkout.RedeemGiftCard(GiftCardNo, checkout.orderDtls)">Apply</button>
+												<button ng-click="checkout.GCApply(GiftCardNo, checkout.orderDtls)">Apply</button>
 											</div>
 										<!-- </div> -->
 										<!-- <span style="color:red;" ng-if="txtGiftCharges > checkout.UserSpendingAcc['Gift Card'].Balance">You cannot exceed your balance limit...!</span> -->
@@ -980,23 +980,23 @@
 					<uib-accordion-heading>
 						<h1>3. Review & Confirm Order</h1>
 					</uib-accordion-heading>
-					<uib-accordion>
-						<uib-accordion-group>
+					<uib-accordion close-others="false">
+						<uib-accordion-group is-open="true">
 							<uib-accordion-heading>
-								<h2 ng-click="checkout.reviewAddress()">Customer Name <button class="review-edit">edit</button></h2>
+								<h2 ng-click="checkout.reviewAddress()">Customer Name</h2>
 							</uib-accordion-heading>
 							<div class="user-name">{{checkout.order.FromUserFirstName}} {{checkout.order.FromUserLastName}}</div>
 						</uib-accordion-group>
-						<uib-accordion-group>
+						<uib-accordion-group is-open="true">
 							<uib-accordion-heading>
 								<h2>1. <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
 								<g>
 									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"></path>
 								</g>
-							</svg>Shipping Information <button class="review-edit">edit</button></h2>
+							</svg>Shipping Information <button class="review-edit" ng-click="checkout.deliveryInfoEdit($event)">edit</button></h2>
 							</uib-accordion-heading>
-							<ul ng-repeat="(recipient, lineitems) in checkout.recipientsGroup" class="shipping-info">
+							<ul ng-repeat="(recipient, lineitems) in checkout.activeOrders" class="shipping-info">
 								<li class="shipping-FirstName"><p>{{lineitems[0].ShippingAddress.FirstName}} {{lineitems[0].ShippingAddress.LastName}}</p></li>
 								<li class="shipping-Addresses">
 									<p>{{lineitems[0].ShippingAddress.Street1}}</p>
@@ -1020,14 +1020,14 @@
 								</li>
 							</ul>
 						</uib-accordion-group>
-						<uib-accordion-group>
+						<uib-accordion-group is-open="true">
 							<uib-accordion-heading>
 								<h2 ng-click="checkout.reviewAddress()">2. <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 18.3 18.3" style="enable-background:new 0 0 18.3 18.3;" xml:space="preserve">
 								<g>
 									<path d="M9.1,1.7C5,1.7,1.7,5,1.7,9.1s3.3,7.4,7.4,7.4s7.4-3.3,7.4-7.4S13.2,1.7,9.1,1.7z M7.7,12.4L4.9,9.5L6,8.4
 										l1.7,1.7l4.5-4.5l1.1,1.1L7.7,12.4z"></path>
 								</g>
-							</svg>Payment <button class="review-edit">edit</button></h2>
+							</svg>Payment <button class="review-edit" ng-click="checkout.paymentInfoEdit($event)">edit</button></h2>
 							</uib-accordion-heading>
 							<ul class="shipping-info">
 								<li class="shipping-Date" ng-if="checkout.selectedCard!='createcreditcard'">
@@ -1091,7 +1091,7 @@
 				<h1>Order [ {{checkout.lineTotalQty}} items ] <a ui-sref="buildOrder({ID:checkout.order.FromUserID,SearchType:'User',showOrdersummary: true})">Edit</a> </h1>
 			</div>
 			<uib-accordion close-others="checkout.oneAtATime">
-				<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.recipientsGroup">
+				<uib-accordion-group ng-repeat="(recipient, lineitems) in checkout.activeOrders">
 					<uib-accordion-heading>
 						<div class="checkoutorderhead">
 							<p><span>Recipient:</span> {{lineitems[0].ShippingAddress.FirstName}} {{lineitems[0].ShippingAddress.LastName}}</p>
@@ -1209,4 +1209,5 @@
 			</uib-accordion>
 		</div>
 	</div>
+</div>
 <div id="CheckoutFooter" ui-view="checkoutbottom"></div>

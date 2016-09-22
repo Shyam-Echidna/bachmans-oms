@@ -70,7 +70,7 @@
 			<button ng-click="viewpromotions()">View All</button>
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 view-cal">
-			<button ui-sref="buildOrder({ID:'e000051',SearchType:'Workshop'})">Workshop &amp; Events calendar</button>
+			<button ng-click="saveCalendar()">Workshop &amp; Events calendar</button>
 		</div>
 		<!--Order on hold starts here -->
 		<div class="col-sm-12 orders_on_hold">
@@ -95,11 +95,11 @@
 		</div>
 	</script> -->
 	<modal title="Save Order For Later" visible="home.showcalendarModal" id="calendarmodal" class="modal-pop-up calendarModal">
-		<div ui-calendar="uiConfig.calendar" class="calendar" ng-model="eventSources" style="width:100%"></div> 
+		<div ui-calendar="uiConfig.calendar" class="calendar" ng-model="eventSources" style="width:100%" id="calendar"></div> 
 	</modal>
 	<modal title="Promotions &amp; Information" visible="home.showpromotionsmodal" id="promotions" class="modal-pop-up promotionsModal">
 		<div>
-			<div ng-repeat="promoLst in home.promotionsList">
+			<div ng-repeat="promoLst in home.promotionsList" ng-if="($index < (home.page * 10)) && ($index >= ((home.page - 1) * 10))">
 				<div class="promotion_box ng-scope">
 					<h1>{{promoLst.Name}}</h1>
 					<p>{{promoLst.Description}}</p>
@@ -126,6 +126,7 @@
 				</div>
 			</div>
 		</div>
+		 <uib-pagination total-items="totalItems" data-ng-model="currentPage" items-per-page="itemsPerPage" ng-change="home.setPagingData(currentPage)"></uib-pagination>
 	</modal>
 	</div>
 </div>

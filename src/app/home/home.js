@@ -62,7 +62,11 @@ function HomeConfig( $stateProvider ) {
                     return OrderCloud.Shipments.List();
                 },*/
 				PromotionsList:function(OrderCloud, $q, Underscore){
-					return OrderCloud.Promotions.List(null,1, 100);
+					return OrderCloud.Promotions.List(null,1, 100).then(function(promo){
+					var totalCount = promo.Meta.TotalCount;
+						var result=_.sortBy(promo.Items, function(data){ return data.xp.DateCreated; });
+						return [result.reverse(), totalCount];
+					});
 				}
 				/*,
                 LineItemList: function($stateParams, LineItems) {
@@ -73,14 +77,14 @@ function HomeConfig( $stateProvider ) {
 }
 
 
-function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderList, $scope, OrderCloud,$q, PromotionsList) {
+function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, OrderList, $scope, OrderCloud,$q, PromotionsList) {
 	var vm = this;
 	vm.showcalendarModal = false;
 	vm.showpromotionsmodal = false;
 	OrderCloud.Auth.RemoveImpersonationToken();
 	//$scope.events=[];
     //$scope.events = EventList.events;
-	vm.promotionsList=PromotionsList.Items;
+	vm.promotionsList=PromotionsList[0];
 	//console.log("dataaaaaaaaaa", $scope.events);
 	var log = [];
 	$scope.dateFormat="dd/MM/yyyy";
@@ -158,6 +162,7 @@ function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderLis
 
 		// }
 	// });
+	
 	$scope.deleteAddress = {
         templateUrl: 'deleteAddress.html',
     }
@@ -169,12 +174,113 @@ function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderLis
         this.showDeliveryToolTip = false;
     };
 	$scope.saveCalendar=function(){
+		var arr={}, events=[], dfr = $q.defer();
+			$scope.events=[];
+			$scope.dayClick = function( date, allDay, jsEvent, view ){
+    	alert("with date selction");
+    };
+    //with this you can handle the click on the events
+    $scope.eventClick = function(event){  
+      // console.log(event);
+		$state.go('buildOrder',{ID:event.id,SearchType:'Workshop'});
+    };
+    $scope.renderView = function(view){  
+        var monthArr = ["January","February","March", "April","May","June","July","August", "September","October","November","December"];  
+        var prevMonth = new Date(view.calendar.getDate()).getMonth()-1;
+        var nxtMonth =  new Date(view.calendar.getDate()).getMonth()+1;
+
+        $('.fc-icon-right-single-arrow').text(monthArr[nxtMonth >= 12 ? 0: nxtMonth]);
+        $('.fc-icon-left-single-arrow').text(monthArr[prevMonth <= -1 ? 11: prevMonth]);
+
+       //  $('.fc-event-container').closest('table').find('thead tr td').eq($('.fc-event-container').);
+    };
+		OrderCloud.Categories.ListProductAssignments('WorkshopsEvents', null, 1 ,100).then(function(assign){
+			angular.forEach(assign.Items, function(res, key){
+				events.push(OrderCloud.Products.Get(res.ProductID));
+			},true);
+			$q.all(events).then(function(result){
+				var count=1,events = [];
+				angular.forEach(result, function(data, key){
+					if(!_.isEmpty(data.xp)){
+						if(data.xp.EventDate!=null){
+							events.push({
+								id: data.ID,
+								title: data.Name,
+								start: new Date(data.xp.EventDate),
+								//end : new Date(cat.xp.EndDate) // Uncomment if we have date range 
+								productcode : data.xp.ProductCode,
+								description: data.Description,
+								startTime:data.xp.Slot.StartTime,
+								endTime:data.xp.Slot.EndTime
+							})
+						}
+					}
+					if(count==assign.Items.length){
+						var groupName=_.groupBy(events, function(value){
+							return value.start;
+						});
+						var data;
+						var result=[];
+						var cont=1;
+						var keys = Object.keys(groupName);
+						angular.forEach(groupName, function(val){
+							data=_.uniq(val, function(item){
+								return item.productcode;
+							});
+							result = _.union(result, data);
+							if(cont==keys.length){
+								//var sort=_.sortBy(result, function(o) { return o.start; });
+								//sort.reverse();
+								//arr["events"]=result;
+								dfr.resolve(result);
+								$scope.events=result;
+								console.log("$scope.events", $scope.events);
+								/* config object */
+								$scope.uiConfig = {
+								  calendar:{
+									editable: false,
+									header:{
+										left: 'prev',
+										center: 'title',
+										right: 'next',
+										buttonIcons: false
+									},
+									dayClick: $scope.dayClick,
+									eventClick: $scope.eventClick,
+									viewRender: $scope.renderView,
+									eventLimit: 2, // If you set a number it will hide the items
+									eventLimitText: "Show All",
+									columnFormat: {
+									   month: 'dddd'
+									}
+									}
+								};
+								 $('#calendar').fullCalendar('today');
+								/* event sources array*/
+								$scope.eventSources = [$scope.events];
+								console.log("arr", arr["events"]);
+							}
+							cont++;
+							console.log("result", result);
+						});
+					}
+					count++;
+				},true);
+			});
+	});
 		vm.showcalendarModal = !vm.showcalendarModal;
 	}
 	$scope.viewpromotions=function(){
+		vm.page = 1;
 		vm.showpromotionsmodal = !vm.showpromotionsmodal;
 	}
-}
+	  	$scope.totalItems = PromotionsList[1];
+		$scope.currentPage = 1;
+		$scope.itemsPerPage = 10;
+    vm.setPagingData=function(page) {
+		vm.page=page;
+       }
+	}
 /*
 function HomeService( $q, $http, alfrescoURL) {
 	var service = {		

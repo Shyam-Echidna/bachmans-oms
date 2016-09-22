@@ -61,107 +61,9 @@ function HomeConfig( $stateProvider ) {
                 /*ShipmentList: function(OrderCloud) {
                     return OrderCloud.Shipments.List();
                 },*/
-				EventList:function(OrderCloud, $q, Underscore){
-					var arr={}, events=[], dfr = $q.defer();
-					OrderCloud.Categories.Get('WorkshopsEvents_Information').then(function(res){
-						arr["name"] = res.Name;
-					});
-					OrderCloud.Categories.ListProductAssignments('WorkshopsEvents', null, 1 ,100).then(function(assign){
-						angular.forEach(assign.Items, function(res, key){
-							events.push(OrderCloud.Products.Get(res.ProductID));
-						},true);
-						$q.all(events).then(function(result){
-							var count=1,events = [];
-							angular.forEach(result, function(data, key){
-								if(!_.isEmpty(data.xp)){
-									if(data.xp.EventDate!=null){
-										events.push({
-											id: data.ID,
-											title: data.Name,
-											start: new Date(data.xp.EventDate),
-											//end : new Date(cat.xp.EndDate) // Uncomment if we have date range 
-											productcode : data.xp.ProductCode,
-											description: data.Description,
-											startTime:data.xp.Slot.StartTime,
-											endTime:data.xp.Slot.EndTime
-										})
-									}
-								}
-								if(count==assign.Items.length){
-									var groupName=_.groupBy(events, function(value){
-										return value.start;
-									});
-									var data;
-									var result=[];
-									var cont=1;
-									var keys = Object.keys(groupName);
-									angular.forEach(groupName, function(val){
-										data=_.uniq(val, function(item){
-											return item.productcode;
-										});
-										result = _.union(result, data);
-										if(cont==keys.length){
-											var sort=_.sortBy(result, function(o) { return o.start; });
-											sort.reverse();
-											arr["events"]=sort;
-											dfr.resolve(arr);
-											console.log("arr", arr["events"]);
-										}
-										cont++;
-										console.log("result", result);
-									});
-								}
-								count++;
-							},true);
-						});
-						/*var count=1;
-						angular.forEach(assign.Items, function(res, key1){
-							OrderCloud.Products.Get(res.ProductID).then(function(data){
-								if(!_.isEmpty(data.xp)){
-									if(data.xp.EventDate!=null){
-										//events.push(data);
-										events.push({
-											id: data.ID,
-											title: data.Name,
-											start: new Date(data.xp.EventDate),
-											//end : new Date(cat.xp.EndDate) // Uncomment if we have date range 
-											productcode : data.xp.ProductCode,
-											description: data.Description
-										})
-									}
-								}
-								console.log("9999999", arr["events"]);
-								if(count==assign.Items.length){
-										var groupName=_.groupBy(events, function(value){
-											return value.start;
-										});
-										var data;
-										var result=[];
-										var cont=1;
-										var keys = Object.keys(groupName);
-										angular.forEach(groupName, function(val){
-											data=_.uniq(val, function(item){
-												return item.productcode;
-											});
-											result = _.union(result, data);
-											if(cont==keys.length){
-												var sort=_.sortBy(result, function(o) { return o.start; });
-												sort.reverse();
-												arr["events"]=sort;
-												dfr.resolve(arr);
-												console.log("arr", arr["events"]);
-											}
-											cont++;
-											console.log("result", result);
-										});
-								}
-								count++;
-							})
-						});*/
-					});
-					return dfr.promise;
+				PromotionsList:function(OrderCloud, $q, Underscore){
+					return OrderCloud.Promotions.List(null,1, 100);
 				}
-				
 				/*,
                 LineItemList: function($stateParams, LineItems) {
                     return LineItems.List('5u_UJNKj902oIbW3Ya16Ew');
@@ -171,12 +73,15 @@ function HomeConfig( $stateProvider ) {
 }
 
 
-function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderList, $scope, OrderCloud, EventList,$q) {
+function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderList, $scope, OrderCloud,$q, PromotionsList) {
 	var vm = this;
+	vm.showcalendarModal = false;
+	vm.showpromotionsmodal = false;
 	OrderCloud.Auth.RemoveImpersonationToken();
-	$scope.events=[];
-    $scope.events = EventList.events;
-	console.log("dataaaaaaaaaa", $scope.events);
+	//$scope.events=[];
+    //$scope.events = EventList.events;
+	vm.promotionsList=PromotionsList.Items;
+	//console.log("dataaaaaaaaaa", $scope.events);
 	var log = [];
 	$scope.dateFormat="dd/MM/yyyy";
 	//holdorders = ShipmentList.Items;
@@ -263,69 +168,12 @@ function HomeController($sce, $rootScope, $state, $compile, Underscore, OrderLis
 		console.log("dataaaaaaaaaaaaaa");
         this.showDeliveryToolTip = false;
     };
-	vm.showcalendarModal = false;
 	$scope.saveCalendar=function(){
 		vm.showcalendarModal = !vm.showcalendarModal;
-		
 	}
-	// var date = new Date();
-    // var d = date.getDate();
-    // var m = date.getMonth();
-    // var y = date.getFullYear();
-    // var currentView = "month";
-	// $scope.events = [	
-		// {title: 'All Day Event',start: new Date('Thu Oct 17 2013 09:00:00 GMT+0530 (IST)')},
-		// {title: 'Long Event',start: new Date('Thu Oct 17 2013 10:00:00 GMT+0530 (IST)'),end: new Date('Thu Oct 17 2013 17:00:00 GMT+0530 (IST)')},
-		// {id: 999,title: 'Workshop Event',start: new Date('Thu Oct 17 2013 09:00:00 GMT+0530 (IST)'),allDay: false},
-		// {id: 999,title: 'Workshop Event',start: new Date(y, m, d + 4, 16, 0),allDay: false},
-		// {id: 999,title: 'Workshop Party',start: new Date(y, m, d + 1, 19, 0),end: new Date(y, m, d + 1, 22, 30),allDay: false},
-		// {id: 999,title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
-    // ];
-	
-	//with this you can handle the events that generated by clicking the day(empty spot) in the calendar
-    $scope.dayClick = function( date, allDay, jsEvent, view ){
-    	alert("with date selction");
-    };
-    //with this you can handle the click on the events
-    $scope.eventClick = function(event){  
-      // console.log(event);
-		$state.go('buildOrder',{ID:event.id,SearchType:'Workshop'});
-    };
-     
-     $scope.renderView = function(view){  
-        var monthArr = ["January","February","March", "April","May","June","July","August", "September","October","November","December"];  
-        var prevMonth = new Date(view.calendar.getDate()).getMonth()-1;
-        var nxtMonth =  new Date(view.calendar.getDate()).getMonth()+1;
-		
-        $('.fc-icon-right-single-arrow').text(monthArr[nxtMonth >= 12 ? 0: nxtMonth]);
-        $('.fc-icon-left-single-arrow').text(monthArr[prevMonth <= -1 ? 11: prevMonth]);
-
-       //  $('.fc-event-container').closest('table').find('thead tr td').eq($('.fc-event-container').);
-    };
-	/* config object */
-    $scope.uiConfig = {
-      calendar:{
-        height: 550,
-        editable: false,
-		header:{
-		  left: 'prev',
-		  center: 'title',
-		  right: 'next',
-		  buttonIcons: false
-		},
-		dayClick: $scope.dayClick,
-        eventClick: $scope.eventClick,
-        viewRender: $scope.renderView,
-		eventLimit: 2, // If you set a number it will hide the items
-		eventLimitText: "Events available",
-		columnFormat: {
-		   month: 'dddd'
-		}
-      }
-    };
-     
-	/* event sources array*/
-    $scope.eventSources = [$scope.events];
+	$scope.viewpromotions=function(){
+		vm.showpromotionsmodal = !vm.showpromotionsmodal;
+	}
 }
 /*
 function HomeService( $q, $http, alfrescoURL) {

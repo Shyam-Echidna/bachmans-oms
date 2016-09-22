@@ -66,7 +66,7 @@ function checkoutConfig( $stateProvider ) {
 	$stateProvider
 	.state( 'checkout', {
 		parent: 'base',
-		url: '/checkout/:ID',
+		url: '/checkout/:ID/:FromUserID',
 		templateUrl:'checkout/templates/checkout.tpl.html',
         data: {
             loadingMessage: 'Loading...'
@@ -84,7 +84,7 @@ function checkoutConfig( $stateProvider ) {
                         return CurrentOrder.Get();
                     },
                     OrderLineItems: function(OrderCloud, Order) {
-                        return OrderCloud.As().LineItems.List(Order.ID);
+                        return OrderCloud.LineItems.List(Order.ID);
                     },
                     ProductInfo: function(OrderCloud, LineItemHelpers, OrderLineItems) {
                         return LineItemHelpers.GetProductInfo(OrderLineItems.Items);
@@ -123,7 +123,8 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
     vm.paymentOption = 'CreditCard';
     vm.lineTotalQty = Underscore.reduce(Underscore.pluck(vm.lineItems, 'Quantity'), function(memo, num){ return memo + num; }, 0);
     vm.lineTotalSubTotal = Underscore.reduce(Underscore.pluck(vm.lineItems, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
-    vm.seluser = $stateParams.ID;
+    //vm.seluser = $stateParams.ID;
+    vm.seluser = $stateParams.FromUserID;
     vm.AvoidMultipleDelryChrgs = [];
 	vm.oneAtATime = true;
 	vm.opened = false;
@@ -900,7 +901,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
 		});
 	};
 	$scope.saveForLater = function(note){
-		OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(res){
+		OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.FromUserID, null, null, "FromUserID").then(function(res){
 			angular.forEach(res.Items,function(val, key){
 				if(val.FromUserID == vm.order.FromUserID && val.ID == vm.order.ID){
 					OrderCloud.As().Orders.Patch(vm.order.ID,{"xp":{"SavedOrder":{"Name":note,"Flag":true}}}).then(function(res1){
@@ -1105,7 +1106,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
 		});
 	};
 	vm.UserSpendingAccounts = function(){
-		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.ID).then(function(res){
+		OrderCloud.SpendingAccounts.ListAssignments(null, $stateParams.FromUserID).then(function(res){
 			vm.UserSpendingAcc = {};
 			var TempStoredArray = [];
 			angular.forEach(res.Items, function(val, key){

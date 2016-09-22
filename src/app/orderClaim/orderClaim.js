@@ -36,9 +36,12 @@ function OrderClaimConfig( $stateProvider ) {
 					OrderCloud.Users.GetAccessToken($stateParams.userID, impersonation)
 					.then(function(data) {
 						OrderCloud.Auth.SetImpersonationToken(data['access_token']);
-						OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.userID, null, 100, "FromUserID", null, {"Status":"Completed"}).then(function(assignOrders){
+						/*OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.userID, null, 100, "FromUserID", null, {"Status":"Completed"}).then(function(assignOrders){
 							d.resolve(assignOrders);
-						})
+						});*/
+						OrderCloud.As().Orders.Get($stateParams.orderID).then(function(assignOrders){
+							d.resolve(assignOrders);
+						});
 					})	
 					return d.promise;
 				},
@@ -62,7 +65,7 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 	var totalCost = 0;
 	vm.selectresolution="";
 	vm.orderclaimarr1 = [];
-	OrderCloud.As().LineItems.List(Order.Items[0].ID).then(function(res){
+	OrderCloud.As().LineItems.List(Order.ID).then(function(res){
 		$scope.val=res;
 		LineItemHelpers.GetProductInfo(res.Items).then(function(data){
 			data = _.groupBy(data, function(value){

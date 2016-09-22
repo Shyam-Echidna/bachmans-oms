@@ -2168,6 +2168,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			console.log(res);
 		});
 	};
+	vm.disabledDates = function (data) {
+		return (data.mode === 'day' && (data.date.getDay() === 0));
+	};
 }
 
 function buildOrderPLPController(productList, $stateParams, alfrescoAccessURL) {

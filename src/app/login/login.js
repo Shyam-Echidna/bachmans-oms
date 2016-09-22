@@ -14,7 +14,7 @@ function LoginConfig( $stateProvider, $locationProvider ) {
             controller:'LoginCtrl',
             controllerAs: 'login',
 			data: {
-				loadingMessage: 'Loading'
+				loadingMessage: 'Loading...'
 			},
 			resolve: {
 				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoAccessURL) {
@@ -127,15 +127,15 @@ function LoginController( $state, $stateParams, $exceptionHandler, OrderCloud, L
     };
     vm.rememberStatus = false;
     vm.submit = function() {
-        OrderCloud.Auth.GetToken(vm.credentials)
+        vm.LoginSubmit = OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
                 vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : 'angular-noop';
-                OrderCloud.BuyerID.Set(buyerid);
-                OrderCloud.Auth.SetToken(data['access_token']);
+                vm.LoginSubmit = OrderCloud.BuyerID.Set(buyerid);
+                vm.LoginSubmit = OrderCloud.Auth.SetToken(data['access_token']);
                 console.log($cookieStore);
                 $cookieStore.put('OMS.Admintoken',data['access_token']);
                 $state.go('home');
-				OrderCloud.AdminUsers.List(null, 1, 100, null, null, {"Username":vm.credentials.Username, "Password":vm.credentials.Password}).then(function(res){
+				vm.LoginSubmit = OrderCloud.AdminUsers.List(null, 1, 100, null, null, {"Username":vm.credentials.Username, "Password":vm.credentials.Password}).then(function(res){
 					$cookieStore.put('OMS.CSRID', res.Items[0].ID);
 				});
             })

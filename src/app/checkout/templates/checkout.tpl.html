@@ -180,7 +180,7 @@
 													<input type="text" ng-model="line.dateVal.Month" placeholder="MM" max-length="2" />/
 													<input type="text" ng-model="line.dateVal.Date" placeholder="DD" max-length="2" ng-change="checkout.dateSelect()" />/
 													<input type="text" ng-model="line.dateVal.Year" placeholder="YYYY" max-length="4" />
-													<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" show-weeks="false" show-button-bar="false" datepicker-options="{formatYear: 'yy', minDate: line.xp.MinDays.MinToday, startingDay: 1}">
+													<button type="button" ng-click="checkout.toggle(line,$index)" uib-datepicker-popup="dd.MM.yyyy" ng-model="datePicker.date" is-open="checkout.opened" show-weeks="false" show-button-bar="false" datepicker-options="{formatYear: 'yy', minDate: line.xp.MinDays.MinToday, startingDay: 0, dateDisabled:checkout.disabledDates}">
 														<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 															 viewBox="0 0 33 36" style="enable-background:new 0 0 33 36;" xml:space="preserve">
 

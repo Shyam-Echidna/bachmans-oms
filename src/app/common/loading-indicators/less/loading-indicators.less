@@ -1,6 +1,6 @@
 .cg-busy-backdrop {
-  background-color:white;
-  opacity:.7;
+  background-color:#000;
+  opacity:0.15;
 }
 
 .cg-busy{
@@ -9,13 +9,13 @@
   left:0px;
   right:0px;
   bottom:0px;
-  z-index:1001;
+  z-index:9999;
 }
 
 .indicator-container { //fade the indicator in and out
   position:absolute;
   left:0; right:0; top:0; bottom:0;
-  z-index:1001;
+  z-index:9999;
   &.ng-hide-add,
   &.ng-hide-remove {
 	transition:all .3s ease;
@@ -60,7 +60,8 @@
   .message {
 	margin-bottom:15px;
     font-size:16px;
-    color:#555;
+    color:#001014;
+	font-weight:bold;
   }
 }
 

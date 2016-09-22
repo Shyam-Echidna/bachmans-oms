@@ -13,5 +13,6 @@
   "OrderPrintURL": "http://192.168.101.49:8080/Bachman/omsprint/",
   "GC_PP_Redemption": "https://Four51TRIAL104401.jitterbit.net/Bachmans_Dev/GiftCard_PurplePerks_Redemption",
   "PPBalance" : "https://Four51TRIAL104401.jitterbit.net/BachmansOnPrem/PurplePerksBalanceCheck",
-  "GCBalance" : "https://Four51TRIAL104401.jitterbit.net/BachmansOnPrem/GiftCardBalance"
+  "GCBalance" : "https://Four51TRIAL104401.jitterbit.net/BachmansOnPrem/GiftCardBalance",
+  "GoogleAPI": "https://maps.googleapis.com/maps/api/geocode/json?address=" 
 }

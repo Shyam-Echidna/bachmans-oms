@@ -13,6 +13,9 @@ function LoginConfig( $stateProvider, $locationProvider ) {
             templateUrl:'login/templates/login.tpl.html',
             controller:'LoginCtrl',
             controllerAs: 'login',
+			data: {
+				loadingMessage: 'Loading'
+			},
 			resolve: {
 				AlfrescoCommon: function ($sce, $q, AlfrescoFact, alfrescoAccessURL) {
 					var df = $q.defer();

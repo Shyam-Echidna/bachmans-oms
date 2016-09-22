@@ -15,6 +15,9 @@ function CustInfoConfig( $stateProvider ) {
             params: {
                 ID:null                
             },
+			data: {
+				loadingMessage: 'Loading...'
+			},
 			resolve: {
                 UserList: function( OrderCloud, $state, $q) {
                     var arr={};

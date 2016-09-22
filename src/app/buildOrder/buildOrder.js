@@ -82,7 +82,7 @@ function buildOrderConfig( $stateProvider ) {
 		url: '/buildOrder/:SearchType/:ID/:prodID/:orderID/:orderDetails',
 		templateUrl:'buildOrder/templates/buildOrder.tpl.html',
 		data: {
-            loadingMessage: 'LOADING'
+            loadingMessage: 'Loading...'
         },
 		params: {
 			showOrdersummary: false,
@@ -292,7 +292,7 @@ function buildOrderConfig( $stateProvider ) {
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoAccessURL, Underscore, ProductImages, productList, AlfrescoFact) {
+function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoAccessURL, Underscore, ProductImages, productList, AlfrescoFact, AddressValidationService, GoogleAPI, $http) {
 	var vm = this;
 	vm.upselloverlay=false;
 	vm.selected = undefined;
@@ -649,6 +649,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		if(vm.DeliveryType=="Courier")
 			DeliveryMethod = "Courier";
 		angular.element(document.getElementById("oms-plp-right")).scope().beforeAddToCart(prodID, DeliveryMethod, baseImg);
+			
 	};
 	$scope.show = false;
 	$scope.showmenu = false;
@@ -1069,6 +1070,59 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		else if(vm.seqProducts)
 		vm.seqProducts='';
 	}
+	vm.GetMinDays = function(zip, ProductID){
+		vm.DeliveryNotAvailable = undefined;
+		if((zip.toString()).length == 5){
+			$http.get(GoogleAPI+zip).then(function(res){
+				var city;
+				if(res.data.results[0].postcode_localities){
+					if(res.data.results[0].postcode_localities.length > 1)
+						vm.MultipleCities = res.data.results[0].postcode_localities;
+				}else {
+					delete vm.MultipleCities;
+					angular.forEach(res.data.results[0].address_components, function(component,index){
+						var types = component.types;
+						angular.forEach(types, function(type,index){
+							if(type == 'locality') {
+								city = component.long_name;
+							}
+						});
+					});
+					vm.city = city;
+					vm.CheckDeliveryAvailable(city, ProductID);
+				}	
+			});
+		}	
+	};
+	vm.CheckDeliveryAvailable = function(city, ProductID){
+		vm.DeliveryNotAvailable = undefined;
+		vm.Mcity = city;
+		var DeliveryMethod;
+		if(city=="Minneapolis" || city=="Saint Paul"){
+			DeliveryMethod = "LocalDelivery";
+		} else {
+			DeliveryMethod = "UPS";
+		}
+		OrderCloud.Categories.ListProductAssignments(null, ProductID).then(function(res1){
+			OrderCloud.Categories.Get(res1.Items[0].CategoryID).then(function(res2){
+				if(res2.xp.CategoryDeliveryCharges.DeliveryMethods[DeliveryMethod]){
+					vm.DeliveryNotAvailable = false;
+					if(res2.xp.CategoryDeliveryCharges.DeliveryMethods[DeliveryMethod].MinDays)
+						vm.MinDate = res2.xp.CategoryDeliveryCharges.DeliveryMethods[DeliveryMethod].MinDays;
+					else
+						vm.MinDate = CstDateTime;
+				}else{
+					vm.DeliveryNotAvailable = true;
+				}
+			});
+		});	
+	};
+	vm.CalendarSelect = function(date, ProductID){
+		if(!_.isArray(vm.MultipleCities) || !vm.MultipleCities)
+			vm.CheckDeliveryAvailable(vm.city, ProductID);
+		else
+			vm.CheckDeliveryAvailable(vm.Mcity, ProductID);
+	};
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -1155,7 +1209,7 @@ function buildOrderLeftController($scope, $stateParams, spendingAccounts, Search
 	};
 }
 
-function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService, $cookieStore, CstDateTime) {
+function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, LineItemHelpers, TaxService, AddressValidationService, CurrentOrder, BuildOrderService, $cookieStore, CstDateTime, $http) {
 	var vm = this;
 	vm.isOpen = {};
 	vm.CancelDeleteToolTip = {};
@@ -2648,7 +2702,7 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 	};
 }
 
-function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCloud, $http, alfrescoDocsUrl, alfrescoAccessURL, Underscore, $cookieStore, GetCstTime, algolia, AddressValidationService) {
+function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCloud, $http, alfrescoDocsUrl, alfrescoAccessURL, Underscore, $cookieStore, GetCstTime, algolia, AddressValidationService, GoogleAPI) {
     var upselldata = [];
     var crossdata = [];
     var productdetail = [];
@@ -3191,6 +3245,16 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 				vm.NoDeliveryFees = true;
 			}
 		}, true);
+		if((line.ShippingAddress.Zip.toString()).length == 5){
+			$http.get(GoogleAPI+line.ShippingAddress.Zip).then(function(res){
+				if(res.data.results[0].postcode_localities){
+					if(res.data.results[0].postcode_localities.length > 1)
+						line.MultipleCities = res.data.results[0].postcode_localities;
+				}
+				else
+					delete line.MultipleCities;
+			});
+		}
 		if((line.xp.deliveryDate || line.xp.pickupDate) && line.ShippingAddress.Zip && line.ShippingAddress.Street1 && line.ShippingAddress.FirstName && line.ShippingAddress.LastName){
 			AddressValidationService.Validate(line.ShippingAddress).then(function(res){
 				if(res.ResponseBody.ResultCode == 'Success'){
@@ -3201,7 +3265,8 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 					line.ShippingAddress.Zip = parseInt(zip);
 					line.ShippingAddress.Street1 = validatedAddress.Line1;
 					line.ShippingAddress.Street2 = null;
-					line.ShippingAddress.City = validatedAddress.City;
+					if(!line.MultipleCities)
+						line.ShippingAddress.City = validatedAddress.City;
 					line.ShippingAddress.State = validatedAddress.Region;
 					line.ShippingAddress.Country = validatedAddress.Country;
 					if(line.xp.DeliveryMethod!="Courier" && line.xp.DeliveryMethod!="Faster"){

@@ -69,7 +69,7 @@ function checkoutConfig( $stateProvider ) {
 		url: '/checkout/:ID/:FromUserID',
 		templateUrl:'checkout/templates/checkout.tpl.html',
         data: {
-            loadingMessage: 'LOADING'
+            loadingMessage: 'Loading...'
         },
 		views: {
 			'': {
@@ -77,9 +77,9 @@ function checkoutConfig( $stateProvider ) {
 				controller: 'checkoutCtrl',
 				controllerAs: 'checkout',
                 resolve: {
-                    SavedCreditCards: function(OrderCloud) {
-                        return OrderCloud.Me.ListCreditCards(null, 1, 100);
-                    },
+                    /*SavedCreditCards: function(OrderCloud) {
+                        return OrderCloud.As().Me.ListCreditCards(null, 1, 100);
+                    },*/
                     Order: function(CurrentOrder) {
                         return CurrentOrder.Get();
                     },
@@ -89,7 +89,7 @@ function checkoutConfig( $stateProvider ) {
                     ProductInfo: function(OrderCloud, LineItemHelpers, OrderLineItems) {
                         return LineItemHelpers.GetProductInfo(OrderLineItems.Items);
                     },
-                    TakeOrderOffHold: function(BuildOrderService, Order, OrderLineItems) {
+                    /*TakeOrderOffHold: function(BuildOrderService, Order, OrderLineItems) {
                         return BuildOrderService.OrderOnHoldRemove(OrderLineItems.Items, Order.ID);
                     },
                     GetBuyerDetails: function(BuildOrderService) {
@@ -97,7 +97,7 @@ function checkoutConfig( $stateProvider ) {
                     },
                     GetTax: function(TaxService, Order) {
                         return TaxService.GetTax(Order.ID);
-                    },
+                    },*/
 					GetCstDateTime: function(BuildOrderService, $q){
 						return BuildOrderService.CompareDate();
 					}
@@ -113,20 +113,17 @@ function checkoutConfig( $stateProvider ) {
 	});
 }
 
-function checkoutController($scope, $state, Underscore, Order, OrderLineItems,ProductInfo, GetBuyerDetails, GetTax, CreditCardService, TaxService, AddressValidationService, SavedCreditCards, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService, LineItemHelpers, GetCstDateTime, GC_PP_Redemption, PPBalance, GCBalance) {
+function checkoutController($scope, $state, Underscore, Order, OrderLineItems, ProductInfo, CreditCardService, TaxService, AddressValidationService, OrderCloud, $stateParams, BuildOrderService, $q, AlfrescoFact, $http, checkoutService, LineItemHelpers, GetCstDateTime, GC_PP_Redemption, PPBalance, GCBalance) {
 	var vm = this;
 	vm.logo=AlfrescoFact.logo;
     vm.order = Order;
     vm.orderID = Order.ID;
-    vm.order.TaxInfo = GetTax;
+    //vm.order.TaxInfo = GetTax;
     vm.lineItems = OrderLineItems.Items;
-    vm.buyerDtls = GetBuyerDetails;
-	vm.buyerXp = GetBuyerDetails.xp;
-    vm.buyerDtls.xp.deliveryChargeAdjReasons.unshift("---select---");
     vm.paymentOption = 'CreditCard';
     vm.lineTotalQty = Underscore.reduce(Underscore.pluck(vm.lineItems, 'Quantity'), function(memo, num){ return memo + num; }, 0);
     vm.lineTotalSubTotal = Underscore.reduce(Underscore.pluck(vm.lineItems, 'LineTotal'), function(memo, num){ return memo + num; }, 0);
-    vm.creditCardsList = SavedCreditCards.Items;
+    //vm.seluser = $stateParams.ID;
     vm.seluser = $stateParams.FromUserID;
     vm.AvoidMultipleDelryChrgs = [];
 	vm.oneAtATime = true;
@@ -144,6 +141,15 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 	vm.initDate = new Date(angular.copy(GetCstDateTime.datetime));//day after tomorrow
 	var tomorrow = $scope.tom;
 	tomorrow = tomorrow.getMonth()+1+"/"+tomorrow.getDate()+"/"+tomorrow.getFullYear();
+	BuildOrderService.GetBuyerDtls().then(function(res){
+		vm.buyerDtls = res;
+		vm.buyerXp = res.xp;
+		vm.buyerDtls.xp.deliveryChargeAdjReasons.unshift("---select---");
+	});
+	OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function(cards){
+		vm.creditCardsList = cards.Items;
+	});
+	BuildOrderService.OrderOnHoldRemove(OrderLineItems.Items, Order.ID);
 	vm.status = {
 		delInfoOpen : true,
 		paymentOpen : false,
@@ -158,7 +164,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
 		}, 0);
     };
 
-    vm.getRecipientTax = function(lineitems) {
+    /*vm.getRecipientTax = function(lineitems) {
         angular.forEach(lineitems, function(item){
             var line = Underscore.findWhere(GetTax.ResponseBody.TaxLines, {LineNo: item.ID});
             item.TaxCost = line.Tax;
@@ -166,7 +172,7 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems,Pr
         return Underscore.pluck(lineitems, 'TaxCost').reduce(function(prev, current) {
             return prev + current;
         }, 0);
-    };
+    };*/
 
     vm.submitOrder = function(card, billingAddress){
 		if(vm.addCard && vm.paymentOption != 'PO'){

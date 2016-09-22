@@ -86,7 +86,7 @@ function AppCtrl($q, $rootScope, $state, $http, appname, LoginService, toastr, $
         cleanLoadingIndicators();
         var defer = $q.defer();
         defer.wrapperClass = 'indicator-container';
-        (toState.data && toState.data.loadingMessage) ? defer.message = toState.data.loadingMessage : defer.message = null;
+        (toState.data && toState.data.loadingMessage) ? defer.message = toState.data.loadingMessage : defer.message = 'Loading...';
         defer.templateUrl = 'common/loading-indicators/templates/view.loading.tpl.html';
         vm.contentLoading = defer;
     });

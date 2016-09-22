@@ -436,10 +436,20 @@
 													</select>-->
 													<input type="text" name="state" ng-model="lineitem.ShippingAddress.State" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].state.$invalid}" />
 												</div>
-												<div class="location-city col-md-6">
+												<div class="location-city col-md-6" ng-if="lineitem.MultipleCities.length <= 1 || !lineitem.MultipleCities">
 													<p>City <span class="star">*</span></p>
-													<input type="text" name="city" ng-model="lineitem.ShippingAddress.City" required ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].city.$invalid}" />
+													<input type="text" name="city" ng-model="lineitem.ShippingAddress.City" ng-required="lineitem.MultipleCities.length <= 1" ng-class="{error: buildOrderRight.lineItemForm[lineitem.ID].$submitted && buildOrderRight.lineItemForm[lineitem.ID].city.$invalid}" />
 												</div>
+												<div class="location-city col-md-6" ng-if="lineitem.MultipleCities.length > 1">
+													<div uib-dropdown class="form-control " id="MultipleCities" ng-class="{errorCity: buildOrderRight.lineItemForm[lineitem.ID].$submitted && lineitem.ShippingAddress.City = 'Select City'}">
+														<div id="sort-dropdown" uib-dropdown-toggle>
+															<p class="sort-active-show" ng-init="lineitem.ShippingAddress.City = 'Select City'">{{lineitem.ShippingAddress.City}}</p>
+														</div>
+														<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+															<li ng-repeat="city in lineitem.MultipleCities" ng-click="lineitem.ShippingAddress.City=city"><a href="">{{city}}</a></li>
+														</ul>
+													</div>
+												</div>	
 											</div>
 											<div class="location-contact">
 												<p>Recipients Phone Number</p>

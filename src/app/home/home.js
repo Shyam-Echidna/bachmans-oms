@@ -10,7 +10,7 @@ function HomeConfig( $stateProvider ) {
 			url: '/home',
 			templateUrl: 'home/templates/home.tpl.html',
 			data: {
-				loadingMessage: 'LOADING'
+				loadingMessage: 'Loading...'
 			},
 			controller: 'HomeCtrl',
 			controllerAs: 'home',

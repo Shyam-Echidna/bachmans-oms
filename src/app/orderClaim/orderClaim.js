@@ -59,6 +59,7 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 	var vm = this;
 	vm.orderclaimsummaryshow=false;
 	var refundarr=[];
+	var refundclaimobj={};
 	vm.uname=$stateParams.name;
 	vm.orderID=$stateParams.orderID;
 	vm.refund=Buyer.xp.Refunds;
@@ -92,13 +93,7 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 			console.log(vm.orderclaimarr);
 		}
 	}
-
-	vm.completeclaim = function(orderID){
-		var refundclaimobj={};
-		console.log(vm.orderclaimarr);
-		vm.Item_Refund_Amount=0;
-		vm.Delivery_Refund=0;
-		vm.Tax_Refund=0;
+	vm.continueclaim = function(){
 		if(vm.orderclaimsummaryshow==false){
 			vm.orderclaimsummaryshow=true;
 			for(var i=0; i<vm.orderclaimarr.length; i++){
@@ -116,6 +111,18 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 			refundclaimobj={"Refunds":refundarr};
 			vm.orderclaimsummaryfunc(vm.orderclaimarr);
 		}
+	}
+	vm.completeclaim = function(orderID){
+		var refundclaimobj={};
+		console.log(vm.orderclaimarr);
+		vm.Item_Refund_Amount=0;
+		vm.Delivery_Refund=0;
+		vm.Tax_Refund=0;
+		if(vm.orderclaimsummaryshow==false){
+			vm.orderclaimsummaryshow=true;
+			refundclaimobj={"Refunds":refundarr};
+			vm.orderclaimsummaryfunc(vm.orderclaimarr);
+		}
 		else{
 			OrderCloud.As().Orders.Get(orderID).then(function(res){
 				/*for(var i=0; i<vm.orderclaimarr.length; i++){
@@ -127,6 +134,7 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 						};
 					refundarr.push(refund);
 				}*/
+				vm.neworder = res;
 				
 				var match=angular.extend({},res.xp,refundclaimobj);
 				OrderCloud.Orders.Patch(orderID,{"xp":match});
@@ -143,6 +151,24 @@ function OrderClaimController($scope, $stateParams, OrderCloud, Buyer, Order, Li
 							var finalxp=angular.extend({},vm.orderclaimarr[i],{"xp":orderParams1});
 							OrderCloud.As().LineItems.Create(res2.ID, finalxp).then(function(da){
 								console.log(da);
+								OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function(cards){
+									vm.creditCardsList = cards.Items;
+								});
+								if(vm.creditCardsList.Items.length==0){
+									console.log("test");
+								}
+								else{
+									CreditCardService.RefundTransaction(null, res1.ID, res1.Total)
+					                .then(function(resp4){
+										if(resp4.ResponseBody.messages.resultCode != "Error"){
+											alert("resp4.ResponseBody.messages.resultCode ")
+										}else{
+											/*vm.TransactionError = resp4.ResponseBody.messages.message[0].text;
+											d.resolve("0");*/
+											alert("TransactionError");
+										}
+					                });
+								}
 								$uibModal.open({
 						            templateUrl: 'orderClaim/templates/orderClaimPopup.tpl.html',
 						            controller: 'orderClaimPopupCtrl',

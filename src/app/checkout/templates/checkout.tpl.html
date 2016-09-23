@@ -101,7 +101,7 @@
 									<div class="check-top city-block">
 										<p>City <span class="star">*</span></p>
 										<input type="text" name="city" ng-if="line.MultipleCities.length <= 1 || !line.MultipleCities" ng-model="line.ShippingAddress.City" ng-readonly="line.xp.addressType=='InStorePickUp' ? true : false" required ng-class="{error: checkout.lineItemForm[line.ID].$submitted && checkout.lineItemForm[line.ID].city.$invalid}"></input>
-										<div ng-if="line.MultipleCities.length > 1">
+										<div ng-if="line.MultipleCities.length > 1" class="multiple-cities">
 											<div uib-dropdown class="form-control " id="MultipleCities" ng-class="{errorMMyy: checkout.lineItemForm[line.ID].$submitted && line.ShippingAddress.City = 'Select City'}">
 												<div id="sort-dropdown" uib-dropdown-toggle>
 													<p class="sort-active-show" ng-init="line.ShippingAddress.City = 'Select City'">{{line.ShippingAddress.City}}</p>

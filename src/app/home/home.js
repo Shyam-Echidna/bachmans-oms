@@ -15,9 +15,9 @@ function HomeConfig( $stateProvider ) {
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
 			resolve: {
-                OrderList: function(OrderCloud, $q) {
-					var arr={};
-					var dd=$q.defer();
+                /*OrderList: function(OrderCloud, $q) {
+					var arr = {};
+					var dd = $q.defer();
 						// OrderCloud.Orders.ListOutgoing(null, null, null, i, 100).then(function(data){
 							// console.log("searched order", data);
 							// arr.saved=_.filter(data.Items, function(obj) {
@@ -38,11 +38,9 @@ function HomeConfig( $stateProvider ) {
 						dd.resolve(arr);
 						console.log("ppppppppppppppppp",data);
 						 
-					})
-					
-					//console.log("aaaaaa", arr);
+					});
                     return dd.promise;
-                },
+                },*/
 				/*OrdersOnHold: function(OrderCloud, $q){
 					var dd=$q.defer(), onholdorders = [], onholdordersobj = {};
 					OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
@@ -76,8 +74,7 @@ function HomeConfig( $stateProvider ) {
 		});
 }
 
-
-function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, OrderList, $scope, OrderCloud,$q, PromotionsList) {
+function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, $scope, OrderCloud,$q, PromotionsList) {
 	var vm = this;
 	vm.showcalendarModal = false;
 	vm.showpromotionsmodal = false;
@@ -109,7 +106,6 @@ function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, Or
     angular.forEach(ShipmentList.Items, function(lineitem, index) {
         console.log(lineitem);
     });*/
-	console.log("OrderList", OrderList);
 	var onholdorders = [];
 	OrderCloud.Shipments.List(null, null, null, null, null, null, {"xp.Status":"OnHold"}).then(function(res){
 		angular.forEach(res.Items, function(res, key){
@@ -140,7 +136,10 @@ function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, Or
 	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({ID:row.entity.ID,LineItemID:row.entity.LineItemID,OrderID:row.entity.OrderID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"14.2%"}
 	  ]
 	 };
-	vm.saved = OrderList.saved;
+	//vm.saved = OrderList.saved;
+	OrderCloud.Orders.ListOutgoing(null, null, null, null, null, null, null, {"xp.SavedOrder.Flag":true}).then(function(data){
+		vm.saved=data.Items;
+	});
 	$scope.user='User';
 	$scope.CSRAdminData = {
 		data: 'home.saved',

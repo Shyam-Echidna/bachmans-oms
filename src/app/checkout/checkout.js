@@ -1155,6 +1155,9 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
 			vm.card.CVV = null;
 		vm.SumSpendingAccChrgs(vm.orderDtls);
 	};
+	vm.disabledDates = function (data) {
+		return (data.mode === 'day' && (data.date.getDay() === 0));
+	};
 }
 
 function checkoutService(CreditCardService, $q, OrderCloud, $state, TaxService, $http, GC_PP_Redemption){

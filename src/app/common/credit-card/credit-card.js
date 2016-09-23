@@ -10,7 +10,9 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         Update: Update,
         Delete: Delete,
         ExistingCardAuthCapture: ExistingCardAuthCapture,
-        SingleUseAuthCapture: SingleUseAuthCapture
+        SingleUseAuthCapture: SingleUseAuthCapture,
+        RefundTransaction: RefundTransaction,
+        VoidTransaction: VoidTransaction
     };
     //Use this function to create a new credit card for an existing customer profile or create a new credit card and a new payment profile at the same time.
     function Create(card) {
@@ -34,16 +36,16 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
             .then(function(response){
                 if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
-                    //toastr.info('Sorry, something went wrong. Please check your card data and try again');
+                    toastr.info('Sorry, something went wrong. Please check your card data and try again');
                 } else if(response.Error) {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 } else {
-                    //toastr.success('Your card has been created', 'Success');
+                    toastr.success('Your card has been created', 'Success');
                 }
                 dfd.resolve(response);
             })
-            .catch(function(response){
-                //toastr.info('Sorry, something went wrong. Please try again');
+            .catch(function(){
+                toastr.info('Sorry, something went wrong. Please try again');
                 dfd.resolve(response);
             });
         return dfd.promise;
@@ -71,17 +73,17 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
             .then(function(response){
                 console.log(response);
                 if((response.messages && response.messages.resultCode && response.messages.resultCode == 'Error')) {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 } else  if(response.Error) {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 }
                 else {
-                    //toastr.success('Your card has been updated', 'Success');
+                    toastr.success('Your card has been updated', 'Success');
                 }
                 dfd.resolve();
             })
             .catch(function(){
-                //toastr.info('Sorry, something went wrong. Please try again');
+                toastr.info('Sorry, something went wrong. Please try again');
                 dfd.resolve();
             });
         return dfd.promise;
@@ -110,20 +112,20 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
             $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
                 .then(function(response){
                     if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
-                        //toastr.info('Sorry, something went wrong. Please try again');
+                        toastr.info('Sorry, something went wrong. Please try again');
                     } else  if(response.Error) {
-                        //toastr.info('Sorry, something went wrong. Please try again');
+                        toastr.info('Sorry, something went wrong. Please try again');
                     } else {
-                        //toastr.success('Your card has been deleted', 'Success');
+                        toastr.success('Your card has been deleted', 'Success');
                     }
                     dfd.resolve();
                 })
                 .catch(function(){
-                    //toastr.info('Sorry, something went wrong. Please try again')
+                    toastr.info('Sorry, something went wrong. Please try again')
                     dfd.resolve();
                 });
         } else {
-            //toastr.info('Your card was not deleted.')
+            toastr.info('Your card was not deleted.')
         }
         return dfd.promise;
     }
@@ -151,14 +153,14 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
             .then(function(response){
                 if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 } else  if(response.Error) {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 }
-                dfd.resolve(response);
+                dfd.resolve();
             })
             .catch(function(){
-                //toastr.info('Sorry, something went wrong. Please try again')
+                toastr.info('Sorry, something went wrong. Please try again')
             });
         return dfd.promise;
     }
@@ -185,9 +187,9 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
         $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
             .then(function(response){
                 if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 } else  if(response.Error) {
-                    //toastr.info('Sorry, something went wrong. Please try again');
+                    toastr.info('Sorry, something went wrong. Please try again');
                 } else {
                     cc = {
                         "buyerID": OrderCloud.BuyerID.Get(),
@@ -205,22 +207,88 @@ function CreditCardService($q, $resource, toastr, authorizeneturl, OrderCloud) {
                     };
                     //capture payment
                     $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
-                        .then(function(response){
+                        .then(function(){
                             if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
-                                //toastr.info('Sorry, something went wrong. Please try again');
+                                toastr.info('Sorry, something went wrong. Please try again');
                             } else  if(response.Error) {
-                                //toastr.info('Sorry, something went wrong. Please try again');
+                                toastr.info('Sorry, something went wrong. Please try again');
                             }
-                            dfd.resolve(response);
+                            dfd.resolve();
                         })
                         .catch(function(){
-                            //toastr.info('Sorry, something went wrong. Please try again')
-                            dfd.resolve(response);
+                            toastr.info('Sorry, something went wrong. Please try again')
+                            dfd.resolve();
                         });
                 }
             })
             .catch(function(){
-                //toastr.info('Sorry, something went wrong. Please try again')
+                toastr.info('Sorry, something went wrong. Please try again')
+            });
+        return dfd.promise;
+    }
+    //Use this function to create PARTIAL refunds. Use the VoidTransaction method to refund an entire order
+    function RefundTransaction(card, order, amount) {
+        var dfd = $q.defer();
+        var token = OrderCloud.As().Auth.ReadToken();
+        var cc = {
+            "buyerID": OrderCloud.BuyerID.Get(),
+            "orderID": order.ID,
+            "transactionType": "refundTransaction",
+            "amount": amount,
+            "cardDetails": {
+                "paymentID": card.paymentID,
+                "creditCardID": card.ID != null ? card.ID : null,
+                "cardType": null,
+                "cardNumber": card.cardNumber != null ? card.cardNumber : null,
+                "expirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
+                "cardCode": null
+            }
+        };
+        //refund partial payment
+        $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
+            .then(function(response){
+                if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                } else  if(response.Error) {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                }
+                dfd.resolve();
+            })
+            .catch(function(){
+                toastr.info('Sorry, something went wrong. Please try again')
+            });
+        return dfd.promise;
+    }
+    //Use this function to create FULL refunds. Use the RefundTransaction method to refund a partial order amount
+    function VoidTransaction(card, order, amount) {
+        var dfd = $q.defer();
+        var token = OrderCloud.As().Auth.ReadToken();
+        var cc = {
+            "buyerID": OrderCloud.BuyerID.Get(),
+            "orderID": order.ID,
+            "transactionType": "refundTransaction",
+            "amount": amount,
+            "cardDetails": {
+                "paymentID": card.paymentID,
+                "creditCardID": card.ID != null ? card.ID : null,
+                "cardType": null,
+                "cardNumber": card.cardNumber != null ? card.cardNumber : null,
+                "expirationDate": card.ExpMonth != null && card.ExpYear !=null ? card.ExpMonth + card.ExpYear : null,
+                "cardCode": null
+            }
+        };
+        //refund full payment
+        $resource(authorizeneturl, {}, {authorize: {method: 'POST', headers: {'Authorization': 'Bearer ' + token, 'Content-type': 'application/json'}}}).authorize(cc).$promise
+            .then(function(response){
+                if(response.messages && response.messages.resultCode && response.messages.resultCode == 'Error') {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                } else  if(response.Error) {
+                    toastr.info('Sorry, something went wrong. Please try again');
+                }
+                dfd.resolve();
+            })
+            .catch(function(){
+                toastr.info('Sorry, something went wrong. Please try again')
             });
         return dfd.promise;
     }

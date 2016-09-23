@@ -8,7 +8,7 @@ function CustInfoConfig( $stateProvider ) {
 	$stateProvider
 		.state( 'custInfo', {
 			parent: 'base',
-			url: '/custInfo',
+			url: '/custInfo/:ID',
 			templateUrl: 'custInfo/templates/custInfo.tpl.html',
 			controller: 'CustInfoCtrl',
 			controllerAs: 'custInfo',

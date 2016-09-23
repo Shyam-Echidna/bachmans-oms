@@ -35,7 +35,7 @@
 						<input type="text" ng-show="isEditing" ng-model="line[0].ShippingAddress.Street1" placeholder="Street1" ng-blur="buildordersummary.GetDeliveryFees(line, 0)"/>
 						<input type="text" ng-show="isEditing" ng-model="line[0].ShippingAddress.Street2" placeholder="Street2" ng-blur="buildordersummary.GetDeliveryFees(line, 0)"/>
 						<input type="text" ng-show="isEditing && (line[0].MultipleCities.length <= 1 || !line[0].MultipleCities)" ng-model="line[0].ShippingAddress.City" placeholder="City" />
-						<div ng-if="line[0].MultipleCities.length > 1 && isEditing">
+						<div ng-if="line[0].MultipleCities.length > 1 && isEditing" class="city-list">
 							<div uib-dropdown class="form-control " id="MultipleCities">
 								<div id="sort-dropdown" uib-dropdown-toggle>
 									<p class="sort-active-show" ng-init="line[0].ShippingAddress.City = 'Select City'">{{line[0].ShippingAddress.City}}</p>

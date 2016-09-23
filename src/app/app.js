@@ -110,6 +110,7 @@ function AppCtrl($q, $rootScope, $state, $http, appname, LoginService, toastr, $
             vm.footerstat = true;
         } else{
             vm.headerstat = false;
+			vm.footerstat = false;
         }
     });
 

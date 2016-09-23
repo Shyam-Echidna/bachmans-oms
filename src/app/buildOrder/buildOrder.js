@@ -1213,7 +1213,8 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 	var vm = this;
 	vm.isOpen = {};
 	vm.CancelDeleteToolTip = {};
-	vm.order = Order;
+	if(Order)
+		vm.order = Order;
 	$scope.showDeliveryMethods = {
 		templateUrl: 'AddRecipientDelMethods.html'
 	};
@@ -1598,36 +1599,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				});
 			}
 		}else{
-			/*OrderCloud.As().Orders.ListOutgoing(null, null, $stateParams.ID, null, null, "FromUserID").then(function(assignOrders){
-				var data = [];
-				data = _.where(assignOrders.Items, {"FromUserID":$stateParams.ID});
-				if(data.length == 0){
-					var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
-					OrderCloud.As().Orders.Create(orderParams).then(function(res){
-						CurrentOrder.Set(res.ID);
-						vm.order = res;
-						vm.getLineItems();
-					});
-				}else{
-					var createOrder = true;
-					angular.forEach(data, function(row, index){
-						if(row.Status == "Unsubmitted"){
-							createOrder = false;
-							CurrentOrder.Set(row.ID);
-							vm.order = row;
-							vm.getLineItems();
-						} 
-					},true);
-					if(createOrder == true){
-						var orderParams = {"Type": "Standard", "xp":{"OrderSource":"OMS"}};
-						OrderCloud.As().Orders.Create(orderParams).then(function(res){
-							CurrentOrder.Set(res.ID);
-							vm.order = res;
-							vm.getLineItems();
-						});
-					}
-				}
-			});*/
+			vm.lineItemProducts = [];
 		}
 	};
 	if($stateParams.SearchType!="Products" && $stateParams.SearchType != 'plp' && $stateParams.SearchType != 'BuildOrder' && $stateParams.SearchType != 'PDP' && $stateParams.SearchType != 'Workshop')
@@ -2164,12 +2136,18 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		vm.OutsideClickToolTipIndex = lineID;
 	};
 	vm.GetDeliveryFees = function(line, form){
-		vm.ActiveOrderCartLoader = BuildOrderService.DeliveryFeesService(line, form, vm, CstDateTime).then(function(res){
-			console.log(res);
-		});
+		if(line.ShippingAddress.City != "Select City"){
+			vm.ActiveOrderCartLoader = BuildOrderService.DeliveryFeesService(line, form, vm, CstDateTime).then(function(res){
+				console.log(res);
+			});
+		}	
 	};
 	vm.disabledDates = function (data) {
 		return (data.mode === 'day' && (data.date.getDay() === 0));
+	};
+	vm.SelectedCity = function(city, line, form){
+		line.ShippingAddress.City = city;
+		vm.GetDeliveryFees(line, form);
 	};
 }
 
@@ -2692,16 +2670,31 @@ function buildOrderSummaryController($scope, $state, ocscope, buyerid, $cookieSt
 		angular.forEach(array, function(val, key){
 			val.ShippingAddress = array[0].ShippingAddress;
 		}, true);
-		vm.OrderSummaryLoader = BuildOrderService.DeliveryFeesService(line, vm, vm, CstDateTime).then(function(res){
-			console.log(res);
-			/*angular.forEach(vm.activeOrders, function(val){
-				arr = _.union(arr, val);
-			}, true);
-			if((array.length)-1 > index)
-				vm.GetDeliveryFees(array, index+1);
-			else
-				vm.grouping(arr);*/
-		});
+		if(line.ShippingAddress.City != "Select City"){
+			vm.OrderSummaryLoader = BuildOrderService.DeliveryFeesService(line, vm, vm, CstDateTime).then(function(res){
+				console.log(res);
+				/*angular.forEach(vm.activeOrders, function(val){
+					arr = _.union(arr, val);
+				}, true);
+				if((array.length)-1 > index)
+					vm.GetDeliveryFees(array, index+1);
+				else
+					vm.grouping(arr);*/
+			});
+		}
+	};
+	
+	
+	vm.GetDeliveryFees = function(line, form){
+		if(line.ShippingAddress.City != "Select City"){
+			vm.ActiveOrderCartLoader = BuildOrderService.DeliveryFeesService(line, form, vm, CstDateTime).then(function(res){
+				console.log(res);
+			});
+		}	
+	};
+	vm.SelectedCity = function(city, line){
+		line[0].ShippingAddress.City = city;
+		vm.GetDeliveryFees(line, 0);
 	};
 }
 
@@ -3000,7 +2993,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		OrderOnHold = _.pluck(OrderOnHold, 'Status');
 		if(OrderOnHold.indexOf("OnHold") == -1){
 			if($stateParams.SearchType == 'Products' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'BuildOrder' ||  $stateParams.SearchType == 'plp'){
-				OrderCloud.Orders.Patch(ID, {"xp": {"Status": "","CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(res){
+				OrderCloud.Orders.Patch(ID, {"xp": {"Status": null,"CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(res){
 					d.resolve(res);
 				}).catch(function(){
 					OrderCloud.Orders.Get(ID).then(function(res){
@@ -3009,7 +3002,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 				});
 			}
 			else{
-				OrderCloud.As().Orders.Patch(ID, {"xp": {"Status": "","CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(res){
+				OrderCloud.As().Orders.Patch(ID, {"xp": {"Status": null,"CSRID":$cookieStore.get('OMS.CSRID')}}).then(function(res){
 					d.resolve(res);
 				}).catch(function(){
 					OrderCloud.Orders.Get(ID).then(function(res){
@@ -3234,7 +3227,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		return data;
 	}
 	function _deliveryFeesService(line, form, vm, CstDateTime){
-		var validatedAddress, zip, obj = {}, dlvryMethods, d = $q.defer(), dt;
+		var validatedAddress, zip, obj = {}, dlvryMethods, d = $q.defer(), dt, IsLocal;
 		vm.NoDeliveryFees = false;
 		angular.forEach(vm.AvoidMultipleDelryChrgs, function(val, key){
 			val.deliveryDate = new Date(val.deliveryDate);
@@ -3251,8 +3244,15 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 		if((line.ShippingAddress.Zip.toString()).length == 5){
 			$http.get(GoogleAPI+line.ShippingAddress.Zip).then(function(res){
 				if(res.data.results[0].postcode_localities){
-					if(res.data.results[0].postcode_localities.length > 1)
+					if(res.data.results[0].postcode_localities.length > 1){
 						line.MultipleCities = res.data.results[0].postcode_localities;
+						if(line.ShippingAddress.Zip == 55038)
+							line.MultipleCities.push("Columbus");
+						if(line.ShippingAddress.Zip == 55082){
+							line.MultipleCities.push("Grant");
+							line.MultipleCities.push("West Lakeland");
+						}
+					}	
 				}
 				else
 					delete line.MultipleCities;
@@ -3272,10 +3272,11 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 						line.ShippingAddress.City = validatedAddress.City;
 					line.ShippingAddress.State = validatedAddress.Region;
 					line.ShippingAddress.Country = validatedAddress.Country;
+					IsLocal =  _.contains(["Minneapolis", "Saint Paul", "Medina", "Anoka", "Centerville", "Stillwater", "Grant"], line.ShippingAddress.City);
 					if(line.xp.DeliveryMethod!="Courier" && line.xp.DeliveryMethod!="Faster"){
 						delete line.xp.DeliveryMethod;
 						if(!line.xp.DeliveryMethod){
-							if(line.ShippingAddress.City == "Minneapolis" || line.ShippingAddress.City == "Saint Paul"){
+							if(IsLocal){
 								line.xp.DeliveryMethod = "LocalDelivery";
 							}else{
 								line.xp.DeliveryMethod = "UPS";
@@ -3286,19 +3287,24 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 						OrderCloud.Categories.Get(res1.Items[0].CategoryID).then(function(res2){
 							dlvryMethods = res2.xp.CategoryDeliveryCharges.DeliveryMethods;
 							if(dlvryMethods[line.xp.DeliveryMethod]){
+								delete line.xp.Destination;
+								line.xp.Status = null;
 								line.DeliveryNotAvailable = false;
 								if(line.xp.DeliveryMethod=="LocalDelivery" || line.xp.DeliveryMethod=="Faster"){
-									obj['Standard Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDelivery;
+									obj['Standard Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
 									if(line.Quantity >= 50){
 										if(line.Product.xp.Handling)
 											obj['Handling Charges'] = line.Product.xp.Handling;
 										if(line.xp.DeliveryMethod=="Faster"){
-											if(line.ShippingAddress.City=="Minneapolis" || line.ShippingAddress.City=="Saint Paul")
+											if(IsLocal)
 												obj['Service Fees'] = vm.buyerXp.AdditionalCharges.ServiceFees;
 											else
 												line.DeliveryNotAvailable = true;
 										}
 									}
+									dt = angular.copy(CstDateTime).setHours(0, 0, 0, 0);
+									if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate))
+										obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
 								}
 								if(line.xp.DeliveryMethod=="UPS"){
 									obj['UPS Charges'] = vm.buyerXp.Shippers.UPS.UPSCharges;
@@ -3373,8 +3379,16 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 								}, true);
 								d.resolve();
 							}else{
+								if((line.Product.xp['Code B4'] == "F" || line.Product.xp['Code B4'] == "T") && line.xp.DeliveryMethod!="LocalDelivery"){
+									line.xp.Destination = line.Product.xp['Code B4'];
+									line.xp.Status = "OnHold";
+									line.DeliveryNotAvailable = false;
+								}else{
+									delete line.xp.Destination;
+									line.xp.Status = null;
+									line.DeliveryNotAvailable = true;
+								}
 								d.resolve();
-								line.DeliveryNotAvailable = true;
 							}
 						});
 					});	

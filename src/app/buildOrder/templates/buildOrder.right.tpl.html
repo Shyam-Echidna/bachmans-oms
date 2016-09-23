@@ -317,7 +317,7 @@
 									</label>
 									<p ng-show="lineitem.DeliveryNotAvailable" ng-if="lineitem.DeliveryNotAvailable ? buildOrderRight.lineItemForm[lineitem.ID].DeliveryNotAvailable = true : buildOrderRight.lineItemForm[lineitem.ID].DeliveryNotAvailable = false" style="color:red;"><span>Delivery Not Available For This Address</span></p>
 								</div>
-								<div ng-if="lineitem.xp.addressType=='Hospital' || lineitem.xp.addressType=='Funeral' || lineitem.xp.addressType=='Church'" class="outgoing-wire" ng-init="buildOrderRight.TempAddrType = lineitem.xp.addressType>
+								<div ng-if="lineitem.xp.addressType=='Hospital' || lineitem.xp.addressType=='Funeral' || lineitem.xp.addressType=='Church'" class="outgoing-wire" ng-init="buildOrderRight.TempAddrType = lineitem.xp.addressType">
 									<!-- <label><input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire">Outgoing Wire</label> -->
 									<!-- <div class="check-common">
 										<input type="checkbox" ng-checked="lineitem.xp.Status=='OnHold' ? true : false" ng-model="lineitem.OutgoingWire" id="outgoingwire">
@@ -446,7 +446,7 @@
 															<p class="sort-active-show" ng-init="lineitem.ShippingAddress.City = 'Select City'">{{lineitem.ShippingAddress.City}}</p>
 														</div>
 														<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
-															<li ng-repeat="city in lineitem.MultipleCities" ng-click="lineitem.ShippingAddress.City=city"><a href="">{{city}}</a></li>
+															<li ng-repeat="city in lineitem.MultipleCities" ng-click="buildOrderRight.SelectedCity(city, lineitem, buildOrderRight.lineItemForm[lineitem.ID])"><a href="">{{city}}</a></li>
 														</ul>
 													</div>
 												</div>	

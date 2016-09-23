@@ -5,7 +5,8 @@
 		<button ng-if="showOrdersummary" ng-click="gotoCheckout();OrderSummary();">PROCEED TO CHECKOUT</button>
 		<div class="order-total">
 			<p>Order Total</p>
-			<span>{{orderTotal | currency}}</span>
+			<span ng-if="orderTotal">{{orderTotal | currency}}</span>
+			<span ng-if="!orderTotal">$0.00</span>
 		</div>
 	</div>
 	<div class="cancel-order" ng-click="buildOrderDown.CancelToolTip()" popover-trigger="none" popover-is-open="buildOrderDown.ShowCancelOrderToolTip" uib-popover-template="buildOrderDown.ToolTip.templateUrl">

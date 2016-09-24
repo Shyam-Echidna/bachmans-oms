@@ -329,7 +329,7 @@
 				<div class="row faster-delivery-content" ng-if="buildOrder.hidePdpblock==false">
                                     <div class="assembly" ng-if="buildOrder.Assembly" ng-init="buildOrder.IsAssembly='Not Assembled'">
                                         <h5>Assembly:</h5>
-                                        <div class="radio-inline">
+                                        <div class="radio-inline" ng-click="buildOrder.AssemblyItems()">
                                            <input type="radio" id="assembled" name="assembly" value="Assembled" ng-model="buildOrder.IsAssembly" />
                                            <label for="assembled" class="m0">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
@@ -658,8 +658,8 @@
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, buildOrder.CategoryItemsUpsell)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
 								<h2>{{upsell.Name}}</h2>
-								<h3>Option Deluxe</h3>
-								<h4>Color Red</h4>
+								<h3>{{upsell.Size}}</h3>
+								<h4>{{upsell.Color}}</h4>
 								<div class="price_lst">
 									<h5>{{upsell.Price | currency}}</h5>
 								</div>
@@ -674,8 +674,8 @@
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(cross.ID, CategoryItemsSimilar)">
 								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
 								<h2>{{cross.Name}}</h2>
-								<h3>Option Deluxe</h3>
-								<h4>Color Red</h4>
+								<h3>{{cross.xp.SpecsOptions.Size}}</h3>
+								<h4>{{cross.xp.SpecsOptions.Color}}</h4>
 								<div class="price_lst">
 									<h5>{{pricelist.Price | currency}}</h5>
 								</div>
@@ -746,5 +746,24 @@
 			<img src="{{buildOrderPDP.articleImgURL}}"/>
 		</div>
 		<div ng-include="buildOrderPDP.articleURL"></div>
+	</div>
+</modal>
+<modal title="Assembled Items" visible="buildOrder.AssemblyModal">
+	<div class="pdp-similarItems col-md-12">
+		<ul class="pdp-upsell-container">
+			<li class="item" ng-repeat="items in buildOrder.AssemblyProducts" ng-click="">
+				<input type="checkbox" ng-model="buildOrder.ItemSelected[items.ID]" />
+				<div class="pdp-upsell-block">
+					<div class="product_img"><img src="assets/images/flowers.jpg" /></div>
+					<h2>{{items.Name}}</h2>
+					<h3>{{items.Size}}</h3>
+					<h4>{{items.Color}}</h4>
+					<div class="price_lst">
+						<h5>{{items.Price | currency}}</h5>
+					</div>
+				</div>
+			</li> 
+		</ul>
+		<button ng-click="buildOrder.SelectedProducts()">Done</button>
 	</div>
 </modal>

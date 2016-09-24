@@ -44,6 +44,7 @@ angular.module( 'orderCloud' )
 						scope.$parent[attrs.visible] = false;
 						if(scope.$parent.buildOrder){
 							scope.$parent.buildOrder.guestUserModal = false;
+							scope.$parent.buildOrder.AssemblyModal = false;
 							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
 						}
 						if(scope.$parent.custInfo)
@@ -527,7 +528,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}, true);	
 		$q.all(tempArr).then(function(res1){
 			angular.forEach(res1, function(r){
-				vm.CategoryItemsUpsell.push({"ID":r.ID,"Name":r.Name,"Price":25,"Description":r.Description});
+				vm.CategoryItemsUpsell.push({"ID":r.ID,"Name":r.Name,"Price":25,"Description":r.Description,"Size":r.xp.SpecsOptions.Size, "Color":r.xp.SpecsOptions.Color});
 			}, true);
 			$('#owl-carousel-upsell').trigger('destroy.owl.carousel');
 			$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
@@ -584,7 +585,7 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 				},true);
 				$q.all(tempArr).then(function(res){
 					angular.forEach(res, function(r){
-						vm.CategoryItemsSimilar.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description});
+						vm.CategoryItemsSimilar.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description,"Size":r.xp.SpecsOptions.Size, "Color":r.xp.SpecsOptions.Color});
 					},true);
 					$('#owl-carousel-upsell').trigger('destroy.owl.carousel').removeClass('owl-carousel');
 					$('#owl-carousel-upsell').find('.owl-stage-outer').children().unwrap();
@@ -1129,6 +1130,33 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		else
 			vm.CheckDeliveryAvailable(vm.Mcity, ProductID);
 	};
+	vm.AssemblyItems = function(){
+		vm.AssemblyModal = true;
+		if(!vm.AssemblyProducts){
+			vm.AssemblyProducts = [];
+			var tempArr = [];
+			OrderCloud.Products.Get("cat2_cat12_prod2").then(function(data) {
+				angular.forEach(data.xp.Cross, function(row, index){
+					tempArr.push(OrderCloud.Products.Get(row));
+				},true);
+				$q.all(tempArr).then(function(res){
+					angular.forEach(res, function(r){//vm.AssemblyProducts.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description,"Size":r.xp.SpecsOptions.Size, "Color":r.xp.SpecsOptions.Color});
+					vm.AssemblyProducts.push({"ID":r.ID,"Name":r.Name,"Price":30,"Description":r.Description})
+					},true);
+				});
+			});
+		}	
+	};
+	vm.AssemblyList = [];
+	vm.SelectedProducts = function(){
+		vm.AssemblyModal = false;
+		vm.AssemblyList = [];
+		console.log(vm.ItemSelected);
+		_.mapObject(vm.ItemSelected, function(val, key) {
+			if(val == true)
+				vm.AssemblyList.push(key);
+		});
+	};
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -1324,7 +1352,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 	};
 	$scope.createListItem = function(prodID, DeliveryMethod, baseImg){
-		var lineItemParams = {"ProductID": prodID,"Quantity": 1,"xp":{"TotalCost":0}};
+		var lineItemParams = {"ProductID": prodID,"Quantity": 1,"xp":{"TotalCost":0}}, buildorderVM = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder, TempArr = [];
 		if(DeliveryMethod)
 			lineItemParams.xp.DeliveryMethod = DeliveryMethod;
 		OrderCloud.Categories.ListProductAssignments(null, prodID).then(function(res1){
@@ -1340,32 +1368,56 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				if($stateParams.SearchType=='Products' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'plp'){
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
-						if(angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.IsPlacement=="Placed"){
+						if(buildorderVM.IsPlacement=="Placed"){
 							lineItemParams.xp.deliveryFeesDtls = {"Placement Charges": vm.buyerXp.AdditionalCharges.PlacementCharges};
 							lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + parseInt(vm.buyerXp.AdditionalCharges.PlacementCharges);
 							lineItemParams.xp.deliveryCharges = vm.buyerXp.AdditionalCharges.PlacementCharges;
-							lineItemParams.xp.PlacementInstruction = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.PlacementInstruction;
+							lineItemParams.xp.PlacementInstruction = buildorderVM.PlacementInstruction;
 						}
 						vm.ActiveOrderCartLoader = OrderCloud.LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
-							vm.getLineItems();
+							if(buildorderVM.AssemblyList.length == 0){
+								vm.getLineItems();
+							}else{
+								vm.CreateAssemblyItems(buildorderVM, lineItemParams);
+							}
 							vm.isOpen[res.ID] = true;
 						});
 					});
 				}else{
 					vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
-						if(angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.IsPlacement=="Placed"){
+						if(buildorderVM.IsPlacement=="Placed"){
 							lineItemParams.xp.deliveryFeesDtls = {"Placement Charges": vm.buyerXp.AdditionalCharges.PlacementCharges};
 							lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + parseInt(vm.buyerXp.AdditionalCharges.PlacementCharges);
 							lineItemParams.xp.deliveryCharges = vm.buyerXp.AdditionalCharges.PlacementCharges;
-							lineItemParams.xp.PlacementInstruction = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.PlacementInstruction;
+							lineItemParams.xp.PlacementInstruction = buildorderVM.PlacementInstruction;
 						}
 						vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
-							vm.getLineItems();
+							if(buildorderVM.AssemblyList.length == 0){
+								vm.getLineItems();
+							}else{
+								vm.CreateAssemblyItems(buildorderVM, lineItemParams);
+							}
 							vm.isOpen[res.ID] = true;
 						});
 					});
 				}
+			});
+		});	
+	};
+	vm.CreateAssemblyItems = function(buildorderVM, lineItemParams){
+		var TempArr = [];
+		angular.forEach(buildorderVM.AssemblyList, function(val, key){
+			lineItemParams.ProductID = val;
+			TempArr.push(OrderCloud.LineItems.Create(vm.order.ID, lineItemParams));
+		}, true);
+		vm.ActiveOrderCartLoader = $q.all(TempArr).then(function(result1){
+			TempArr = [];
+			angular.forEach(result1, function(val, key){
+				TempArr.push(OrderCloud.LineItems.Patch(vm.order.ID, val.ID, {"xp":{"TotalCost":val.LineTota}}));
+			}, true);
+			vm.ActiveOrderCartLoader = $q.all(TempArr).then(function(result2){
+				vm.getLineItems();
 			});
 		});
 	};

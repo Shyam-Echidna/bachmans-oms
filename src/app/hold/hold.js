@@ -57,7 +57,8 @@ function HoldConfig( $stateProvider ) {
 
 function HoldController($scope, $state, $stateParams, Order, WiredProduct, OrderCloud, LineItemHelpers, Underscore) {
 	var vm = this;
-	vm.onholdlineitems=Order;
+	vm.onholdlineitems=[];
+	vm.onholdlineitems.push(Order);
 	vm.onholdlineitems1=vm.onholdlineitems;
 	vm.wiredproducts=WiredProduct;
 	vm.wireserviceopt=null;

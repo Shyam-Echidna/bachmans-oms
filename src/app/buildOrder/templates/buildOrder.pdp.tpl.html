@@ -327,17 +327,17 @@
 				</div>
 				<!--  -->
 				<div class="row faster-delivery-content" ng-if="buildOrder.hidePdpblock==false">
-                                    <div class="assembly">
+                                    <div class="assembly" ng-if="buildOrder.Assembly" ng-init="buildOrder.IsAssembly='Not Assembled'">
                                         <h5>Assembly:</h5>
                                         <div class="radio-inline">
-                                           <input type="radio" id="assembled" name="assembly" value="Assembled">
+                                           <input type="radio" id="assembled" name="assembly" value="Assembled" ng-model="buildOrder.IsAssembly" />
                                            <label for="assembled" class="m0">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
                                            <span class="label-name">Assembled</span>
                                            </label>
                                         </div>
                                         <div class="radio-inline">
-                                           <input type="radio" id="notAssembled" name="assembly" value="Not Assembled">
+                                           <input type="radio" id="notAssembled" name="assembly" value="Not Assembled" ng-model="buildOrder.IsAssembly" />
                                            <label for="notAssembled">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
                                            <span class="label-name">Not Assembled</span>
@@ -345,24 +345,24 @@
                                         </div>
                                         <p class="note"><span>Note:&nbsp;</span>Assembly charges may be applicable</p>
                                     </div>
-                                    <div class="placement">
+                                    <div class="placement" ng-if="buildOrder.Placement" ng-init="buildOrder.IsPlacement='Not Placed'">
                                         <h5>Placement:</h5>
                                         <div class="radio-inline">
-                                           <input type="radio" id="placed" name="placement" value="Placed">
+                                           <input type="radio" id="placed" name="placement" value="Placed" ng-model="buildOrder.IsPlacement" />
                                            <label for="placed"  class="m0">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
                                            <span class="label-name">Placed</span>
                                            </label>
                                         </div>
                                         <div class="radio-inline">
-                                           <input type="radio" id="notPlaced" name="placement"value="Not Placed">
+                                           <input type="radio" id="notPlaced" name="placement" value="Not Placed" ng-model="buildOrder.IsPlacement" />
                                            <label for="notPlaced">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
                                            <span class="label-name">Not Placed</span>
                                            </label>
                                         </div>
                                         <br>
-                                        <textarea placeholder="Placement Instruction" rows="4" cols="10"></textarea>
+                                        <textarea placeholder="Placement Instruction" rows="4" cols="10" ng-model="buildOrder.PlacementInstruction"></textarea>
                                         <p class="note"><span>Note:&nbsp;</span>Placement Charges Will be applicable</p>
                                     </div>
                                     <!-- <div class="fastDelivery" ng-show="pdp.Faster"> -->
@@ -689,6 +689,35 @@
 </ui-view>
 <modal title="Order Details Confirm" visible="buildOrder.OrderConfirmPopUp" id="OrderConfirmPopUp" class="create-user-pop-up modal-pop-up">
 	My details goes here.......
+</modal>
+<modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up view-care-guide" ng-init="buildOrderPDP.showArticle=false;">
+	<div ng-if="buildOrderPDP.showArticle" ng-click="buildOrderPDP.showArticle=!buildOrderPDP.showArticle" class="page_header_back">
+	<a>
+		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 14 21" style="enable-background:new 0 0 14 21;" xml:space="preserve">
+			<style type="text/css">
+				.st0{fill:#8B8E96;}
+			</style>
+			<g>
+				<path d="M0.7,18.3l7.8-7.8L0.7,2.7L3,0.3l10.2,10.2L3,20.7L0.7,18.3z"></path>
+			</g>
+		</svg>
+		Back
+	</a>
+</div>
+	<ul ng-if="!buildOrderPDP.showArticle">
+		<li ng-repeat="articles in buildOrder.articles">
+			<div ng-click="buildOrderPDP.getArticle(articles.contentUrl);buildOrderPDP.showArticle=!buildOrderPDP.showArticle">
+				<h1>{{articles.title}}</h1>
+				<p>{{articles.description}}</p>
+			</div>
+		</li>
+	</ul>
+	<div class="articlePDP" ng-if="buildOrderPDP.showArticle">
+		<div class="article-img">
+			<img src="{{buildOrderPDP.articleImgURL}}"/>
+		</div>
+		<div ng-include="buildOrderPDP.articleURL"></div>
+	</div>
 </modal>
 <modal title="View Care Guide" visible="buildOrderPDP.viewCareGuide" id="careGuide" class="modal-pop-up view-care-guide" ng-init="buildOrderPDP.showArticle=false;">
 	<div ng-if="buildOrderPDP.showArticle" ng-click="buildOrderPDP.showArticle=!buildOrderPDP.showArticle" class="page_header_back">

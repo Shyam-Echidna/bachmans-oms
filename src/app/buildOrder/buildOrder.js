@@ -841,10 +841,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 		}
 		if(vm.hidePdpblock==false){
 			vm.DeliveryType = false;
-			//vm.isCourier = false;
+			vm.Assembly = false;
 			vm.Courier = false;
 			vm.DirectShip = false;
-			//vm.isFaster = false;
+			vm.Placement = false;
 			vm.Faster = false;
 			vm.GiftCard = false;
 			OrderCloud.Categories.ListProductAssignments(null, e.ID).then(function(res){
@@ -860,6 +860,12 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 					}
 					if(res2.xp.DeliveryChargesCatWise.DeliveryMethods.Courier == true){
 						vm.Courier = true;
+					}
+					if(res2.xp.Placement){
+						vm.Placement = true;
+					}
+					if(res2.xp.Assembly){
+						vm.Assembly = true;
 					}
 				});	
 			});
@@ -1328,12 +1334,18 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					if (v.MinDays){
 						MinDate[k] = v.MinDays;
 					}
-				});	
+				});
 				lineItemParams.xp.MinDate = MinDate;
 				lineItemParams.xp.ProductImageUrl = baseImg;
 				if($stateParams.SearchType=='Products' || $stateParams.SearchType == 'PDP' || $stateParams.SearchType == 'BuildOrder' || $stateParams.SearchType == 'plp'){
 					vm.ActiveOrderCartLoader = OrderCloud.LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
+						if(angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.IsPlacement=="Placed"){
+							lineItemParams.xp.deliveryFeesDtls = {"Placement Charges": vm.buyerXp.AdditionalCharges.PlacementCharges};
+							lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + parseInt(vm.buyerXp.AdditionalCharges.PlacementCharges);
+							lineItemParams.xp.deliveryCharges = vm.buyerXp.AdditionalCharges.PlacementCharges;
+							lineItemParams.xp.PlacementInstruction = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.PlacementInstruction;
+						}
 						vm.ActiveOrderCartLoader = OrderCloud.LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
 							vm.getLineItems();
 							vm.isOpen[res.ID] = true;
@@ -1342,6 +1354,12 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 				}else{
 					vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Create(vm.order.ID, lineItemParams).then(function(res){
 						lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + (res.UnitPrice * res.Quantity);
+						if(angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.IsPlacement=="Placed"){
+							lineItemParams.xp.deliveryFeesDtls = {"Placement Charges": vm.buyerXp.AdditionalCharges.PlacementCharges};
+							lineItemParams.xp.TotalCost = lineItemParams.xp.TotalCost + parseInt(vm.buyerXp.AdditionalCharges.PlacementCharges);
+							lineItemParams.xp.deliveryCharges = vm.buyerXp.AdditionalCharges.PlacementCharges;
+							lineItemParams.xp.PlacementInstruction = angular.element(document.getElementById("buildOrder-pdp-container")).scope().$parent.$parent.$parent.buildOrder.PlacementInstruction;
+						}
 						vm.ActiveOrderCartLoader = OrderCloud.As().LineItems.Patch(vm.order.ID, res.ID, lineItemParams).then(function(res2){
 							vm.getLineItems();
 							vm.isOpen[res.ID] = true;
@@ -3323,28 +3341,10 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 								}
 								if(res2.xp.PalletCharge)
 									obj['Pallet Charge'] = res2.xp.PalletCharge;
-								/*if(line.xp.MinDate){
-									angular.forEach(line.xp.MinDate, function(val1, key1){
-										dt = angular.copy(CstDateTime);
-										dt = dt.setDate(dt.getDate() + val1);
-										line.xp.MinDate[key1] = new Date(dt);
-									}, true);
-									dt = angular.copy(CstDateTime);
-									if(line.xp.DeliveryMethod=="LocalDelivery")
-										line.xp.MinDate['MinToday'] = new Date(dt.setDate(dt.getDate() + line.xp.MinDate.LocalDelivery));
-									if(line.xp.DeliveryMethod=="UPS")
-										line.xp.MinDate['MinToday'] = new Date(dt.setDate(dt.getDate() + line.xp.MinDate.UPS));
-									if(line.xp.DeliveryMethod=="Faster")
-										line.xp.MinDate['MinToday'] = new Date(dt.setDate(dt.getDate() + line.xp.MinDate.Faster));
-									if(line.xp.DeliveryMethod=="Courier")
-										line.xp.MinDate['MinToday'] = new Date(dt.setDate(dt.getDate() + line.xp.MinDate.Courier));		
-									if(line.xp.DeliveryMethod=="InStorePickUp")
-										line.xp.MinDate['InStorePickUp'] = new Date(dt.setDate(dt.getDate() + line.xp.MinDate.InStorePickUp));
-								}else{
-									dt = angular.copy(CstDateTime);
-									line.xp.MinDate = {};
-									line.xp.MinDate['MinToday'] = dt;
-								}*/
+								if(line.xp.deliveryFeesDtls){
+									if(line.xp.deliveryFeesDtls['Placement Charges'])
+										obj['Placement Charges'] = line.xp.deliveryFeesDtls['Placement Charges'];
+								}	
 								line.xp.deliveryFeesDtls = obj;
 								line.xp.TotalCost = 0;
 								line.xp.deliveryCharges = 0;
@@ -3352,12 +3352,18 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 									line.xp.deliveryCharges += parseFloat(val);
 								}, true);
 								if(vm.NoDeliveryFees == true || line.xp.addressType=="InStorePickUp"){
-									delete line.xp.deliveryFeesDtls;
-									line.xp.deliveryCharges = 0;
+									if(line.xp.deliveryFeesDtls['Placement Charges']){
+										line.xp.deliveryFeesDtls = {"Placement Charges": line.xp.deliveryFeesDtls['Placement Charges']};
+										line.xp.deliveryCharges = line.xp.deliveryFeesDtls['Placement Charges'];
+										line.xp.TotalCost = parseInt(line.xp.deliveryFeesDtls['Placement Charges']);
+									}else{
+										delete line.xp.deliveryFeesDtls;
+										line.xp.deliveryCharges = 0;
+									}
 									if(line.xp.Tax)
-										line.xp.TotalCost = line.xp.Tax + (line.Quantity * line.UnitPrice);
+										line.xp.TotalCost = line.xp.TotalCost + line.xp.Tax + (line.Quantity * line.UnitPrice);
 									else
-										line.xp.TotalCost = line.Quantity * line.UnitPrice;
+										line.xp.TotalCost = line.xp.TotalCost + line.Quantity * line.UnitPrice;
 								}else{
 									if(line.xp.deliveryCharges > 250){
 										line.xp.Discount = line.xp.deliveryCharges - 250;

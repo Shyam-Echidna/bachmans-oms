@@ -41,7 +41,7 @@
 									<p class="sort-active-show" ng-init="line[0].ShippingAddress.City = 'Select City'">{{line[0].ShippingAddress.City}}</p>
 								</div>
 								<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
-									<li ng-repeat="city in line[0].MultipleCities" ng-click="line[0].ShippingAddress.City=city"><a href="">{{city}}</a></li>
+									<li ng-repeat="city in line[0].MultipleCities" ng-click="buildordersummary.SelectedCity(city, line)"><a href="">{{city}}</a></li>
 								</ul>
 							</div>
 						</div>	

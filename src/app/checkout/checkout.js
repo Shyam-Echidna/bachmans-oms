@@ -1139,9 +1139,11 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
 	};
 	vm.UserSpendingAccounts();
 	vm.GetDeliveryFees = function(line, form){
-		vm.CheckOutLoader = BuildOrderService.DeliveryFeesService(line, form, vm, GetCstDateTime.datetime).then(function(res){
-			console.log(res);
-		});
+		if(line.ShippingAddress.City != "Select City"){
+			vm.CheckOutLoader = BuildOrderService.DeliveryFeesService(line, form, vm, GetCstDateTime.datetime).then(function(res){
+				console.log(res);
+			});
+		}	
 	};
 	OrderCloud.Users.Get($stateParams.ID).then(function(res){
 		vm.CurrentUser = res;
@@ -1157,6 +1159,10 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
 	};
 	vm.disabledDates = function (data) {
 		return (data.mode === 'day' && (data.date.getDay() === 0));
+	};
+	vm.SelectedCity = function(city, line, form){
+		line.ShippingAddress.City = city;
+		vm.GetDeliveryFees(line, form);
 	};
 }
 

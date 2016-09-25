@@ -45,11 +45,11 @@
 							<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].Street1}} {{custInfo.list.defaultAddr[0].Street2}} {{custInfo.list.defaultAddr[0].City}}</span>
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1" ng-blur="custInfo.getLocation()" required>
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street2" placeholder="Street2">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City" readonly>
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City">
 							<div>
 								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].State}} {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</span>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State" readonly>
-								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country" readonly>
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State">
+								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Country" placeholder="Country">
 								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Zip" ng-blur="custInfo.getLocation()" placeholder="Zip" required>
 							</div>
 						</div>

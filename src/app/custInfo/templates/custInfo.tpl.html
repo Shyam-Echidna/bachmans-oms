@@ -2,8 +2,12 @@
 	<div class="cust-info-container row">
 		<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
 			<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-init="readStatus=true">
-				
-				<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				<div ng-show="custInfo.list.userGroup.length==0">
+					<h1>PERSONAL INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				</div>
+				<div ng-show="custInfo.list.userGroup.length>0">
+					<h1>CORPORATE ACCOUNT INFORMATION <button ng-click="custInfo.editAddress(custInfo.list.user.Phone);isEditing = !isEditing" ng-show="!isEditing">EDIT</button></h1>
+				</div>
 				<form name="CustEditForm" ng-submit="custInfo.Submit()" novalidate>
 					<div class="info-blk form-group col-md-12 cust-form">
 						<p class="col-md-3 cust-del">Email Address:</p>
@@ -12,6 +16,7 @@
 						<input ng-show="isEditing" type="email" class="form-control col-md-6" ng-model="custInfo.list.user.Email" placeholder="email">
 						
 					</div>
+					<p class="cust-top col-md-12" ng-if="custInfo.list.userGroup.length>0">Primary Account Holder</p>
 					<div class="info-blk form-group col-md-12">
 						<p class="col-md-3 cust-del">First Name:</p>
 						
@@ -57,6 +62,11 @@
 							<input type="number" ng-show="isEditing" placeholder="Prefix" ng-model="custInfo.list.user.contact.Phone2" max-length="3" class="col-md-3 phone-val">
 							<input type="number" ng-show="isEditing" placeholder="Number" ng-model="custInfo.list.user.contact.Phone3" max-length="4" class="col-md-3 phone-val">
 							
+						</div>
+						<div class="info-blk" ng-if="custInfo.list.userGroup.length>0">
+							<p class="col-md-3">Tax Exempt Number:</p>
+							<span ng-show="!isEditing" class="col-md-6">{{custInfo.list.user.xp.TaxExemption.TaxExemptionID}}</span>
+							<input type="text" ng-show="isEditing" value="" class="col-md-6 phone-val1">
 						</div>
 			        <div class="form-group" ng-show="isEditing">
 						<button type="submit" class="save" ng-disabled="CustEditForm.$invalid" ng-click="isEditing = !isEditing">Save</button>			
@@ -141,9 +151,9 @@
 				</div>
 				<div>
 					<p>Billing Address:</p>
-					<p class="sub-addr">{{custInfo.list.user.FirstName}} {{custInfo.list.user.LastName}}</p>
-					<p class="sub-addr">{{custInfo.list.defaultAddr[0].Street1}}, {{custInfo.list.defaultAddr[0].Street2}}, {{custInfo.list.defaultAddr[0].City}}</p>
-					<p class="sub-addr">{{custInfo.list.defaultAddr[0].State}}, {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</p>
+					<p class="sub-addr">{{creditCard.billing.FirstName}} {{creditCard.billing.LastName}}</p>
+					<p class="sub-addr">{{creditCard.billing.Street1}}, {{creditCard.billing.Street2}}, {{creditCard.City}}</p>
+					<p class="sub-addr">{{creditCard.billing.State}}, {{creditCard.billing.Country}} {{creditCard.billing.Zip}}</p>
 				</div>
 <!-- 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">Edit</button>
 				<button>Delete</button> -->
@@ -184,7 +194,24 @@
 				<button ng-click='paymentEdit = !paymentEdit' ng-show="!paymentEdit">cancel</button>
 			</div>  -->
 		</div>
-		<div class="account-credits col-sm-12 col-xs-12 col-md-12 col-lg-12">
+		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12 corporate-info" ng-if="custInfo.list.userGroup.length>0">
+			<h1>CORPORATE CHARGE INFORMATION  <button>EDIT</button></h1>
+			<div class="left">
+				<p>Charge Limit</p>
+				<p class="sub-addr">$1000.00</p>
+				<p>Company</p>
+				<p class="sub-addr">Wells Fargo</p>
+			</div>
+			<div class="right">
+				<p>Amount Owed</p>
+				<p class="sub-addr">$1000.00</p>
+				<p>Authorized Users</p>
+				<p class="sub-addr">Janet Smith</p>
+				<p class="sub-addr">Mark Smith</p>
+				<p class="sub-addr">Thomas Smith</p>
+			</div>
+		</div>
+		<div class="account-credits col-sm-12 col-xs-12 col-md-12 col-lg-12" ng-if="custInfo.list.userGroup.length==0">
 			<h1>ACCOUNT CREDITS</h1>
 			<h2>CREDIT BALANCE: <span>{{custInfo.spendingAcc.charges.Balance | currency}}</span></h2>
 		</div>
@@ -232,11 +259,11 @@
                      </ul>
                      
                   </div> -->
-				  <input type="text" class="form-control" placeholder="Enter Your Answer" ng-model="custInfo.list.user.xp.SecurityQuestion.Question" readonly>
+				  <input type="text" class="form-control" ng-model="custInfo.list.user.xp.SecurityQuestion.Question" readonly>
 				  <label for="security-select">Answer:</label>
-                  <input type="text" class="form-control" placeholder="Enter Your Answer" ng-model="custInfo.list.user.xp.SecurityQuestion.Answer" readonly>
+                  <input type="text" class="form-control" ng-model="custInfo.list.user.xp.SecurityQuestion.Answer" readonly>
 				  <label for="security-select">Email:</label>
-				  <input type="text" class="form-control" placeholder="Enter Your Answer" ng-model="custInfo.list.user.Email" readonly>
+				  <input type="text" class="form-control" ng-model="custInfo.list.user.Email" readonly>
                </div>
 			<div class="form-group">
                   <button type="submit" class="save">SEND</button>

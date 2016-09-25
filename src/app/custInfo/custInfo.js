@@ -42,6 +42,9 @@ function CustInfoConfig( $stateProvider ) {
 								console.log("addresses", arr);
 							 
 						 }); */
+						OrderCloud.As().Me.ListUserGroups(null, 1, 100).then(function(usergrp){
+							arr["userGroup"]=usergrp.Items;
+						})
 						OrderCloud.As().Me.ListAddresses(null, 1, 100).then(function(addrList){
 							arr["addresses"]=addrList.Items;
 								arr["defaultAddr"]=_.filter(addrList.Items, function(obj) {
@@ -80,7 +83,7 @@ function CustInfoConfig( $stateProvider ) {
 					  return dfd.promise;
 				},
 				creditCard:function($q, $state, $stateParams, OrderCloud){
-					var dfd=$q.defer();
+					var dfd=$q.defer(), TempArr = [];
 					/*OrderCloud.CreditCards.ListAssignments(null, $stateParams.ID).then(function(assign){
 						console.log("datadatadatadata", assign);
 						angular.forEach(assign.Items, function(value, key) {
@@ -94,7 +97,15 @@ function CustInfoConfig( $stateProvider ) {
 						}
 					}); */
 					OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
-						dfd.resolve(response);
+						angular.forEach(response.Items, function(value, key) {
+							TempArr.push(OrderCloud.As().Me.GetAddress(value.xp.BillingAddressID));
+						}, true);
+						$q.all(TempArr).then(function(result){
+							angular.forEach(response.Items, function(value, key) {
+								value.billing=result[key];
+							}, true);
+							dfd.resolve(response);
+						});
 					});
 					return dfd.promise;
 				},
@@ -133,14 +144,8 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 	var vm = this;
 	vm.list = UserList;
 	vm.subscribedList=userSubscription;
-	console.log("vm.subscribedLis", vm.subscribedList);
 	vm.spendingAcc=spendingAccounts;
 	vm.creditCard=creditCard.Items;
-	console.log("creditCard",vm.creditCard);
-	console.log("spendingAccounts", spendingAccounts);
-	console.log("vm.purple", vm.purple);
-	console.log("vm.charges", vm.charges);
-	console.log("vm.Account", vm.creditCard);
 	  var userid = vm.list.user.ID;
 	  $scope.showModal = false;
 	 console.log(userid);

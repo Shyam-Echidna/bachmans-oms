@@ -46,6 +46,10 @@ angular.module( 'orderCloud' )
 							scope.$parent.buildOrder.guestUserModal = false;
 							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
 						}
+						if(scope.$parent.home){
+							scope.$parent.home.showcalendarModal = false;
+							scope.$parent.home.showpromotionsmodal = false;
+						}
 						if(scope.$parent.custInfo)
 							scope.$parent.custInfo.showPOModal = false; 
 						//scope.$parent.checkout.getShippingAddressModal = false;

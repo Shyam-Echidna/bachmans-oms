@@ -656,7 +656,7 @@
 					<ul class="pdp-upsell-container" id="owl-carousel-upsell">
 						<li class="item" ng-repeat="upsell in buildOrder.CategoryItemsUpsell">
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(upsell.ID, buildOrder.CategoryItemsUpsell)">
-								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
+								<div class="product_img"><img ng-src="{{buildOrderPDP.alfrescoAccessURL}}/imagefinder/{{upsell.ID}}?alf_ticket={{buildOrderPDP.alfrecoTct}}" class="owl-lazy"></div>
 								<h2>{{upsell.Name}}</h2>
 								<h3>{{upsell.Size}}</h3>
 								<h4>{{upsell.Color}}</h4>
@@ -672,7 +672,7 @@
 					<ul class="pdp-upsell-container" id="owl-carousel-similar">
 						<li class="item" ng-repeat="cross in buildOrder.CategoryItemsSimilar">
 							<div class="pdp-upsell-block" ng-click="buildOrder.UpsellProductItem(cross.ID, CategoryItemsSimilar)">
-								<div class="product_img"><img src="assets/images/flowers.jpg" class="owl-lazy"></div>
+								<div class="product_img"><img ng-src="{{buildOrderPDP.alfrescoAccessURL}}/imagefinder/{{upsell.ID}}?alf_ticket={{buildOrderPDP.alfrecoTct}}" class="owl-lazy"></div>
 								<h2>{{cross.Name}}</h2>
 								<h3>{{cross.xp.SpecsOptions.Size}}</h3>
 								<h4>{{cross.xp.SpecsOptions.Color}}</h4>

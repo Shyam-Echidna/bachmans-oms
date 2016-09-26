@@ -767,18 +767,17 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}
 	vm.prouctsList=function(e){
 		if($stateParams.SearchType == 'BuildOrder'){
-			OrderCloud.Products.List(null, 1, 100, null, null, {"xp.ProductCode":e.ProductCode}).then(function(res){
+			vm.PLPLoader = OrderCloud.Products.List(null, 1, 100, null, null, {"xp.ProductCode":e.ProductCode}).then(function(res){
 				console.log(res);
-				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+				vm.PLPLoader = BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
 					vm.seqProducts=prodList;
 					var selectedProd=_.where(vm.seqProducts, {"ID":e.ID});
 					vm.showProduct(selectedProd[0]);
 				 });
 			});
-		}
-		else{
-			OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":e.ProductCode}).then(function(res){
-				BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
+		}else{
+			vm.PLPLoader = OrderCloud.As().Me.ListProducts(null, 1, 100, null, null, {"xp.ProductCode":e.ProductCode}).then(function(res){
+				vm.PLPLoader = BuildOrderService.GetProductList(res.Items, ProductImages).then(function(prodList){
 					vm.seqProducts=prodList;
 					var podID=e.ID;
 					podID=podID.toString();
@@ -1087,8 +1086,15 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 			$http.get(GoogleAPI+zip).then(function(res){
 				var city;
 				if(res.data.results[0].postcode_localities){
-					if(res.data.results[0].postcode_localities.length > 1)
+					if(res.data.results[0].postcode_localities.length > 1){
 						vm.MultipleCities = res.data.results[0].postcode_localities;
+						if(zip == 55038)
+							vm.MultipleCities.push("Columbus");
+						if(zip == 55082){
+							vm.MultipleCities.push("Grant");
+							vm.MultipleCities.push("West Lakeland");
+						}
+					}	
 				}else {
 					delete vm.MultipleCities;
 					angular.forEach(res.data.results[0].address_components, function(component,index){
@@ -1407,7 +1413,7 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 					});
 				}
 			});
-		});	
+		});
 	};
 	vm.CreateAssemblyItems = function(buildorderVM, lineItemParams){
 		var TempArr = [];
@@ -3314,7 +3320,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 			if(line.xp.deliveryDate){
 				line.xp.deliveryDate = new Date(line.xp.deliveryDate);
 				dt2 = (("0" + (line.xp.deliveryDate.getMonth()+1)).slice(-2))+"-"+(("0" + line.xp.deliveryDate.getDate()).slice(-2))+"-"+line.xp.deliveryDate.getFullYear();
-			}	
+			}
 			if(dt1 == dt2 && val.FirstName == line.ShippingAddress.FirstName && val.LastName == line.ShippingAddress.LastName && val.Zip == line.ShippingAddress.Zip && (val.Street1).split(/(\d+)/g)[1] == (line.ShippingAddress.Street1).split(/(\d+)/g)[1] && val.lineID != line.ID && val.DeliveryMethod == line.xp.DeliveryMethod){
 				vm.NoDeliveryFees = true;
 			}
@@ -3381,8 +3387,12 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 										}
 									}
 									dt = angular.copy(CstDateTime).setHours(0, 0, 0, 0);
-									if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate))
+									if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate)){
 										obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+										if((line.xp.addressType == "Funeral" || line.xp.addressType == "Church") && vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
+											
+										}
+									}
 								}
 								if(line.xp.DeliveryMethod=="UPS"){
 									obj['UPS Charges'] = vm.buyerXp.Shippers.UPS.UPSCharges;

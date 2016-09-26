@@ -50,7 +50,7 @@ function OrderHistoryController($scope, $stateParams, Order) {
 	vm.order=Order;
 	if(vm.order.length>0){
 		console.log("oredr", vm.order);
-		$scope.uname=Order[0].FromUserFirstName + " " + Order[0].FromUserLastName;
+		$scope.uname=vm.order[0].FromUserFirstName + " " + vm.order[0].FromUserLastName;
 		console.log("vm.uname", vm.uname);
 		$scope.userID=$stateParams.userID;
 		$scope.searchType='User';

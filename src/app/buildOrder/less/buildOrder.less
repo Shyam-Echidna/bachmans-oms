@@ -599,16 +599,14 @@ input.error, .errorCity {
 					 	}
 					 }
 					 .delivery-methods{
-					 	.h5{
+					 	h5{
 							color:@color1;
 							font-size:13px;
 							.helvetica-bold;
+							margin-bottom:0;
 						}
-					 	p{
-					 			margin:0;
-					 	}
 					 	.radio-btn-container{
-					 	margin:5px 0 20px 0;
+							margin:5px 0 20px 0;
 					 		size-box{
 					 			padding:0;	
 					 		}
@@ -2913,7 +2911,7 @@ input.error, .errorCity {
 		    					text-decoration: none;
 		    					background-color: #969696;
 		   						color: #fff;
-		    					padding:10px 0 5px 0;
+		    					padding:7px 0 7px 0;
 		    					width: 26%;
 		    					margin-left: 2%;
 								&:hover{
@@ -3290,24 +3288,12 @@ input.error, .errorCity {
                             h5{
 								.helvetica-bold;
                                 color: @color1;
-                                margin-bottom: 10px;
+                                margin-bottom: 0px;
 								font-size:13px;
                             }
-                            .radio-inline{
-                                padding-left: 0px;
-                                width: 45%;
-                                margin: 0px;
-                                &:first-child{
-                                	label{
-                                		margin-left:0;
-                                	}
-                                }
-								span{
-									font-size:13px;
-									.helvetica-regular;
-									color:@color1;
-								}
-                            }
+							.radio-btn-container{
+								width:50%;
+							}
                             .placement{
                                 margin: 20px 0px;
                             }
@@ -3320,7 +3306,7 @@ input.error, .errorCity {
                                         color: #000000;
                                     }
                             }
-                            input[type=radio], input[type=checkbox] {
+                            input[type=checkbox] {
                                     display: none;
                                 }
                             label{
@@ -3337,15 +3323,6 @@ input.error, .errorCity {
 							.radioOutline{
 								position: relative;
 							}
-							input[type=radio]:not(old)+label .radioOutline .radioInside{
-								border: 1px solid #8c58b5;
-								border-radius: 50%;
-								background: 0 0;
-								display: inline-block;
-								width: 18px;
-								height: 18px;
-								text-align: center;
-							 }
 							input[type=radio]:not(old):checked+label .radioOutline{
 									border: 1px solid #8c58b5;
 								border-radius: 50%;
@@ -3388,66 +3365,6 @@ input.error, .errorCity {
 										
 								 }
 							   }
-                            /*input[type=radio] {
-                                    display: none;
-                                }
-                                input[type=radio]{
-                                    opacity: 0;
-                                    &:not(old){
-                                        &+ label .radioOutline, &:checked + label .radioOutline{
-                                            //border: 1px solid @base-bg-purple-dark;
-                                            border-radius: 50%;
-                                            background: transparent;
-                                            display: inline-block;
-                                            width: 18px;
-                                            height: 18px;
-                                            text-align: center;
-                                            cursor: pointer;
-                                            vertical-align: middle;
-                                        }
-                                        &:checked + label .radioOutline .radioInside{
-                                            display: block;
-                                            width: 10px;
-                                            height: 10px;
-                                            border-radius: 50%;
-                                            display: inline-block;
-                                            //background-color: @base-bg-purple-dark;
-                                            position: absolute;
-                                            top: 0;
-                                            left: 0;
-                                            right: 0;
-                                            bottom: 0;
-                                            margin: auto;
-                                        }
-                                        &+ label .radioOutline .radioInside{
-                                            display: block;
-                                            width: 10px;
-                                            height: 10px;
-                                            border-radius: 50%;
-                                            display: inline-block;
-                                            background-color: transparent;
-                                            position: absolute;
-                                            top: 0;
-                                            left: 0;
-                                            right: 0;
-                                            bottom: 0;
-                                            margin: auto;
-                                        }
-                                    }   
-                                }*/
-                                .label-name ,label{
-                                    //font: 1em @proxima-regular;
-                                    font-size: 1em;
-                                    margin-left:20px;
-                                    color: #666666;
-                                    vertical-align: middle;
-                                    cursor: pointer;
-                                    text-transform: capitalize;
-                                    &.fastDelivery{
-                                        margin: 0px 0px 0px 5px;
-
-                                    }
-                                }
                                 label.m0{
                                 	margin-left:0;
                                 }
@@ -3626,6 +3543,9 @@ input.error, .errorCity {
 				width:35%;
 				.in-block;
 				vertical-align:top;
+				img{
+					max-width:100%;
+				}
 			}
 			.prod-info{
 				width:43.7%;

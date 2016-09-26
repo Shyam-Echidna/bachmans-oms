@@ -2,20 +2,14 @@
 	padding:0px 0 0 0;
 	.helvetica-regular;
 	background:#fff;
-	.custom-details{
-		    background: #f1f1f1;
-    		padding: 20px 30px;
-    		font-size: 20px;
-    		margin: 30px 0px;
-    		.custom{
-    			.helvetica-bold;
-    			color:#8c58b5;
-    		}
-    		.custom-name{
-    		   .helvetica-regular;
-    		       font-size: 17px;
-   				 margin-left: 10px;
-    		}
+	.order-claim-container{
+		position:absolute;
+		top:0px;
+		bottom:30px;
+		width:100%;
+		overflow-x:hidden;
+		overflow-y:auto;
+		background-color:@color0;
 	}
 	.adress-details{
 		background: #f5f5f5;
@@ -35,7 +29,7 @@
 	.custom-info{
 		.table{
 		.thead-default{
-			background:#e6e6e6;
+			background:#f5f5f5;
 			.helvetica-bold;
 		}
 		.select-module{
@@ -80,6 +74,7 @@
 					 position: relative;
 				    top: 10px;
 				    height:200px;
+					padding-right:0;
 				    width: 22%;
 				 	.product-img{
 			    	 background: #ccc;
@@ -136,6 +131,7 @@
 					width:15px;
 					height:15px;
 					margin-right:3px;
+					fill:@primary-dark-color;
 				}
 				input{
 					width:94%;
@@ -149,11 +145,18 @@
 				    padding: 1px 14px;
 				    text-transform: capitalize;
 				    margin-top: 10px;
+					.background-fade;
+					&:hover{
+						background-color:@primary-dark-color;
+					}
 				}
 			}
 			.delivery{
 				.helvetica-bold;
 				 font-size: 20px
+			}
+			th{
+				border-bottom:none;
 			}
 			td,th{
 				padding: 8px 14px;
@@ -177,27 +180,49 @@
     			padding-bottom:5px;
     			.claim-content{
     				table{
-					    border: 1px solid #ccc !important;
+					    border: 1px solid #eaeaea !important;
 					}
 				}
     		}
 		}
 	}
-	.claim-edit{
-		    background: #000;
-		    float: left;
-		    width: 100%;
-		    color: #fff;
-		    .cancel-claim {
-		    float: left;
-		    padding: 5px 40px;
-		    border-right: 1px solid #fff;
-						}
-		.continue-claim{
-			 background: #969292;
-			float: right;
-			padding: 5px 80px;
-
+}
+.custom-details{
+		background: #f1f1f1;
+		padding: 20px 30px;
+		font-size: 20px;
+		margin:0 0 30px 0px;
+		.custom{
+			.helvetica-bold;
+			color:#8c58b5;
+		}
+		.custom-name{
+		   .helvetica-regular;
+			   font-size: 17px;
+			 margin-left: 5px;
+		}
+}
+.claim-edit{
+		background: #000;
+		float: left;
+		width: 100%;
+		color: #fff;
+		.cancel-claim {
+			float: left;
+			padding: 5px 40px;
+			border-right: 1px solid #fff;
+			.background-fade;
+			&:hover{
+				background-color:@primary-dark-color;
+			}
+		}
+	.continue-claim{
+		 background: #969292;
+		float: right;
+		padding: 5px 80px;
+		.background-fade;
+		&:hover{
+			background-color:@primary-dark-color;
 		}
 	}
 }

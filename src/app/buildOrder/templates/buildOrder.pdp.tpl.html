@@ -242,11 +242,8 @@
 							</ul>
 						</div>
 					</div>
-					<div class="delivery-methods" ng-if="!buildOrder.hidePdpblock">
-						<p ng-if="buildOrder.Courier || buildOrder.Faster">
-							<h5>Delivery Methods Available:</h5>
-						</p>
-						<p> 
+					<div class="delivery-methods" ng-if="!buildOrder.hidePdpblock && (buildOrder.Courier || buildOrder.Faster)">
+							<h5 ng-if="buildOrder.Courier || buildOrder.Faster">Delivery Methods Available:</h5>
 							<!-- <label class="radio-common radio-inline" ng-if="buildOrder.Courier">
 								<input type="radio" id="courier" name="optradio1" ng-model="buildOrder.DeliveryType" value="Courier">
 								<label for="courier">Courier</label>
@@ -280,7 +277,6 @@
 								</label>
 								</div>
 							</div>
-						</p>
 					</div>
 					<div class="row price-block" ng-if="buildOrder.productDetails[0].length == 1 &&  buildOrder.productDetails.length == 1">
 						<ul ng-repeat="priceItem in buildOrder.productDetails[0][0].StandardPriceSchedule.PriceBreaks">
@@ -328,7 +324,7 @@
 				<div class="row faster-delivery-content" ng-if="buildOrder.hidePdpblock==false">
                                     <div class="assembly" ng-if="buildOrder.Assembly" ng-init="buildOrder.IsAssembly='Not Assembled'">
                                         <h5>Assembly:</h5>
-                                        <div class="radio-inline" ng-click="buildOrder.AssemblyItems()">
+ <!--                                        <div class="radio-inline" ng-click="buildOrder.AssemblyItems()">
                                            <input type="radio" id="assembled" name="assembly" value="Assembled" ng-model="buildOrder.IsAssembly" />
                                            <label for="assembled" class="m0">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
@@ -341,12 +337,60 @@
                                            <span class="radioOutline"><span class="radioInside"></span></span>
                                            <span class="label-name">Not Assembled</span>
                                            </label>
-                                        </div>
+                                        </div> -->
+										<div class="radio-btn-container">
+											<div class="size-box" ng-click="buildOrder.AssemblyItems()">
+												<input type="radio" id="assembled" name="assembly" 
+												 ng-model="buildOrder.IsAssembly" value="Assembled">
+												<label for="assembled">
+													<span class="radioOutline">
+													<span class="radioInside"></span>
+													</span>
+													<span class="courier">Assembled</span>
+												</label>
+											</div>
+										</div>
+										<div class="radio-btn-container">
+											<div class="size-box">
+												<input type="radio" id="notAssembled" name="assembly" 
+												 ng-model="buildOrder.IsAssembly" value="Not Assembled">
+												<label for="notAssembled">
+													<span class="radioOutline">
+													<span class="radioInside"></span>
+													</span>
+													<span class="courier">Not Assembled</span>
+												</label>
+											</div>
+										</div>
                                         <p class="note"><span>Note:&nbsp;</span>Assembly charges may be applicable</p>
                                     </div>
                                     <div class="placement" ng-if="buildOrder.Placement" ng-init="buildOrder.IsPlacement='Not Placed'">
                                         <h5>Placement:</h5>
-                                        <div class="radio-inline">
+										<div class="radio-btn-container">
+											<div class="size-box">
+												<input type="radio" id="placed" name="placement" 
+												 ng-model="buildOrder.IsPlacement" value="Placed">
+												<label for="placed">
+													<span class="radioOutline">
+													<span class="radioInside"></span>
+													</span>
+													<span class="courier">Placed</span>
+												</label>
+											</div>
+										</div>
+										<div class="radio-btn-container">
+											<div class="size-box">
+												<input type="radio" id="notPlaced" name="placement" 
+												 ng-model="buildOrder.IsPlacement" value="Not Placed">
+												<label for="notPlaced">
+													<span class="radioOutline">
+													<span class="radioInside"></span>
+													</span>
+													<span class="courier">Not Placed</span>
+												</label>
+											</div>
+										</div>
+<!--                                         <div class="radio-inline">
                                            <input type="radio" id="placed" name="placement" value="Placed" ng-model="buildOrder.IsPlacement" />
                                            <label for="placed"  class="m0">
                                            <span class="radioOutline"><span class="radioInside"></span></span>
@@ -359,8 +403,7 @@
                                            <span class="radioOutline"><span class="radioInside"></span></span>
                                            <span class="label-name">Not Placed</span>
                                            </label>
-                                        </div>
-                                        <br>
+                                        </div> -->
                                         <textarea placeholder="Placement Instruction" rows="4" cols="10" ng-model="buildOrder.PlacementInstruction"></textarea>
                                         <p class="note"><span>Note:&nbsp;</span>Placement Charges Will be applicable</p>
                                     </div>

@@ -3167,7 +3167,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
         $http({
             method: 'GET',
             dataType: "json",
-            url: alfrescoDocsUrl + "Media/ProductsOld?alf_ticket=" + ticket,
+            url: alfrescoDocsUrl + "Media/Products?alf_ticket=" + ticket,
             headers: {
                 'Content-Type': 'application/json'
             }

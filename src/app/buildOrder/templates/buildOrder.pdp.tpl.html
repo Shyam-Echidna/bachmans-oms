@@ -748,22 +748,25 @@
 		<div ng-include="buildOrderPDP.articleURL"></div>
 	</div>
 </modal>
-<modal title="Assembled Items" visible="buildOrder.AssemblyModal">
-	<div class="pdp-similarItems col-md-12">
-		<ul class="pdp-upsell-container">
-			<li class="item" ng-repeat="items in buildOrder.AssemblyProducts" ng-click="">
-				<input type="checkbox" ng-model="buildOrder.ItemSelected[items.ID]" />
-				<div class="pdp-upsell-block">
-					<div class="product_img"><img src="assets/images/flowers.jpg" /></div>
+<modal title="Assembled Items" visible="buildOrder.AssemblyModal" class="modal-pop-up assembled-popup">
+	<div>
+		<ul>
+			<li ng-repeat="items in buildOrder.AssemblyProducts" ng-click="">
+				<div class="check">
+					<input type="checkbox" id="saved" class="checkbox-custom" ng-model="buildOrder.ItemSelected[items.ID]">
+					<label  for="saved" class="checkbox-custom-label"></label>
+				</div>
+				<div class="prod_img">
+					<img src="assets/images/flowers.jpg" />
+				</div>
+				<div class="prod-info">
 					<h2>{{items.Name}}</h2>
-					<h3>{{items.Size}}</h3>
-					<h4>{{items.Color}}</h4>
-					<div class="price_lst">
-						<h5>{{items.Price | currency}}</h5>
-					</div>
+					<h3>Size:<span>{{items.Size}}</span></h3>
+					<h4>Color:<span>{{items.Color}}</span></h4>
+					<h5>Price:<span>{{items.Price | currency}}</span></h5>
 				</div>
 			</li> 
 		</ul>
-		<button ng-click="buildOrder.SelectedProducts()">Done</button>
+		<button ng-click="buildOrder.SelectedProducts()" class="done">Done</button>
 	</div>
 </modal>

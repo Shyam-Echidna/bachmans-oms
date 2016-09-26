@@ -67,7 +67,7 @@
 			</div>
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 view-cal">
-			<button ng-click="viewpromotions()">View All</button>
+			<a ng-click="viewpromotions()">View All</a>
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 view-cal">
 			<button ng-click="saveCalendar()">Workshop &amp; Events calendar</button>
@@ -98,8 +98,8 @@
 		<div ui-calendar="uiConfig.calendar" class="calendar" ng-model="eventSources" style="width:100%" id="calendar"></div> 
 	</modal>
 	<modal title="Promotions &amp; Information" visible="home.showpromotionsmodal" id="promotions" class="modal-pop-up promotionsModal">
-		<div>
-			<div ng-repeat="promoLst in home.promotionsList" ng-if="($index < (home.page * 10)) && ($index >= ((home.page - 1) * 10))">
+		<div class="promo-main">
+			<div ng-repeat="promoLst in home.promotionsList" ng-if="($index < (home.page * 10)) && ($index >= ((home.page - 1) * 10))" >
 				<div class="promotion_box ng-scope">
 					<h1>{{promoLst.Name}}</h1>
 					<p>{{promoLst.Description}}</p>
@@ -126,7 +126,9 @@
 				</div>
 			</div>
 		</div>
-		 <uib-pagination total-items="totalItems" data-ng-model="currentPage" items-per-page="itemsPerPage" ng-change="home.setPagingData(currentPage)"></uib-pagination>
+		<div class="promo-pagination">
+			<uib-pagination total-items="totalItems" data-ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="itemsPerPage" ng-change="home.setPagingData(currentPage)"></uib-pagination>
+		</div>
 	</modal>
 	</div>
 </div>

@@ -9,7 +9,7 @@
 			<span ng-if="!orderTotal">$0.00</span>
 		</div>
 	</div>
-	<div class="cancel-order" ng-click="buildOrderDown.CancelToolTip()" popover-trigger="none" popover-is-open="buildOrderDown.ShowCancelOrderToolTip" uib-popover-template="buildOrderDown.ToolTip.templateUrl">
+	<div class="cancel-order" ng-if="buildOrderDown.SearchType == 'Products'  || buildOrderDown.SearchType == 'BuildOrder' || buildOrderDown.SearchType == 'PDP' || buildOrderDown.SearchType == 'plp'" ng-click="buildOrderDown.CancelToolTip()" popover-trigger="none" popover-is-open="buildOrderDown.ShowCancelOrderToolTip" uib-popover-template="buildOrderDown.ToolTip.templateUrl">
 		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 			viewBox="0 0 34 34" style="enable-background:new 0 0 34 34;" xml:space="preserve" class="footer-svg">
 			<g transform="translate(0,-952.36218)">

@@ -1146,6 +1146,7 @@ function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) 
 
 function buildOrderDownController($scope, $stateParams) {
 	var vm = this;
+	vm.SearchType= $stateParams.SearchType;
 	vm.ToolTip = {
 		templateUrl: 'CancelOrderToolTip.html'
 	};
@@ -1174,9 +1175,39 @@ function buildOrderDownController($scope, $stateParams) {
 function buildOrderLeftController($scope, $stateParams, spendingAccounts, SearchData, OrderCloud) {
 	var vm = this;
 	var arr ={};
+	$scope.showpayment = false;
 	vm.list = SearchData;
 	vm.spendingAccounts= spendingAccounts;
 	$scope.notedata = vm.list.Notes;
+	OrderCloud.As().Me.Get().then(function (user) {
+		vm.CurrentUser=user;
+        vm.defaultUserCardID = user.xp.CreditCardDefaultId;
+    });
+	vm.paymentmodal = function(){
+		$scope.showpayment= !$scope.showpayment;
+		OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
+	        vm.cclist = response.Items;
+	        /*var filt = _.findWhere(vm.list, {
+	            ID: cardID
+	        });
+	        vm.cclist = _.without(vm.list, _.findWhere(vm.list, {
+	            ID: cardID
+	        }));
+	        vm.cclist.unshift(filt);*/
+	    });
+	}
+	vm.makedefaultcard = function (cardID) {
+        vm.cards = vm.cclist;
+        var filt = _.findWhere(vm.cclist, {
+            ID: cardID
+        });
+        vm.cclist = _.without(vm.list, _.findWhere(vm.cclist, {
+            ID: cardID
+        }));
+        vm.cclist.unshift(filt);
+        vm.CurrentUser.xp.CreditCardDefaultId=cardID;
+        OrderCloud.Users.Update(vm.CurrentUser.ID, vm.CurrentUser);
+    }
 	$scope.addNote= function(){
 		$scope.notedata.unshift({ Date: new Date(), Description:$scope.note.descp});
 		$scope.notel = {"Notes":$scope.notedata};

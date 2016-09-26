@@ -18,7 +18,8 @@
 </div> -->
 
 <!-- buildorder search starts -->
-<div class="oms_main_container" ng-show='showplp' cg-busy="{promise:buildOrder.PLPLoader,templateUrl:'common/loading-indicators/templates/view.loading.tpl.html'}">
+<div cg-busy="{promise:buildOrder.PLPLoader,templateUrl:'common/loading-indicators/templates/view.loading.tpl.html'}"></div>
+<div class="oms_main_container" ng-show='showplp'>
 	<div ng-if="buildOrder.searchval.length > 0" ng-init="buildOrder.cleardata()">
 		<h1 ng-if="buildOrder.searchval.length > 0 && buildOrder.buildorderSearch.length != 0">Search Results for <span>"{{buildOrder.searchval}}"</span> <span class="count">({{buildOrder.buildorderSearch.length}} products)</span></h1>
 		<h1 ng-if="buildOrder.buildorderSearch.length == 0 && buildOrder.searchval.length > 0">No results found for <span>"{{buildOrder.searchval}}"</span></h1>

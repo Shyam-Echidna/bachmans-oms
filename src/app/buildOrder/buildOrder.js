@@ -1169,6 +1169,10 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 				vm.AssemblyList.push(key);
 		});
 	};
+	vm.HideUpsellNCross = function(){
+		vm.upsell = true;
+		vm.similar = true;
+	};
 }
 
 function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) {
@@ -1192,6 +1196,7 @@ function buildOrderTopController($scope, $stateParams,$rootScope, AlfrescoFact) 
 
 function buildOrderDownController($scope, $stateParams) {
 	var vm = this;
+	vm.SearchType= $stateParams.SearchType;
 	vm.ToolTip = {
 		templateUrl: 'CancelOrderToolTip.html'
 	};
@@ -1220,9 +1225,39 @@ function buildOrderDownController($scope, $stateParams) {
 function buildOrderLeftController($scope, $stateParams, spendingAccounts, SearchData, OrderCloud) {
 	var vm = this;
 	var arr ={};
+	$scope.showpayment = false;
 	vm.list = SearchData;
 	vm.spendingAccounts= spendingAccounts;
 	$scope.notedata = vm.list.Notes;
+	OrderCloud.As().Me.Get().then(function (user) {
+		vm.CurrentUser=user;
+        vm.defaultUserCardID = user.xp.CreditCardDefaultId;
+    });
+	vm.paymentmodal = function(){
+		$scope.showpayment= !$scope.showpayment;
+		OrderCloud.As().Me.ListCreditCards(null, 1, 100).then(function (response) {
+	        vm.cclist = response.Items;
+	        /*var filt = _.findWhere(vm.list, {
+	            ID: cardID
+	        });
+	        vm.cclist = _.without(vm.list, _.findWhere(vm.list, {
+	            ID: cardID
+	        }));
+	        vm.cclist.unshift(filt);*/
+	    });
+	}
+	vm.makedefaultcard = function (cardID) {
+        vm.cards = vm.cclist;
+        var filt = _.findWhere(vm.cclist, {
+            ID: cardID
+        });
+        vm.cclist = _.without(vm.list, _.findWhere(vm.cclist, {
+            ID: cardID
+        }));
+        vm.cclist.unshift(filt);
+        vm.CurrentUser.xp.CreditCardDefaultId=cardID;
+        OrderCloud.Users.Update(vm.CurrentUser.ID, vm.CurrentUser);
+    }
 	$scope.addNote= function(){
 		$scope.notedata.unshift({ Date: new Date(), Description:$scope.note.descp});
 		$scope.notel = {"Notes":$scope.notedata};
@@ -3387,13 +3422,6 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 												line.DeliveryNotAvailable = true;
 										}
 									}
-									dt = angular.copy(CstDateTime).setHours(0, 0, 0, 0);
-									if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate)){
-										obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
-										if((line.xp.addressType == "Funeral" || line.xp.addressType == "Church") && vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
-											
-										}
-									}
 								}
 								if(line.xp.DeliveryMethod=="UPS"){
 									obj['UPS Charges'] = vm.buyerXp.Shippers.UPS.UPSCharges;
@@ -3411,7 +3439,15 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 								if(line.xp.deliveryFeesDtls){
 									if(line.xp.deliveryFeesDtls['Placement Charges'])
 										obj['Placement Charges'] = line.xp.deliveryFeesDtls['Placement Charges'];
-								}	
+								}
+								dt = angular.copy(CstDateTime).setHours(0, 0, 0, 0);
+								if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate) && (line.xp.DeliveryMethod=="LocalDelivery" || line.xp.DeliveryMethod=="Faster")){
+									obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+									if((line.xp.addressType == "Funeral" || line.xp.addressType == "Church") && vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
+										obj = {};
+										obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+									}
+								}
 								line.xp.deliveryFeesDtls = obj;
 								line.xp.TotalCost = 0;
 								line.xp.deliveryCharges = 0;

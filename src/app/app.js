@@ -108,6 +108,9 @@ function AppCtrl($q, $rootScope, $state, $http, appname, LoginService, toastr, $
         } else if(toState.name == 'orderClaim'){
             vm.headerstat = false;
             vm.footerstat = true;
+        } else if(toState.name == 'orderConfirmation'){
+            vm.headerstat = true;
+            vm.footerstat = true;
         } else{
             vm.headerstat = false;
 			vm.footerstat = false;

@@ -54,7 +54,7 @@
 				
 			</li>
 			<li>
-				<a ui-sref="payments">
+				<a ng-click="buildOrderLeft.paymentmodal()">
 				<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 					 viewBox="0 0 32 24" style="enable-background:new 0 0 32 24;" xml:space="preserve">
 				<g>
@@ -66,7 +66,7 @@
 					</g>
 				</g>
 				</svg>
-				<p>PAYMENT METHODS?</p>
+				<p>PAYMENT METHODS</p>
 				</a>
 				
 			</li>
@@ -97,3 +97,33 @@
 		<a href="javascript: void(0)" ng-show="hasMoreItemsToShow()"  ng-click="showMoreItems()">View All Notes</a>
 	</div>
 </div>
+<modal title="Payment Method" visible="showpayment" id="paymentmethod" class="modal-pop-up">
+	<h3>Credit Cards</h3>
+	<div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 credit-card-list-item" ng-repeat="card in buildOrderLeft.cclist" ng-if="card">
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 default-payment">
+                <p class="title" ng-if="buildOrderLeft.defaultUserCardID==card.ID">Default Payment</p>
+                <p class="title" ng-if="buildOrderLeft.defaultUserCardID!=card.ID">Make Default Payment</p>
+                <div class="Checkbox">
+                  <input type="radio" ng-model="buildOrderLeft.defaultUserCardID" name="rad" ng-click="buildOrderLeft.makedefaultcard(card.ID)" value="{{card.ID}}">
+                  <div class="Checkbox-visible"></div> 
+               </div>
+            </div>
+            <div class="col-xs-2 col-sm-4 col-md-1 col-lg-1 visa">
+                <img src="../assets/images/{{card.CardType}}.svg" class="visa-icon" />
+            </div>
+            <div class="col-xs-10 col-sm-4 col-md-3 col-lg-3 cr-card-num">
+                <p class="title">Card Number</p>
+                <p class="addr-line1">XXXX XXXX XXXX {{card.PartialAccountNumber}}</p>
+            </div>
+            <div class="col-xs-5 col-sm-5 col-md-2 col-lg-3 cr-card-name">
+                <p class="title">Name On Card</p>
+                <p class="value">{{card.CardholderName}}</p>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 expiry-date">
+                <p class="title">Expiration Date</p>
+                <p class="value">{{card.ExpirationDate | date: 'MM/yy' : 'UTC' }}</p>
+            </div>
+        </div>
+	</div>
+</modal>

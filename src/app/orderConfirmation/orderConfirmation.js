@@ -8,7 +8,15 @@ function OrderConfirmationConfig( $stateProvider ) {
 			url: '/orderConfirmation/:userID/:ID',
 			templateUrl: 'orderConfirmation/templates/orderConfirmation.tpl.html',
 			controller: 'OrderConfirmationCtrl',
-			controllerAs: 'orderConfirmation'
+			controllerAs: 'orderConfirmation',
+			views: {
+				'': {
+					templateUrl: 'orderConfirmation/templates/orderConfirmation.tpl.html'
+				},
+				'orderConfirmationtop@orderConfirmation': {
+					templateUrl: 'orderConfirmation/templates/orderConfirmation.top.tpl.html'
+				}
+			}
 		})
 }
 function OrderConfirmationController($stateParams, OrderCloud, $http, PMCStoresURL, OrderPrintURL) {

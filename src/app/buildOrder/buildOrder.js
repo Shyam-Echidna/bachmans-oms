@@ -297,7 +297,7 @@ function buildOrderConfig( $stateProvider ) {
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoAccessURL, Underscore, ProductImages, productList, AlfrescoFact, AddressValidationService, GoogleAPI, $http) {
+function buildOrderController($scope, $rootScope, $state, buyerid, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoAccessURL, Underscore, ProductImages, productList, AlfrescoFact, AddressValidationService, GoogleAPI, $http) {
 	var vm = this;
 	vm.upselloverlay=false;
 	vm.selected = undefined;
@@ -681,18 +681,21 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}*/
 	vm.createUser=function(newUser, createaddr){		
 		$scope.showModal = !$scope.showModal;		
-		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
+		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "xp":{"Notes":[]}};		
 		OrderCloud.Users.Create(newUser).then(function(user){		
+			OrderCloud.SecurityProfiles.SaveAssignment({"SecurityProfileID": "65c976de-c40a-4ff3-9472-b7b0550c47c3","BuyerID": buyerid,"UserID": user.ID}).then(function(security){
+				console.log(security);
+			})
 			var params = {"CompanyName":createaddr.CompanyName,"FirstName":newUser.FirstName,"LastName":newUser.LastName,"Street1":createaddr.Street1,"Street2":createaddr.Street2,"City":createaddr.City,"State":createaddr.State,"Zip":createaddr.Zip,"Country":createaddr.Country,"Phone":newUser.Phone, "xp":{"IsDefault" :createaddr.IsDefault}};		
-		OrderCloud.Addresses.Create(params).then(function(data){		
-			data.Zip = parseInt(data.Zip);		
-			console.log("address created",data);		
-			var assign = {"AddressID": data.ID,"UserID": user.ID,"IsBilling": createaddr.IsBilling,"IsShipping": createaddr.IsShipping};		
-		OrderCloud.Addresses.SaveAssignment(assign).then(function(res){		
-			$state.go($state.current, {ID:user.ID,SearchType:'User',prodID:SearchData.productID}, {reload:true});		
-			console.log("Address saved for the user....!" +res);		
-		});		
-		})		
+			OrderCloud.Addresses.Create(params).then(function(data){		
+				data.Zip = parseInt(data.Zip);		
+				console.log("address created",data);		
+				var assign = {"AddressID": data.ID,"UserID": user.ID,"IsBilling": createaddr.IsBilling,"IsShipping": createaddr.IsShipping};		
+				OrderCloud.Addresses.SaveAssignment(assign).then(function(res){		
+					$state.go($state.current, {ID:user.ID,SearchType:'User',prodID:SearchData.productID}, {reload:true});		
+					console.log("Address saved for the user....!" +res);		
+				});		
+			})		
 		});		
 	}
 	vm.searchType=$stateParams.SearchType;
@@ -3166,7 +3169,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
         $http({
             method: 'GET',
             dataType: "json",
-            url: alfrescoDocsUrl + "Media/ProductsOld?alf_ticket=" + ticket,
+            url: alfrescoDocsUrl + "Media/Products?alf_ticket=" + ticket,
             headers: {
                 'Content-Type': 'application/json'
             }

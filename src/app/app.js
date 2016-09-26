@@ -102,18 +102,23 @@ function AppCtrl($q, $rootScope, $state, $http, appname, LoginService, toastr, $
         if(toState.name == 'buildOrder'){
             vm.headerstat = true;
             vm.footerstat = true;
+            vm.orderclaimfooterstat = true;            
         } else if(toState.name == 'checkout'){
             vm.headerstat = true;
             vm.footerstat = true;
+            vm.orderclaimfooterstat = true;
         } else if(toState.name == 'orderClaim'){
             vm.headerstat = false;
             vm.footerstat = true;
+            vm.orderclaimfooterstat = false;
         } else if(toState.name == 'orderConfirmation'){
             vm.headerstat = true;
             vm.footerstat = true;
+            vm.orderclaimfooterstat = true;
         } else{
             vm.headerstat = false;
 			vm.footerstat = false;
+            vm.orderclaimfooterstat = true;
         }
     });
 

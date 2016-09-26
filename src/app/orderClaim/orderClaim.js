@@ -25,10 +25,10 @@ function OrderClaimConfig( $stateProvider ) {
 				},
 				'orderclaimhead@orderClaim': {
 					templateUrl: 'orderClaim/templates/orderClaimHead.tpl.html'
-				},
+				}/*,
 				'orderclaimfooter@orderClaim': {
 					templateUrl: 'orderClaim/templates/orderClaimFooter.tpl.html'
-				}
+				}*/
 			},
 			resolve:{
 				Order:function($q, $stateParams, OrderCloud){

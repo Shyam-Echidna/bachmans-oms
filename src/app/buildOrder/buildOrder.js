@@ -45,7 +45,9 @@ angular.module( 'orderCloud' )
 						if(scope.$parent.buildOrder){
 							scope.$parent.buildOrder.guestUserModal = false;
 							scope.$parent.buildOrder.AssemblyModal = false;
-							scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
+							if(scope.$parent.buildOrderRight)
+								scope.$parent.buildOrderRight.OrderConfirmPopUp = false;
+							scope.$parent.buildOrderPDP.viewCareGuide = false;
 						}
 						if(scope.$parent.home){
 							scope.$parent.home.showcalendarModal = false;
@@ -2245,21 +2247,20 @@ function buildOrderPLPController(productList, $stateParams, alfrescoAccessURL) {
 }
 
 function buildOrderPDPController($scope, $sce, alfrescoAccessURL) {
-	var vm = this;
+	var vm = this, alfticket = localStorage.getItem("alfrescoTicket");;
 	vm.upselloverlay=false;
+	vm.alfrescoAccessURL=alfrescoAccessURL;
 	vm.viewCareGuide = false;
 	$scope.viewCareGuide=function(){
 		vm.viewCareGuide = !vm.viewCareGuide;
 	}
 	vm.getArticle=function(data){
 		vm.articleURL="", vm.articleImgURL="";
-		var alfticket = localStorage.getItem("alfrescoTicket");
-
-		vm.articleURL=$sce.trustAsResourceUrl(alfrescoAccessURL+data+"?alf_ticket="+alfticket);
+		vm.articleURL=$sce.trustAsResourceUrl(vm.alfrescoAccessURL+data+"?alf_ticket="+alfticket);
 		var str=data.substring(data.lastIndexOf("/") + 1, data.length);
 		var articleID=str.substring(0, str.lastIndexOf(".") + 0);
 		//var articleID =alfrescoAccessURL+"/getArticleData/nodes.json?id="+str2+"&alf_ticket="+alfticket;
-		vm.articleImgURL=alfrescoAccessURL+"/imagefinder/"+articleID+"?alf_ticket="+alfticket;
+		vm.articleImgURL=vm.alfrescoAccessURL+"/imagefinder/"+articleID+"?alf_ticket="+alfticket;
 		// var file=data.substring(data.lastIndexOf("/") + 1, data.length);
 		// var imgName= file.substring(0, file.lastIndexOf(".") + 0);
 		// var str1 = data.substr(0, data.lastIndexOf("/"));

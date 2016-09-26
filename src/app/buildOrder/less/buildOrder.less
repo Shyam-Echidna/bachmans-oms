@@ -1968,6 +1968,14 @@ input.error, .errorCity {
 										border:1px solid #eaeaea;
 										line-height:29px;
 										cursor:pointer;
+										i {
+											color:@primary-dark-color;
+											float:right;
+											font-size:12px;
+											padding: 9px 0;
+											.transition-common(all 0.5s ease);
+											.rotate(0deg);
+										}
 									.dropdown-menu{
 										width: 86.5%;
 										padding:0;
@@ -1990,6 +1998,14 @@ input.error, .errorCity {
 													color:@color0 !important;
 												}
 											}
+										}
+										&:last-child{
+											border-bottom:none;
+										}
+									}
+									&.open{
+										.fa-chevron-down{
+											.rotate(180deg);
 										}
 									}
 								}
@@ -2183,6 +2199,9 @@ input.error, .errorCity {
 										overflow: hidden;
 										white-space: nowrap;
 										text-overflow: ellipsis;
+									}
+									&:last-child{
+										border-bottom:none;
 									}
 								}
 							}
@@ -3495,11 +3514,21 @@ input.error, .errorCity {
 						color:@color1;
 						cursor:pointer;
 						margin-bottom:0;
+						i {
+							color:@primary-dark-color;
+							float:right;
+							font-size:12px;
+							padding: 9px 0;
+							.transition-common(all 0.5s ease);
+							.rotate(0deg);
+						}
 					}
 					.dropdown-menu{
-						width: 86.5%;
+						width: 100%;
 						border:1px solid @base-bg-purple-light;
 						padding:0px;
+						border-radius:0;
+						min-width:initial;
 						li{
 							border-bottom:1px solid @color21;
 							border-radius:0;
@@ -3517,6 +3546,14 @@ input.error, .errorCity {
 									color:@color0 !important;
 								}
 							}
+							&:last-child{
+								border-bottom:none;
+							}
+						}
+					}
+					&.open{
+						.fa-chevron-down{
+							.rotate(180deg);
 						}
 					}
 				}

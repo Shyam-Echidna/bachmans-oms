@@ -444,7 +444,7 @@
 													<p>Select City <span class="star">*</span></p>
 													<div uib-dropdown class="form-control " id="MultipleCities" ng-class="{errorCity: buildOrderRight.lineItemForm[lineitem.ID].$submitted && lineitem.ShippingAddress.City = 'Select City'}">
 														<div id="sort-dropdown" uib-dropdown-toggle>	
-															<p class="sort-active-show" ng-init="lineitem.ShippingAddress.City = 'Select City'">{{lineitem.ShippingAddress.City}}</p>
+															<p class="sort-active-show" ng-init="lineitem.ShippingAddress.City = 'Select City'">{{lineitem.ShippingAddress.City}} <i class="fa fa-chevron-down"></i></p>
 														</div>
 														<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
 															<li ng-repeat="city in lineitem.MultipleCities" ng-click="buildOrderRight.SelectedCity(city, lineitem, buildOrderRight.lineItemForm[lineitem.ID])"><a href="">{{city}}</a></li>

@@ -113,7 +113,10 @@ function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, $s
 				OrderCloud.Orders.Get(res1.OrderID).then(function(res2){
 					console.log(res2);
 					OrderCloud.LineItems.Get(res1.OrderID,res1.LineItemID).then(function(res3){
-						console.log(res3);
+						if(!res3.xp)
+							res3.xp = {};
+						if(!res2.xp)
+							res2.xp = {};	
 						onholdorders.push({"ID":res.ID,"OrderID":res1.OrderID,"LineItemID":res1.LineItemID,"DateCreated":res2.DateCreated,"FromUserFirstName":res2.FromUserFirstName,"Destination":res3.xp.addressType,"WireStatusCode":res3.xp.WireService,"CSRID":res2.xp.CSRID});
 					})
 				})

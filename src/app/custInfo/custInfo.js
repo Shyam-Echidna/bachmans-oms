@@ -140,7 +140,7 @@ function CustInfoConfig( $stateProvider ) {
 }
 
 
-function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact, BuildOrderService, AddressValidationService) {
+function CustInfoController($scope, $exceptionHandler, $stateParams, $state, UserList, spendingAccounts, creditCard, OrderCloud, userSubscription, Underscore, ConstantContact, BuildOrderService, AddressValidationService, $http, GoogleAPI) {
 	var vm = this;
 	vm.list = UserList;
 	vm.subscribedList=userSubscription;
@@ -184,10 +184,7 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 		});
 	}
 	vm.getLocation=function(){
-		AddressValidationService.Validate(vm.list.defaultAddr[0]).then(function(res){
-			vm.list.defaultAddr[0].City = res.Address.City;
-			vm.list.defaultAddr[0].State = res.Address.Region;
-		});
+		vm.GetMultipleCities(vm.list.defaultAddr[0]);
 	}
 	$scope.ok=function(){
 		OrderCloud.Users.Update(userid, vm.list.user).then(function(){
@@ -231,6 +228,36 @@ function CustInfoController($scope, $exceptionHandler, $stateParams, $state, Use
 			}
 		} else{
 			vm.ValidPO = false;
+		}
+	};
+	vm.GetMultipleCities = function(line){
+		if((line.Zip.toString()).length == 5){
+			$http.get(GoogleAPI+line.Zip).then(function(res){
+				if(res.data.results[0].postcode_localities){
+					if(res.data.results[0].postcode_localities.length > 1){
+						line.MultipleCities = res.data.results[0].postcode_localities;
+						if(line.Zip == 55038)
+							line.MultipleCities.push("Columbus");
+						if(line.Zip == 55082){
+							line.MultipleCities.push("Grant");
+							line.MultipleCities.push("West Lakeland");
+						}
+					}	
+				}else{
+					delete line.MultipleCities;
+					angular.forEach(res.data.results[0].address_components, function(component,index){
+						var types = component.types;
+						angular.forEach(types, function(type,index){
+							if(type == 'locality') {
+								line.City = component.long_name;
+							}
+							if(type == 'administrative_area_level_1') {
+								line.State = component.short_name;
+							}
+						});
+					}); 
+				}
+			});
 		}
 	};
 }

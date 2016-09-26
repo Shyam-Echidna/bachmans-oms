@@ -1991,9 +1991,6 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			vm.TempAddrType = addressType;
 		}	
 		vm.lineItemForm[line.ID].$setPristine();
-		if((addressType != "InStorePickUp" || line.willSearch) && onload != "onload"){
-			vm.GetDeliveryFees(line, form);
-		}
 		if(addressType == "Hospital" && !vm.HospitalNames){
 			vm.GetAllList("Hospitals");
 		}
@@ -2008,6 +2005,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 		if(addressType == "Cemetery" && !vm.CemeteryNames){
 			vm.GetAllList("Cemetery");
+		}
+		if((addressType != "InStorePickUp" || line.willSearch) && onload != "onload"){
+			vm.GetDeliveryFees(line, form);
 		}
 	}
 	vm.GetAllList = function(AddrType){
@@ -3135,7 +3135,7 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
         $http({
             method: 'GET',
             dataType: "json",
-            url: alfrescoDocsUrl + "Media/ProductsOld?alf_ticket=" + ticket,
+            url: alfrescoDocsUrl + "Media/Products?alf_ticket=" + ticket,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -3404,16 +3404,20 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 								}
 								if(res2.xp.PalletCharge)
 									obj['Pallet Charge'] = res2.xp.PalletCharge;
-								if(line.xp.deliveryFeesDtls){
+								if(line.xp.deliveryFeesDtls && line.xp.addressType != "InStorePickUp"){
 									if(line.xp.deliveryFeesDtls['Placement Charges'])
 										obj['Placement Charges'] = line.xp.deliveryFeesDtls['Placement Charges'];
 								}
 								dt = angular.copy(CstDateTime).setHours(0, 0, 0, 0);
 								if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate) && (line.xp.DeliveryMethod=="LocalDelivery" || line.xp.DeliveryMethod=="Faster")){
 									obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
-									if((line.xp.addressType == "Funeral" || line.xp.addressType == "Church") && vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
-										obj = {};
-										obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+									if(line.xp.addressType == "Funeral" || line.xp.addressType == "Church"){
+										if(vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
+											obj = {};
+											obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+										}else{
+											obj[line.xp.addressType+" Charges"] = vm.buyerXp.Shippers.LocalDelivery.Funeral_ChurchFees;
+										}
 									}
 								}
 								line.xp.deliveryFeesDtls = obj;

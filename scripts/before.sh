@@ -1,5 +1,5 @@
-#!/bin/bash
-npm install pm2 -g
-rm -Rf /var/www/*
-usermod -a -G nginx ec2-user
-gem install sass
+sudo su -
+cd /var/www/html
+rm -rf /Bachmans-oms
+mkdir Bachmans-oms
+cd Bachmans-oms

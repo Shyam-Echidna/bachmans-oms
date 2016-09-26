@@ -327,12 +327,16 @@ input.error, .errorCity {
 						overflow: hidden;
 					}
 					h3,
-					h4 {
+					h4 , h3 span, h4 span{
 						.helvetica-regular;
 						font-size: 10px;
 						color: #54565d;
 						margin: 3px 0;
-					}
+						text-transform:lowercase;
+						&:first-letter{
+							text-transform:uppercase;
+						}
+					}					
 					h5 {
 						.helvetica-bold;
 						font-size: 12px;
@@ -595,8 +599,11 @@ input.error, .errorCity {
 					 	}
 					 }
 					 .delivery-methods{
-					 	.helvetica-bold;
-					 	float:left;
+					 	.h5{
+							color:@color1;
+							font-size:13px;
+							.helvetica-bold;
+						}
 					 	p{
 					 			margin:0;
 					 	}

@@ -333,7 +333,7 @@ input[type=number]::-webkit-outer-spin-button {
 		display:block;
 		text-transform:uppercase;
 	    height: 38px;
-		padding: 12px 8px 9px 14px;
+		padding: 11px 8px 9px 12px;
 		color:@base-bg-purple-light;
 		i {
 			color:@base-bg-purple-light;
@@ -535,10 +535,18 @@ input[type=number]::-webkit-outer-spin-button {
 	height:auto;
 	/* overflow:auto; */
 	.view-cal{
+		a{
+			float:right;
+			font-size: 16px;
+			color: #8c58b5;
+			&:hover{
+				text-decoration-color:#8c58b5;
+			}
+			margin-right:15px;
+		}
 	  padding:0;
 	  margin-top:20px;
 		button{
-			float: right;
 		    font-family: "Helvetica-Bold";
 		    font-size: 16px;
 		    color: #8c58b5;

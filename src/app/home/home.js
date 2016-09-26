@@ -114,7 +114,7 @@ function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, $s
 					console.log(res2);
 					OrderCloud.LineItems.Get(res1.OrderID,res1.LineItemID).then(function(res3){
 						console.log(res3);
-						onholdorders.push({"ID":res.ID,"OrderID":res1.OrderID,"LineItemID":res1.LineItemID,"DateCreated":res2.DateCreated,"FromUserFirstName":res2.FromUserFirstName,"Occassions":res3.xp.addressType,"WireStatusCode":res3.xp.WireService,"CSRID":res2.xp.CSRID});
+						onholdorders.push({"ID":res.ID,"OrderID":res1.OrderID,"LineItemID":res1.LineItemID,"DateCreated":res2.DateCreated,"FromUserFirstName":res2.FromUserFirstName,"Destination":res3.xp.addressType,"WireStatusCode":res3.xp.WireService,"CSRID":res2.xp.CSRID});
 					})
 				})
 				//onholdorders.push(OrderCloud.Orders.Get(res1.OrderID));
@@ -130,7 +130,7 @@ function HomeController($sce, $rootScope, $state, $compile, $log, Underscore, $s
 	   { name: 'ID', displayName:'Shipment'},
 	   { name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>', width:"14.2%"},
 	   { name: 'FromUserFirstName', displayName:'Sender Name',width:"14.2%"},
-	   { name: 'Occassions', displayName:'Occassions',width:"14.2%"},
+	   { name: 'Destination', displayName:'Destination',width:"14.2%"},
 	   { name: 'WireStatusCode', displayName:'Wire Status Code',width:"14.2%"},
 	   { name: 'CSRID', displayName:'CSR ID',width:"14.2%"},
 	   { name: 'ShippingCost', displayName:'', cellTemplate: '<div class="data_cell" ui-sref="hold({ID:row.entity.ID,LineItemID:row.entity.LineItemID,OrderID:row.entity.OrderID})"><a> <i class="fa fa-upload"></i> Open Order</a></div>', width:"14.2%"}

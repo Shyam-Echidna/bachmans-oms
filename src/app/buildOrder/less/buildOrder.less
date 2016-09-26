@@ -327,12 +327,16 @@ input.error, .errorCity {
 						overflow: hidden;
 					}
 					h3,
-					h4 {
+					h4 , h3 span, h4 span{
 						.helvetica-regular;
 						font-size: 10px;
 						color: #54565d;
 						margin: 3px 0;
-					}
+						text-transform:lowercase;
+						&:first-letter{
+							text-transform:uppercase;
+						}
+					}					
 					h5 {
 						.helvetica-bold;
 						font-size: 12px;
@@ -595,8 +599,11 @@ input.error, .errorCity {
 					 	}
 					 }
 					 .delivery-methods{
-					 	.helvetica-bold;
-					 	float:left;
+					 	.h5{
+							color:@color1;
+							font-size:13px;
+							.helvetica-bold;
+						}
 					 	p{
 					 			margin:0;
 					 	}
@@ -2477,6 +2484,7 @@ input.error, .errorCity {
 		}
 		.modal-body{
 			padding:10px 25px;
+			max-height:400px;
 			span{
 				.helvetica-bold;
 				font-size:15px;
@@ -3555,3 +3563,61 @@ input.error, .errorCity {
 				}
 			}
 		}
+.modal-pop-up.assembled-popup{
+	modal-body{
+		max-height:400px;
+	}
+	ul{
+		border-top:1px solid #EAEAEA;
+		li{
+			padding:8px 0;
+			border-left:1px solid #EAEAEA;
+			border-right:1px solid #EAEAEA;
+			border-bottom:1px solid #EAEAEA;
+			&:nth-child(odd){
+				background-color: #f7f8fa;
+			}
+			&:hover{
+				background-color:#f0f0f1;
+			}
+			.check{
+				width:20%;
+				.in-block;
+				vertical-align:top;
+			}
+			.prod_img{
+				width:35%;
+				.in-block;
+				vertical-align:top;
+			}
+			.prod-info{
+				width:43.7%;
+				.in-block;
+				h2{
+					font-size:14px;
+					.helvetica-bold;
+					margin:3px 0;
+					color:@color1;
+				}
+				h3, h5, h4{
+					font-size:14px;
+					.helvetica-regular;
+					color:@color1;
+					margin:3px 0;
+					span{
+						.helvetica-medium;
+					}
+				}
+			}
+		}
+	}
+	button.done{
+		font-size:12px;
+		background-color:@primary-color;
+		padding:5px 10px;
+		color:@color0;
+		&:hover{
+			background-color:@primary-dark-color;
+		}
+	}
+}

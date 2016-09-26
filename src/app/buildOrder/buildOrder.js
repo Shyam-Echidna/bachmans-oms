@@ -299,7 +299,7 @@ function buildOrderConfig( $stateProvider ) {
 	});
 }
 
-function buildOrderController($scope, $rootScope, $state, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoAccessURL, Underscore, ProductImages, productList, AlfrescoFact, AddressValidationService, GoogleAPI, $http) {
+function buildOrderController($scope, $rootScope, $state, buyerid, $controller, $stateParams, ProductList, LineItemHelpers, $q, BuildOrderService, $timeout, OrderCloud, SearchData, algolia, CurrentOrder, alfrescoAccessURL, Underscore, ProductImages, productList, AlfrescoFact, AddressValidationService, GoogleAPI, $http) {
 	var vm = this;
 	vm.upselloverlay=false;
 	vm.selected = undefined;
@@ -683,18 +683,21 @@ function buildOrderController($scope, $rootScope, $state, $controller, $statePar
 	}*/
 	vm.createUser=function(newUser, createaddr){		
 		$scope.showModal = !$scope.showModal;		
-		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "SecurityProfileID": '65c976de-c40a-4ff3-9472-b7b0550c47c3', "xp":{"Notes":[]}};		
+		var newUser={"Username":newUser.Username,"Password":newUser.Password,"FirstName":newUser.FirstName, "LastName":newUser.LastName, "Email":newUser.Email, "Phone":newUser.Phone, "Active":true, "Phone":"("+newUser.Phone1+") "+newUser.Phone2+"-"+newUser.Phone3, "xp":{"Notes":[]}};		
 		OrderCloud.Users.Create(newUser).then(function(user){		
+			OrderCloud.SecurityProfiles.SaveAssignment({"SecurityProfileID": "65c976de-c40a-4ff3-9472-b7b0550c47c3","BuyerID": buyerid,"UserID": user.ID}).then(function(security){
+				console.log(security);
+			})
 			var params = {"CompanyName":createaddr.CompanyName,"FirstName":newUser.FirstName,"LastName":newUser.LastName,"Street1":createaddr.Street1,"Street2":createaddr.Street2,"City":createaddr.City,"State":createaddr.State,"Zip":createaddr.Zip,"Country":createaddr.Country,"Phone":newUser.Phone, "xp":{"IsDefault" :createaddr.IsDefault}};		
-		OrderCloud.Addresses.Create(params).then(function(data){		
-			data.Zip = parseInt(data.Zip);		
-			console.log("address created",data);		
-			var assign = {"AddressID": data.ID,"UserID": user.ID,"IsBilling": createaddr.IsBilling,"IsShipping": createaddr.IsShipping};		
-		OrderCloud.Addresses.SaveAssignment(assign).then(function(res){		
-			$state.go($state.current, {ID:user.ID,SearchType:'User',prodID:SearchData.productID}, {reload:true});		
-			console.log("Address saved for the user....!" +res);		
-		});		
-		})		
+			OrderCloud.Addresses.Create(params).then(function(data){		
+				data.Zip = parseInt(data.Zip);		
+				console.log("address created",data);		
+				var assign = {"AddressID": data.ID,"UserID": user.ID,"IsBilling": createaddr.IsBilling,"IsShipping": createaddr.IsShipping};		
+				OrderCloud.Addresses.SaveAssignment(assign).then(function(res){		
+					$state.go($state.current, {ID:user.ID,SearchType:'User',prodID:SearchData.productID}, {reload:true});		
+					console.log("Address saved for the user....!" +res);		
+				});		
+			})		
 		});		
 	}
 	vm.searchType=$stateParams.SearchType;
@@ -2024,9 +2027,6 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 			vm.TempAddrType = addressType;
 		}	
 		vm.lineItemForm[line.ID].$setPristine();
-		if((addressType != "InStorePickUp" || line.willSearch) && onload != "onload"){
-			vm.GetDeliveryFees(line, form);
-		}
 		if(addressType == "Hospital" && !vm.HospitalNames){
 			vm.GetAllList("Hospitals");
 		}
@@ -2041,6 +2041,9 @@ function buildOrderRightController($scope, $q, $stateParams, OrderCloud, Order, 
 		}
 		if(addressType == "Cemetery" && !vm.CemeteryNames){
 			vm.GetAllList("Cemetery");
+		}
+		if((addressType != "InStorePickUp" || line.willSearch) && onload != "onload"){
+			vm.GetDeliveryFees(line, form);
 		}
 	}
 	vm.GetAllList = function(AddrType){
@@ -3436,16 +3439,20 @@ function BuildOrderService( $q, $window, $stateParams, ocscope, buyerid, OrderCl
 								}
 								if(res2.xp.PalletCharge)
 									obj['Pallet Charge'] = res2.xp.PalletCharge;
-								if(line.xp.deliveryFeesDtls){
+								if(line.xp.deliveryFeesDtls && line.xp.addressType != "InStorePickUp"){
 									if(line.xp.deliveryFeesDtls['Placement Charges'])
 										obj['Placement Charges'] = line.xp.deliveryFeesDtls['Placement Charges'];
 								}
 								dt = angular.copy(CstDateTime).setHours(0, 0, 0, 0);
 								if(angular.copy(CstDateTime).getHours() < 12 && dt == new Date(line.deliveryDate) && (line.xp.DeliveryMethod=="LocalDelivery" || line.xp.DeliveryMethod=="Faster")){
 									obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
-									if((line.xp.addressType == "Funeral" || line.xp.addressType == "Church") && vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
-										obj = {};
-										obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+									if(line.xp.addressType == "Funeral" || line.xp.addressType == "Church"){
+										if(vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees > 0){
+											obj = {};
+											obj['Same Day Delivery'] = vm.buyerXp.Shippers.LocalDelivery.StandardDeliveryFees;
+										}else{
+											obj[line.xp.addressType+" Charges"] = vm.buyerXp.Shippers.LocalDelivery.Funeral_ChurchFees;
+										}
 									}
 								}
 								line.xp.deliveryFeesDtls = obj;

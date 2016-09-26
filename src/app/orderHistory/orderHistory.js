@@ -59,7 +59,7 @@ function OrderHistoryController($scope, $stateParams, Order) {
 			data: 'orderHistory.order',
 			enableSorting: true,
 			columnDefs: [
-				{ name: 'ID', displayName:'Shipment Number', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:grid.appScope.userID,SearchType:grid.appScope.searchType,orderID:row.entity.ID,orderDetails:true})">{{row.entity.ID}}</div>', width:"16.5%"},
+				{ name: 'ID', displayName:'Order Number', cellTemplate: '<div class="data_cell" ui-sref="buildOrder({ID:grid.appScope.userID,SearchType:grid.appScope.searchType,orderID:row.entity.ID,orderDetails:true})">{{row.entity.ID}}</div>', width:"16.5%"},
 				{ name: 'DateCreated', displayName:'Order Placed On', cellTemplate: '<div class="data_cell">{{row.entity.DateCreated | date:grid.appScope.dateFormat}}</div>', width:"16.5%"},
 				{ name: 'Occasion', displayName:'Occasion', width:"16.5%"},
 				{ name: 'Total', displayName:'Total', cellTemplate: '<div class="data_cell">{{row.entity.Total | currency:$}}</div>', width:"16.5%"},

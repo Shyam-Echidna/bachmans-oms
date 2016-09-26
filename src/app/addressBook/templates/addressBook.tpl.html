@@ -29,23 +29,23 @@
 							<input type="text" ng-model="addr.NickName" autocomplete="off"/>
 						</div>
 						<div>
-							<p>FirstName</p>
-							<input type="text" ng-model="addr.FirstName" autocomplete="off"/>
+							<p>FirstName <span class="star">*</span></p>
+							<input type="text" name="firstname" ng-model="addr.FirstName" autocomplete="off" ng-class="{error: addAddress.$submitted && addAddress.firstname.$invalid}" required />
 						</div>
 					</div>
 					<div class="inline-div addr-top">
 						<div>
-							<p>Last Name</p>
-							<input type="text" ng-model="addr.LastName" autocomplete="off"/>
+							<p>Last Name <span class="star">*</span></p>
+							<input type="text" name="lastname" ng-model="addr.LastName" autocomplete="off" ng-class="{error: addAddress.$submitted && addAddress.lastname.$invalid}" required />
 						</div>
 						<div>
 							<p>ZIP Code<span class="star">*</span></p>
-							<input class="zip-code" type="number" ng-model="addr.Zip" ng-blur="addressBook.getLocation()" autocomplete="off" required/>
+							<input class="zip-code" name="zip" type="number" ng-model="addr.Zip" ng-blur="addressBook.getLocation(addr)" autocomplete="off" required ng-class="{error: addAddress.$submitted && addAddress.zip.$invalid}" />
 						</div>
 					</div>
 					<div class="addr-top">
 						<p>Address 1<span class="star">*</span></p>
-						<input type="text"  ng-model="addr.Street1" ng-blur="addressBook.getLocation()" autocomplete="off" required/>
+						<input type="text" name="street1" ng-model="addr.Street1" ng-blur="addressBook.getLocation(addr)" autocomplete="off" required ng-class="{error: addAddress.$submitted && addAddress.street1.$invalid}" />
 					</div>
 					<div class="addr-top">
 						<p>Address 2</p>
@@ -54,11 +54,19 @@
 					<div class="inline-div addr-top">
 						<div>
 							<p>City<span class="star">*</span></p>
-							<input type="text"  ng-model="addr.City" required/>
+							<input type="text" name="city" ng-model="addr.City" required ng-if="addr.MultipleCities.length <= 1 || !addr.MultipleCities" ng-class="{error: addAddress.$submitted && addAddress.city.$invalid}" />
+							<div uib-dropdown class="form-control " id="MultipleCities" ng-if="addr.MultipleCities.length > 1" ng-class="{errorCity: addAddress.$submitted && addr.City=='Select City'}">
+								<div id="sort-dropdown" uib-dropdown-toggle>	
+									<p class="sort-active-show" ng-init="addr.City = 'Select City'">{{addr.City}}</p>
+								</div>
+								<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+									<li ng-repeat="city in addr.MultipleCities" ng-click="addr.City=city"><a href="">{{city}}</a></li>
+								</ul>
+							</div>
 						</div>
 						<div>
 							<p>State<span class="star">*</span></p>
-							<input type="text" ng-model="addr.State" required/>
+							<input type="text" name="state" ng-model="addr.State" required ng-class="{error: addAddress.$submitted && addAddress.state.$invalid}" />
 						</div>
 					</div>
 					<div class="addr-top addr-cont">
@@ -86,12 +94,12 @@
 						</div>
 					</div>
 					<div class="contact-num addr-top">
-						<p>Phone Number</p>
-						<input type="number" ng-model="addr.Phone1"/>
-						<input type="number" ng-model="addr.Phone2"/>
-						<input type="number" ng-model="addr.Phone3"/>
+						<p>Phone Number <span class="star">*</span></p>
+						<input type="number" name="phone1" ng-model="addr.Phone1" ng-class="{error: addAddress.$submitted && addAddress.phone1.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+						<input type="number" name="phone2" ng-model="addr.Phone2" ng-class="{error: addAddress.$submitted && addAddress.phone2.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+						<input type="number" name="phone3" ng-model="addr.Phone3" ng-class="{error: addAddress.$submitted && addAddress.phone3.$invalid}" required max-length="4" ng-paste="$event.preventDefault()" />
 						<div class="addr-top">
-							<button type="button" class="save" ng-click="CreateAddress(addr)" ng-disabled="addAddress.$invalid">SAVE</button>
+							<button type="button" class="save" ng-click="CreateAddress(addr, addAddress)">SAVE</button>
 							<button type="button" ng-click="addAddr = !addAddr">CANCEL</button>
 						</div>
 					</div>
@@ -224,26 +232,26 @@
 								<div class="inline-div addr-top">
 									<div>
 										<p>Nickname</p>
-										<input type="text" ng-model="addressBook.editAddr.xp.NickName"/>
+										<input type="text" ng-model="addressBook.editAddr.xp.NickName" />
 									</div>
 									<div>
 										<p>FirstName</p>
-										<input type="text" ng-model="addressBook.editAddr.FirstName"/>
+										<input type="text" ng-model="addressBook.editAddr.FirstName" name="firstname" ng-class="{error: searchedAddress.$submitted && searchedAddress.firstname.$invalid}" required />
 									</div>
 								</div>
 								<div class="inline-div addr-top">
 									<div>
 										<p>ZIP Code<span class="star">*</span></p>
-										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit()" required/>
+										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr)" name="zip" ng-class="{error: searchedAddress.$submitted && searchedAddress.zip.$invalid}" required />
 									</div>
 									<div>
 										<p>Last Name</p>
-										<input type="text" ng-model="addressBook.editAddr.LastName"/>
+										<input type="text" ng-model="addressBook.editAddr.LastName" name="lastname" ng-class="{error: searchedAddress.$submitted && searchedAddress.firstname.$invalid}" required />
 									</div>
 								</div>
 								<div class="addr-top">
-									<p>Address<span class="star">*</span></p>
-									<input type="text"  ng-model="addressBook.editAddr.Street1" ng-blur="addressBook.getLoactionEdit()" required/>
+									<p>Address 1<span class="star">*</span></p>
+									<input type="text" ng-model="addressBook.editAddr.Street1" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr)" name="street1" ng-class="{error: searchedAddress.$submitted && searchedAddress.street1.$invalid}" required />
 								</div>
 								<div class="addr-top">
 									<p>Address 2</p>
@@ -252,11 +260,19 @@
 								<div class="inline-div addr-top">
 									<div>
 										<p>City<span class="star">*</span></p>
-										<input type="text"  ng-model="addressBook.editAddr.City" required/>
+										<input type="text" name="city" ng-model="addressBook.editAddr.City" ng-if="addressBook.editAddr.MultipleCities.length <= 1 || !addressBook.editAddr.MultipleCities" ng-class="{error: searchedAddress.$submitted && searchedAddress.firstname.$invalid}" ng-required="addressBook.editAddr.MultipleCities.length <= 1 || !addressBook.editAddr.MultipleCities" />
+										<div uib-dropdown class="form-control " id="MultipleCities" ng-if="addressBook.editAddr.MultipleCities.length > 1" ng-class="{errorCity: searchedAddress.$submitted && addressBook.editAddr.City=='Select City'}">
+											<div id="sort-dropdown" uib-dropdown-toggle>	
+												<p class="sort-active-show" ng-init="addressBook.editAddr.City = 'Select City'">{{addressBook.editAddr.City}}</p>
+											</div>
+											<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+												<li ng-repeat="city in addressBook.editAddr.MultipleCities" ng-click="addressBook.editAddr.City=city"><a href="">{{city}}</a></li>
+											</ul>
+										</div>
 									</div>
 									<div>
 										<p>State<span class="star">*</span></p>
-										<input type="text" ng-model="addressBook.editAddr.State" required/>
+										<input type="text" ng-model="addressBook.editAddr.State" name="state" ng-class="{error: searchedAddress.$submitted && searchedAddress.state.$invalid}" required />
 <!-- 										<div uib-dropdown>
 											<a href ng-model="addressBook.editAddr.State" uib-dropdown-toggle>
 												{{addressBook.stateData}}<i class="fa fa-chevron-down"></i>
@@ -273,9 +289,9 @@
 								</div>
 								<div class="contact-num addr-top">
 									<p>Phone Number</p>
-									<input type="number" ng-model="addressBook.contact.Phone1"/>
-									<input type="number" ng-model="addressBook.contact.Phone2"/>
-									<input type="number" ng-model="addressBook.contact.Phone3"/>
+									<input type="number" ng-model="addressBook.contact.Phone1" name="phone1" ng-class="{error: searchedAddress.$submitted && searchedAddress.phone1.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+									<input type="number" ng-model="addressBook.contact.Phone2" name="phone2" ng-class="{error: searchedAddress.$submitted && searchedAddress.phone2.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+									<input type="number" ng-model="addressBook.contact.Phone3" name="phone3" ng-class="{error: searchedAddress.$submitted && searchedAddress.phone3.$invalid}" required max-length="4" ng-paste="$event.preventDefault()" />
 								</div>
 								<div class="addr-top addr-cont">
 									<!-- <label><input type="checkbox" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">Shipping Address</label>
@@ -301,7 +317,7 @@
 							</div>
 							</div>
 							<div class="button-list addr-top">
-								<button type="button" class="save" ng-disabled="searchedAddress.$invalid" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact)">SAVE</button>
+								<button type="button" class="save" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact, searchedAddress)">SAVE</button>
 								<button type="button" ng-click="addressBook.closeShowedit($index)">CANCEL</button>
 							</div>
 						</form> 
@@ -358,22 +374,22 @@
 									</div>
 									<div>
 										<p>FirstName</p>
-										<input type="text" ng-model="addressBook.editAddr.FirstName"/>
+										<input type="text" ng-model="addressBook.editAddr.FirstName" name="firstname" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.firstname.$invalid}" required />
 									</div>
 								</div>
 								<div class="inline-div addr-top">
 									<div>
 										<p>ZIP Code<span class="star">*</span></p>
-										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit()" required/>
+										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr)" name="zip" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.zip.$invalid}" required />
 									</div>
 									<div>
 										<p>Last Name</p>
-										<input type="text" ng-model="addressBook.editAddr.LastName"/>
+										<input type="text" ng-model="addressBook.editAddr.LastName" name="lastname" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.lastname.$invalid}" required />
 									</div>
 								</div>
 								<div class="addr-top">
-									<p>Address<span class="star">*</span></p>
-									<input type="text"  ng-model="addressBook.editAddr.Street1" ng-blur="addressBook.getLoactionEdit()" required/>
+									<p>Address 1<span class="star">*</span></p>
+									<input type="text"  ng-model="addressBook.editAddr.Street1" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr)" name="street1" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.street1.$invalid}" required />
 								</div>
 								<div class="addr-top">
 									<p>Address 2</p>
@@ -382,7 +398,15 @@
 								<div class="inline-div addr-top">
 									<div>
 										<p>City<span class="star">*</span></p>
-										<input type="text"  ng-model="addressBook.editAddr.City" required/>
+										<input type="text" ng-model="addressBook.editAddr.City" ng-if="addressBook.editAddr.MultipleCities.length <= 1 || !addressBook.editAddr.MultipleCities" name="firstname" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.firstname.$invalid}" ng-required="addressBook.editAddr.MultipleCities.length <= 1 || !addressBook.editAddr.MultipleCities" />
+										<div uib-dropdown class="form-control " id="MultipleCities" ng-if="addressBook.editAddr.MultipleCities.length > 1" ng-class="{errorCity: deafaultAddress.$submitted && addressBook.editAddr.City=='Select City'}">
+											<div id="sort-dropdown" uib-dropdown-toggle>	
+												<p class="sort-active-show" ng-init="addressBook.editAddr.City = 'Select City'">{{addressBook.editAddr.City}}</p>
+											</div>
+											<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+												<li ng-repeat="city in addressBook.editAddr.MultipleCities" ng-click="addressBook.editAddr.City=city"><a href="">{{city}}</a></li>
+											</ul>
+										</div>
 									</div>
 									<div>
 										<p>State<span class="star">*</span></p>
@@ -398,14 +422,14 @@
 												</ul>
 											</div>
 										</div> -->
-										<input type="text" ng-model="addressBook.editAddr.State" required/>
+										<input type="text" ng-model="addressBook.editAddr.State" name="state" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.state.$invalid}" required />
 									</div>
 								</div>
 								<div class="contact-num addr-top">
 									<p>Phone Number</p>
-									<input type="number" ng-model="addressBook.contact.Phone1"/>
-									<input type="number" ng-model="addressBook.contact.Phone2"/>
-									<input type="number" ng-model="addressBook.contact.Phone3"/>
+									<input type="number" ng-model="addressBook.contact.Phone1" name="phone1" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.phone1.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+									<input type="number" ng-model="addressBook.contact.Phone2" name="phone2" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.phone2.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+									<input type="number" ng-model="addressBook.contact.Phone3" name="phone3" ng-class="{error: deafaultAddress.$submitted && deafaultAddress.phone3.$invalid}" required max-length="4" ng-paste="$event.preventDefault()" />
 								</div>
 								<div class="addr-top addr-cont">
 									<!-- <label><input type="checkbox" ng-model="addressBook.editAddr.Shipping" ng-checked="addressBook.editAddr.Shipping">Shipping Address</label>
@@ -433,7 +457,7 @@
 								</div>
 							</div>
 							<div class="button-list addr-top">
-								<button type="button" class="save" ng-disabled="deafaultAddress.$invalid" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact)">SAVE</button>
+								<button type="button" class="save" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact, deafaultAddress)">SAVE</button>
 								<button type="button" ng-click="addressBook.defaultEdit=!addressBook.defaultEdit">CANCEL</button>
 							</div>
 						</form> 
@@ -489,35 +513,43 @@
 									</div>
 									<div>
 										<p>FirstName</p>
-										<input type="text" ng-model="addressBook.editAddr.FirstName"/>
+										<input type="text" ng-model="addressBook.editAddr.FirstName" name="firstname" ng-class="{error: makeDefault.$submitted && makeDefault.firstname.$invalid}" required />
 									</div>
 								</div>
 								<div class="inline-div addr-top">
 									<div>
 										<p>ZIP Code<span class="star">*</span></p>
-										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit()" required />
+										<input class="zip-code" type="text" ng-model="addressBook.editAddr.Zip" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr)" name="zip" ng-class="{error: makeDefault.$submitted && makeDefault.zip.$invalid}" required />
 									</div>
 									<div>
 										<p>Last Name</p>
-										<input type="text" ng-model="addressBook.editAddr.LastName"/>
+										<input type="text" ng-model="addressBook.editAddr.LastName" name="lastname" ng-class="{error: makeDefault.$submitted && makeDefault.lastname.$invalid}" required />
 									</div>
 								</div>
 								<div class="addr-top">
-									<p>Address<span class="star">*</span></p>
-									<input type="text"  ng-model="addressBook.editAddr.Street1" ng-blur="addressBook.getLoactionEdit()" required/>
+									<p>Address 1<span class="star">*</span></p>
+									<input type="text"  ng-model="addressBook.editAddr.Street1" ng-blur="addressBook.getLoactionEdit(addressBook.editAddr)" name="street1" ng-class="{error: makeDefault.$submitted && makeDefault.street1.$invalid}" required />
 								</div>
 								<div class="addr-top">
 									<p>Address 2</p>
-									<input type="text" ng-model="addressBook.editAddr.Street2"/>
+									<input type="text" ng-model="addressBook.editAddr.Street2" />
 								</div>
 								<div class="inline-div addr-top">
 									<div>
 										<p>City<span class="star">*</span></p>
-										<input type="text"  ng-model="addressBook.editAddr.City" required/>
+										<input type="text" ng-model="addressBook.editAddr.City" name="firstname" ng-class="{error: makeDefault.$submitted && makeDefault.firstname.$invalid}" ng-required="addressBook.editAddr.MultipleCities.length <= 1 || !addressBook.editAddr.MultipleCities" ng-if="addressBook.editAddr.MultipleCities.length <= 1 || !addressBook.editAddr.MultipleCities" />
+										<div uib-dropdown class="form-control " id="MultipleCities" ng-if="addressBook.editAddr.MultipleCities.length > 1" ng-class="{errorCity: makeDefault.$submitted && addressBook.editAddr.City=='Select City'}">
+											<div id="sort-dropdown" uib-dropdown-toggle>	
+												<p class="sort-active-show" ng-init="addressBook.editAddr.City = 'Select City'">{{addressBook.editAddr.City}}</p>
+											</div>
+											<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+												<li ng-repeat="city in addressBook.editAddr.MultipleCities" ng-click="addressBook.editAddr.City=city"><a href="">{{city}}</a></li>
+											</ul>
+										</div>
 									</div>
 									<div>
 										<p>State<span class="star">*</span></p>
-										<input type="text" ng-model="addressBook.editAddr.State" required/>
+										<input type="text" ng-model="addressBook.editAddr.State"  name="state" ng-class="{error: makeDefault.$submitted && makeDefault.state.$invalid}" required />
 <!-- 										<div uib-dropdown>
 											<a href ng-model="addressBook.editAddr.State" uib-dropdown-toggle>
 												{{addressBook.stateData}}<i class="fa fa-chevron-down"></i>
@@ -557,13 +589,13 @@
 								</div>
 								<div class="contact-num addr-top">
 									<p>Phone Number</p>
-									<input type="number" ng-model="addressBook.contact.Phone1"/>
-									<input type="number" ng-model="addressBook.contact.Phone2"/>
-									<input type="number" ng-model="addressBook.contact.Phone3"/>
+									<input type="number" ng-model="addressBook.contact.Phone1" name="phone1" ng-class="{error: makeDefault.$submitted && makeDefault.phone1.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+									<input type="number" ng-model="addressBook.contact.Phone2" name="phone2" ng-class="{error: makeDefault.$submitted && makeDefault.phone2.$invalid}" required max-length="3" ng-paste="$event.preventDefault()" />
+									<input type="number" ng-model="addressBook.contact.Phone3" name="phone3" ng-class="{error: makeDefault.$submitted && makeDefault.phone3.$invalid}" required max-length="4" ng-paste="$event.preventDefault()" />
 								</div>
 							</div>
 							<div class="button-list addr-top">
-								<button type="button" class="save" ng-disabled="makeDefault.$invalid" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact)">SAVE</button>
+								<button type="button" class="save" ng-click="addressBook.saveAddress(addressBook.editAddr, addressBook.contact, makeDefault)">SAVE</button>
 								<button type="button" ng-click="addressBook.closeShowedit($index)">CANCEL</button>
 							</div>
 						</form> 

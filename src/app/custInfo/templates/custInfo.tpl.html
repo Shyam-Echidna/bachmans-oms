@@ -45,7 +45,15 @@
 							<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].Street1}} {{custInfo.list.defaultAddr[0].Street2}} {{custInfo.list.defaultAddr[0].City}}</span>
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street1" placeholder="Street1" ng-blur="custInfo.getLocation()" required>
 							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].Street2" placeholder="Street2">
-							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City">
+							<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].City" placeholder="City" ng-if="custInfo.list.defaultAddr[0].MultipleCities.length <= 1 || !custInfo.list.defaultAddr[0].MultipleCities" />
+							<div uib-dropdown class="form-control " id="MultipleCities" ng-if="custInfo.list.defaultAddr[0].MultipleCities.length > 1">
+								<div id="sort-dropdown" uib-dropdown-toggle>	
+									<p class="sort-active-show" ng-init="custInfo.list.defaultAddr[0].City = 'Select City'">{{custInfo.list.defaultAddr[0].City}}</p>
+								</div>
+								<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="sort-dropdown">
+									<li ng-repeat="city in custInfo.list.defaultAddr[0].MultipleCities" ng-click="custInfo.list.defaultAddr[0].City=city"><a href="">{{city}}</a></li>
+								</ul>
+							</div>
 							<div>
 								<span ng-show="!isEditing">{{custInfo.list.defaultAddr[0].State}} {{custInfo.list.defaultAddr[0].Country}} {{custInfo.list.defaultAddr[0].Zip}}</span>
 								<input type="text" ng-show="isEditing" ng-model="custInfo.list.defaultAddr[0].State" placeholder="State">

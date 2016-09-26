@@ -496,9 +496,9 @@ function checkoutController($scope, $state, Underscore, Order, OrderLineItems, P
 		if(line.cardMsg != true){
 			delete line.xp.CardMessage;
 		}
-		if(line.xp.deliveryRun=='Run4' && vm.TodayDate.getHours() >= 12){
+		/*if(line.xp.deliveryRun=='Run4' && vm.TodayDate.getHours() >= 12){
 			line.xp.deliveryFeesDtls['Priority Delivery'] = vm.buyerDtls.xp.DeliveryRuns[0].Run4.charge;
-		}
+		}*/
 		angular.forEach(line.xp.deliveryFeesDtls, function(val, key){
 			deliverySum += parseFloat(val);
 		});
